@@ -12,9 +12,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
-public abstract class AlienEntity extends Monster {
+public abstract class AlienEntity extends Monster implements IAlienUnit {
     protected AlienEntity(EntityType<? extends Monster> type, Level level) {
         super(type, level);
+    }
+
+    @Override
+    public AlienRole getAlienRole() {
+        return AlienRole.SOLDIER;
     }
 
     // prevent sunlight burning (Zombie gene removed)

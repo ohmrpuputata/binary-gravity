@@ -23,12 +23,15 @@ import net.minecraft.world.level.Level;
 
 // Сталкер (Пришелец-Убийца): Быстрый скрытный ассасин роя.
 // Умеет становиться невидимым и телепортироваться за спину жертве. Мало здоровья, высокий урон.
-public class AlienStalkerEntity extends Monster {
+public class AlienStalkerEntity extends Monster implements IAlienUnit {
     private int blinkCooldown;
 
     public AlienStalkerEntity(EntityType<? extends Monster> type, Level level) {
         super(type, level);
     }
+
+    @Override
+    public AlienRole getAlienRole() { return AlienRole.STALKER; }
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()

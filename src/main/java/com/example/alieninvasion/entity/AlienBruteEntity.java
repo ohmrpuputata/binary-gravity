@@ -14,10 +14,13 @@ import net.minecraft.world.level.block.Blocks;
  * Брут (Пришелец-Громила): Тяжелый бронированный монстр-танк роя.
  * Имеет огромный запас здоровья (150 HP), ломает блоки на своем пути и наносит огромный урон.
  */
-public class AlienBruteEntity extends IronGolem {
+public class AlienBruteEntity extends IronGolem implements IAlienUnit {
         public AlienBruteEntity(EntityType<? extends IronGolem> type, Level level) {
                 super(type, level);
         }
+
+        @Override
+        public AlienRole getAlienRole() { return AlienRole.HEAVY; }
 
         public static AttributeSupplier.Builder createAttributes() {
                 return Monster.createMonsterAttributes()

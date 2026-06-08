@@ -13,10 +13,13 @@ import net.minecraft.world.level.Level;
 
 // Тиран Роя (Босс пришельцев): Грозный мини-босс вторжения.
 // Создан на основе Вардена, преследует игрока, издает звуковые атаки. Имеет 300 HP.
-public class HiveTyrantEntity extends Warden {
+public class HiveTyrantEntity extends Warden implements IAlienUnit {
     public HiveTyrantEntity(EntityType<? extends Warden> type, Level level) {
         super(type, level);
     }
+
+    @Override
+    public AlienRole getAlienRole() { return AlienRole.COMMANDER; }
 
     public static AttributeSupplier.Builder createAttributes() {
         return Warden.createAttributes()

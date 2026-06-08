@@ -21,10 +21,13 @@ import net.minecraft.world.level.Level;
 
 // Курица-Пришелец: Ослабленный надоедливый дальний боец.
 // Стреляет яйцами, которые наносят почти нулевой урон. Служит отвлекающим маневром.
-public class AlienChickenEntity extends Monster implements RangedAttackMob {
+public class AlienChickenEntity extends Monster implements RangedAttackMob, IAlienUnit {
     public AlienChickenEntity(EntityType<? extends Monster> type, Level level) {
         super(type, level);
     }
+
+    @Override
+    public AlienRole getAlienRole() { return AlienRole.SCOUT; }
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()

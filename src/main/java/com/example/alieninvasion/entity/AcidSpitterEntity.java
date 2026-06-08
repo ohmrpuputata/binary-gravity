@@ -19,10 +19,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 // Кислотный плевок: дальнобойный пришелец, лобающий едкие сгустки (зона поражения).
-public class AcidSpitterEntity extends Monster implements RangedAttackMob {
+public class AcidSpitterEntity extends Monster implements RangedAttackMob, IAlienUnit {
     public AcidSpitterEntity(EntityType<? extends Monster> type, Level level) {
         super(type, level);
     }
+
+    @Override
+    public AlienRole getAlienRole() { return AlienRole.ARTILLERY; }
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()

@@ -12,7 +12,7 @@ import net.minecraft.world.entity.monster.Monster;
  * Грант (Пехотинец пришельцев): Базовый боец роя.
  * Днем может спавниться как рабочий (Scavenger), собирающий ресурсы, а ночью - как агрессивный воин.
  */
-public class AlienGruntEntity extends Zombie {
+public class AlienGruntEntity extends Zombie implements IAlienUnit {
     private boolean scavenger = false;
 
     public AlienGruntEntity(EntityType<? extends Zombie> type, Level level) {
@@ -20,6 +20,11 @@ public class AlienGruntEntity extends Zombie {
         // Smart inventory: grunts scavenge and wield dropped gear/weapons & armor,
         // and the AI uses held weapons for extra damage.
         this.setCanPickUpLoot(true);
+    }
+
+    @Override
+    public AlienRole getAlienRole() {
+        return this.scavenger ? AlienRole.WORKER : AlienRole.SOLDIER;
     }
 
     public boolean isScavenger() {

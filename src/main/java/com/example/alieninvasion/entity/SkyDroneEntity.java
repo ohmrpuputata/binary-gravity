@@ -10,10 +10,13 @@ import net.minecraft.world.level.Level;
 
 // Дрон Роя: лёгкий летающий перехватчик. Пикирует на игроков (в т.ч. в воздухе) -
 // в небе больше не спрятаться. На базе Фантома.
-public class SkyDroneEntity extends Phantom {
+public class SkyDroneEntity extends Phantom implements IAlienUnit {
     public SkyDroneEntity(EntityType<? extends Phantom> type, Level level) {
         super(type, level);
     }
+
+    @Override
+    public AlienRole getAlienRole() { return AlienRole.SCOUT; }
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()

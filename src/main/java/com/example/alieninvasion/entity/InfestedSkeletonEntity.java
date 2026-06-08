@@ -14,11 +14,14 @@ import net.minecraft.world.effect.MobEffectInstance;
  * Зараженный скелет (Infested Skeleton):
  * Дальнобойный мутант, который стреляет кристаллическими стрелами, накладывающими эффект радиации.
  */
-public class InfestedSkeletonEntity extends Skeleton {
+public class InfestedSkeletonEntity extends Skeleton implements IAlienUnit {
 
     public InfestedSkeletonEntity(EntityType<? extends Skeleton> type, Level level) {
         super(type, level);
     }
+
+    @Override
+    public AlienRole getAlienRole() { return AlienRole.INFECTED; }
 
     @Override
     protected AbstractArrow getArrow(ItemStack arrowStack, float distanceFactor, ItemStack bowStack) {

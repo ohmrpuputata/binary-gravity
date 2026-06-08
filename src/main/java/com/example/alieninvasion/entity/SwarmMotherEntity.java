@@ -37,7 +37,7 @@ import net.minecraft.world.phys.Vec3;
  * Фаза 3: Разъяренный ближний бой и шоковые волны.
  * Победа над ней завершает игру.
  */
-public class SwarmMotherEntity extends Monster {
+public class SwarmMotherEntity extends Monster implements IAlienUnit {
     private final ServerBossEvent bossEvent = (ServerBossEvent) new ServerBossEvent(
             Component.literal("Мать Роя"),
             BossEvent.BossBarColor.PURPLE,
@@ -52,6 +52,9 @@ public class SwarmMotherEntity extends Monster {
         super(type, level);
         this.xpReward = 1000;
     }
+
+    @Override
+    public AlienRole getAlienRole() { return AlienRole.SUPREME; }
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()

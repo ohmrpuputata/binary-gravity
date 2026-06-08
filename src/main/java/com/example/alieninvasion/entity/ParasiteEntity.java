@@ -15,10 +15,13 @@ import net.minecraft.network.chat.Component;
 
 // Паразит-Мозгоед: стремительно мчится к игроку и ПРЫГАЕТ ему на голову.
 // Заняв слот шлема, мучает носителя (см. ModEvents). Очень быстрый и прыгучий.
-public class ParasiteEntity extends Silverfish {
+public class ParasiteEntity extends Silverfish implements IAlienUnit {
     public ParasiteEntity(EntityType<? extends Silverfish> type, Level level) {
         super(type, level);
     }
+
+    @Override
+    public AlienRole getAlienRole() { return AlienRole.PARASITE; }
 
     public static AttributeSupplier.Builder createAttributes() {
         return Silverfish.createAttributes()

@@ -23,10 +23,13 @@ import net.minecraft.world.phys.Vec3;
 
 // Плазменщик (Пришелец-Артиллерист): Дальнобойный стрелок.
 // Держит дистанцию и стреляет прожигающими насквозь плазменными лучами.
-public class PlasmaCasterEntity extends Monster implements RangedAttackMob {
+public class PlasmaCasterEntity extends Monster implements RangedAttackMob, IAlienUnit {
     public PlasmaCasterEntity(EntityType<? extends Monster> type, Level level) {
         super(type, level);
     }
+
+    @Override
+    public AlienRole getAlienRole() { return AlienRole.ARTILLERY; }
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()

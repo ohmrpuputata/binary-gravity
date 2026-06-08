@@ -8,7 +8,8 @@
     "PlayerMixin",
     "ItemMixin",
     "LivingEntityAccessor",
-    "MobMixin"
+    "MobMixin",
+    "EntityNameMixin"
   ],
   "injectors": {
     "defaultRequire": 1

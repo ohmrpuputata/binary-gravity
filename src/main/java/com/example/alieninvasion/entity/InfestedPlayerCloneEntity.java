@@ -15,12 +15,15 @@ import net.minecraft.world.entity.player.Player;
  * Опасный зомби-пришелец, который спавнится на месте смерти игрока от ассимиляции.
  * Он носит броню и оружие игрока на момент смерти и использует их против него.
  */
-public class InfestedPlayerCloneEntity extends Zombie {
+public class InfestedPlayerCloneEntity extends Zombie implements IAlienUnit {
 
     public InfestedPlayerCloneEntity(EntityType<? extends Zombie> type, Level level) {
         super(type, level);
         this.setCanPickUpLoot(false);
     }
+
+    @Override
+    public AlienRole getAlienRole() { return AlienRole.INFECTED; }
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()

@@ -13,11 +13,14 @@ import net.minecraft.world.phys.Vec3;
  * Зараженный зомби (Infested Zombie):
  * Имеет костяной нарост-щит на руке, блокирующий 50% входящего урона спереди.
  */
-public class InfestedZombieEntity extends Zombie {
+public class InfestedZombieEntity extends Zombie implements IAlienUnit {
 
     public InfestedZombieEntity(EntityType<? extends Zombie> type, Level level) {
         super(type, level);
     }
+
+    @Override
+    public AlienRole getAlienRole() { return AlienRole.INFECTED; }
 
     @Override
     public boolean hurt(DamageSource source, float amount) {

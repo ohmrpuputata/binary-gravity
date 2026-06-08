@@ -17,13 +17,16 @@ import net.minecraft.core.registries.BuiltInRegistries;
  * Зараженный крипер (Infested Creeper):
  * При взрыве разбрызгивает кислоту, покрывая землю блоками ALIEN_RESIDUE и отравляя игрока.
  */
-public class InfestedCreeperEntity extends Creeper {
+public class InfestedCreeperEntity extends Creeper implements IAlienUnit {
     private int alienFuse = 0;
     private final int alienMaxFuse = 30;
 
     public InfestedCreeperEntity(EntityType<? extends Creeper> type, Level level) {
         super(type, level);
     }
+
+    @Override
+    public AlienRole getAlienRole() { return AlienRole.INFECTED; }
 
     @Override
     public void tick() {

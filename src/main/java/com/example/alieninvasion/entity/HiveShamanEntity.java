@@ -24,10 +24,13 @@ import net.minecraft.world.level.Level;
 
 // Шаман Роя (Пришелец-Поддержка): Поддерживающий юнит.
 // Лечит и усиливает союзных пришельцев поблизости (Регенерация + Сила), делая орду опаснее.
-public class HiveShamanEntity extends Monster {
+public class HiveShamanEntity extends Monster implements IAlienUnit {
     public HiveShamanEntity(EntityType<? extends Monster> type, Level level) {
         super(type, level);
     }
+
+    @Override
+    public AlienRole getAlienRole() { return AlienRole.SHAMAN; }
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()

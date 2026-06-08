@@ -23,10 +23,13 @@ import net.minecraft.world.level.block.Blocks;
 
 // Прорыватель Пещер (Пришелец-Разрушитель): Тяжелый шагоход.
 // Быстро прокапывается сквозь камень, грязь и постройки, чтобы выкурить игрока из пещер.
-public class AlienBreacherEntity extends Monster {
+public class AlienBreacherEntity extends Monster implements IAlienUnit {
     public AlienBreacherEntity(EntityType<? extends Monster> type, Level level) {
         super(type, level);
     }
+
+    @Override
+    public AlienRole getAlienRole() { return AlienRole.ENGINEER; }
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()

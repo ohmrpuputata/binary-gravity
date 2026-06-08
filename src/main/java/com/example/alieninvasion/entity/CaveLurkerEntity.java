@@ -10,10 +10,13 @@ import net.minecraft.world.level.Level;
 
 // Пещерный охотник: стремительный паукообразный засадник подземелий. Лазает по
 // стенам, очень быстрый - под землёй тоже не спрятаться. На базе Паука.
-public class CaveLurkerEntity extends Spider {
+public class CaveLurkerEntity extends Spider implements IAlienUnit {
     public CaveLurkerEntity(EntityType<? extends Spider> type, Level level) {
         super(type, level);
     }
+
+    @Override
+    public AlienRole getAlienRole() { return AlienRole.LURKER; }
 
     public static AttributeSupplier.Builder createAttributes() {
         return Spider.createAttributes()

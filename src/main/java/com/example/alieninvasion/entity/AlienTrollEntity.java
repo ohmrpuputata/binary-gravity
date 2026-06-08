@@ -25,13 +25,16 @@ import java.util.List;
 
 // Тролль-Пришелец: Быстрый и хрупкий воришка.
 // Не сражается напрямую, а подбегает, крадет предмет у игрока и убегает прятать его.
-public class AlienTrollEntity extends Monster {
+public class AlienTrollEntity extends Monster implements IAlienUnit {
     private ItemStack stolenItem = ItemStack.EMPTY;
     private int carryTicks;
 
     public AlienTrollEntity(EntityType<? extends Monster> type, Level level) {
         super(type, level);
     }
+
+    @Override
+    public AlienRole getAlienRole() { return AlienRole.TRICKSTER; }
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()

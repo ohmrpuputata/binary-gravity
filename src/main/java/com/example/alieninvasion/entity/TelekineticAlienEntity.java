@@ -9,10 +9,13 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 
 // Телекинетик (Пришелец-Экстрасенс): Мобильный и опасный боец.
 // Создан на основе Эндермена. Использует телепортацию для обхода игрока с фланга.
-public class TelekineticAlienEntity extends EnderMan {
+public class TelekineticAlienEntity extends EnderMan implements IAlienUnit {
     public TelekineticAlienEntity(EntityType<? extends EnderMan> type, Level level) {
         super(type, level);
     }
+
+    @Override
+    public AlienRole getAlienRole() { return AlienRole.PSYCHIC; }
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 20.0D).add(Attributes.MOVEMENT_SPEED, 0.25D)
