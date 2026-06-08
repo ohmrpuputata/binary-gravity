@@ -203,10 +203,6 @@ public class ModBlocks {
             new com.example.alieninvasion.block.OreWasherBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.0F)
                     .requiresCorrectToolForDrops().sound(SoundType.METAL)));
 
-    public static final Block RADIATION_FORGE = registerBlock("radiation_forge",
-            new com.example.alieninvasion.block.RadiationForgeBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).strength(4.0F)
-                    .requiresCorrectToolForDrops().sound(SoundType.METAL).lightLevel(state -> 9)));
-
     public static final Block ALIEN_RECYCLER = registerBlock("alien_recycler",
             new com.example.alieninvasion.block.AlienRecyclerBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(3.5F)
                     .requiresCorrectToolForDrops().sound(SoundType.METAL)));

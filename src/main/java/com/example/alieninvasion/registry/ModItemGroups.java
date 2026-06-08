@@ -101,11 +101,6 @@ public class ModItemGroups {
                         entries.accept(ItemRegistry.NIBIRIUM_SHOVEL);
                         entries.accept(ItemRegistry.NIBIRIUM_HOE);
                         entries.accept(ItemRegistry.INFECTED_WATER_BUCKET);
-                        entries.accept(ItemRegistry.DRILL_FUEL_CELL);
-                        entries.accept(ItemRegistry.REINFORCED_DRILL_HEAD);
-                        entries.accept(ItemRegistry.LAVA_COOLING_MODULE);
-                        entries.accept(ItemRegistry.TOXIC_SEAL_MODULE);
-                        entries.accept(ItemRegistry.HEADLAMP_MODULE);
                         entries.accept(ItemRegistry.TOXIC_WATER_BUCKET);
                         entries.accept(ItemRegistry.URANIUM_SWORD);
                         entries.accept(ItemRegistry.URANIUM_PICKAXE);
@@ -122,16 +117,12 @@ public class ModItemGroups {
                         entries.accept(ItemRegistry.IRIDIUM_AXE);
                         entries.accept(ItemRegistry.IRIDIUM_SHOVEL);
                         entries.accept(ItemRegistry.IRIDIUM_HOE);
-                        entries.accept(ItemRegistry.RADIATION_DRILL_HEAD);
-                        entries.accept(ItemRegistry.PURIFIER_DRILL_HEAD);
-                        entries.accept(ItemRegistry.TOXIC_WATER_PUMP);
                         entries.accept(ItemRegistry.GEIGER_COUNTER);
                         entries.accept(ItemRegistry.PORTABLE_PURIFIER);
                         entries.accept(ItemRegistry.RAD_PILLS);
                         entries.accept(ItemRegistry.BIO_FILTER_MASK);
                         entries.accept(ItemRegistry.CONTAMINATED_FOOD);
                         entries.accept(ItemRegistry.PURIFIED_WATER_FLASK);
-                        entries.accept(ItemRegistry.BORER);
                         entries.accept(ItemRegistry.RALLY_BANNER);
                         entries.accept(ItemRegistry.PURIFIER_WAND);
                         entries.accept(ItemRegistry.INVASION_TRACKER);
@@ -179,7 +170,6 @@ public class ModItemGroups {
                         entries.accept(com.example.alieninvasion.registry.ModBlocks.BLACK_MARKET_TERMINAL.asItem());
                         entries.accept(com.example.alieninvasion.registry.ModBlocks.PURIFIER_STATION.asItem());
                         entries.accept(com.example.alieninvasion.registry.ModBlocks.ORE_WASHER.asItem());
-                        entries.accept(com.example.alieninvasion.registry.ModBlocks.RADIATION_FORGE.asItem());
                         entries.accept(com.example.alieninvasion.registry.ModBlocks.ALIEN_RECYCLER.asItem());
                         entries.accept(com.example.alieninvasion.registry.ModBlocks.BLUEPRINT_TABLE.asItem());
                         entries.accept(com.example.alieninvasion.registry.ModBlocks.WARNING_LAMP.asItem());

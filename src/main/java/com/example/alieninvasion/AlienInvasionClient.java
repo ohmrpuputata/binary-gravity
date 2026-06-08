@@ -73,9 +73,6 @@ public class AlienInvasionClient implements ClientModInitializer {
                                 com.example.alieninvasion.client.CaveLurkerRenderer::new);
                 EntityRendererRegistry.register(EntityRegistry.ACID_SPITTER,
                                 com.example.alieninvasion.client.AcidSpitterRenderer::new);
-                EntityRendererRegistry.register(EntityRegistry.BORER,
-                                com.example.alieninvasion.client.BorerRenderer::new);
-
                 // Only the custom-model entities register their own layers.
                 EntityModelLayerRegistry.registerModelLayer(ModModelLayers.ALIEN_GRUNT,
                                 com.example.alieninvasion.client.model.AlienGruntModel::createBodyLayer);
@@ -87,9 +84,6 @@ public class AlienInvasionClient implements ClientModInitializer {
                                 com.example.alieninvasion.client.model.MeteorModel::createBodyLayer);
                 EntityModelLayerRegistry.registerModelLayer(ModModelLayers.SWARM_MOTHER,
                                 com.example.alieninvasion.client.model.SwarmMotherModel::createBodyLayer);
-                EntityModelLayerRegistry.registerModelLayer(ModModelLayers.BORER,
-                                com.example.alieninvasion.client.model.BorerModel::createBodyLayer);
-
                 // HUD Overlay
                 com.example.alieninvasion.client.InvasionHUDOverlay.register();
 

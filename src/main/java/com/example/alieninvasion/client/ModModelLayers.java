@@ -18,6 +18,4 @@ public class ModModelLayers {
             ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "drill"), "main");
     public static final ModelLayerLocation SWARM_MOTHER = new ModelLayerLocation(
             ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "swarm_mother"), "main");
-    public static final ModelLayerLocation BORER = new ModelLayerLocation(
-            ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "borer"), "main");
 }

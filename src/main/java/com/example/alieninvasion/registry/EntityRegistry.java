@@ -207,12 +207,6 @@ public class EntityRegistry {
                     .sized(0.25f, 0.25f).build("acid_bolt")
     );
 
-    public static final EntityType<com.example.alieninvasion.entity.BorerVehicleEntity> BORER = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "borer"),
-            EntityType.Builder.of(com.example.alieninvasion.entity.BorerVehicleEntity::new, MobCategory.MISC).sized(2.2f, 1.7f).build("borer")
-    );
-
     public static void registerEntities() {
         // Attributes registration
         FabricDefaultAttributeRegistry.register(ALIEN_GRUNT, AlienGruntEntity.createAttributes());
@@ -236,6 +230,5 @@ public class EntityRegistry {
         FabricDefaultAttributeRegistry.register(SKY_DRONE, com.example.alieninvasion.entity.SkyDroneEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(CAVE_LURKER, com.example.alieninvasion.entity.CaveLurkerEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(ACID_SPITTER, com.example.alieninvasion.entity.AcidSpitterEntity.createAttributes());
-        FabricDefaultAttributeRegistry.register(BORER, com.example.alieninvasion.entity.BorerVehicleEntity.createAttributes());
     }
 }

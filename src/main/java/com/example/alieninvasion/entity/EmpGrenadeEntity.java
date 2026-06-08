@@ -47,9 +47,6 @@ public class EmpGrenadeEntity extends ThrowableItemProjectile {
                 if (target instanceof UfoEntity ufo) {
                     ufo.addTag("EmpActive");
                     ufo.setEmpTicks(160);
-                } else if (target instanceof BorerVehicleEntity borer) {
-                    borer.addTag("EmpActive");
-                    borer.setEmpTicks(160);
                 } else if (target instanceof DrillEntity drill) {
                     drill.addTag("EmpActive");
                     drill.setEmpTicks(160);

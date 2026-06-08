@@ -41,7 +41,7 @@ public class BlackMarketTerminalBlock extends Block {
         stack.shrink(price);
         ItemStack reward = paidCredit
                 ? new ItemStack(ItemRegistry.PLASMA_CORE, 1)
-                : new ItemStack(ItemRegistry.DRILL_FUEL_CELL, 2);
+                : new ItemStack(ItemRegistry.URANIUM_ROD, 2);
         if (!player.getInventory().add(reward)) {
             player.drop(reward, false);
         }
@@ -55,7 +55,7 @@ public class BlackMarketTerminalBlock extends Block {
             BlockHitResult hitResult) {
         if (!level.isClientSide) {
             player.displayClientMessage(Component.literal(
-                    "§6[Черный рынок] 8 alien scrap -> 2 drill fuel cell, 1 cosmic credit -> plasma core."), true);
+                    "§6[Черный рынок] 8 alien scrap -> 2 uranium rod, 1 cosmic credit -> plasma core."), true);
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
     }

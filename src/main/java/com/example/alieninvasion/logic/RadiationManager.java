@@ -155,18 +155,6 @@ public final class RadiationManager {
                 && player.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.LIGHT_HAZMAT_BOOTS);
     }
 
-    private static boolean borerSealed(Player player) {
-        if (!(player.getVehicle() instanceof com.example.alieninvasion.entity.BorerVehicleEntity)) {
-            return false;
-        }
-        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-            if (player.getInventory().getItem(i).is(ItemRegistry.TOXIC_SEAL_MODULE)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     /** Per-second player update. Call once a second (e.g. tickCount % 20 == 0). */
     public static void tickPlayer(ServerLevel level, ServerPlayer player) {
         if (player.isCreative() || player.isSpectator()) {
@@ -175,7 +163,7 @@ public final class RadiationManager {
             return;
         }
 
-        boolean sealed = hasFullHazmat(player) || borerSealed(player);
+        boolean sealed = hasFullHazmat(player);
         boolean masked = player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.BIO_FILTER_MASK);
         float exposure = sealed ? 0.0F : scanExposure(level, player.blockPosition());
         if (masked) {

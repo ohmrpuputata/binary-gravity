@@ -313,9 +313,6 @@ public class ItemRegistry {
             new com.example.alieninvasion.item.RallyBannerItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
 
     // New items from the big content patch (v1.13.0)
-    public static final Item BORER = registerItem("borer",
-            new com.example.alieninvasion.item.CustomEntitySpawnerItem(() -> EntityRegistry.BORER, new Item.Properties().rarity(Rarity.RARE)));
-
     public static final Item EMP_GRENADE = registerItem("emp_grenade",
             new com.example.alieninvasion.item.EmpGrenadeItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(16)));
 
@@ -388,21 +385,6 @@ public class ItemRegistry {
             new net.minecraft.world.item.HoeItem(com.example.alieninvasion.item.ModToolTiers.NIBIRIUM,
                     new Item.Properties().attributes(HoeItem.createAttributes(com.example.alieninvasion.item.ModToolTiers.NIBIRIUM, -3.0F, 0.0F))));
 
-    public static final Item DRILL_FUEL_CELL = registerItem("drill_fuel_cell",
-            new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16)));
-
-    public static final Item REINFORCED_DRILL_HEAD = registerItem("reinforced_drill_head",
-            new Item(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
-
-    public static final Item LAVA_COOLING_MODULE = registerItem("lava_cooling_module",
-            new Item(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).fireResistant()));
-
-    public static final Item TOXIC_SEAL_MODULE = registerItem("toxic_seal_module",
-            new Item(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
-
-    public static final Item HEADLAMP_MODULE = registerItem("headlamp_module",
-            new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
-
     public static final Item TOXIC_WATER_BUCKET = registerItem("toxic_water_bucket",
             new BucketItem(com.example.alieninvasion.registry.ModFluids.TOXIC_WATER_STILL,
                     new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1).rarity(Rarity.UNCOMMON)));
@@ -470,15 +452,6 @@ public class ItemRegistry {
     public static final Item IRIDIUM_HOE = registerItem("iridium_hoe",
             new HoeItem(ModToolTiers.IRIDIUM, new Item.Properties().rarity(Rarity.RARE).fireResistant()
                     .attributes(HoeItem.createAttributes(ModToolTiers.IRIDIUM, -4.0F, 0.5F))));
-
-    public static final Item RADIATION_DRILL_HEAD = registerItem("radiation_drill_head",
-            new Item(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
-
-    public static final Item PURIFIER_DRILL_HEAD = registerItem("purifier_drill_head",
-            new Item(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
-
-    public static final Item TOXIC_WATER_PUMP = registerItem("toxic_water_pump",
-            new com.example.alieninvasion.item.ToxicWaterPumpItem(new Item.Properties().rarity(Rarity.RARE).durability(256)));
 
     public static final Item GEIGER_COUNTER = registerItem("geiger_counter",
             new com.example.alieninvasion.item.GeigerCounterItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
