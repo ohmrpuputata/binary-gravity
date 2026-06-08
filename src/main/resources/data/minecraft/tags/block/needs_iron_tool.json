@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "alien-invasion:uranium_ore",
+    "alien-invasion:deepslate_uranium_ore",
+    "alien-invasion:xenocrystal_ore",
+    "alien-invasion:bio_vein_ore",
+    "alien-invasion:platinum_ore",
+    "alien-invasion:palladium_ore",
+    "alien-invasion:infested_diamond_ore",
+    "alien-invasion:infested_lapis_ore",
+    "alien-invasion:infested_redstone_ore"
+  ]
+}

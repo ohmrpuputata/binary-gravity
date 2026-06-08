@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["A", "D", "D"],
+  "key": {
+    "A": { "item": "alien-invasion:alien_alloy" },
+    "D": { "item": "minecraft:diamond" }
+  },
+  "result": { "id": "alien-invasion:bio_shovel", "count": 1 }
+}

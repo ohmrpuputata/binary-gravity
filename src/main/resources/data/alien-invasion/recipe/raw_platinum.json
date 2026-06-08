@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "item": "alien-invasion:platinum_chunk"
+    }
+  },
+  "result": {
+    "id": "alien-invasion:raw_platinum",
+    "count": 1
+  }
+}

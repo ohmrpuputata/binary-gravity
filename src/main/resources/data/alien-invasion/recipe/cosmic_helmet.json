@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "III",
+    "I I"
+  ],
+  "key": {
+    "I": {
+      "item": "alien-invasion:cosmic_ingot"
+    }
+  },
+  "result": {
+    "id": "alien-invasion:cosmic_helmet",
+    "count": 1
+  }
+}

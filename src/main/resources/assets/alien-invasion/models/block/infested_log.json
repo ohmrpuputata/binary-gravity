@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "alien-invasion:block/infested_log_top",
+    "side": "alien-invasion:block/infested_log"
+  }
+}

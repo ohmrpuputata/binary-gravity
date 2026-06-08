@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["II", "ID", " D"],
+  "key": {
+    "I": { "item": "alien-invasion:cosmic_ingot" },
+    "D": { "item": "minecraft:diamond" }
+  },
+  "result": { "id": "alien-invasion:star_cleaver", "count": 1 }
+}

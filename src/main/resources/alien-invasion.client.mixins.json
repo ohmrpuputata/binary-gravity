@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.example.alieninvasion.mixin.client",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "ClientLevelMixin",
+    "LocalPlayerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

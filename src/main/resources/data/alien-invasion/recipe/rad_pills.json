@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "alien-invasion:uranium_dust"
+    },
+    {
+      "item": "alien-invasion:bio_serum"
+    },
+    {
+      "item": "minecraft:sugar"
+    }
+  ],
+  "result": {
+    "id": "alien-invasion:rad_pills",
+    "count": 4
+  }
+}

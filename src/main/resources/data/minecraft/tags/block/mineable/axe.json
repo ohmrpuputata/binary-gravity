@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "alien-invasion:dead_infested_crop",
+    "alien-invasion:infested_leaves",
+    "alien-invasion:infested_log",
+    "alien-invasion:infested_planks"
+  ]
+}

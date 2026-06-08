@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:milk_bucket"
+    },
+    {
+      "item": "alien-invasion:infested_flesh"
+    }
+  ],
+  "result": {
+    "id": "alien-invasion:weak_antidote",
+    "count": 1
+  }
+}

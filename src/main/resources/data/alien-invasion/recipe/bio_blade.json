@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["ADA", "AHA", " C "],
+  "key": {
+    "A": { "item": "alien-invasion:alien_alloy" },
+    "D": { "item": "alien-invasion:dark_matter_shard" },
+    "H": { "item": "alien-invasion:hive_core" },
+    "C": { "item": "alien-invasion:cosmic_block" }
+  },
+  "result": { "id": "alien-invasion:bio_blade", "count": 1 }
+}

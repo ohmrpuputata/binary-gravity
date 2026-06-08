@@ -1,0 +1,4 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": { "all": "alien-invasion:block/pure_radiation_block" }
+}

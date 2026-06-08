@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": { "type": "minecraft:uniform", "min": 3, "max": 5 },
+      "entries": [
+        { "type": "minecraft:item", "name": "alien-invasion:cosmic_ingot", "weight": 18, "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1, "max": 3 } }] },
+        { "type": "minecraft:item", "name": "alien-invasion:cosmic_shard", "weight": 16, "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 2, "max": 5 } }] },
+        { "type": "minecraft:item", "name": "alien-invasion:alien_alloy", "weight": 14, "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 2, "max": 4 } }] },
+        { "type": "minecraft:item", "name": "minecraft:diamond", "weight": 10, "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1, "max": 3 } }] },
+        { "type": "minecraft:item", "name": "alien-invasion:hive_core", "weight": 6 },
+        { "type": "minecraft:item", "name": "alien-invasion:cosmic_stimulant", "weight": 8, "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1, "max": 2 } }] }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        { "type": "minecraft:item", "name": "alien-invasion:bio_blade", "weight": 2 },
+        { "type": "minecraft:item", "name": "alien-invasion:star_cleaver", "weight": 2 },
+        { "type": "minecraft:item", "name": "alien-invasion:cosmic_pickaxe", "weight": 2 },
+        { "type": "minecraft:item", "name": "alien-invasion:cosmic_chestplate", "weight": 2 },
+        { "type": "minecraft:item", "name": "alien-invasion:blink_core", "weight": 4 },
+        { "type": "minecraft:item", "name": "minecraft:netherite_scrap", "weight": 3 },
+        { "type": "minecraft:empty", "weight": 22 }
+      ]
+    }
+  ]
+}

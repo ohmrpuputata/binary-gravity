@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "alien-invasion:infested_clay",
+    "alien-invasion:infested_dirt",
+    "alien-invasion:infested_gravel",
+    "alien-invasion:infested_sand"
+  ]
+}

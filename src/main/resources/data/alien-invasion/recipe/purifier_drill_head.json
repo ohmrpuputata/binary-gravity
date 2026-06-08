@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "XHX",
+    "CDC",
+    "IRI"
+  ],
+  "key": {
+    "X": {
+      "item": "alien-invasion:xenocrystal"
+    },
+    "H": {
+      "item": "alien-invasion:hive_core"
+    },
+    "C": {
+      "item": "alien-invasion:cosmic_shard"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "I": {
+      "item": "alien-invasion:iridium_plate"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "id": "alien-invasion:purifier_drill_head",
+    "count": 1
+  }
+}

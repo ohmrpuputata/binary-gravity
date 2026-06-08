@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "alien-invasion",
+	"version": "${version}",
+	"name": "Alien Apocalypse",
+	"description": "Survive the alien invasion!",
+	"authors": [
+		"Me"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/alien-invasion/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.example.alieninvasion.AlienInvasionMod"
+		],
+		"client": [
+			"com.example.alieninvasion.AlienInvasionClient"
+		]
+	},
+	"mixins": [
+		"alien-invasion.mixins.json",
+		{
+			"config": "alien-invasion.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.17.2",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

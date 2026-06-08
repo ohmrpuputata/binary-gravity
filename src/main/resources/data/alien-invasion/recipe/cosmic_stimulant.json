@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    { "item": "alien-invasion:cosmic_ingot" },
+    { "item": "minecraft:glowstone_dust" },
+    { "item": "minecraft:sugar" },
+    { "item": "minecraft:glass_bottle" }
+  ],
+  "result": {
+    "id": "alien-invasion:cosmic_stimulant",
+    "count": 2
+  }
+}

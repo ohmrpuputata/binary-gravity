@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": {
+    "item": "alien-invasion:bio_vein_ore"
+  },
+  "result": {
+    "id": "alien-invasion:bio_fiber"
+  },
+  "experience": 0.6,
+  "cookingtime": 160
+}

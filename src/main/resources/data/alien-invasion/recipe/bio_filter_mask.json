@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CFC",
+    "BHB",
+    "CFC"
+  ],
+  "key": {
+    "C": {
+      "item": "alien-invasion:bio_fiber"
+    },
+    "F": {
+      "item": "minecraft:charcoal"
+    },
+    "B": {
+      "item": "minecraft:black_wool"
+    },
+    "H": {
+      "item": "alien-invasion:hazmat_helmet"
+    }
+  },
+  "result": {
+    "id": "alien-invasion:bio_filter_mask",
+    "count": 1
+  }
+}

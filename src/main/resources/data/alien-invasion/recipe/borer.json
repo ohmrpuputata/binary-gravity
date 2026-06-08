@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " A ",
+    "BCB",
+    " D "
+  ],
+  "key": {
+    "A": {
+      "item": "alien-invasion:bio_pickaxe"
+    },
+    "B": {
+      "item": "alien-invasion:alien_alloy"
+    },
+    "C": {
+      "item": "alien-invasion:alien_battery"
+    },
+    "D": {
+      "item": "minecraft:minecart"
+    }
+  },
+  "result": {
+    "id": "alien-invasion:borer",
+    "count": 1
+  }
+}

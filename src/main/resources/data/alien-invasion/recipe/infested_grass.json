@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RRR",
+    "RGR",
+    "RRR"
+  ],
+  "key": {
+    "R": { "item": "alien-invasion:alien_residue" },
+    "G": { "item": "minecraft:grass_block" }
+  },
+  "result": { "id": "alien-invasion:infested_grass", "count": 1 }
+}

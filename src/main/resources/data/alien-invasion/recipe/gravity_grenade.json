@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA",
+    "ABA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "alien-invasion:alien_alloy"
+    },
+    "B": {
+      "item": "alien-invasion:alien_battery"
+    }
+  },
+  "result": {
+    "id": "alien-invasion:gravity_grenade",
+    "count": 2
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "alien-invasion:block/dead_infested_crop"
+  }
+}

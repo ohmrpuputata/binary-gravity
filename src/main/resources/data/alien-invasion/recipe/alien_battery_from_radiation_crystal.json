@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ARA",
+    "RCR",
+    "ARA"
+  ],
+  "key": {
+    "A": { "item": "alien-invasion:alien_alloy" },
+    "R": { "item": "minecraft:redstone" },
+    "C": { "item": "alien-invasion:radiation_crystal" }
+  },
+  "result": { "id": "alien-invasion:alien_battery", "count": 2 }
+}

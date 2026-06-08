@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:sugar"
+    },
+    {
+      "item": "minecraft:leather"
+    },
+    {
+      "item": "alien-invasion:infested_flesh"
+    }
+  ],
+  "result": {
+    "id": "alien-invasion:herbal_salve",
+    "count": 1
+  }
+}

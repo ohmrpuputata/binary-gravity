@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "alien-invasion:block/cracked_alien_pipe"
+  }
+}

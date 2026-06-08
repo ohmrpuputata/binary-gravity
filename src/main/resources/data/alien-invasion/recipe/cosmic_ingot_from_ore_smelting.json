@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "alien-invasion:cosmic_ore"
+  },
+  "result": {
+    "id": "alien-invasion:cosmic_ingot"
+  },
+  "experience": 0.7,
+  "cookingtime": 200
+}

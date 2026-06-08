@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GCG",
+    "APA",
+    "IRI"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "C": {
+      "item": "alien-invasion:cosmic_shard"
+    },
+    "A": {
+      "item": "alien-invasion:alien_alloy"
+    },
+    "P": {
+      "item": "alien-invasion:purifier"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "id": "alien-invasion:purifier_station",
+    "count": 1
+  }
+}

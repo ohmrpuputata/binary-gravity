@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["AAA", "ACA", "AAA"],
+  "key": {
+    "A": { "item": "alien-invasion:alien_alloy" },
+    "C": { "item": "alien-invasion:hive_core" }
+  },
+  "result": { "id": "alien-invasion:purifier", "count": 1 }
+}

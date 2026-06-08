@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Alien Model Visualizer</title>
+    <style>
+        body {
+            margin: 0;
+            background: #1a1a1a;
+            color: white;
+            font-family: sans-serif;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        #controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        button {
+            background: #333;
+            color: white;
+            border: 1px solid #555;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin: 2px;
+        }
+
+        button:hover {
+            background: #555;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="controls">
+        <h3>Select Model</h3>
+        <button onclick="setModel('grunt')">Alien Grunt</button>
+        <button onclick="setModel('brute')">Alien Brute</button>
+        <button onclick="setModel('telekinetic')">Telekinetic Alien</button>
+        <button onclick="setModel('ufo')">UFO</button>
+        <br><br>
+        <button onclick="toggleAttack()" style="background:#500">Toggle Attack</button>
+        <p>Left Click: Rotate | Scroll: Zoom</p>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script>
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x1a1a1a);
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(5, 10, 7);
+        scene.add(light);
+        scene.add(new THREE.AmbientLight(0x404040));
+
+        let currentMesh = new THREE.Group();
+        scene.add(currentMesh);
+
+        camera.position.z = 5;
+        camera.position.y = 2;
+
+        function createBox(w, h, d, x, y, z, color) {
+            const geometry = new THREE.BoxGeometry(w / 16, h / 16, d / 16); // Scale 1/16 like Minecraft
+            const material = new THREE.MeshLambertMaterial({ color: color });
+            const cube = new THREE.Mesh(geometry, material);
+            cube.position.set(x / 16, y / 16, z / 16);
+            return cube;
+        }
+
+        let currentType = 'grunt';
+        let isAttacking = false;
+        let time = 0;
+
+        function setModel(type) {
+            currentType = type;
+            scene.remove(currentMesh);
+            currentMesh = new THREE.Group();
+
+            if (type === 'grunt') {
+                // Skull
+                currentMesh.add(createBox(8, 6, 8, 0, 27, 0, 0x668866));
+                currentMesh.add(createBox(7, 2, 8, 0, 25, 1, 0x446644)); // Jaw
+
+                // Spine
+                currentMesh.add(createBox(4, 12, 4, 0, 18, 0, 0x555555));
+                // Floating Ribs
+                currentMesh.add(createBox(10, 2, 1, 0, 22, -3, 0x664444));
+                currentMesh.add(createBox(10, 2, 1, 0, 20, -3, 0x664444));
+                currentMesh.add(createBox(8, 2, 1, 0, 18, -3, 0x664444));
+
+                // Shoulders
+                currentMesh.add(createBox(4, 4, 4, -6, 22, 0, 0x557755));
+                currentMesh.add(createBox(4, 4, 4, 6, 22, 0, 0x557755));
+                // Upper Arms
+                currentMesh.add(createBox(2, 6, 2, -6, 17, 0, 0x557755));
+                currentMesh.add(createBox(2, 6, 2, 6, 17, 0, 0x557755));
+                // Forearms
+                currentMesh.add(createBox(3, 8, 3, -6, 10, 0, 0x557755));
+                currentMesh.add(createBox(3, 8, 3, 6, 10, 0, 0x557755));
+                // Claws
+                for (let i = -1; i <= 1; i++) {
+                    currentMesh.add(createBox(0.5, 4, 0.5, -6 + i, 4, 0, 0x111111));
+                    currentMesh.add(createBox(0.5, 4, 0.5, 6 + i, 4, 0, 0x111111));
+                }
+
+                // Legs
+                currentMesh.add(createBox(4, 12, 4, -2, 6, 0, 0x334433));
+                currentMesh.add(createBox(4, 12, 4, 2, 6, 0, 0x334433));
+
+            } else if (type === 'brute') {
+                // Small Head
+                currentMesh.add(createBox(6, 6, 6, 0, 32, -4, 0x550000));
+
+                // CORE TORSO
+                currentMesh.add(createBox(12, 10, 8, 0, 25, 0, 0x333333));
+                // HUMP PLATES
+                currentMesh.add(createBox(8, 8, 8, -4, 28, 4, 0x442222));
+                currentMesh.add(createBox(8, 8, 8, 4, 29, 3, 0x442222));
+
+                // CHEST PLATE
+                currentMesh.add(createBox(10, 6, 4, 0, 26, -6, 0x553333));
+
+                // RIGHT ARM (MUTANT) - Group for animation
+                const rightArmGroup = new THREE.Group();
+                rightArmGroup.name = "right_arm";
+                rightArmGroup.position.set(-9 / 16, 30 / 16, 0 / 16); // Pivot point
+
+                rightArmGroup.add(createBox(6, 8, 6, 0, 0, 0, 0x552222)); // Shoulder relative to pivot
+                rightArmGroup.add(createBox(8, 10, 8, 0, -9, 0, 0x663333)); // Bicep
+                rightArmGroup.add(createBox(6, 12, 6, -1, -20, 2, 0x663333)); // Forearm
+                rightArmGroup.add(createBox(8, 6, 8, -1, -27, 0, 0x331111)); // Fist
+                currentMesh.add(rightArmGroup);
+
+                // LEFT ARM (NORMALish)
+                currentMesh.add(createBox(4, 14, 4, 7, 23, 0, 0x444444));
+                currentMesh.add(createBox(1, 4, 1, 8, 25, 2, 0x999999)); // Spike
+
+                // LEGS (Digitigrade)
+                currentMesh.add(createBox(6, 8, 6, -4, 8, -2, 0x222222)); // Thigh
+                currentMesh.add(createBox(5, 8, 5, -4, 4, 2, 0x111111)); // Shin
+
+                currentMesh.add(createBox(6, 8, 6, 4, 8, -2, 0x222222)); // Thigh
+                currentMesh.add(createBox(5, 8, 5, 4, 4, 2, 0x111111)); // Shin
+
+            } else if (type === 'telekinetic') {
+                // VOID ARCHON
+                const coreColor = 0xaa00aa;
+                const shardColor = 0x440066;
+
+                // Head Group
+                const headGroup = new THREE.Group();
+                headGroup.name = "head";
+                headGroup.add(createBox(4, 4, 4, 0, 0, 0, coreColor));
+                headGroup.position.set(0 / 16, 30 / 16, 0 / 16);
+                currentMesh.add(headGroup);
+
+                // Shards Group
+                const shardsGroup = new THREE.Group();
+                shardsGroup.name = "shards";
+                shardsGroup.position.set(0 / 16, 25 / 16, 0 / 16);
+
+                shardsGroup.add(createBox(2, 6, 2, -5, 0, 0, shardColor));
+                shardsGroup.add(createBox(3, 3, 3, 5, 3, 3, shardColor));
+                shardsGroup.add(createBox(2, 2, 8, 0, 9, -4, shardColor));
+                shardsGroup.add(createBox(5, 1, 5, -3, -5, 4, shardColor));
+                currentMesh.add(shardsGroup);
+
+                // Body Core (Obelisk)
+                currentMesh.add(createBox(6, 16, 6, 0, 15, 0, 0x220033));
+
+                // Arms Group
+                const armGroup = new THREE.Group();
+                armGroup.name = "arms";
+                armGroup.position.set(0 / 16, 20 / 16, 0 / 16);
+                // Debris Arms
+                for (let i = 0; i < 5; i++) {
+                    let y = -i * 3;
+                    armGroup.add(createBox(2, 2, 2, -6 - Math.sin(i) * 2, y, 0, shardColor));
+                    armGroup.add(createBox(2, 2, 2, 6 + Math.sin(i) * 2, y, 0, shardColor));
+                }
+                currentMesh.add(armGroup);
+
+                // Debris Legs
+                for (let i = 0; i < 4; i++) {
+                    let y = 8 - i * 2;
+                    currentMesh.add(createBox(2, 2, 2, -2, y, 0, shardColor));
+                    currentMesh.add(createBox(2, 2, 2, 2, y, 0, shardColor));
+                }
+
+            } else if (type === 'ufo') {
+                // CELESTIAL ENGINE
+                const metalColor = 0x888899;
+                const glowColor = 0x00ffaa;
+                const darkMetal = 0x444455;
+
+                // Core Pulsar
+                const core = createBox(8, 8, 8, 0, 20, 0, glowColor);
+                core.name = "core";
+                currentMesh.add(core);
+                currentMesh.add(createBox(6, 16, 6, 0, 20, 0, glowColor)); // Second part of pulsar
+
+                // Inner Ring (Spikes)
+                const innerRingGroup = new THREE.Group();
+                innerRingGroup.name = "inner_ring";
+                innerRingGroup.position.set(0 / 16, 20 / 16, 0 / 16);
+                for (let i = 0; i < 8; i++) {
+                    const angle = (i / 8) * Math.PI * 2;
+                    const x = Math.cos(angle) * 8;
+                    const z = Math.sin(angle) * 8;
+                    innerRingGroup.add(createBox(2, 1, 6, x, 0, z, darkMetal)); // Radial spikes
+                }
+                currentMesh.add(innerRingGroup);
+
+                // Mid Ring
+                currentMesh.add(createBox(20, 4, 20, 0, 20, 0, metalColor));
+                // Thrusters on mid ring
+                currentMesh.add(createBox(4, 4, 4, 10, 20, 0, darkMetal));
+                currentMesh.add(createBox(4, 4, 4, -10, 20, 0, darkMetal));
+                currentMesh.add(createBox(4, 4, 4, 0, 20, 10, darkMetal));
+                currentMesh.add(createBox(4, 4, 4, 0, 20, -10, darkMetal));
+
+                // Outer Ring
+                currentMesh.add(createBox(28, 2, 28, 0, 20, 0, 0x666677));
+            }
+            scene.add(currentMesh);
+        }
+
+        setModel('grunt');
+
+        function toggleAttack() {
+            isAttacking = !isAttacking;
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            time += 0.05;
+
+            if (currentMesh) {
+                // Rotation inspection
+                // currentMesh.rotation.y += 0.005;
+
+                if (currentType === 'brute') {
+                    const rightArm = currentMesh.getObjectByName("right_arm");
+                    if (rightArm) {
+                        if (isAttacking) {
+                            // Smash Animation
+                            const swing = Math.sin(time * 0.5); // Slow swing
+                            if (swing > 0.5) {
+                                rightArm.rotation.x = -2.0; // Raise
+                            } else {
+                                rightArm.rotation.x = 1.0; // Smash
+                            }
+                        } else {
+                            // Idle/Walk
+                            rightArm.rotation.x = Math.sin(time) * 0.2;
+                        }
+                    }
+                } else if (currentType === 'grunt') {
+                    // Simple arm finding (since we didn't name them in grunt, let's just rotate whole body for now or recreate group)
+                    // Actually let's assume specific children indices or just wobble head
+                    // Ideally we'd name them in setModel(grunt) but to save edits let's just shake body
+                    if (isAttacking) {
+                        // Rapid shaking/lunging
+                        currentMesh.rotation.x = 0.5 + Math.sin(time * 2) * 0.2; // Lunge forward
+                        currentMesh.position.z = Math.sin(time * 3) * 1;
+                    } else {
+                        currentMesh.rotation.x = 0.2; // Normal hunch
+                        currentMesh.position.z = 0;
+                    }
+
+                } else if (currentType === 'telekinetic') {
+                    const shards = currentMesh.getObjectByName("shards");
+                    const arms = currentMesh.getObjectByName("arms");
+
+                    if (shards) {
+                        shards.rotation.y = time * (isAttacking ? 0.2 : 0.05);
+                        shards.position.y = 25 / 16 + Math.sin(time) * 2 / 16;
+                    }
+                    if (arms) {
+                        if (isAttacking) {
+                            // Casting pose
+                            arms.rotation.z = Math.sin(time) * 0.1;
+                            arms.position.y = 25 / 16; // Lift up
+                        } else {
+                            // Idle
+                            arms.position.y = 20 / 16;
+                        }
+                    }
+                } else if (currentType === 'ufo') {
+                    const core = currentMesh.getObjectByName("core");
+                    const innerRing = currentMesh.getObjectByName("inner_ring");
+                    if (core) {
+                        core.scale.setScalar(1 + Math.sin(time * 2) * 0.1 * (isAttacking ? 2 : 1));
+                        if (isAttacking) {
+                            core.rotation.x += 0.1;
+                            core.rotation.y += 0.2;
+                        }
+                    }
+                    if (innerRing) {
+                        innerRing.rotation.y += 0.02 * (isAttacking ? 5 : 1); // Spin faster
+                        if (isAttacking) innerRing.rotation.x = Math.sin(time * 2) * 0.2; // Wobble
+                    }
+                }
+            }
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+
+</html>

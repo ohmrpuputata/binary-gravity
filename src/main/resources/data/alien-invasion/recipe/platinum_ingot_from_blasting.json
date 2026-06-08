@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": {
+    "item": "alien-invasion:raw_platinum"
+  },
+  "result": {
+    "id": "alien-invasion:platinum_ingot"
+  },
+  "experience": 0.7,
+  "cookingtime": 200
+}

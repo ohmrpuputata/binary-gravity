@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": {
+    "item": "alien-invasion:xenocrystal_ore"
+  },
+  "result": {
+    "id": "alien-invasion:xenocrystal"
+  },
+  "experience": 0.9,
+  "cookingtime": 180
+}

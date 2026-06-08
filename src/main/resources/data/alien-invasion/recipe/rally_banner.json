@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["CHC", "AAA", " S "],
+  "key": {
+    "C": { "item": "alien-invasion:cosmic_shard" },
+    "H": { "item": "alien-invasion:hive_core" },
+    "A": { "item": "alien-invasion:alien_alloy" },
+    "S": { "item": "minecraft:stick" }
+  },
+  "result": { "id": "alien-invasion:rally_banner", "count": 1 }
+}

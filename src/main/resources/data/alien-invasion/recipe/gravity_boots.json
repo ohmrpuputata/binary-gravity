@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "B B",
+    "N N"
+  ],
+  "key": {
+    "B": {
+      "item": "alien-invasion:alien_battery"
+    },
+    "N": {
+      "item": "alien-invasion:nibirium_ingot"
+    }
+  },
+  "result": {
+    "id": "alien-invasion:gravity_boots",
+    "count": 1
+  }
+}

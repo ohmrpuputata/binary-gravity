@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PXP",
+    "XPX",
+    "PXP"
+  ],
+  "key": {
+    "P": {
+      "item": "alien-invasion:platinum_ingot"
+    },
+    "X": {
+      "item": "alien-invasion:palladium_ingot"
+    }
+  },
+  "result": {
+    "id": "alien-invasion:nibirium_ingot",
+    "count": 2
+  }
+}

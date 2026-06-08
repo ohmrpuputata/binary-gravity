@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BGB",
+    "ICI",
+    "BIB"
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "C": {
+      "item": "alien-invasion:cosmic_shard"
+    }
+  },
+  "result": {
+    "id": "alien-invasion:ore_washer",
+    "count": 1
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["ADA", "IRI", " I "],
+  "key": {
+    "A": { "item": "alien-invasion:alien_alloy" },
+    "D": { "item": "minecraft:diamond" },
+    "I": { "item": "minecraft:iron_ingot" },
+    "R": { "item": "minecraft:redstone_block" }
+  },
+  "result": { "id": "alien-invasion:gravity_gun", "count": 1 }
+}

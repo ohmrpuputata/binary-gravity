@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IRI",
+    "RCR",
+    "IBI"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "C": {
+      "item": "alien-invasion:uranium_dust"
+    },
+    "B": {
+      "item": "alien-invasion:alien_battery"
+    }
+  },
+  "result": {
+    "id": "alien-invasion:geiger_counter",
+    "count": 1
+  }
+}

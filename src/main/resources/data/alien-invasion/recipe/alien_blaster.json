@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA",
+    "S B",
+    "  B"
+  ],
+  "key": {
+    "A": { "item": "alien-invasion:alien_alloy" },
+    "S": { "item": "alien-invasion:cosmic_shard" },
+    "B": { "item": "alien-invasion:alien_battery" }
+  },
+  "result": { "id": "alien-invasion:alien_blaster", "count": 1 }
+}

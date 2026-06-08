@@ -1,0 +1,243 @@
+package com.example.alieninvasion.logic;
+
+import com.example.alieninvasion.registry.ItemRegistry;
+import com.example.alieninvasion.registry.ModBlocks;
+import com.example.alieninvasion.registry.ModEffects;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
+/**
+ * Dose-based radiation survival mechanic.
+ *
+ * Instead of a binary "near a source -> get the effect" toggle, every player
+ * carries an accumulating dose (rads). Standing in a uranium pocket, beside a
+ * radiation crystal cluster, in toxic water, or out in a radioactive storm makes
+ * the dose climb; getting clear lets the body slowly recover. The dose maps onto
+ * escalating tiers of the RADIATION effect, so lingering is punished and a quick
+ * dash past a source is survivable.
+ *
+ * Mitigation:
+ *  - Full hazmat suit or a borer with a Toxic Seal module: blocks intake entirely.
+ *  - Bio-filter mask (head slot): halves intake.
+ *  - Rad pills / portable purifier: actively flush accumulated dose.
+ *
+ * Dose is kept in a static map (like the mod's other per-player session state); it
+ * naturally clears over time and on death, so it is not persisted to disk.
+ */
+public final class RadiationManager {
+    private RadiationManager() {
+    }
+
+    public static final float MAX_DOSE = 100.0F;
+    private static final float LIGHT = 15.0F;   // tier 0 (amplifier 0)
+    private static final float HEAVY = 45.0F;   // tier 1
+    private static final float SEVERE = 80.0F;  // tier 2
+    private static final float GAIN = 0.45F;    // dose per intensity unit per second
+    private static final float DECAY = 1.6F;    // natural recovery per second when clear
+
+    private static final Map<UUID, Float> DOSE = new ConcurrentHashMap<>();
+
+    // Radioactive storm: a world-wide fallout event (lifecycle ticked from ModEvents).
+    private static int stormTicks = 0;
+
+    public static float getDose(UUID id) {
+        return DOSE.getOrDefault(id, 0.0F);
+    }
+
+    public static float getDose(Player player) {
+        return getDose(player.getUUID());
+    }
+
+    private static void setDose(UUID id, float dose) {
+        dose = Math.max(0.0F, Math.min(MAX_DOSE, dose));
+        if (dose <= 0.01F) {
+            DOSE.remove(id);
+        } else {
+            DOSE.put(id, dose);
+        }
+    }
+
+    /** Flush accumulated dose (rad pills, purifier, cures). */
+    public static void reduceDose(Player player, float amount) {
+        setDose(player.getUUID(), getDose(player) - amount);
+    }
+
+    public static void clearDose(Player player) {
+        DOSE.remove(player.getUUID());
+    }
+
+    public static boolean isStormActive() {
+        return stormTicks > 0;
+    }
+
+    /** Numeric "field" reading for the Geiger counter (weighted block scan). */
+    public static int scanField(Level level, BlockPos center) {
+        int danger = 0;
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        for (int x = -8; x <= 8; x++) {
+            for (int y = -5; y <= 5; y++) {
+                for (int z = -8; z <= 8; z++) {
+                    cursor.set(center.getX() + x, center.getY() + y, center.getZ() + z);
+                    danger += sourceWeight(level.getBlockState(cursor));
+                }
+            }
+        }
+        if (isStormActive() && level.canSeeSky(center)) {
+            danger += 6;
+        }
+        return Math.min(99, danger);
+    }
+
+    private static int sourceWeight(BlockState state) {
+        if (state.is(ModBlocks.DARK_MATTER_ORE) || state.is(ModBlocks.RADIATION_CRYSTAL_CLUSTER)) {
+            return 5;
+        }
+        if (state.is(ModBlocks.URANIUM_ORE) || state.is(ModBlocks.DEEPSLATE_URANIUM_ORE)
+                || state.is(ModBlocks.PLASMA_ORE) || state.is(ModBlocks.COSMIC_ORE)
+                || state.is(ModBlocks.COSMIC_CRYSTAL)) {
+            return 3;
+        }
+        if (state.is(ModBlocks.TOXIC_WATER) || state.is(ModBlocks.TOXIC_BARREL)
+                || state.is(ModBlocks.INFESTED_STONE) || state.is(ModBlocks.ALIEN_RESIDUE)) {
+            return 1;
+        }
+        return 0;
+    }
+
+    // Distance-attenuated exposure used to drive dose: closer/denser = faster climb.
+    private static float scanExposure(Level level, BlockPos center) {
+        float exposure = 0.0F;
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        for (int x = -4; x <= 4; x++) {
+            for (int y = -3; y <= 3; y++) {
+                for (int z = -4; z <= 4; z++) {
+                    int w = sourceWeight(level.getBlockState(cursor.set(
+                            center.getX() + x, center.getY() + y, center.getZ() + z)));
+                    if (w == 0) continue;
+                    int distSq = x * x + y * y + z * z;
+                    float falloff = distSq <= 4 ? 1.0F : distSq <= 16 ? 0.5F : 0.25F;
+                    exposure += w * falloff;
+                }
+            }
+        }
+        if (isStormActive() && level.canSeeSky(center)) {
+            exposure += 4.0F; // fallout from open sky during the storm
+        }
+        return Math.min(12.0F, exposure);
+    }
+
+    public static boolean hasFullHazmat(Player player) {
+        return player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.HAZMAT_HELMET)
+                && player.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.HAZMAT_CHESTPLATE)
+                && player.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.HAZMAT_LEGGINGS)
+                && player.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.HAZMAT_BOOTS);
+    }
+
+    /** Full light-hazmat set: shields LIGHT radiation + corrupted-ground infection. */
+    public static boolean hasFullLightHazmat(Player player) {
+        return player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.LIGHT_HAZMAT_HELMET)
+                && player.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.LIGHT_HAZMAT_CHESTPLATE)
+                && player.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.LIGHT_HAZMAT_LEGGINGS)
+                && player.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.LIGHT_HAZMAT_BOOTS);
+    }
+
+    private static boolean borerSealed(Player player) {
+        if (!(player.getVehicle() instanceof com.example.alieninvasion.entity.BorerVehicleEntity)) {
+            return false;
+        }
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            if (player.getInventory().getItem(i).is(ItemRegistry.TOXIC_SEAL_MODULE)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Per-second player update. Call once a second (e.g. tickCount % 20 == 0). */
+    public static void tickPlayer(ServerLevel level, ServerPlayer player) {
+        if (player.isCreative() || player.isSpectator()) {
+            clearDose(player);
+            player.removeEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.RADIATION));
+            return;
+        }
+
+        boolean sealed = hasFullHazmat(player) || borerSealed(player);
+        boolean masked = player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.BIO_FILTER_MASK);
+        float exposure = sealed ? 0.0F : scanExposure(level, player.blockPosition());
+        if (masked) {
+            exposure *= 0.5F;
+        }
+
+        float dose = getDose(player);
+        if (exposure > 0.0F) {
+            dose += exposure * GAIN;
+        } else {
+            dose -= DECAY;
+        }
+        setDose(player.getUUID(), dose);
+        dose = getDose(player);
+
+        // Map dose -> escalating RADIATION tiers. Short refresh duration means the
+        // effect lapses on its own ~3s after the player gets clear. We only APPLY
+        // here (never hard-remove) so direct hits from contaminated food / crystals /
+        // toxic water aren't wiped a tick later; rad pills handle active curing.
+        var holder = BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.RADIATION);
+        if (dose >= SEVERE) {
+            player.addEffect(new MobEffectInstance(holder, 60, 2, false, true));
+        } else if (dose >= HEAVY) {
+            player.addEffect(new MobEffectInstance(holder, 60, 1, false, true));
+        } else if (dose >= LIGHT) {
+            player.addEffect(new MobEffectInstance(holder, 60, 0, false, true));
+        }
+
+        // Feedback: a readout + Geiger clicks only while it actually matters.
+        if (exposure > 0.0F || dose >= LIGHT) {
+            String color = dose >= SEVERE ? "§4" : dose >= HEAVY ? "§c" : dose >= LIGHT ? "§e" : "§a";
+            player.displayClientMessage(Component.literal(
+                    color + "☢ Доза облучения: " + (int) dose + " рад" + (sealed ? " §7(защита)" : "")), true);
+            if (exposure > 0.0F && level.random.nextFloat() < Math.min(0.8F, 0.1F + exposure * 0.06F)) {
+                level.playSound(null, player.blockPosition(), SoundEvents.STONE_BUTTON_CLICK_ON,
+                        SoundSource.PLAYERS, 0.25F, 1.7F + level.random.nextFloat() * 0.6F);
+            }
+        }
+    }
+
+    /** World-tick lifecycle for the radioactive-storm event. */
+    public static void tickStorm(ServerLevel level) {
+        if (stormTicks > 0) {
+            stormTicks--;
+            if (stormTicks == 0) {
+                for (ServerPlayer p : level.players()) {
+                    p.displayClientMessage(Component.literal("§a[!] Радиоактивная буря утихла."), false);
+                }
+            }
+            return;
+        }
+        // Day 5+, late at night, rare: a fallout storm sweeps the surface.
+        if (level.isNight() && level.getGameTime() % 24000 == 15000
+                && SurvivalManager.getDay(level) >= 5 && level.random.nextFloat() < 0.18F
+                && !level.players().isEmpty()) {
+            stormTicks = 3000; // ~2.5 minutes
+            for (ServerPlayer p : level.players()) {
+                p.displayClientMessage(Component.literal(
+                        "§4[!] РАДИОАКТИВНАЯ БУРЯ! Найдите укрытие или наденьте костюм химзащиты."), false);
+                level.playSound(null, p.blockPosition(), SoundEvents.LIGHTNING_BOLT_THUNDER,
+                        SoundSource.AMBIENT, 1.0F, 0.45F);
+            }
+        }
+    }
+}

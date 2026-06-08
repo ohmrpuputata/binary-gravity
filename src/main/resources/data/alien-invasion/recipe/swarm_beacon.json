@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "CHC",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "alien-invasion:cosmic_block"
+    },
+    "H": {
+      "item": "alien-invasion:hive_core"
+    }
+  },
+  "result": {
+    "id": "alien-invasion:swarm_beacon",
+    "count": 1
+  }
+}

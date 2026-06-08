@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PBP",
+    "ACA",
+    "I I"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "B": {
+      "item": "minecraft:book"
+    },
+    "A": {
+      "item": "alien-invasion:alien_alloy"
+    },
+    "C": {
+      "item": "alien-invasion:cosmic_credit"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "id": "alien-invasion:blueprint_table",
+    "count": 1
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RRR",
+    "RLR",
+    "RRR"
+  ],
+  "key": {
+    "R": { "item": "alien-invasion:alien_residue" },
+    "L": { "tag": "minecraft:leaves" }
+  },
+  "result": { "id": "alien-invasion:infested_leaves", "count": 1 }
+}

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " A ",
+    "SRS",
+    " A "
+  ],
+  "key": {
+    "A": { "item": "alien-invasion:alien_alloy" },
+    "S": { "item": "alien-invasion:cosmic_shard" },
+    "R": { "item": "minecraft:redstone" }
+  },
+  "result": { "id": "alien-invasion:invasion_tracker", "count": 1 }
+}

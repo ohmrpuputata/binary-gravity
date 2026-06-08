@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "M",
+    "R",
+    "R"
+  ],
+  "key": {
+    "M": {
+      "item": "alien-invasion:plasma_core"
+    },
+    "R": {
+      "item": "alien-invasion:uranium_rod"
+    }
+  },
+  "result": {
+    "id": "alien-invasion:plasma_shovel",
+    "count": 1
+  }
+}

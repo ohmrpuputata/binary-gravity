@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA",
+    "RBR",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "alien-invasion:alien_alloy"
+    },
+    "B": {
+      "item": "alien-invasion:alien_battery"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "id": "alien-invasion:plasma_turret",
+    "count": 1
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["AAA", " D ", " D "],
+  "key": {
+    "A": { "item": "alien-invasion:alien_alloy" },
+    "D": { "item": "minecraft:diamond" }
+  },
+  "result": { "id": "alien-invasion:bio_pickaxe", "count": 1 }
+}

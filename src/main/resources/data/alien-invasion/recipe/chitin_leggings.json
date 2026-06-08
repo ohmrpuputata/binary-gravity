@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["AFA", "A A", "A A"],
+  "key": {
+    "A": { "item": "alien-invasion:alien_alloy" },
+    "F": { "item": "alien-invasion:infested_flesh" }
+  },
+  "result": { "id": "alien-invasion:chitin_leggings", "count": 1 }
+}

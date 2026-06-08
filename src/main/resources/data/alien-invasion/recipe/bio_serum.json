@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " C ",
+    " F ",
+    " B "
+  ],
+  "key": {
+    "C": {
+      "item": "alien-invasion:cosmic_shard"
+    },
+    "F": {
+      "item": "alien-invasion:infested_flesh"
+    },
+    "B": {
+      "item": "minecraft:glass_bottle"
+    }
+  },
+  "result": {
+    "id": "alien-invasion:bio_serum",
+    "count": 1
+  }
+}

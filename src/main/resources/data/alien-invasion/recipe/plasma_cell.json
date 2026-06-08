@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    { "item": "alien-invasion:alien_alloy" },
+    { "item": "minecraft:redstone" },
+    { "item": "minecraft:gunpowder" }
+  ],
+  "result": { "id": "alien-invasion:plasma_cell", "count": 3 }
+}
