@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": {"item": "alien-invasion:nibirium_smithing_template"},
+  "base": {"item": "alien-invasion:alien_hazmat_leggings"},
+  "addition": {"item": "alien-invasion:nibirium_ingot"},
+  "result": {"id": "alien-invasion:alien_chem_leggings"}
+}

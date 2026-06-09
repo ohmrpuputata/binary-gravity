@@ -20,6 +20,8 @@ import com.example.alieninvasion.item.ModToolTiers;
 import com.example.alieninvasion.item.AlienBlasterItem;
 import com.example.alieninvasion.item.GravityBootsItem;
 import com.example.alieninvasion.item.InvasionTrackerItem;
+import com.example.alieninvasion.item.AlienHazmatArmorMaterial;
+import com.example.alieninvasion.item.AlienChemArmorMaterial;
 
 public class ItemRegistry {
 
@@ -202,6 +204,100 @@ public class ItemRegistry {
     public static final Item NIBIRIUM_INGOT = registerItem("nibirium_ingot",
             new Item(new Item.Properties().rarity(Rarity.RARE).fireResistant()));
     public static final Item ALIEN_SKIN = registerItem("alien_skin", new Item(new Item.Properties()));
+
+    // Platinum tools — iron speed, diamond durability
+    public static final Item PLATINUM_SWORD = registerItem("platinum_sword",
+            new SwordItem(ModToolTiers.PLATINUM,
+                    new Item.Properties().attributes(SwordItem.createAttributes(ModToolTiers.PLATINUM, 3, -2.4F))));
+    public static final Item PLATINUM_PICKAXE = registerItem("platinum_pickaxe",
+            new PickaxeItem(ModToolTiers.PLATINUM,
+                    new Item.Properties().attributes(PickaxeItem.createAttributes(ModToolTiers.PLATINUM, 1.0F, -2.8F))));
+    public static final Item PLATINUM_AXE = registerItem("platinum_axe",
+            new AxeItem(ModToolTiers.PLATINUM,
+                    new Item.Properties().attributes(AxeItem.createAttributes(ModToolTiers.PLATINUM, 5.0F, -3.0F))));
+    public static final Item PLATINUM_SHOVEL = registerItem("platinum_shovel",
+            new ShovelItem(ModToolTiers.PLATINUM,
+                    new Item.Properties().attributes(ShovelItem.createAttributes(ModToolTiers.PLATINUM, 1.5F, -3.0F))));
+    public static final Item PLATINUM_HOE = registerItem("platinum_hoe",
+            new HoeItem(ModToolTiers.PLATINUM,
+                    new Item.Properties().attributes(HoeItem.createAttributes(ModToolTiers.PLATINUM, -2.0F, 0.0F))));
+
+    // Palladium tools — diamond speed, iron durability
+    public static final Item PALLADIUM_SWORD = registerItem("palladium_sword",
+            new SwordItem(ModToolTiers.PALLADIUM,
+                    new Item.Properties().attributes(SwordItem.createAttributes(ModToolTiers.PALLADIUM, 4, -2.35F))));
+    public static final Item PALLADIUM_PICKAXE = registerItem("palladium_pickaxe",
+            new PickaxeItem(ModToolTiers.PALLADIUM,
+                    new Item.Properties().attributes(PickaxeItem.createAttributes(ModToolTiers.PALLADIUM, 1.5F, -2.7F))));
+    public static final Item PALLADIUM_AXE = registerItem("palladium_axe",
+            new AxeItem(ModToolTiers.PALLADIUM,
+                    new Item.Properties().attributes(AxeItem.createAttributes(ModToolTiers.PALLADIUM, 5.0F, -3.0F))));
+    public static final Item PALLADIUM_SHOVEL = registerItem("palladium_shovel",
+            new ShovelItem(ModToolTiers.PALLADIUM,
+                    new Item.Properties().attributes(ShovelItem.createAttributes(ModToolTiers.PALLADIUM, 1.5F, -3.0F))));
+    public static final Item PALLADIUM_HOE = registerItem("palladium_hoe",
+            new HoeItem(ModToolTiers.PALLADIUM,
+                    new Item.Properties().attributes(HoeItem.createAttributes(ModToolTiers.PALLADIUM, -3.0F, 0.0F))));
+
+    // Nibirium smithing upgrade template
+    public static final Item NIBIRIUM_SMITHING_TEMPLATE = registerItem("nibirium_smithing_template",
+            new net.minecraft.world.item.SmithingTemplateItem(
+                    net.minecraft.network.chat.Component.translatable("upgrade.alien-invasion.nibirium.applies_to"),
+                    net.minecraft.network.chat.Component.translatable("upgrade.alien-invasion.nibirium.ingredients"),
+                    net.minecraft.network.chat.Component.translatable("upgrade.alien-invasion.nibirium"),
+                    net.minecraft.network.chat.Component.translatable("upgrade.alien-invasion.nibirium.base_slot_description"),
+                    net.minecraft.network.chat.Component.translatable("upgrade.alien-invasion.nibirium.additions_slot_description"),
+                    java.util.List.of(
+                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_sword"),
+                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_pickaxe"),
+                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_axe"),
+                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_shovel"),
+                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_hoe"),
+                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_helmet"),
+                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_chestplate"),
+                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_leggings"),
+                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_boots")
+                    ),
+                    java.util.List.of(
+                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_ingot")
+                    )
+            ));
+
+    // Химзащита armor — early-game alien-skin suit (leather-level protection)
+    public static final Item ALIEN_HAZMAT_HELMET = registerItem("alien_hazmat_helmet",
+            new net.minecraft.world.item.ArmorItem(AlienHazmatArmorMaterial.ALIEN_HAZMAT,
+                    net.minecraft.world.item.ArmorItem.Type.HELMET,
+                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.HELMET.getDurability(AlienHazmatArmorMaterial.BASE_DURABILITY))));
+    public static final Item ALIEN_HAZMAT_CHESTPLATE = registerItem("alien_hazmat_chestplate",
+            new net.minecraft.world.item.ArmorItem(AlienHazmatArmorMaterial.ALIEN_HAZMAT,
+                    net.minecraft.world.item.ArmorItem.Type.CHESTPLATE,
+                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.CHESTPLATE.getDurability(AlienHazmatArmorMaterial.BASE_DURABILITY))));
+    public static final Item ALIEN_HAZMAT_LEGGINGS = registerItem("alien_hazmat_leggings",
+            new net.minecraft.world.item.ArmorItem(AlienHazmatArmorMaterial.ALIEN_HAZMAT,
+                    net.minecraft.world.item.ArmorItem.Type.LEGGINGS,
+                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.LEGGINGS.getDurability(AlienHazmatArmorMaterial.BASE_DURABILITY))));
+    public static final Item ALIEN_HAZMAT_BOOTS = registerItem("alien_hazmat_boots",
+            new net.minecraft.world.item.ArmorItem(AlienHazmatArmorMaterial.ALIEN_HAZMAT,
+                    net.minecraft.world.item.ArmorItem.Type.BOOTS,
+                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.BOOTS.getDurability(AlienHazmatArmorMaterial.BASE_DURABILITY))));
+
+    // Химдоспех armor — mid-game nibirium suit (iron-level protection), smithing upgrade from Химзащита
+    public static final Item ALIEN_CHEM_HELMET = registerItem("alien_chem_helmet",
+            new net.minecraft.world.item.ArmorItem(AlienChemArmorMaterial.ALIEN_CHEM,
+                    net.minecraft.world.item.ArmorItem.Type.HELMET,
+                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.HELMET.getDurability(AlienChemArmorMaterial.BASE_DURABILITY))));
+    public static final Item ALIEN_CHEM_CHESTPLATE = registerItem("alien_chem_chestplate",
+            new net.minecraft.world.item.ArmorItem(AlienChemArmorMaterial.ALIEN_CHEM,
+                    net.minecraft.world.item.ArmorItem.Type.CHESTPLATE,
+                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.CHESTPLATE.getDurability(AlienChemArmorMaterial.BASE_DURABILITY))));
+    public static final Item ALIEN_CHEM_LEGGINGS = registerItem("alien_chem_leggings",
+            new net.minecraft.world.item.ArmorItem(AlienChemArmorMaterial.ALIEN_CHEM,
+                    net.minecraft.world.item.ArmorItem.Type.LEGGINGS,
+                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.LEGGINGS.getDurability(AlienChemArmorMaterial.BASE_DURABILITY))));
+    public static final Item ALIEN_CHEM_BOOTS = registerItem("alien_chem_boots",
+            new net.minecraft.world.item.ArmorItem(AlienChemArmorMaterial.ALIEN_CHEM,
+                    net.minecraft.world.item.ArmorItem.Type.BOOTS,
+                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.BOOTS.getDurability(AlienChemArmorMaterial.BASE_DURABILITY))));
 
     // Nibirium tools — netherite-grade. Pickaxe & shovel break 3x3 (ModEvents).
     public static final Item NIBIRIUM_SWORD = registerItem("nibirium_sword",

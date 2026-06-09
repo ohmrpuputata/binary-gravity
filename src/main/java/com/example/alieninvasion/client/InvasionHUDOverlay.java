@@ -83,8 +83,10 @@ public class InvasionHUDOverlay implements HudRenderCallback {
             guiGraphics.fill(0, thickness, thickness, rh - thickness, color);
             guiGraphics.fill(rw - thickness, thickness, rw, rh - thickness, color);
 
-            // Помехи-полосы при высокой радиации
-            if (radAmplifier >= 1) {
+            // Помехи-полосы при активном screen_glitch флаге
+            boolean glitch = com.example.alieninvasion.logic.RadiationManager.SCREEN_GLITCH
+                    .getOrDefault(mc.player.getUUID(), false);
+            if (glitch) {
                 java.util.Random flickerRng = new java.util.Random(ticks / 3);
                 for (int i = 0; i < 2 + radAmplifier; i++) {
                     int barY = flickerRng.nextInt(rh);
@@ -99,6 +101,17 @@ public class InvasionHUDOverlay implements HudRenderCallback {
             int textAlpha = (int) (pulse * 255);
             int textColor = (textAlpha << 24) | 0xB8E600;
             guiGraphics.drawString(mc.font, radText, 5, rh - 15, textColor, true);
+        }
+
+        // Screen darkening at infection >= 75%
+        float infDark = (float) com.example.alieninvasion.logic.InfectionManager.getMeter(mc.player);
+        if (infDark >= 75.0F) {
+            int darkAlpha = (int) ((infDark - 75.0F) / 25.0F * 180);
+            darkAlpha = Math.min(180, darkAlpha);
+            int darkColor = (darkAlpha << 24);
+            int dw = mc.getWindow().getGuiScaledWidth();
+            int dh = mc.getWindow().getGuiScaledHeight();
+            guiGraphics.fill(0, 0, dw, dh, darkColor);
         }
 
         // Heavy-bleed red vignette: you're badly hurt and leaving a blood trail.

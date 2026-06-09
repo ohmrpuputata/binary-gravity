@@ -32,12 +32,8 @@ public final class InfectionManager {
     }
 
     public static final float MAX = 100.0F;
-    private static final float INCUBATE = 25.0F;  // INFECTION amplifier 0
-    private static final float SICK = 60.0F;      // amplifier 1
-    private static final float SEVERE = 90.0F;    // amplifier 2
-    private static final int GRACE_SECONDS = 2;   // must stand this long before it climbs
-    private static final float GAIN = 8.0F;       // meter per second while standing (post-grace)
-    private static final float DECAY = 0.6F;      // slow natural recovery per second off corrupted ground
+    private static final int GRACE_SECONDS = 2;
+    private static final float GAIN = 8.0F;  // meter per second while standing (post-grace)
 
     private static final Map<UUID, Float> METER = new ConcurrentHashMap<>();
     private static final Map<UUID, Integer> STAND = new ConcurrentHashMap<>();
@@ -61,6 +57,10 @@ public final class InfectionManager {
 
     public static void reduceMeter(Player player, float amount) {
         setMeter(player.getUUID(), getMeter(player) - amount);
+    }
+
+    public static void addMeter(Player player, float amount) {
+        setMeter(player.getUUID(), getMeter(player) + amount);
     }
 
     public static void clear(Player player) {
@@ -99,24 +99,30 @@ public final class InfectionManager {
             }
         } else {
             STAND.remove(id);
-            meter -= DECAY;
+            // No natural decay — infection only clears through medicine
         }
         setMeter(id, meter);
         meter = getMeter(id);
 
-        // Apply-only escalation (never hard-remove, so direct infections from the
-        // Bio-Blade / parasites / infected mobs aren't wiped a tick later).
-        var holder = BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.INFECTION);
-        if (meter >= SEVERE) {
-            player.addEffect(new MobEffectInstance(holder, 120, 2, false, true));
-        } else if (meter >= SICK) {
-            player.addEffect(new MobEffectInstance(holder, 120, 1, false, true));
-        } else if (meter >= INCUBATE) {
-            player.addEffect(new MobEffectInstance(holder, 120, 0, false, true));
+        // Death at 100%
+        if (meter >= MAX) {
+            player.hurt(level.damageSources().magic(), 1000.0F);
+            return;
         }
 
-        if (meter >= INCUBATE) {
-            String c = meter >= SEVERE ? "§4" : meter >= SICK ? "§c" : "§e";
+        var infHolder = BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.INFECTION);
+        if (meter >= 75.0F) {
+            player.addEffect(new MobEffectInstance(infHolder, 120, 1, false, true));
+            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.CONFUSION, 120, 0, false, true));
+        } else if (meter >= 50.0F) {
+            player.addEffect(new MobEffectInstance(infHolder, 120, 0, false, true));
+            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.CONFUSION, 120, 0, false, true));
+        } else if (meter >= 25.0F) {
+            player.addEffect(new MobEffectInstance(infHolder, 120, 0, false, true));
+        }
+
+        if (meter >= 25.0F) {
+            String c = meter >= 75.0F ? "§4" : meter >= 50.0F ? "§c" : "§e";
             player.displayClientMessage(Component.literal(c + "☣ Заражение: " + (int) meter + "%"), true);
         }
     }

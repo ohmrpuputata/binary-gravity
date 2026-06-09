@@ -84,8 +84,11 @@ public final class ContaminationRules {
             if (state.is(BlockTags.COPPER_ORES)) return ModBlocks.PALLADIUM_ORE.defaultBlockState();
             if (state.is(BlockTags.IRON_ORES)) return ModBlocks.ALIEN_FLESH.defaultBlockState();
         }
+        if (day >= 3) {
+            if (state.is(BlockTags.LAPIS_ORES)) return ModBlocks.COSMIC_CRYSTAL_ORE.defaultBlockState();
+            if (state.is(BlockTags.GOLD_ORES)) return ModBlocks.PURE_RADIATION_CRYSTAL_ORE.defaultBlockState();
+        }
         if (day >= 4) {
-            if (state.is(BlockTags.GOLD_ORES)) return ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState();
             if (state.is(BlockTags.DIAMOND_ORES)) return ModBlocks.INFESTED_DIAMOND_ORE.defaultBlockState();
             if (state.is(BlockTags.REDSTONE_ORES)) return ModBlocks.INFESTED_REDSTONE_ORE.defaultBlockState();
         }

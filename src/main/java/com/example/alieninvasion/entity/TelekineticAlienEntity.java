@@ -81,6 +81,9 @@ public class TelekineticAlienEntity extends EnderMan implements IAlienUnit {
                 net.minecraft.world.phys.Vec3 pull = this.position().subtract(target.position()).normalize().scale(0.2);
                 target.push(pull.x, pull.y + 0.1, pull.z);
                 target.hurtMarked = true;
+                if (target instanceof net.minecraft.world.entity.player.Player p) {
+                    com.example.alieninvasion.logic.RadiationManager.addDose(p, 0.5F);
+                }
             }
 
             // TELEKINETIC SLAM: every ~10s rip the target into the air, then let

@@ -38,6 +38,9 @@ public class MarkBoltEntity extends ThrowableItemProjectile {
             if (shooter == null || !AlienUtils.isAlliedTo(shooter, victim)) {
                 victim.addEffect(new MobEffectInstance(
                         BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.MARKED), 600, 0, false, true));
+                if (victim instanceof net.minecraft.world.entity.player.Player p) {
+                    com.example.alieninvasion.logic.RadiationManager.addDose(p, 3.0F);
+                }
             }
         }
     }

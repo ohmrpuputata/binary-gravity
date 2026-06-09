@@ -43,13 +43,10 @@ public final class RadiationManager {
     }
 
     public static final float MAX_DOSE = 100.0F;
-    private static final float LIGHT = 15.0F;   // tier 0 (amplifier 0)
-    private static final float HEAVY = 45.0F;   // tier 1
-    private static final float SEVERE = 80.0F;  // tier 2
     private static final float GAIN = 0.45F;    // dose per intensity unit per second
-    private static final float DECAY = 1.6F;    // natural recovery per second when clear
 
     private static final Map<UUID, Float> DOSE = new ConcurrentHashMap<>();
+    public static final Map<UUID, Boolean> SCREEN_GLITCH = new ConcurrentHashMap<>();
 
     // Radioactive storm: a world-wide fallout event (lifecycle ticked from ModEvents).
     private static int stormTicks = 0;
@@ -103,7 +100,8 @@ public final class RadiationManager {
     }
 
     private static int sourceWeight(BlockState state) {
-        if (state.is(ModBlocks.RADIATION_CRYSTAL_CLUSTER) || state.is(ModBlocks.PURE_RADIATION_BLOCK)) {
+        if (state.is(ModBlocks.RADIATION_CRYSTAL_CLUSTER) || state.is(ModBlocks.PURE_RADIATION_BLOCK)
+                || state.is(ModBlocks.PURE_RADIATION_CRYSTAL_ORE)) {
             return 5;
         }
         if (state.is(ModBlocks.COSMIC_CRYSTAL)) {
@@ -146,48 +144,57 @@ public final class RadiationManager {
         return false;
     }
 
+    public static void addDose(Player player, float amount) {
+        setDose(player.getUUID(), getDose(player) + amount);
+    }
+
     /** Per-second player update. Call once a second (e.g. tickCount % 20 == 0). */
     public static void tickPlayer(ServerLevel level, ServerPlayer player) {
+        UUID id = player.getUUID();
         if (player.isCreative() || player.isSpectator()) {
             clearDose(player);
-            player.removeEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.RADIATION));
+            SCREEN_GLITCH.remove(id);
+            player.removeEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.IRRADIATION));
             return;
         }
 
-        boolean sealed = hasFullHazmat(player);
         boolean masked = player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.BIO_FILTER_MASK);
-        float exposure = sealed ? 0.0F : scanExposure(level, player.blockPosition());
-        if (masked) {
-            exposure *= 0.5F;
-        }
+        float exposure = scanExposure(level, player.blockPosition());
+        if (masked) exposure *= 0.5F;
 
         float dose = getDose(player);
         if (exposure > 0.0F) {
             dose += exposure * GAIN;
-        } else {
-            dose -= DECAY;
         }
-        setDose(player.getUUID(), dose);
+        setDose(id, dose);
         dose = getDose(player);
 
-        // Map dose -> escalating RADIATION tiers. Short refresh duration means the
-        // effect lapses on its own ~3s after the player gets clear. We only APPLY
-        // here (never hard-remove) so direct hits from contaminated food / crystals /
-        // toxic water aren't wiped a tick later; rad pills handle active curing.
-        var holder = BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.RADIATION);
-        if (dose >= SEVERE) {
-            player.addEffect(new MobEffectInstance(holder, 60, 2, false, true));
-        } else if (dose >= HEAVY) {
-            player.addEffect(new MobEffectInstance(holder, 60, 1, false, true));
-        } else if (dose >= LIGHT) {
-            player.addEffect(new MobEffectInstance(holder, 60, 0, false, true));
+        var irrHolder = BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.IRRADIATION);
+
+        if (dose >= MAX_DOSE) {
+            // 100%: radiation saturation — irradiation + severe weakness
+            player.addEffect(new MobEffectInstance(irrHolder, 60, 0, false, true));
+            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.WEAKNESS, 60, 1, false, true));
+            SCREEN_GLITCH.put(id, true);
+        } else if (dose >= 75.0F) {
+            player.addEffect(new MobEffectInstance(irrHolder, 60, 0, false, true));
+            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.WEAKNESS, 60, 0, false, true));
+            SCREEN_GLITCH.put(id, true);
+        } else if (dose >= 50.0F) {
+            player.addEffect(new MobEffectInstance(irrHolder, 60, 0, false, true));
+            SCREEN_GLITCH.put(id, true);
+        } else if (dose >= 25.0F) {
+            player.addEffect(new MobEffectInstance(irrHolder, 60, 0, false, true));
+            SCREEN_GLITCH.remove(id);
+        } else {
+            SCREEN_GLITCH.remove(id);
         }
 
-        // Feedback: a readout + Geiger clicks only while it actually matters.
-        if (exposure > 0.0F || dose >= LIGHT) {
-            String color = dose >= SEVERE ? "§4" : dose >= HEAVY ? "§c" : dose >= LIGHT ? "§e" : "§a";
+        // HUD feedback: readout + Geiger clicks
+        if (exposure > 0.0F || dose >= 25.0F) {
+            String color = dose >= 75.0F ? "§4" : dose >= 50.0F ? "§c" : dose >= 25.0F ? "§e" : "§a";
             player.displayClientMessage(Component.literal(
-                    color + "☢ Доза облучения: " + (int) dose + " рад" + (sealed ? " §7(защита)" : "")), true);
+                    color + "☢ Доза облучения: " + (int) dose + " рад"), true);
             if (exposure > 0.0F && level.random.nextFloat() < Math.min(0.8F, 0.1F + exposure * 0.06F)) {
                 level.playSound(null, player.blockPosition(), SoundEvents.STONE_BUTTON_CLICK_ON,
                         SoundSource.PLAYERS, 0.25F, 1.7F + level.random.nextFloat() * 0.6F);

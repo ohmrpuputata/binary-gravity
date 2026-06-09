@@ -255,6 +255,14 @@ public class PlayerMixin implements com.example.alieninvasion.logic.InfectionTra
         player.hurt(level.damageSources().magic(), 1000.0F);
     }
 
+    @Inject(method = "heal", at = @At("HEAD"), cancellable = true)
+    private void alien_blockHealIfIrradiated(float healAmount, CallbackInfo ci) {
+        Player player = (Player) (Object) this;
+        if (player.hasEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.IRRADIATION))) {
+            ci.cancel();
+        }
+    }
+
     @Inject(method = "remove", at = @At("HEAD"))
     private void cleanUpLightOnRemove(net.minecraft.world.entity.Entity.RemovalReason reason, CallbackInfo ci) {
         Player player = (Player) (Object) this;

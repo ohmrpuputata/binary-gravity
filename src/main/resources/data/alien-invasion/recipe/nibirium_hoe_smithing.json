@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": {"item": "alien-invasion:nibirium_smithing_template"},
+  "base": {"item": "minecraft:diamond_hoe"},
+  "addition": {"item": "alien-invasion:nibirium_ingot"},
+  "result": {"id": "alien-invasion:nibirium_hoe"}
+}

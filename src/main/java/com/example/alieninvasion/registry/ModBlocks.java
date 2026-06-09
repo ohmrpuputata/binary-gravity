@@ -53,6 +53,14 @@ public class ModBlocks {
             new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GREEN)
                     .strength(3.0F).lightLevel(s -> 12).sound(SoundType.AMETHYST)));
 
+    // --- New Day-3 ore blocks (converted from lapis/gold by contamination spread) ---
+    public static final Block COSMIC_CRYSTAL_ORE = registerBlock("cosmic_crystal_ore",
+            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_YELLOW).strength(3.5F, 3.0F)
+                    .requiresCorrectToolForDrops().sound(SoundType.AMETHYST).lightLevel(s -> 4)));
+    public static final Block PURE_RADIATION_CRYSTAL_ORE = registerBlock("pure_radiation_crystal_ore",
+            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GREEN).strength(3.5F, 3.0F)
+                    .requiresCorrectToolForDrops().sound(SoundType.AMETHYST).lightLevel(s -> 6)));
+
     // --- Day-infected ores ---
     public static final Block PLATINUM_ORE = registerBlock("platinum_ore",
             new Block(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(3.0F, 3.0F)

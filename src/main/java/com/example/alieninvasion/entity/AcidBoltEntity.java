@@ -43,6 +43,9 @@ public class AcidBoltEntity extends ThrowableItemProjectile {
                     e -> e.isAlive() && !AlienUtils.isAlliedTo(null, e) && e != shooter)) {
                 e.hurt(this.damageSources().indirectMagic(this, shooter), 3.0F);
                 e.addEffect(new MobEffectInstance(MobEffects.POISON, 120, 0, false, true));
+                if (e instanceof net.minecraft.world.entity.player.Player p) {
+                    com.example.alieninvasion.logic.RadiationManager.addDose(p, 3.0F);
+                }
             }
             sl.playSound(null, this.blockPosition(), net.minecraft.sounds.SoundEvents.SLIME_BLOCK_BREAK,
                     net.minecraft.sounds.SoundSource.HOSTILE, 0.8F, 0.8F);

@@ -22,9 +22,9 @@ public class RadPillItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!level.isClientSide) {
-            // Flush most of the accumulated dose, then clear the active effect.
-            com.example.alieninvasion.logic.RadiationManager.reduceDose(player, 45.0F);
-            player.removeEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.RADIATION));
+            // Flush entire accumulated dose and remove irradiation effect.
+            com.example.alieninvasion.logic.RadiationManager.clearDose(player);
+            player.removeEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.IRRADIATION));
             player.removeEffect(MobEffects.POISON);
             player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 100, 0, false, true));
             player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 120, 0, false, true));

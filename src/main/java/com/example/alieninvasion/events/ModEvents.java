@@ -4,6 +4,7 @@ import com.example.alieninvasion.entity.AlienGruntEntity;
 import com.example.alieninvasion.entity.UfoEntity;
 import com.example.alieninvasion.logic.SurvivalManager;
 import com.example.alieninvasion.logic.ContaminationRules;
+import com.example.alieninvasion.logic.InfectionManager;
 import com.example.alieninvasion.registry.EntityRegistry;
 import com.example.alieninvasion.registry.ModEffects;
 import com.example.alieninvasion.registry.ModBlocks;
@@ -294,8 +295,11 @@ public class ModEvents {
                 }
             }
 
-            // 3. Alien Melee AP damage against heavy armor players
+            // 3. Alien Melee AP damage against heavy armor players + infection fill
             if (source.getEntity() instanceof Mob alien && AlienUtils.isAlliedTo(null, alien) && entity instanceof Player player) {
+                // Every alien hit increases infection meter
+                InfectionManager.addMeter(player, 5.0F);
+
                 // Apply marked effect on hit and alert allies
                 boolean isMarked = player.hasEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.MARKED));
                 if (!isMarked) {
