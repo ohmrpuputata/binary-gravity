@@ -26,14 +26,14 @@ public class CosmicCrystalBlock extends Block {
 
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        AABB wide = new AABB(pos).inflate(32.0D);
+        AABB wide = new AABB(pos).inflate(8.0D);
         for (ServerPlayer player : level.getEntitiesOfClass(ServerPlayer.class, wide)) {
             if (player.isCreative() || player.isSpectator() || player.getAbilities().invulnerable) continue;
             double dist = Math.sqrt(player.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5));
             float amount;
-            if (dist <= 8.0)       amount = 20.0F;
-            else if (dist <= 16.0) amount = 10.0F;
-            else                   amount = 5.0F;
+            if (dist <= 2.0)      amount = 20.0F;
+            else if (dist <= 4.0) amount = 10.0F;
+            else                  amount = 5.0F;
             InfectionManager.addMeter(player, amount);
         }
         level.scheduleTick(pos, this, 20);

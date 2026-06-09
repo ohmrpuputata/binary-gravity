@@ -8,16 +8,16 @@ import net.minecraft.server.level.ServerPlayer;
 /**
  * Proximity-based dose fill from Pure Radiation Block.
  * No longer applies effects directly — feeds RadiationManager.DOSE instead.
- *   <= 8  blocks : +20 dose/sec
- *   <= 16 blocks : +10 dose/sec
- *   <= 32 blocks : +5  dose/sec
+ *   <= 2  blocks : +20 dose/sec
+ *   <= 4  blocks : +10 dose/sec
+ *   <= 8  blocks : +5  dose/sec
  */
 public final class RadiationFieldManager {
     private RadiationFieldManager() {
     }
 
-    private static final int SCAN = 32;
-    private static final int STEP = 2;
+    private static final int SCAN = 8;
+    private static final int STEP = 1;
 
     private static double nearestDistSq(ServerLevel level, BlockPos c) {
         double best = Double.MAX_VALUE;
@@ -44,9 +44,9 @@ public final class RadiationFieldManager {
         if (dsq == Double.MAX_VALUE) return;
         double d = Math.sqrt(dsq);
         float dose;
-        if (d <= 8.0)       dose = 20.0F;
-        else if (d <= 16.0) dose = 10.0F;
-        else                dose = 5.0F;
+        if (d <= 2.0)      dose = 20.0F;
+        else if (d <= 4.0) dose = 10.0F;
+        else               dose = 5.0F;
         RadiationManager.addDose(player, dose);
     }
 }

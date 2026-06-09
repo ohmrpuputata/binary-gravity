@@ -46,6 +46,7 @@ public final class RadiationManager {
     private static final float GAIN = 0.45F;    // dose per intensity unit per second
 
     private static final Map<UUID, Float> DOSE = new ConcurrentHashMap<>();
+    private static final Map<UUID, Float> DOSE_MULT = new ConcurrentHashMap<>();
     public static final Map<UUID, Boolean> SCREEN_GLITCH = new ConcurrentHashMap<>();
 
     // Radioactive storm: a world-wide fallout event (lifecycle ticked from ModEvents).
@@ -68,11 +69,10 @@ public final class RadiationManager {
         }
     }
 
-    /** Cap dose at max — used by protective armor set bonuses. */
-    public static void capDose(Player player, float max) {
-        UUID id = player.getUUID();
-        float d = DOSE.getOrDefault(id, 0.0F);
-        if (d > max) DOSE.put(id, max);
+    /** Set per-player dose intake multiplier (1.0 = normal, 0.5 = half speed). */
+    public static void setDoseMultiplier(Player player, float mult) {
+        if (mult == 1.0F) DOSE_MULT.remove(player.getUUID());
+        else DOSE_MULT.put(player.getUUID(), mult);
     }
 
     /** Flush accumulated dose (rad pills, purifier, cures). */
@@ -149,7 +149,8 @@ public final class RadiationManager {
     }
 
     public static void addDose(Player player, float amount) {
-        setDose(player.getUUID(), getDose(player) + amount);
+        float mult = DOSE_MULT.getOrDefault(player.getUUID(), 1.0F);
+        setDose(player.getUUID(), getDose(player) + amount * mult);
     }
 
     /** Per-second player update. Call once a second (e.g. tickCount % 20 == 0). */

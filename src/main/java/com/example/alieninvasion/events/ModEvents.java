@@ -823,9 +823,8 @@ public class ModEvents {
                         && player.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.PALLADIUM_CHESTPLATE)
                         && player.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.PALLADIUM_LEGGINGS)
                         && player.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.PALLADIUM_BOOTS);
-                if (fullPlatinum || fullPalladium) {
-                    com.example.alieninvasion.logic.RadiationManager.capDose(player, 70.0F);
-                }
+                com.example.alieninvasion.logic.RadiationManager.setDoseMultiplier(player, fullPlatinum ? 0.5F : 1.0F);
+                com.example.alieninvasion.logic.InfectionManager.setMeterMultiplier(player, fullPalladium ? 0.5F : 1.0F);
 
                 // Cosmic Armor set bonus + alien-block hazard.
                 boolean fullCosmic = player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.COSMIC_HELMET)

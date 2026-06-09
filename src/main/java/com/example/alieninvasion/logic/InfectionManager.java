@@ -37,6 +37,7 @@ public final class InfectionManager {
     private static final float GAIN = 8.0F;  // meter per second while standing (post-grace)
 
     private static final Map<UUID, Float>   METER      = new ConcurrentHashMap<>();
+    private static final Map<UUID, Float>   METER_MULT = new ConcurrentHashMap<>();
     private static final Map<UUID, Integer> STAND      = new ConcurrentHashMap<>();
     private static final Map<UUID, Integer> LAST_TIER  = new ConcurrentHashMap<>();
 
@@ -61,8 +62,15 @@ public final class InfectionManager {
         setMeter(player.getUUID(), getMeter(player) - amount);
     }
 
+    /** Set per-player infection intake multiplier (1.0 = normal, 0.5 = half speed). */
+    public static void setMeterMultiplier(Player player, float mult) {
+        if (mult == 1.0F) METER_MULT.remove(player.getUUID());
+        else METER_MULT.put(player.getUUID(), mult);
+    }
+
     public static void addMeter(Player player, float amount) {
-        setMeter(player.getUUID(), getMeter(player) + amount);
+        float mult = METER_MULT.getOrDefault(player.getUUID(), 1.0F);
+        setMeter(player.getUUID(), getMeter(player) + amount * mult);
     }
 
     public static void clear(Player player) {
