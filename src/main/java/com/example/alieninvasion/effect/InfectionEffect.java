@@ -16,13 +16,6 @@ public class InfectionEffect extends MobEffect {
     public boolean applyEffectTick(LivingEntity entity, int amplifier) {
         Level level = entity.level();
         if (!level.isClientSide) {
-            // Stage 1 (amplifier 0) is near-harmless incubation - NO chip damage, so
-            // early-game infection isn't a death sentence before you can craft a cure.
-            // Only stage 2+ actually hurts.
-            if (amplifier >= 1 && level.random.nextInt(120 - amplifier * 20) == 0) {
-                entity.hurt(entity.damageSources().magic(), 1.0F);
-            }
-
             // Creepy alien spore aura around the host.
             if (level instanceof ServerLevel sl && entity.tickCount % 5 == 0) {
                 double w = entity.getBbWidth() * 0.6;
