@@ -34,14 +34,11 @@ public class ModBlocks {
                     BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).replaceable().noCollission()
                             .strength(100.0F).noLootTable().liquid().pushReaction(PushReaction.DESTROY)));
 
-    // Flat blood-pool decal dropped by bleeding entities (see the bleeding mechanic
-    // in ModEvents). No item; fades on its own.
     public static final Block BLOOD_POOL = registerBlockNoItem("blood_pool",
             new BloodPoolBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED)
                     .noCollission().instabreak().replaceable().randomTicks().noLootTable().noOcclusion()
                     .sound(SoundType.SLIME_BLOCK).pushReaction(PushReaction.DESTROY)));
 
-    // Infected water (harmless, water-like; corrupted look). No item - use the bucket.
     public static final Block INFECTED_WATER = registerBlockNoItem("infected_water",
             new com.example.alieninvasion.block.InfectedWaterBlock(ModFluids.INFECTED_WATER_STILL,
                     BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).replaceable().noCollission()
@@ -52,27 +49,21 @@ public class ModBlocks {
                     BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(0.5F).randomTicks()
                             .sound(SoundType.SLIME_BLOCK)));
 
-    // Pure Radiation Block (day-4 cave infection / structure hazard). Glows; the
-    // RadiationFieldManager makes it lethal up close. Drops a radiation crystal.
     public static final Block PURE_RADIATION_BLOCK = registerBlock("pure_radiation_block",
             new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GREEN)
                     .strength(3.0F).lightLevel(s -> 12).sound(SoundType.AMETHYST)));
 
-    // --- Day-infected ores (converted from vanilla ores as the corruption spreads) ---
+    // --- Day-infected ores ---
     public static final Block PLATINUM_ORE = registerBlock("platinum_ore",
             new Block(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(3.0F, 3.0F)
                     .requiresCorrectToolForDrops().sound(SoundType.STONE)));
     public static final Block PALLADIUM_ORE = registerBlock("palladium_ore",
             new Block(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(3.0F, 3.0F)
                     .requiresCorrectToolForDrops().sound(SoundType.STONE)));
-    // Alien flesh (from infected iron). Soft; cut it for alien skin.
     public static final Block ALIEN_FLESH = registerBlock("alien_flesh",
             new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED).strength(0.6F)
                     .sound(SoundType.SLIME_BLOCK)));
     public static final Block INFESTED_DIAMOND_ORE = registerBlock("infested_diamond_ore",
-            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.DEEPSLATE).strength(4.5F, 3.0F)
-                    .requiresCorrectToolForDrops().sound(SoundType.DEEPSLATE)));
-    public static final Block INFESTED_LAPIS_ORE = registerBlock("infested_lapis_ore",
             new Block(BlockBehaviour.Properties.of().mapColor(MapColor.DEEPSLATE).strength(4.5F, 3.0F)
                     .requiresCorrectToolForDrops().sound(SoundType.DEEPSLATE)));
     public static final Block INFESTED_REDSTONE_ORE = registerBlock("infested_redstone_ore",
@@ -139,38 +130,6 @@ public class ModBlocks {
             new AlienStashBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(2.5F)
                     .sound(SoundType.WOOD)));
 
-    public static final Block COSMIC_ORE = registerBlock("cosmic_ore",
-            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_YELLOW).strength(3.0F)
-                    .requiresCorrectToolForDrops().sound(SoundType.STONE)));
-
-    public static final Block URANIUM_ORE = registerBlock("uranium_ore",
-            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).strength(3.3F)
-                    .requiresCorrectToolForDrops().sound(SoundType.STONE).lightLevel(state -> 2)));
-
-    public static final Block DEEPSLATE_URANIUM_ORE = registerBlock("deepslate_uranium_ore",
-            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.DEEPSLATE).strength(4.5F)
-                    .requiresCorrectToolForDrops().sound(SoundType.DEEPSLATE).lightLevel(state -> 2)));
-
-    public static final Block XENOCRYSTAL_ORE = registerBlock("xenocrystal_ore",
-            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(3.8F)
-                    .requiresCorrectToolForDrops().sound(SoundType.AMETHYST).lightLevel(state -> 5)));
-
-    public static final Block BIO_VEIN_ORE = registerBlock("bio_vein_ore",
-            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(2.4F)
-                    .requiresCorrectToolForDrops().sound(SoundType.NETHER_WART)));
-
-    public static final Block PLASMA_ORE = registerBlock("plasma_ore",
-            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(4.0F)
-                    .requiresCorrectToolForDrops().sound(SoundType.STONE).lightLevel(state -> 7)));
-
-    public static final Block IRIDIUM_ORE = registerBlock("iridium_ore",
-            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F)
-                    .requiresCorrectToolForDrops().sound(SoundType.DEEPSLATE)));
-
-    public static final Block DARK_MATTER_ORE = registerBlock("dark_matter_ore",
-            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).strength(6.0F)
-                    .requiresCorrectToolForDrops().sound(SoundType.SCULK).lightLevel(state -> 3)));
-
     public static final Block ALIEN_BEACON = registerBlock("alien_beacon",
             new com.example.alieninvasion.block.AlienBeaconBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED)
                     .strength(1.5F).sound(SoundType.METAL)));
@@ -178,10 +137,6 @@ public class ModBlocks {
     public static final Block SWARM_BEACON = registerBlock("swarm_beacon",
             new com.example.alieninvasion.block.SwarmBeaconBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE)
                     .strength(3.0F).sound(SoundType.METAL).lightLevel(state -> 8)));
-
-    public static final Block COSMIC_BLOCK = registerBlock("cosmic_block",
-            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_YELLOW).strength(5.0F)
-                    .requiresCorrectToolForDrops().sound(SoundType.METAL).lightLevel(state -> 6)));
 
     public static final Block COSMIC_CRYSTAL = registerBlock("cosmic_crystal",
             new CosmicCrystalBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_YELLOW).strength(2.0F)
@@ -201,10 +156,6 @@ public class ModBlocks {
 
     public static final Block ORE_WASHER = registerBlock("ore_washer",
             new com.example.alieninvasion.block.OreWasherBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.0F)
-                    .requiresCorrectToolForDrops().sound(SoundType.METAL)));
-
-    public static final Block ALIEN_RECYCLER = registerBlock("alien_recycler",
-            new com.example.alieninvasion.block.AlienRecyclerBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(3.5F)
                     .requiresCorrectToolForDrops().sound(SoundType.METAL)));
 
     public static final Block BLUEPRINT_TABLE = registerBlock("blueprint_table",

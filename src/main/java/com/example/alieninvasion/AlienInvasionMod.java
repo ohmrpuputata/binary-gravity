@@ -1,6 +1,5 @@
 package com.example.alieninvasion;
 
-import com.example.alieninvasion.events.ModEvents;
 import com.example.alieninvasion.registry.EntityRegistry;
 import com.example.alieninvasion.registry.ItemRegistry;
 import com.example.alieninvasion.registry.ModEffects;
@@ -26,30 +25,6 @@ public class AlienInvasionMod implements ModInitializer {
 			net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.PLACED_FEATURE,
 					net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MODID, "cosmic_crystal_vein"));
 
-	public static final net.minecraft.resources.ResourceKey<net.minecraft.world.level.levelgen.placement.PlacedFeature> URANIUM_ORE_VEIN_KEY =
-			net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.PLACED_FEATURE,
-					net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MODID, "uranium_ore_vein"));
-
-	public static final net.minecraft.resources.ResourceKey<net.minecraft.world.level.levelgen.placement.PlacedFeature> XENOCRYSTAL_ORE_VEIN_KEY =
-			net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.PLACED_FEATURE,
-					net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MODID, "xenocrystal_ore_vein"));
-
-	public static final net.minecraft.resources.ResourceKey<net.minecraft.world.level.levelgen.placement.PlacedFeature> BIO_VEIN_ORE_VEIN_KEY =
-			net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.PLACED_FEATURE,
-					net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MODID, "bio_vein_ore_vein"));
-
-	public static final net.minecraft.resources.ResourceKey<net.minecraft.world.level.levelgen.placement.PlacedFeature> PLASMA_ORE_VEIN_KEY =
-			net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.PLACED_FEATURE,
-					net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MODID, "plasma_ore_vein"));
-
-	public static final net.minecraft.resources.ResourceKey<net.minecraft.world.level.levelgen.placement.PlacedFeature> IRIDIUM_ORE_VEIN_KEY =
-			net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.PLACED_FEATURE,
-					net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MODID, "iridium_ore_vein"));
-
-	public static final net.minecraft.resources.ResourceKey<net.minecraft.world.level.levelgen.placement.PlacedFeature> DARK_MATTER_ORE_VEIN_KEY =
-			net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.PLACED_FEATURE,
-					net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(MODID, "dark_matter_ore_vein"));
-
 	@Override
 	public void onInitialize() {
 		LOGGER.info("Alien Invasion Mod Initialized (Fabric)");
@@ -73,9 +48,6 @@ public class AlienInvasionMod implements ModInitializer {
 		// Procedural structures: cave dungeons, alien cities, crashed UFOs.
 		com.example.alieninvasion.worldgen.ModFeatures.register();
 
-		// Super-tool behaviours (e.g. the Cosmic Pickaxe 3x3 area mining).
-		com.example.alieninvasion.logic.CosmicToolEvents.register();
-
 		// Register World Gen features
 		net.fabricmc.fabric.api.biome.v1.BiomeModifications.addFeature(
 				net.fabricmc.fabric.api.biome.v1.BiomeSelectors.foundInOverworld(),
@@ -91,36 +63,6 @@ public class AlienInvasionMod implements ModInitializer {
 				net.fabricmc.fabric.api.biome.v1.BiomeSelectors.foundInOverworld(),
 				net.minecraft.world.level.levelgen.GenerationStep.Decoration.UNDERGROUND_ORES,
 				COSMIC_CRYSTAL_VEIN_KEY
-		);
-		net.fabricmc.fabric.api.biome.v1.BiomeModifications.addFeature(
-				net.fabricmc.fabric.api.biome.v1.BiomeSelectors.foundInOverworld(),
-				net.minecraft.world.level.levelgen.GenerationStep.Decoration.UNDERGROUND_ORES,
-				URANIUM_ORE_VEIN_KEY
-		);
-		net.fabricmc.fabric.api.biome.v1.BiomeModifications.addFeature(
-				net.fabricmc.fabric.api.biome.v1.BiomeSelectors.foundInOverworld(),
-				net.minecraft.world.level.levelgen.GenerationStep.Decoration.UNDERGROUND_ORES,
-				XENOCRYSTAL_ORE_VEIN_KEY
-		);
-		net.fabricmc.fabric.api.biome.v1.BiomeModifications.addFeature(
-				net.fabricmc.fabric.api.biome.v1.BiomeSelectors.foundInOverworld(),
-				net.minecraft.world.level.levelgen.GenerationStep.Decoration.UNDERGROUND_ORES,
-				BIO_VEIN_ORE_VEIN_KEY
-		);
-		net.fabricmc.fabric.api.biome.v1.BiomeModifications.addFeature(
-				net.fabricmc.fabric.api.biome.v1.BiomeSelectors.foundInOverworld(),
-				net.minecraft.world.level.levelgen.GenerationStep.Decoration.UNDERGROUND_ORES,
-				PLASMA_ORE_VEIN_KEY
-		);
-		net.fabricmc.fabric.api.biome.v1.BiomeModifications.addFeature(
-				net.fabricmc.fabric.api.biome.v1.BiomeSelectors.foundInOverworld(),
-				net.minecraft.world.level.levelgen.GenerationStep.Decoration.UNDERGROUND_ORES,
-				IRIDIUM_ORE_VEIN_KEY
-		);
-		net.fabricmc.fabric.api.biome.v1.BiomeModifications.addFeature(
-				net.fabricmc.fabric.api.biome.v1.BiomeSelectors.foundInOverworld(),
-				net.minecraft.world.level.levelgen.GenerationStep.Decoration.UNDERGROUND_ORES,
-				DARK_MATTER_ORE_VEIN_KEY
 		);
 
 		net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {

@@ -103,12 +103,10 @@ public final class RadiationManager {
     }
 
     private static int sourceWeight(BlockState state) {
-        if (state.is(ModBlocks.DARK_MATTER_ORE) || state.is(ModBlocks.RADIATION_CRYSTAL_CLUSTER)) {
+        if (state.is(ModBlocks.RADIATION_CRYSTAL_CLUSTER) || state.is(ModBlocks.PURE_RADIATION_BLOCK)) {
             return 5;
         }
-        if (state.is(ModBlocks.URANIUM_ORE) || state.is(ModBlocks.DEEPSLATE_URANIUM_ORE)
-                || state.is(ModBlocks.PLASMA_ORE) || state.is(ModBlocks.COSMIC_ORE)
-                || state.is(ModBlocks.COSMIC_CRYSTAL)) {
+        if (state.is(ModBlocks.COSMIC_CRYSTAL)) {
             return 3;
         }
         if (state.is(ModBlocks.TOXIC_WATER) || state.is(ModBlocks.TOXIC_BARREL)
@@ -141,18 +139,11 @@ public final class RadiationManager {
     }
 
     public static boolean hasFullHazmat(Player player) {
-        return player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.HAZMAT_HELMET)
-                && player.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.HAZMAT_CHESTPLATE)
-                && player.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.HAZMAT_LEGGINGS)
-                && player.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.HAZMAT_BOOTS);
+        return false; // Hazmat armor replaced in Phase 3 with new Химзащита/Химдоспех sets
     }
 
-    /** Full light-hazmat set: shields LIGHT radiation + corrupted-ground infection. */
     public static boolean hasFullLightHazmat(Player player) {
-        return player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.LIGHT_HAZMAT_HELMET)
-                && player.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.LIGHT_HAZMAT_CHESTPLATE)
-                && player.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.LIGHT_HAZMAT_LEGGINGS)
-                && player.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.LIGHT_HAZMAT_BOOTS);
+        return false;
     }
 
     /** Per-second player update. Call once a second (e.g. tickCount % 20 == 0). */

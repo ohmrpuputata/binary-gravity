@@ -1,7 +1,6 @@
 package com.example.alieninvasion.block;
 
 import com.example.alieninvasion.logic.ContaminationRules;
-import com.example.alieninvasion.registry.ItemRegistry;
 import com.example.alieninvasion.registry.ModBlocks;
 import com.example.alieninvasion.registry.ModEffects;
 import net.minecraft.core.BlockPos;
@@ -13,7 +12,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.npc.Villager;
@@ -53,10 +51,7 @@ public class ToxicWaterBlock extends LiquidBlock {
     }
 
     private boolean hasFullHazmat(LivingEntity entity) {
-        return entity.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.HAZMAT_HELMET)
-                && entity.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.HAZMAT_CHESTPLATE)
-                && entity.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.HAZMAT_LEGGINGS)
-                && entity.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.HAZMAT_BOOTS);
+        return false; // hazmat armor replaced in Phase 3
     }
 
     @Override

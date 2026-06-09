@@ -40,7 +40,7 @@ public class CosmicVaultFeature extends Feature<NoneFeatureConfiguration> {
         }
 
         int r = 3;
-        var hull = ModBlocks.COSMIC_BLOCK.defaultBlockState();
+        var hull = ModBlocks.INFESTED_DEEPSLATE.defaultBlockState();
         var air = Blocks.CAVE_AIR.defaultBlockState();
 
         // Cosmic-block shell, hollow interior.
@@ -50,7 +50,7 @@ public class CosmicVaultFeature extends Feature<NoneFeatureConfiguration> {
         // Cosmic-ore floor seam.
         for (int i = 0; i < 9; i++) {
             BlockPos ore = o.offset(rng.nextInt(r * 2 + 1) - r, -1, rng.nextInt(r * 2 + 1) - r);
-            StructureUtil.set(level, ore, ModBlocks.COSMIC_ORE.defaultBlockState());
+            StructureUtil.set(level, ore, ModBlocks.PLATINUM_ORE.defaultBlockState());
         }
 
         // Crystal lighting in the ceiling corners.

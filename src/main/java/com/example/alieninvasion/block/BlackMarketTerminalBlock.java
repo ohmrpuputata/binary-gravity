@@ -27,21 +27,21 @@ public class BlackMarketTerminalBlock extends Block {
         if (level.isClientSide) {
             return ItemInteractionResult.SUCCESS;
         }
-        if (!stack.is(ItemRegistry.ALIEN_SCRAP) && !stack.is(ItemRegistry.COSMIC_CREDIT)) {
+        if (!stack.is(ItemRegistry.ALIEN_BATTERY) && !stack.is(ItemRegistry.COSMIC_SHARD)) {
             player.displayClientMessage(Component.literal(
-                    "§6[Черный рынок] Оплата: alien scrap или cosmic credit. ПКМ валютой покупает припасы."), true);
+                    "§6[Черный рынок] Оплата: alien battery или cosmic shard. ПКМ валютой покупает припасы."), true);
             return ItemInteractionResult.CONSUME;
         }
-        boolean paidCredit = stack.is(ItemRegistry.COSMIC_CREDIT);
-        int price = paidCredit ? 1 : 8;
+        boolean paidShard = stack.is(ItemRegistry.COSMIC_SHARD);
+        int price = paidShard ? 1 : 8;
         if (stack.getCount() < price) {
             player.displayClientMessage(Component.literal("§c[Черный рынок] Нужно " + price + " шт."), true);
             return ItemInteractionResult.CONSUME;
         }
         stack.shrink(price);
-        ItemStack reward = paidCredit
-                ? new ItemStack(ItemRegistry.PLASMA_CORE, 1)
-                : new ItemStack(ItemRegistry.URANIUM_ROD, 2);
+        ItemStack reward = paidShard
+                ? new ItemStack(ItemRegistry.COSMIC_INGOT, 1)
+                : new ItemStack(ItemRegistry.COSMIC_SHARD, 1);
         if (!player.getInventory().add(reward)) {
             player.drop(reward, false);
         }
@@ -55,7 +55,7 @@ public class BlackMarketTerminalBlock extends Block {
             BlockHitResult hitResult) {
         if (!level.isClientSide) {
             player.displayClientMessage(Component.literal(
-                    "§6[Черный рынок] 8 alien scrap -> 2 uranium rod, 1 cosmic credit -> plasma core."), true);
+                    "§6[Черный рынок] 8 alien battery -> 1 cosmic shard, 1 cosmic shard -> cosmic ingot."), true);
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
     }

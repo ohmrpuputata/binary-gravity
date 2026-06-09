@@ -29,14 +29,10 @@ public final class ContaminationRules {
         return state.is(BlockTags.COAL_ORES) || state.is(BlockTags.COPPER_ORES) || state.is(BlockTags.IRON_ORES)
                 || state.is(BlockTags.GOLD_ORES) || state.is(BlockTags.REDSTONE_ORES) || state.is(BlockTags.LAPIS_ORES)
                 || state.is(BlockTags.EMERALD_ORES) || state.is(BlockTags.DIAMOND_ORES)
-                || state.is(ModBlocks.COSMIC_ORE) || state.is(ModBlocks.URANIUM_ORE)
-                || state.is(ModBlocks.DEEPSLATE_URANIUM_ORE) || state.is(ModBlocks.XENOCRYSTAL_ORE)
-                || state.is(ModBlocks.BIO_VEIN_ORE) || state.is(ModBlocks.PLASMA_ORE)
-                || state.is(ModBlocks.IRIDIUM_ORE) || state.is(ModBlocks.DARK_MATTER_ORE)
                 || state.is(Blocks.COAL_BLOCK) || state.is(Blocks.COPPER_BLOCK) || state.is(Blocks.IRON_BLOCK)
                 || state.is(Blocks.GOLD_BLOCK) || state.is(Blocks.REDSTONE_BLOCK) || state.is(Blocks.LAPIS_BLOCK)
                 || state.is(Blocks.EMERALD_BLOCK) || state.is(Blocks.DIAMOND_BLOCK)
-                || state.is(Blocks.NETHERITE_BLOCK) || state.is(ModBlocks.COSMIC_BLOCK);
+                || state.is(Blocks.NETHERITE_BLOCK);
     }
 
     public static boolean canContaminate(LevelAccessor level, BlockPos pos, BlockState state) {
@@ -91,7 +87,6 @@ public final class ContaminationRules {
         if (day >= 4) {
             if (state.is(BlockTags.GOLD_ORES)) return ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState();
             if (state.is(BlockTags.DIAMOND_ORES)) return ModBlocks.INFESTED_DIAMOND_ORE.defaultBlockState();
-            if (state.is(BlockTags.LAPIS_ORES)) return ModBlocks.INFESTED_LAPIS_ORE.defaultBlockState();
             if (state.is(BlockTags.REDSTONE_ORES)) return ModBlocks.INFESTED_REDSTONE_ORE.defaultBlockState();
         }
         return null;

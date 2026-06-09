@@ -131,13 +131,12 @@ public class InfestedMineFeature extends Feature<NoneFeatureConfiguration> {
 
     private static BlockState randomMineOre(RandomSource rng) {
         return switch (rng.nextInt(10)) {
-            case 0 -> ModBlocks.DARK_MATTER_ORE.defaultBlockState();
-            case 1 -> ModBlocks.IRIDIUM_ORE.defaultBlockState();
-            case 2 -> ModBlocks.PLASMA_ORE.defaultBlockState();
-            case 3, 4 -> ModBlocks.XENOCRYSTAL_ORE.defaultBlockState();
-            case 5, 6 -> ModBlocks.URANIUM_ORE.defaultBlockState();
-            case 7, 8 -> ModBlocks.BIO_VEIN_ORE.defaultBlockState();
-            default -> ModBlocks.COSMIC_ORE.defaultBlockState();
+            case 0 -> ModBlocks.RADIATION_CRYSTAL_CLUSTER.defaultBlockState();
+            case 1, 9 -> ModBlocks.PALLADIUM_ORE.defaultBlockState();
+            case 2, 5, 6 -> ModBlocks.PLATINUM_ORE.defaultBlockState();
+            case 3, 4 -> ModBlocks.INFESTED_DIAMOND_ORE.defaultBlockState();
+            case 7, 8 -> ModBlocks.ALIEN_FLESH.defaultBlockState();
+            default -> ModBlocks.PALLADIUM_ORE.defaultBlockState();
         };
     }
 }

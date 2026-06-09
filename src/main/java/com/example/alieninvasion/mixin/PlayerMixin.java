@@ -381,14 +381,9 @@ public class PlayerMixin implements com.example.alieninvasion.logic.InfectionTra
     // instead of re-applying the effect.
     @Unique
     private boolean alien_hasInfectionImmuneArmor(Player player) {
-        boolean chitin = player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).is(ItemRegistry.CHITIN_HELMET)
-                && player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.CHEST).is(ItemRegistry.CHITIN_CHESTPLATE)
-                && player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.LEGS).is(ItemRegistry.CHITIN_LEGGINGS)
-                && player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.FEET).is(ItemRegistry.CHITIN_BOOTS);
-        boolean cosmic = player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).is(ItemRegistry.COSMIC_HELMET)
+        return player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).is(ItemRegistry.COSMIC_HELMET)
                 && player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.CHEST).is(ItemRegistry.COSMIC_CHESTPLATE)
                 && player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.LEGS).is(ItemRegistry.COSMIC_LEGGINGS)
                 && player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.FEET).is(ItemRegistry.COSMIC_BOOTS);
-        return chitin || cosmic;
     }
 }

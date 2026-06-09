@@ -107,10 +107,7 @@ public class ParasiteEntity extends Silverfish implements IAlienUnit {
     }
 
     private boolean hasFullHazmat(Player p) {
-        return p.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.HAZMAT_HELMET)
-                && p.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.HAZMAT_CHESTPLATE)
-                && p.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.HAZMAT_LEGGINGS)
-                && p.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.HAZMAT_BOOTS);
+        return false; // hazmat armor replaced in Phase 3
     }
     
     @Override

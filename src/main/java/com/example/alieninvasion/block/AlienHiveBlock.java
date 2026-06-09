@@ -23,7 +23,7 @@ public class AlienHiveBlock extends Block {
         if (!level.isClientSide) {
             RandomSource rng = level.getRandom();
             Block.popResource(level, pos, new net.minecraft.world.item.ItemStack(
-                    com.example.alieninvasion.registry.ItemRegistry.ALIEN_ALLOY, 1 + rng.nextInt(2)));
+                    com.example.alieninvasion.registry.ItemRegistry.ALIEN_SKIN, 1 + rng.nextInt(2)));
             if (rng.nextFloat() < 0.15F) {
                 Block.popResource(level, pos, new net.minecraft.world.item.ItemStack(
                         com.example.alieninvasion.registry.ItemRegistry.HIVE_CORE));

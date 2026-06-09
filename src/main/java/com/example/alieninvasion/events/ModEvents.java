@@ -548,15 +548,9 @@ public class ModEvents {
             // Acid Rain (magic damage + grass spread)
             if (level.isRaining() && level.getGameTime() % 40 == 0) {
                 for (ServerPlayer player : level.players()) {
-                    boolean hasFullHazmat = player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.HAZMAT_HELMET) &&
-                                           player.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.HAZMAT_CHESTPLATE) &&
-                                           player.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.HAZMAT_LEGGINGS) &&
-                                           player.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.HAZMAT_BOOTS);
-                    if (!hasFullHazmat) {
-                        if (level.canSeeSky(player.blockPosition())) {
-                            player.hurt(level.damageSources().magic(), 1.0F);
-                            player.displayClientMessage(Component.literal("§c[!] Кислотный дождь обжигает вас! Найдите укрытие или наденьте костюм химзащиты."), true);
-                        }
+                    if (level.canSeeSky(player.blockPosition())) {
+                        player.hurt(level.damageSources().magic(), 1.0F);
+                        player.displayClientMessage(Component.literal("§c[!] Кислотный дождь обжигает вас! Найдите укрытие."), true);
                     }
                 }
 
@@ -818,21 +812,6 @@ public class ModEvents {
                 }
 
                 // Cosmic Armor set bonus + alien-block hazard.
-                // The full Cosmic set lets you stride over alien ground unharmed (draining
-                // its own durability) and shrugs off Infection. Without it, alien ground
-                // infects whoever stands on it - so the armor has a real purpose.
-                // Chitin set bonus: cheaper anti-infection suit - purges Infection,
-                // Poison and Hunger while the full set is worn.
-                boolean fullChitin = player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.CHITIN_HELMET)
-                        && player.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.CHITIN_CHESTPLATE)
-                        && player.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.CHITIN_LEGGINGS)
-                        && player.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.CHITIN_BOOTS);
-                if (fullChitin && player.tickCount % 20 == 0) {
-                    player.removeEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.INFECTION));
-                    player.removeEffect(net.minecraft.world.effect.MobEffects.POISON);
-                    player.removeEffect(net.minecraft.world.effect.MobEffects.HUNGER);
-                }
-
                 boolean fullCosmic = player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.COSMIC_HELMET)
                         && player.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.COSMIC_CHESTPLATE)
                         && player.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.COSMIC_LEGGINGS)
@@ -865,9 +844,7 @@ public class ModEvents {
                 // start accruing it after standing on contaminated ground for ~2s, and
                 // it builds a visible scale instead of infecting the instant you touch it.
                 if (player.tickCount % 20 == 0) {
-                    boolean infImmune = fullCosmic || fullChitin
-                            || com.example.alieninvasion.logic.RadiationManager.hasFullLightHazmat(player)
-                            || com.example.alieninvasion.logic.RadiationManager.hasFullHazmat(player);
+                    boolean infImmune = fullCosmic;
                     com.example.alieninvasion.logic.InfectionManager.tickPlayer(
                             level, player, onAlienGround, infImmune);
                 }
@@ -1034,16 +1011,11 @@ public class ModEvents {
     }
 
     private static boolean hasFullHazmat(LivingEntity entity) {
-        return entity.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.HAZMAT_HELMET)
-                && entity.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.HAZMAT_CHESTPLATE)
-                && entity.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.HAZMAT_LEGGINGS)
-                && entity.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.HAZMAT_BOOTS);
+        return false; // hazmat armor replaced in Phase 3
     }
 
     private static boolean isRadiationSource(BlockState state) {
-        return state.is(ModBlocks.COSMIC_ORE) || state.is(ModBlocks.COSMIC_CRYSTAL)
-                || state.is(ModBlocks.URANIUM_ORE) || state.is(ModBlocks.DEEPSLATE_URANIUM_ORE)
-                || state.is(ModBlocks.PLASMA_ORE) || state.is(ModBlocks.DARK_MATTER_ORE)
+        return state.is(ModBlocks.COSMIC_CRYSTAL) || state.is(ModBlocks.PURE_RADIATION_BLOCK)
                 || state.is(ModBlocks.RADIATION_CRYSTAL_CLUSTER) || state.is(ModBlocks.TOXIC_BARREL)
                 || state.is(ModBlocks.TOXIC_WATER);
     }
@@ -1098,43 +1070,27 @@ public class ModEvents {
         if (!isAlien) {
             return;
         }
-        if (rng.nextFloat() < 0.45f) {
-            entity.spawnAtLocation(new net.minecraft.world.item.ItemStack(
-                    com.example.alieninvasion.registry.ItemRegistry.ALIEN_ALLOY));
-        }
-        if (rng.nextFloat() < 0.65f) {
-            entity.spawnAtLocation(new net.minecraft.world.item.ItemStack(
-                    com.example.alieninvasion.registry.ItemRegistry.ALIEN_SCRAP, 1 + rng.nextInt(3)));
-        }
-        if (rng.nextFloat() < 0.06f) {
-            entity.spawnAtLocation(new net.minecraft.world.item.ItemStack(
-                    com.example.alieninvasion.registry.ItemRegistry.COSMIC_CREDIT));
-        }
-        // Aliens now yield 4-5 hide (the early-game crafting base), not flesh.
         entity.spawnAtLocation(new net.minecraft.world.item.ItemStack(
                 com.example.alieninvasion.registry.ItemRegistry.ALIEN_SKIN, 4 + rng.nextInt(2)));
-        // The boss is a jackpot.
+        if (rng.nextFloat() < 0.15f) {
+            entity.spawnAtLocation(new net.minecraft.world.item.ItemStack(
+                    com.example.alieninvasion.registry.ItemRegistry.ALIEN_BATTERY));
+        }
+        // Tyrant boss jackpot
         if (entity instanceof com.example.alieninvasion.entity.HiveTyrantEntity) {
             entity.spawnAtLocation(new net.minecraft.world.item.ItemStack(
                     com.example.alieninvasion.registry.ItemRegistry.HIVE_CORE, 1 + rng.nextInt(2)));
             entity.spawnAtLocation(new net.minecraft.world.item.ItemStack(
-                    com.example.alieninvasion.registry.ItemRegistry.ALIEN_ALLOY, 3 + rng.nextInt(4)));
-            entity.spawnAtLocation(new net.minecraft.world.item.ItemStack(
-                    com.example.alieninvasion.registry.ItemRegistry.COSMIC_CREDIT, 2 + rng.nextInt(3)));
+                    com.example.alieninvasion.registry.ItemRegistry.COSMIC_SHARD, 2 + rng.nextInt(3)));
         }
-        // The Day-8 final boss: the apex reward. Beating it hands you the signature
-        // anti-alien blade plus the apex crafting materials (dark matter + hive cores).
+        // Swarm Mother: final boss reward
         if (entity instanceof com.example.alieninvasion.entity.SwarmMotherEntity) {
-            entity.spawnAtLocation(new net.minecraft.world.item.ItemStack(
-                    com.example.alieninvasion.registry.ItemRegistry.BIO_BLADE));
             entity.spawnAtLocation(new net.minecraft.world.item.ItemStack(
                     com.example.alieninvasion.registry.ItemRegistry.HIVE_CORE, 3 + rng.nextInt(3)));
             entity.spawnAtLocation(new net.minecraft.world.item.ItemStack(
                     com.example.alieninvasion.registry.ItemRegistry.DARK_MATTER_SHARD, 2 + rng.nextInt(3)));
             entity.spawnAtLocation(new net.minecraft.world.item.ItemStack(
-                    com.example.alieninvasion.registry.ItemRegistry.ALIEN_ALLOY, 6 + rng.nextInt(6)));
-            entity.spawnAtLocation(new net.minecraft.world.item.ItemStack(
-                    com.example.alieninvasion.registry.ItemRegistry.COSMIC_CREDIT, 4 + rng.nextInt(5)));
+                    com.example.alieninvasion.registry.ItemRegistry.COSMIC_SHARD, 4 + rng.nextInt(5)));
         }
     }
 

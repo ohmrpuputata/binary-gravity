@@ -60,7 +60,7 @@ public class InvasionTrackerItem extends Item {
                     if (name != null) {
                         double d = origin.distSqr(mut);
                         if (d < bestStruct) { bestStruct = d; nearestStructure = mut.immutable(); structureName = name; }
-                    } else if (s.is(ModBlocks.COSMIC_ORE)) {
+                    } else if (s.is(ModBlocks.PLATINUM_ORE) || s.is(ModBlocks.PALLADIUM_ORE)) {
                         double d = origin.distSqr(mut);
                         if (d < bestOre) { bestOre = d; nearestOre = mut.immutable(); }
                     }
