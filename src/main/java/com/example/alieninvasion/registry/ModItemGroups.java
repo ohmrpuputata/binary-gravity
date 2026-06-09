@@ -90,6 +90,14 @@ public class ModItemGroups {
                         entries.accept(ItemRegistry.NIBIRIUM_AXE);
                         entries.accept(ItemRegistry.NIBIRIUM_SHOVEL);
                         entries.accept(ItemRegistry.NIBIRIUM_HOE);
+                        entries.accept(ItemRegistry.PLATINUM_HELMET);
+                        entries.accept(ItemRegistry.PLATINUM_CHESTPLATE);
+                        entries.accept(ItemRegistry.PLATINUM_LEGGINGS);
+                        entries.accept(ItemRegistry.PLATINUM_BOOTS);
+                        entries.accept(ItemRegistry.PALLADIUM_HELMET);
+                        entries.accept(ItemRegistry.PALLADIUM_CHESTPLATE);
+                        entries.accept(ItemRegistry.PALLADIUM_LEGGINGS);
+                        entries.accept(ItemRegistry.PALLADIUM_BOOTS);
                         entries.accept(ItemRegistry.ALIEN_HAZMAT_HELMET);
                         entries.accept(ItemRegistry.ALIEN_HAZMAT_CHESTPLATE);
                         entries.accept(ItemRegistry.ALIEN_HAZMAT_LEGGINGS);

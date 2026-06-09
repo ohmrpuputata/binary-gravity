@@ -68,6 +68,13 @@ public final class RadiationManager {
         }
     }
 
+    /** Cap dose at max — used by protective armor set bonuses. */
+    public static void capDose(Player player, float max) {
+        UUID id = player.getUUID();
+        float d = DOSE.getOrDefault(id, 0.0F);
+        if (d > max) DOSE.put(id, max);
+    }
+
     /** Flush accumulated dose (rad pills, purifier, cures). */
     public static void reduceDose(Player player, float amount) {
         setDose(player.getUUID(), getDose(player) - amount);

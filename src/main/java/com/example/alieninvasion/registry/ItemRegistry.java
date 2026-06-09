@@ -22,6 +22,8 @@ import com.example.alieninvasion.item.GravityBootsItem;
 import com.example.alieninvasion.item.InvasionTrackerItem;
 import com.example.alieninvasion.item.AlienHazmatArmorMaterial;
 import com.example.alieninvasion.item.AlienChemArmorMaterial;
+import com.example.alieninvasion.item.PlatinumArmorMaterial;
+import com.example.alieninvasion.item.PalladiumArmorMaterial;
 
 public class ItemRegistry {
 
@@ -315,6 +317,42 @@ public class ItemRegistry {
     public static final Item NIBIRIUM_HOE = registerItem("nibirium_hoe",
             new HoeItem(ModToolTiers.NIBIRIUM,
                     new Item.Properties().attributes(HoeItem.createAttributes(ModToolTiers.NIBIRIUM, -3.0F, 0.0F))));
+
+    // Platinum armor — diamond-level protection, set bonus: cap radiation at 70%
+    public static final Item PLATINUM_HELMET = registerItem("platinum_helmet",
+            new net.minecraft.world.item.ArmorItem(PlatinumArmorMaterial.PLATINUM,
+                    net.minecraft.world.item.ArmorItem.Type.HELMET,
+                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.HELMET.getDurability(PlatinumArmorMaterial.BASE_DURABILITY))));
+    public static final Item PLATINUM_CHESTPLATE = registerItem("platinum_chestplate",
+            new net.minecraft.world.item.ArmorItem(PlatinumArmorMaterial.PLATINUM,
+                    net.minecraft.world.item.ArmorItem.Type.CHESTPLATE,
+                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.CHESTPLATE.getDurability(PlatinumArmorMaterial.BASE_DURABILITY))));
+    public static final Item PLATINUM_LEGGINGS = registerItem("platinum_leggings",
+            new net.minecraft.world.item.ArmorItem(PlatinumArmorMaterial.PLATINUM,
+                    net.minecraft.world.item.ArmorItem.Type.LEGGINGS,
+                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.LEGGINGS.getDurability(PlatinumArmorMaterial.BASE_DURABILITY))));
+    public static final Item PLATINUM_BOOTS = registerItem("platinum_boots",
+            new net.minecraft.world.item.ArmorItem(PlatinumArmorMaterial.PLATINUM,
+                    net.minecraft.world.item.ArmorItem.Type.BOOTS,
+                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.BOOTS.getDurability(PlatinumArmorMaterial.BASE_DURABILITY))));
+
+    // Palladium armor — between iron and diamond, set bonus: cap radiation at 70%
+    public static final Item PALLADIUM_HELMET = registerItem("palladium_helmet",
+            new net.minecraft.world.item.ArmorItem(PalladiumArmorMaterial.PALLADIUM,
+                    net.minecraft.world.item.ArmorItem.Type.HELMET,
+                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.HELMET.getDurability(PalladiumArmorMaterial.BASE_DURABILITY))));
+    public static final Item PALLADIUM_CHESTPLATE = registerItem("palladium_chestplate",
+            new net.minecraft.world.item.ArmorItem(PalladiumArmorMaterial.PALLADIUM,
+                    net.minecraft.world.item.ArmorItem.Type.CHESTPLATE,
+                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.CHESTPLATE.getDurability(PalladiumArmorMaterial.BASE_DURABILITY))));
+    public static final Item PALLADIUM_LEGGINGS = registerItem("palladium_leggings",
+            new net.minecraft.world.item.ArmorItem(PalladiumArmorMaterial.PALLADIUM,
+                    net.minecraft.world.item.ArmorItem.Type.LEGGINGS,
+                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.LEGGINGS.getDurability(PalladiumArmorMaterial.BASE_DURABILITY))));
+    public static final Item PALLADIUM_BOOTS = registerItem("palladium_boots",
+            new net.minecraft.world.item.ArmorItem(PalladiumArmorMaterial.PALLADIUM,
+                    net.minecraft.world.item.ArmorItem.Type.BOOTS,
+                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.BOOTS.getDurability(PalladiumArmorMaterial.BASE_DURABILITY))));
 
     public static final Item TOXIC_WATER_BUCKET = registerItem("toxic_water_bucket",
             new BucketItem(com.example.alieninvasion.registry.ModFluids.TOXIC_WATER_STILL,
