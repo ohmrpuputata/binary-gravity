@@ -173,27 +173,21 @@ public final class RadiationManager {
         player.removeEffect(net.minecraft.world.effect.MobEffects.DARKNESS);
     }
 
-    private static void applyEffectsForTier(ServerPlayer player, int tier) {
-        var irrH = BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.IRRADIATION);
-        switch (tier) {
-            case 1 -> player.addEffect(new MobEffectInstance(irrH, 60, 0, false, true));
-            case 2 -> player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.WITHER, 60, 0, false, true));
-            case 3 -> {
-                player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.WITHER,            60, 1, false, true));
-                player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.WEAKNESS,          60, 0, false, true));
-                player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 60, 0, false, true));
-                player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.DIG_SLOWDOWN,      60, 0, false, true));
-                player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.HUNGER,            60, 0, false, true));
-            }
-            case 4 -> player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.DARKNESS, 60, 0, false, true));
-        }
-    }
-
-    /** Re-applies tier effects after milk is consumed — called from mixin. */
+    /** Re-applies all active tier effects after milk — called from mixin. */
     public static void reapplyDoseEffects(ServerPlayer player) {
         float dose = getDose(player);
         int tier = dose >= MAX_DOSE ? 4 : dose >= 75.0F ? 3 : dose >= 50.0F ? 2 : dose >= 25.0F ? 1 : 0;
-        if (tier > 0) applyEffectsForTier(player, tier);
+        if (tier < 1) return;
+        var irrH = BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.IRRADIATION);
+        player.addEffect(new MobEffectInstance(irrH, 100, 0, false, true));
+        if (tier >= 2) player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.WITHER,            100, 1, false, true));
+        if (tier >= 3) {
+            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.WEAKNESS,          100, 0, false, true));
+            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 100, 0, false, true));
+            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.DIG_SLOWDOWN,      100, 0, false, true));
+            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.HUNGER,            100, 0, false, true));
+        }
+        if (tier >= 4) player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.DARKNESS, 100, 0, false, true));
     }
 
     /** Per-second player update. Call once a second (e.g. tickCount % 20 == 0). */
@@ -217,15 +211,36 @@ public final class RadiationManager {
         setDose(id, dose);
         dose = getDose(player);
 
-        int newTier = dose >= MAX_DOSE ? 4 : dose >= 75.0F ? 3 : dose >= 50.0F ? 2 : dose >= 25.0F ? 1 : 0;
+        int newTier  = dose >= MAX_DOSE ? 4 : dose >= 75.0F ? 3 : dose >= 50.0F ? 2 : dose >= 25.0F ? 1 : 0;
         int prevTier = LAST_DOSE_TIER.getOrDefault(id, 0);
-        if (newTier != prevTier) {
-            removeAllDoseEffects(player);
+
+        // Tier decreased — strip effects that no longer apply
+        if (newTier < prevTier) {
+            if (newTier < 4) player.removeEffect(net.minecraft.world.effect.MobEffects.DARKNESS);
+            if (newTier < 3) {
+                player.removeEffect(net.minecraft.world.effect.MobEffects.WEAKNESS);
+                player.removeEffect(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN);
+                player.removeEffect(net.minecraft.world.effect.MobEffects.DIG_SLOWDOWN);
+                player.removeEffect(net.minecraft.world.effect.MobEffects.HUNGER);
+            }
+            if (newTier < 2) player.removeEffect(net.minecraft.world.effect.MobEffects.WITHER);
+            if (newTier < 1) player.removeEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.IRRADIATION));
             LAST_DOSE_TIER.put(id, newTier);
-            SCREEN_GLITCH.remove(id);
+        } else if (newTier > prevTier) {
+            LAST_DOSE_TIER.put(id, newTier);
         }
 
-        applyEffectsForTier(player, newTier);
+        // Apply all cumulative effects for active tiers
+        var irrH = BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.IRRADIATION);
+        if (newTier >= 1) player.addEffect(new MobEffectInstance(irrH, 60, 0, false, true));
+        if (newTier >= 2) player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.WITHER,            60, 1, false, true));
+        if (newTier >= 3) {
+            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.WEAKNESS,          60, 0, false, true));
+            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 60, 0, false, true));
+            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.DIG_SLOWDOWN,      60, 0, false, true));
+            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.HUNGER,            60, 0, false, true));
+        }
+        if (newTier >= 4) player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.DARKNESS, 60, 0, false, true));
 
         if (newTier >= 2) SCREEN_GLITCH.put(id, true);
         else              SCREEN_GLITCH.remove(id);

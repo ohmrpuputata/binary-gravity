@@ -73,6 +73,12 @@ public final class InfectionManager {
         setMeter(player.getUUID(), getMeter(player) + amount * mult);
     }
 
+    /** Cap the infection meter so it cannot exceed {@code max}. */
+    public static void capMeter(Player player, float max) {
+        float cur = getMeter(player);
+        if (cur > max) setMeter(player.getUUID(), max);
+    }
+
     public static void clear(Player player) {
         METER.remove(player.getUUID());
         STAND.remove(player.getUUID());
@@ -121,7 +127,7 @@ public final class InfectionManager {
             return;
         }
 
-        // Determine tier (0 = none, 1 = Poison I, 2 = +Nausea, 3 = Poison II + Infection)
+        // Cumulative tiers: 1=PoisonI, 2=+Nausea, 3=PoisonII+Infection
         var poisH = MobEffects.POISON;
         var nausH = MobEffects.CONFUSION;
         var infH  = BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.INFECTION);
@@ -129,29 +135,26 @@ public final class InfectionManager {
         int newTier  = meter >= 75.0F ? 3 : meter >= 50.0F ? 2 : meter >= 25.0F ? 1 : 0;
         int prevTier = LAST_TIER.getOrDefault(id, 0);
 
-        // Strip old effects when crossing a tier boundary so amplifiers don't linger
-        if (newTier != prevTier) {
-            player.removeEffect(poisH);
-            player.removeEffect(nausH);
-            player.removeEffect(infH);
+        // Tier decreased — strip effects that no longer apply
+        if (newTier < prevTier) {
+            if (newTier < 3) {
+                player.removeEffect(infH);
+                player.removeEffect(poisH); // re-add at correct amp below
+            }
+            if (newTier < 2) player.removeEffect(nausH);
+            if (newTier < 1) player.removeEffect(poisH);
+            LAST_TIER.put(id, newTier);
+        } else if (newTier > prevTier) {
             LAST_TIER.put(id, newTier);
         }
 
-        switch (newTier) {
-            case 3 -> {
-                player.addEffect(new MobEffectInstance(poisH, 100, 1, false, true));
-                player.addEffect(new MobEffectInstance(infH,  100, 0, false, true));
-            }
-            case 2 -> {
-                player.addEffect(new MobEffectInstance(poisH, 100, 0, false, true));
-                player.addEffect(new MobEffectInstance(nausH, 100, 0, false, true));
-            }
-            case 1 ->
-                player.addEffect(new MobEffectInstance(poisH, 100, 0, false, true));
-            default -> {
-                // tier 0: all effects already stripped above if tier changed, nothing to add
-            }
+        // Apply cumulative effects
+        if (newTier >= 1) {
+            int amp = newTier >= 3 ? 1 : 0; // Poison II at tier 3, Poison I otherwise
+            player.addEffect(new MobEffectInstance(poisH, 100, amp, false, true));
         }
+        if (newTier >= 2) player.addEffect(new MobEffectInstance(nausH, 100, 0, false, true));
+        if (newTier >= 3) player.addEffect(new MobEffectInstance(infH,  100, 0, false, true));
 
         if (meter >= 25.0F) {
             String c = meter >= 75.0F ? "§4" : meter >= 50.0F ? "§c" : "§e";

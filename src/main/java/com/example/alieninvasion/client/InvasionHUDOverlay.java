@@ -54,10 +54,11 @@ public class InvasionHUDOverlay implements HudRenderCallback {
         }
 
         // Рендерим радиационную виньетку (жёлто-зелёное мерцание как счётчик Гейгера)
-        boolean hasRadiation = mc.player.hasEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.RADIATION));
+        float doseHud = (float) com.example.alieninvasion.logic.RadiationManager.getDose(mc.player);
+        boolean hasRadiation = doseHud > 0.0F
+                || mc.player.hasEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.IRRADIATION));
         if (hasRadiation) {
-            var radEffect = mc.player.getEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.RADIATION));
-            int radAmplifier = radEffect != null ? radEffect.getAmplifier() : 0;
+            int radAmplifier = doseHud >= 75.0F ? 2 : doseHud >= 50.0F ? 1 : 0;
             long ticks = level.getGameTime();
 
             // Rapid flickering Geiger-counter pattern — сочетание трёх волн
@@ -83,24 +84,56 @@ public class InvasionHUDOverlay implements HudRenderCallback {
             guiGraphics.fill(0, thickness, thickness, rh - thickness, color);
             guiGraphics.fill(rw - thickness, thickness, rw, rh - thickness, color);
 
-            // Помехи-полосы при активном screen_glitch флаге
-            boolean glitch = com.example.alieninvasion.logic.RadiationManager.SCREEN_GLITCH
-                    .getOrDefault(mc.player.getUUID(), false);
-            if (glitch) {
-                java.util.Random flickerRng = new java.util.Random(ticks / 3);
-                for (int i = 0; i < 2 + radAmplifier; i++) {
-                    int barY = flickerRng.nextInt(rh);
-                    int barH = 1 + flickerRng.nextInt(3);
-                    int barAlpha = 10 + flickerRng.nextInt(30);
-                    guiGraphics.fill(0, barY, rw, barY + barH, (barAlpha << 24) | 0xB8E600);
-                }
-            }
-
             // Индикатор ☢ РАДИАЦИЯ в углу экрана
             String radText = "\u2622 \u0420\u0410\u0414\u0418\u0410\u0426\u0418\u042F";
             int textAlpha = (int) (pulse * 255);
             int textColor = (textAlpha << 24) | 0xB8E600;
             guiGraphics.drawString(mc.font, radText, 5, rh - 15, textColor, true);
+        }
+
+        // Помехи как старый телевизор — активны при dose >= 50% (SCREEN_GLITCH)
+        boolean glitch = com.example.alieninvasion.logic.RadiationManager.SCREEN_GLITCH
+                .getOrDefault(mc.player.getUUID(), false);
+        if (glitch) {
+            long tGlitch = level.getGameTime();
+            int gww = mc.getWindow().getGuiScaledWidth();
+            int gwh = mc.getWindow().getGuiScaledHeight();
+
+            // 1. Мерцающее затемнение всего экрана
+            java.util.Random baseRng = new java.util.Random(tGlitch);
+            int noiseAlpha = 15 + baseRng.nextInt(30);
+            guiGraphics.fill(0, 0, gww, gwh, (noiseAlpha << 24));
+
+            // 2. Горизонтальные полосы (светлые и тёмные, как на старом ТВ)
+            java.util.Random lineRng = new java.util.Random(tGlitch / 2);
+            for (int i = 0; i < 18; i++) {
+                int barY = lineRng.nextInt(gwh);
+                int barH = lineRng.nextInt(5) == 0 ? 2 + lineRng.nextInt(5) : 1;
+                int barAlpha = 15 + lineRng.nextInt(70);
+                int barCol = lineRng.nextInt(3) == 0 ? 0xDDDDDD : 0x111111;
+                guiGraphics.fill(0, barY, gww, barY + barH, (barAlpha << 24) | barCol);
+            }
+
+            // 3. Скользящая горизонтальная полоса (rolling scan)
+            int scanY = (int) ((tGlitch % 40) * gwh / 40.0);
+            guiGraphics.fill(0, scanY, gww, Math.min(scanY + 2, gwh), (50 << 24) | 0x888888);
+            guiGraphics.fill(0, Math.max(0, scanY - 1), gww, scanY,   (20 << 24) | 0xFFFFFF);
+
+            // 4. Редкие яркие вспышки на весь экран
+            java.util.Random flashRng = new java.util.Random(tGlitch / 4);
+            if (flashRng.nextInt(12) == 0) {
+                guiGraphics.fill(0, 0, gww, gwh, (18 << 24) | 0xFFFFFF);
+            }
+
+            // 5. Короткие горизонтальные артефакты (сдвиг строки)
+            java.util.Random shiftRng = new java.util.Random(tGlitch / 3 + 77);
+            for (int i = 0; i < 3; i++) {
+                int sy = shiftRng.nextInt(gwh);
+                int sw = 20 + shiftRng.nextInt(gww / 3);
+                int sx = shiftRng.nextInt(Math.max(1, gww - sw));
+                int sa = 20 + shiftRng.nextInt(50);
+                guiGraphics.fill(sx, sy, sx + sw, sy + 1, (sa << 24) | 0xB8E600);
+            }
         }
 
         // Screen darkening at infection >= 75%

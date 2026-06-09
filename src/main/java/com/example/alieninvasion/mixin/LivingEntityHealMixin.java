@@ -33,24 +33,18 @@ public class LivingEntityHealMixin {
             return;
         }
 
-        // Infection effects
+        // Infection effects (cumulative tiers)
         float meter = InfectionManager.getMeter(player);
-        if (meter >= 25.0F) {
-            var poisH = MobEffects.POISON;
-            var nausH = MobEffects.CONFUSION;
-            var infH  = BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.INFECTION);
-            if (meter >= 75.0F) {
-                self.addEffect(new MobEffectInstance(poisH, 100, 1, false, true));
-                self.addEffect(new MobEffectInstance(infH,  100, 0, false, true));
-            } else if (meter >= 50.0F) {
-                self.addEffect(new MobEffectInstance(poisH, 100, 0, false, true));
-                self.addEffect(new MobEffectInstance(nausH, 100, 0, false, true));
-            } else {
-                self.addEffect(new MobEffectInstance(poisH, 100, 0, false, true));
-            }
+        int infTier = meter >= 75.0F ? 3 : meter >= 50.0F ? 2 : meter >= 25.0F ? 1 : 0;
+        if (infTier >= 1) {
+            int amp = infTier >= 3 ? 1 : 0;
+            self.addEffect(new MobEffectInstance(MobEffects.POISON, 100, amp, false, true));
         }
+        if (infTier >= 2) self.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 100, 0, false, true));
+        if (infTier >= 3) self.addEffect(new MobEffectInstance(
+                BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.INFECTION), 100, 0, false, true));
 
-        // Radiation effects
+        // Radiation effects (cumulative tiers)
         RadiationManager.reapplyDoseEffects(player);
     }
 }

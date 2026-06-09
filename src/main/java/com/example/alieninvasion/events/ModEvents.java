@@ -814,7 +814,7 @@ public class ModEvents {
                     }
                 }
 
-                // Platinum / Palladium armor set bonus: cap radiation dose at 70%.
+                // Armor set bonuses: radiation/infection fill rate multipliers.
                 boolean fullPlatinum = player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.PLATINUM_HELMET)
                         && player.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.PLATINUM_CHESTPLATE)
                         && player.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.PLATINUM_LEGGINGS)
@@ -823,10 +823,26 @@ public class ModEvents {
                         && player.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.PALLADIUM_CHESTPLATE)
                         && player.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.PALLADIUM_LEGGINGS)
                         && player.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.PALLADIUM_BOOTS);
-                com.example.alieninvasion.logic.RadiationManager.setDoseMultiplier(player, fullPlatinum ? 0.5F : 1.0F);
-                com.example.alieninvasion.logic.InfectionManager.setMeterMultiplier(player, fullPalladium ? 0.5F : 1.0F);
-                if (fullPlatinum || fullPalladium) {
+                boolean fullHazmat = player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.ALIEN_HAZMAT_HELMET)
+                        && player.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.ALIEN_HAZMAT_CHESTPLATE)
+                        && player.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.ALIEN_HAZMAT_LEGGINGS)
+                        && player.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.ALIEN_HAZMAT_BOOTS);
+                boolean fullChem = player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.ALIEN_CHEM_HELMET)
+                        && player.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.ALIEN_CHEM_CHESTPLATE)
+                        && player.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.ALIEN_CHEM_LEGGINGS)
+                        && player.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.ALIEN_CHEM_BOOTS);
+
+                // Dose multiplier: chem(×5 slower) > hazmat(×3 slower) > platinum(×2 slower) > default
+                float doseMult = fullChem ? 0.2F : fullHazmat ? (1.0F / 3.0F) : fullPlatinum ? 0.5F : 1.0F;
+                // Meter multiplier: chem(×5 slower) > hazmat(×3 slower) > palladium(×2 slower) > default
+                float meterMult = fullChem ? 0.2F : fullHazmat ? (1.0F / 3.0F) : fullPalladium ? 0.5F : 1.0F;
+                com.example.alieninvasion.logic.RadiationManager.setDoseMultiplier(player, doseMult);
+                com.example.alieninvasion.logic.InfectionManager.setMeterMultiplier(player, meterMult);
+                if (fullPlatinum) {
                     com.example.alieninvasion.logic.RadiationManager.capDose(player, 70.0F);
+                }
+                if (fullPalladium) {
+                    com.example.alieninvasion.logic.InfectionManager.capMeter(player, 70.0F);
                 }
 
                 // Cosmic Armor set bonus + alien-block hazard.
