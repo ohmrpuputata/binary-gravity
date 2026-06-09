@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.Map;
@@ -35,8 +36,9 @@ public final class InfectionManager {
     private static final int GRACE_SECONDS = 2;
     private static final float GAIN = 8.0F;  // meter per second while standing (post-grace)
 
-    private static final Map<UUID, Float> METER = new ConcurrentHashMap<>();
-    private static final Map<UUID, Integer> STAND = new ConcurrentHashMap<>();
+    private static final Map<UUID, Float>   METER      = new ConcurrentHashMap<>();
+    private static final Map<UUID, Integer> STAND      = new ConcurrentHashMap<>();
+    private static final Map<UUID, Integer> LAST_TIER  = new ConcurrentHashMap<>();
 
     public static float getMeter(UUID id) {
         return METER.getOrDefault(id, 0.0F);
@@ -66,6 +68,7 @@ public final class InfectionManager {
     public static void clear(Player player) {
         METER.remove(player.getUUID());
         STAND.remove(player.getUUID());
+        LAST_TIER.remove(player.getUUID());
     }
 
     /**
@@ -110,15 +113,36 @@ public final class InfectionManager {
             return;
         }
 
-        var infHolder = BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.INFECTION);
-        if (meter >= 75.0F) {
-            player.addEffect(new MobEffectInstance(infHolder, 120, 1, false, true));
-            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.CONFUSION, 120, 0, false, true));
-        } else if (meter >= 50.0F) {
-            player.addEffect(new MobEffectInstance(infHolder, 120, 0, false, true));
-            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.CONFUSION, 120, 0, false, true));
-        } else if (meter >= 25.0F) {
-            player.addEffect(new MobEffectInstance(infHolder, 120, 0, false, true));
+        // Determine tier (0 = none, 1 = Poison I, 2 = +Nausea, 3 = Poison II + Infection)
+        var poisH = MobEffects.POISON;
+        var nausH = MobEffects.CONFUSION;
+        var infH  = BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.INFECTION);
+
+        int newTier  = meter >= 75.0F ? 3 : meter >= 50.0F ? 2 : meter >= 25.0F ? 1 : 0;
+        int prevTier = LAST_TIER.getOrDefault(id, 0);
+
+        // Strip old effects when crossing a tier boundary so amplifiers don't linger
+        if (newTier != prevTier) {
+            player.removeEffect(poisH);
+            player.removeEffect(nausH);
+            player.removeEffect(infH);
+            LAST_TIER.put(id, newTier);
+        }
+
+        switch (newTier) {
+            case 3 -> {
+                player.addEffect(new MobEffectInstance(poisH, 100, 1, false, true));
+                player.addEffect(new MobEffectInstance(infH,  100, 0, false, true));
+            }
+            case 2 -> {
+                player.addEffect(new MobEffectInstance(poisH, 100, 0, false, true));
+                player.addEffect(new MobEffectInstance(nausH, 100, 0, false, true));
+            }
+            case 1 ->
+                player.addEffect(new MobEffectInstance(poisH, 100, 0, false, true));
+            default -> {
+                // tier 0: all effects already stripped above if tier changed, nothing to add
+            }
         }
 
         if (meter >= 25.0F) {
