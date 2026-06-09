@@ -9,8 +9,8 @@ import net.minecraft.world.level.block.Block;
 
 public enum ModToolTiers implements Tier {
     PLATINUM(1561, 6.0F, 2.0F, 14),
-    PALLADIUM(250, 8.0F, 3.0F, 10),
-    NIBIRIUM(3000, 9.5F, 5.0F, 20);
+    PALLADIUM(500,  8.0F, 3.0F, 10),
+    NIBIRIUM(1561,  9.5F, 5.0F, 20);
 
     private final int uses;
     private final float speed;
