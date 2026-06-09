@@ -1,14 +1,14 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "AAA",
-    "S B",
-    "  B"
+    " RP",
+    "DRP",
+    " PP"
   ],
   "key": {
-    "A": { "item": "alien-invasion:alien_alloy" },
-    "S": { "item": "alien-invasion:cosmic_shard" },
-    "B": { "item": "alien-invasion:alien_battery" }
+    "R": { "item": "alien-invasion:radiation_crystal" },
+    "P": { "item": "alien-invasion:palladium_ingot" },
+    "D": { "item": "minecraft:diamond_block" }
   },
   "result": { "id": "alien-invasion:alien_blaster", "count": 1 }
 }

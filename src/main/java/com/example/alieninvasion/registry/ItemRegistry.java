@@ -129,7 +129,7 @@ public class ItemRegistry {
             new com.example.alieninvasion.item.PurifierItem(new Item.Properties().rarity(Rarity.UNCOMMON).durability(250)));
 
     public static final Item ALIEN_BLASTER = registerItem("alien_blaster",
-            new AlienBlasterItem(new Item.Properties().rarity(Rarity.RARE).durability(30)));
+            new AlienBlasterItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
 
     public static final Item PLASMA_BOLT_ITEM = registerItem("plasma_bolt",
             new Item(new Item.Properties()));

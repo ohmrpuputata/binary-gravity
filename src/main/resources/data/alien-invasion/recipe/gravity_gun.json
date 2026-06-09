@@ -1,11 +1,14 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": ["ADA", "IRI", " I "],
+  "pattern": [
+    " CP",
+    "ECP",
+    " PP"
+  ],
   "key": {
-    "A": { "item": "alien-invasion:alien_alloy" },
-    "D": { "item": "minecraft:diamond" },
-    "I": { "item": "minecraft:iron_ingot" },
-    "R": { "item": "minecraft:redstone_block" }
+    "C": { "item": "alien-invasion:cosmic_shard" },
+    "P": { "item": "alien-invasion:platinum_ingot" },
+    "E": { "item": "minecraft:emerald_block" }
   },
   "result": { "id": "alien-invasion:gravity_gun", "count": 1 }
 }

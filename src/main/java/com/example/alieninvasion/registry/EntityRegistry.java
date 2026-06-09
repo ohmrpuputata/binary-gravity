@@ -207,6 +207,13 @@ public class EntityRegistry {
                     .sized(0.25f, 0.25f).build("acid_bolt")
     );
 
+    public static final EntityType<com.example.alieninvasion.entity.RadiationBoltEntity> RADIATION_BOLT = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "radiation_bolt"),
+            EntityType.Builder.<com.example.alieninvasion.entity.RadiationBoltEntity>of(com.example.alieninvasion.entity.RadiationBoltEntity::new, MobCategory.MISC)
+                    .sized(0.25f, 0.25f).build("radiation_bolt")
+    );
+
     public static void registerEntities() {
         // Attributes registration
         FabricDefaultAttributeRegistry.register(ALIEN_GRUNT, AlienGruntEntity.createAttributes());

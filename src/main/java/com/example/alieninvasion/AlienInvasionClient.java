@@ -67,6 +67,8 @@ public class AlienInvasionClient implements ClientModInitializer {
                                 ctx -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(ctx));
                 EntityRendererRegistry.register(EntityRegistry.ACID_BOLT,
                                 ctx -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(ctx));
+                EntityRendererRegistry.register(EntityRegistry.RADIATION_BOLT,
+                                ctx -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(ctx));
                 EntityRendererRegistry.register(EntityRegistry.SKY_DRONE,
                                 com.example.alieninvasion.client.SkyDroneRenderer::new);
                 EntityRendererRegistry.register(EntityRegistry.CAVE_LURKER,
