@@ -147,7 +147,7 @@ public class InvasionHUDOverlay implements HudRenderCallback {
             int barColor = dose >= 80 ? 0xFFFF3020 : dose >= 45 ? 0xFFFF8C30 : 0xFFB8E600;
             guiGraphics.fill(barX - 1, barY - 1, barX + barW + 1, barY + barH + 1, 0xFF0A0F0A);
             guiGraphics.fill(barX, barY, barX + fill, barY + barH, barColor);
-            guiGraphics.drawString(mc.font, "☢ " + (int) dose + " рад", barX, barY - 10, barColor, true);
+            guiGraphics.drawString(mc.font, "☢ " + (int) dose + "%", barX, barY - 10, barColor, true);
         }
 
         // ☣ Infection scale (sits just above the dose bar). Single-player reads the

@@ -194,7 +194,7 @@ public final class RadiationManager {
         if (exposure > 0.0F || dose >= 25.0F) {
             String color = dose >= 75.0F ? "§4" : dose >= 50.0F ? "§c" : dose >= 25.0F ? "§e" : "§a";
             player.displayClientMessage(Component.literal(
-                    color + "☢ Доза облучения: " + (int) dose + " рад"), true);
+                    color + "☢ Облучение: " + (int) dose + "%"), true);
             if (exposure > 0.0F && level.random.nextFloat() < Math.min(0.8F, 0.1F + exposure * 0.06F)) {
                 level.playSound(null, player.blockPosition(), SoundEvents.STONE_BUTTON_CLICK_ON,
                         SoundSource.PLAYERS, 0.25F, 1.7F + level.random.nextFloat() * 0.6F);

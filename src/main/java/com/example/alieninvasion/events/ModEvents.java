@@ -787,7 +787,6 @@ public class ModEvents {
                     com.example.alieninvasion.logic.RadiationManager.tickPlayer(level, player);
                     // Block-distance radiation from Pure Radiation Blocks (spec model).
                     com.example.alieninvasion.logic.RadiationFieldManager.tickPlayer(level, player);
-                    com.example.alieninvasion.logic.RadiationFieldManager.radiateCreatures(level, player);
                     radiatePeacefulEntities(level, player);
 
                     // Psychic Pressure check (Tyrant, Telekinetic, Hive)
