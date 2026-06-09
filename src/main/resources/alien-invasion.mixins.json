@@ -8,6 +8,7 @@
     "PlayerMixin",
     "ItemMixin",
     "LivingEntityAccessor",
+    "LivingEntityHealMixin",
     "MobMixin",
     "EntityNameMixin"
   ],
