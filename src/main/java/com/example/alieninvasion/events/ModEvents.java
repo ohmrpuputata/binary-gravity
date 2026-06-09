@@ -853,7 +853,11 @@ public class ModEvents {
                 boolean onAlienGround = isAlienGround(level.getBlockState(player.blockPosition().below()))
                         || isAlienGround(level.getBlockState(player.blockPosition()));
                 if (fullCosmic) {
+                    // Full immunity to infection and radiation
                     player.removeEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.INFECTION));
+                    com.example.alieninvasion.logic.RadiationManager.clearDose(player);
+                    com.example.alieninvasion.logic.RadiationManager.removeAllDoseEffects(player);
+                    com.example.alieninvasion.logic.RadiationManager.SCREEN_GLITCH.remove(player.getUUID());
                     // SET BONUS: the full Cosmic suit is the late-game power reward - it
                     // shrugs off blows, mends the wearer and lets them see in the dark, so
                     // facing the strengthened swarm finally feels winnable.

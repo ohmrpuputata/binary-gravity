@@ -163,7 +163,7 @@ public final class RadiationManager {
         setDose(player.getUUID(), getDose(player) + amount * mult);
     }
 
-    private static void removeAllDoseEffects(ServerPlayer player) {
+    public static void removeAllDoseEffects(ServerPlayer player) {
         player.removeEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.IRRADIATION));
         player.removeEffect(net.minecraft.world.effect.MobEffects.WITHER);
         player.removeEffect(net.minecraft.world.effect.MobEffects.WEAKNESS);
