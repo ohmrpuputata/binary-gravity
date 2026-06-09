@@ -104,9 +104,6 @@ public final class RadiationManager {
                 || state.is(ModBlocks.PURE_RADIATION_CRYSTAL_ORE)) {
             return 5;
         }
-        if (state.is(ModBlocks.COSMIC_CRYSTAL)) {
-            return 3;
-        }
         if (state.is(ModBlocks.TOXIC_WATER) || state.is(ModBlocks.TOXIC_BARREL)
                 || state.is(ModBlocks.INFESTED_STONE) || state.is(ModBlocks.ALIEN_RESIDUE)) {
             return 1;

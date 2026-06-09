@@ -1,12 +1,10 @@
 package com.example.alieninvasion.block;
 
-import com.example.alieninvasion.registry.ModEffects;
+import com.example.alieninvasion.logic.InfectionManager;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -28,16 +26,16 @@ public class CosmicCrystalBlock extends Block {
 
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (!level.isClientSide) {
-            AABB area = new AABB(pos).inflate(5.0D);
-            for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, area)) {
-                if (!com.example.alieninvasion.entity.AlienUtils.isAlliedTo(null, entity)) {
-                    entity.addEffect(new MobEffectInstance(
-                        BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.RADIATION), 100, 0, false, true
-                    ));
-                }
-            }
-            level.scheduleTick(pos, this, 20);
+        AABB wide = new AABB(pos).inflate(32.0D);
+        for (ServerPlayer player : level.getEntitiesOfClass(ServerPlayer.class, wide)) {
+            if (player.isCreative() || player.isSpectator() || player.getAbilities().invulnerable) continue;
+            double dist = Math.sqrt(player.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5));
+            float amount;
+            if (dist <= 8.0)       amount = 20.0F;
+            else if (dist <= 16.0) amount = 10.0F;
+            else                   amount = 5.0F;
+            InfectionManager.addMeter(player, amount);
         }
+        level.scheduleTick(pos, this, 20);
     }
 }
