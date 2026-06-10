@@ -42,7 +42,8 @@ public final class RadiationManager {
     private static final Map<UUID, Float>   DOSE_MULT      = new ConcurrentHashMap<>();
     private static final Map<UUID, Integer> LAST_DOSE_TIER = new ConcurrentHashMap<>();
     private static final Map<UUID, Float>   HEALTH_DRAIN   = new ConcurrentHashMap<>();
-    public  static final Map<UUID, Boolean> SCREEN_GLITCH  = new ConcurrentHashMap<>();
+    /** 0=нет, 1=лёгкие помехи (медленный рост), 2=сильные помехи (быстрый рост/макс). */
+    public  static final Map<UUID, Integer> SCREEN_GLITCH  = new ConcurrentHashMap<>();
     /** UUID игроков, у которых следующий вызов hurtTo() не должен показывать анимацию урона. */
     public  static final java.util.Set<UUID> SUPPRESS_HURT_ANIM = java.util.Collections.newSetFromMap(new ConcurrentHashMap<>());
 
@@ -281,8 +282,9 @@ public final class RadiationManager {
             applyHealthDrain(player, id);
         }
 
-        // Глитч — вблизи источника при стремительном росте ИЛИ при максимальном облучении
-        if ((exposure > 0.0F && doseDelta >= 1.5F) || dose >= MAX_DOSE) SCREEN_GLITCH.put(id, true);
+        // Помехи: 2=сильные (быстрый рост ≥1.5%/с или макс доза), 1=лёгкие (любой рост вблизи), 0=нет
+        if ((exposure > 0.0F && doseDelta >= 1.5F) || dose >= MAX_DOSE) SCREEN_GLITCH.put(id, 2);
+        else if (exposure > 0.0F && doseDelta > 0.0F)                   SCREEN_GLITCH.put(id, 1);
         else                                                              SCREEN_GLITCH.remove(id);
 
         // Звук счётчика Гейгера вблизи источников
