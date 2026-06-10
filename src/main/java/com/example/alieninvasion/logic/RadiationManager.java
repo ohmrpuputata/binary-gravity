@@ -281,7 +281,7 @@ public final class RadiationManager {
             applyHealthDrain(player, id);
         }
 
-        // Глитч — вблизи источника: 2=сильный (≥1.5/сек), 1=лёгкий (любой рост)
+        // Помехи: 2=сильные (быстрый рост ≥1.5%/с), 1=лёгкие (любой рост вблизи), 0=нет
         if      (exposure > 0.0F && doseDelta >= 1.5F) SCREEN_GLITCH.put(id, 2);
         else if (exposure > 0.0F && doseDelta > 0.0F)  SCREEN_GLITCH.put(id, 1);
         else                                            SCREEN_GLITCH.remove(id);

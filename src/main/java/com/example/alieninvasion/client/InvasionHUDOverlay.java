@@ -59,53 +59,55 @@ public class InvasionHUDOverlay implements HudRenderCallback {
         // Помехи — вблизи источника: 1=лёгкие, 2=сильные (как старый телевизор)
         int glitchLevel = com.example.alieninvasion.logic.RadiationManager.SCREEN_GLITCH
                 .getOrDefault(mc.player.getUUID(), 0);
-        if (glitchLevel >= 2) {
+        if (glitchLevel >= 1) {
             long tGlitch = level.getGameTime();
             int gww = mc.getWindow().getGuiScaledWidth();
             int gwh = mc.getWindow().getGuiScaledHeight();
 
-            java.util.Random baseRng = new java.util.Random(tGlitch);
-            int noiseAlpha = 15 + baseRng.nextInt(30);
-            guiGraphics.fill(0, 0, gww, gwh, (noiseAlpha << 24));
+            if (glitchLevel >= 2) {
+                // Сильные помехи — полная TV-статика
+                java.util.Random baseRng = new java.util.Random(tGlitch);
+                int noiseAlpha = 15 + baseRng.nextInt(30);
+                guiGraphics.fill(0, 0, gww, gwh, (noiseAlpha << 24));
 
-            java.util.Random lineRng = new java.util.Random(tGlitch / 2);
-            for (int i = 0; i < 18; i++) {
-                int barY = lineRng.nextInt(gwh);
-                int barH = lineRng.nextInt(5) == 0 ? 2 + lineRng.nextInt(5) : 1;
-                int barAlpha = 15 + lineRng.nextInt(70);
-                int barCol = lineRng.nextInt(3) == 0 ? 0xDDDDDD : 0x111111;
-                guiGraphics.fill(0, barY, gww, barY + barH, (barAlpha << 24) | barCol);
-            }
+                java.util.Random lineRng = new java.util.Random(tGlitch / 2);
+                for (int i = 0; i < 18; i++) {
+                    int barY = lineRng.nextInt(gwh);
+                    int barH = lineRng.nextInt(5) == 0 ? 2 + lineRng.nextInt(5) : 1;
+                    int barAlpha = 15 + lineRng.nextInt(70);
+                    int barCol = lineRng.nextInt(3) == 0 ? 0xDDDDDD : 0x111111;
+                    guiGraphics.fill(0, barY, gww, barY + barH, (barAlpha << 24) | barCol);
+                }
 
-            int scanY = (int) ((tGlitch % 40) * gwh / 40.0);
-            guiGraphics.fill(0, scanY, gww, Math.min(scanY + 2, gwh), (50 << 24) | 0x888888);
-            guiGraphics.fill(0, Math.max(0, scanY - 1), gww, scanY, (20 << 24) | 0xFFFFFF);
+                int scanY = (int) ((tGlitch % 40) * gwh / 40.0);
+                guiGraphics.fill(0, scanY, gww, Math.min(scanY + 2, gwh), (50 << 24) | 0x888888);
+                guiGraphics.fill(0, Math.max(0, scanY - 1), gww, scanY, (20 << 24) | 0xFFFFFF);
 
-            java.util.Random flashRng = new java.util.Random(tGlitch / 4);
-            if (flashRng.nextInt(12) == 0) {
-                guiGraphics.fill(0, 0, gww, gwh, (18 << 24) | 0xFFFFFF);
-            }
+                java.util.Random flashRng = new java.util.Random(tGlitch / 4);
+                if (flashRng.nextInt(12) == 0) {
+                    guiGraphics.fill(0, 0, gww, gwh, (18 << 24) | 0xFFFFFF);
+                }
 
-            java.util.Random shiftRng = new java.util.Random(tGlitch / 3 + 77);
-            for (int i = 0; i < 3; i++) {
-                int sy = shiftRng.nextInt(gwh);
-                int sw = 20 + shiftRng.nextInt(gww / 3);
-                int sx = shiftRng.nextInt(Math.max(1, gww - sw));
-                int sa = 20 + shiftRng.nextInt(50);
-                guiGraphics.fill(sx, sy, sx + sw, sy + 1, (sa << 24) | 0xB8E600);
-            }
-        } else if (glitchLevel == 1) {
-            long tGlitch = level.getGameTime();
-            int gww = mc.getWindow().getGuiScaledWidth();
-            int gwh = mc.getWindow().getGuiScaledHeight();
-            java.util.Random rng = new java.util.Random(tGlitch / 3);
-            int flicker = 4 + rng.nextInt(8);
-            guiGraphics.fill(0, 0, gww, gwh, (flicker << 24) | 0xB8E600);
-            java.util.Random lineRng = new java.util.Random(tGlitch / 5);
-            for (int i = 0; i < 3; i++) {
-                int ly = lineRng.nextInt(gwh);
-                int la = 8 + lineRng.nextInt(18);
-                guiGraphics.fill(0, ly, gww, ly + 1, (la << 24) | 0xDDDDDD);
+                java.util.Random shiftRng = new java.util.Random(tGlitch / 3 + 77);
+                for (int i = 0; i < 3; i++) {
+                    int sy = shiftRng.nextInt(gwh);
+                    int sw = 20 + shiftRng.nextInt(gww / 3);
+                    int sx = shiftRng.nextInt(Math.max(1, gww - sw));
+                    int sa = 20 + shiftRng.nextInt(50);
+                    guiGraphics.fill(sx, sy, sx + sw, sy + 1, (sa << 24) | 0xB8E600);
+                }
+            } else {
+                // Лёгкие помехи — едва заметное мерцание яркости + 2-3 тонкие полосы
+                java.util.Random rng = new java.util.Random(tGlitch / 3);
+                int flicker = 4 + rng.nextInt(8);
+                guiGraphics.fill(0, 0, gww, gwh, (flicker << 24) | 0xB8E600);
+
+                java.util.Random lineRng = new java.util.Random(tGlitch / 5);
+                for (int i = 0; i < 3; i++) {
+                    int ly = lineRng.nextInt(gwh);
+                    int la = 8 + lineRng.nextInt(18);
+                    guiGraphics.fill(0, ly, gww, ly + 1, (la << 24) | 0xDDDDDD);
+                }
             }
         }
 
