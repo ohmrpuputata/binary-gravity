@@ -83,6 +83,9 @@ public final class InfectionManager {
         METER.remove(player.getUUID());
         STAND.remove(player.getUUID());
         LAST_TIER.remove(player.getUUID());
+        if (player instanceof net.minecraft.server.level.ServerPlayer sp && !sp.level().isClientSide) {
+            sp.removeEffect(MobEffects.CONFUSION);
+        }
     }
 
     /**
@@ -99,6 +102,7 @@ public final class InfectionManager {
         }
 
         float meter = getMeter(id);
+        float meterBefore = meter;
         if (onAlienGround) {
             int stood = STAND.merge(id, 1, Integer::sum);
             if (stood <= GRACE_SECONDS) {
@@ -120,6 +124,15 @@ public final class InfectionManager {
         }
         setMeter(id, meter);
         meter = getMeter(id);
+        float meterDelta = meter - meterBefore;
+
+        // Тошнота при заражении: пока метр растёт — накладываем CONFUSION (как помехи у радиации)
+        if (meterDelta > 0.0F) {
+            var existing = player.getEffect(MobEffects.CONFUSION);
+            if (existing == null || existing.getDuration() < 60) {
+                player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 260, 0, false, true));
+            }
+        }
 
         // Death at 100%
         if (meter >= MAX) {
@@ -127,9 +140,8 @@ public final class InfectionManager {
             return;
         }
 
-        // Cumulative tiers: 1=PoisonI, 2=+Nausea, 3=PoisonII+Infection
+        // Cumulative tiers: 1=PoisonI, 3=PoisonII+Infection (тошнота теперь proximity-based)
         var poisH = MobEffects.POISON;
-        var nausH = MobEffects.CONFUSION;
         var infH  = BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.INFECTION);
 
         int newTier  = meter >= 75.0F ? 3 : meter >= 50.0F ? 2 : meter >= 25.0F ? 1 : 0;
@@ -141,7 +153,6 @@ public final class InfectionManager {
                 player.removeEffect(infH);
                 player.removeEffect(poisH); // re-add at correct amp below
             }
-            if (newTier < 2) player.removeEffect(nausH);
             if (newTier < 1) player.removeEffect(poisH);
             LAST_TIER.put(id, newTier);
         } else if (newTier > prevTier) {
@@ -153,7 +164,6 @@ public final class InfectionManager {
             int amp = newTier >= 3 ? 1 : 0; // Poison II at tier 3, Poison I otherwise
             player.addEffect(new MobEffectInstance(poisH, 100, amp, false, true));
         }
-        if (newTier >= 2) player.addEffect(new MobEffectInstance(nausH, 100, 0, false, true));
         if (newTier >= 3) player.addEffect(new MobEffectInstance(infH,  100, 0, false, true));
 
     }

@@ -56,10 +56,10 @@ public class InvasionHUDOverlay implements HudRenderCallback {
         boolean hasRadiation = doseHud > 0.0F
                 || mc.player.hasEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.IRRADIATION));
 
-        // Помехи как старый телевизор — активны вблизи источника при стремительном росте (SCREEN_GLITCH)
-        boolean glitch = com.example.alieninvasion.logic.RadiationManager.SCREEN_GLITCH
-                .getOrDefault(mc.player.getUUID(), false);
-        if (glitch) {
+        // Помехи — вблизи источника: 1=лёгкие, 2=сильные (как старый телевизор)
+        int glitchLevel = com.example.alieninvasion.logic.RadiationManager.SCREEN_GLITCH
+                .getOrDefault(mc.player.getUUID(), 0);
+        if (glitchLevel >= 2) {
             long tGlitch = level.getGameTime();
             int gww = mc.getWindow().getGuiScaledWidth();
             int gwh = mc.getWindow().getGuiScaledHeight();
@@ -93,6 +93,19 @@ public class InvasionHUDOverlay implements HudRenderCallback {
                 int sx = shiftRng.nextInt(Math.max(1, gww - sw));
                 int sa = 20 + shiftRng.nextInt(50);
                 guiGraphics.fill(sx, sy, sx + sw, sy + 1, (sa << 24) | 0xB8E600);
+            }
+        } else if (glitchLevel == 1) {
+            long tGlitch = level.getGameTime();
+            int gww = mc.getWindow().getGuiScaledWidth();
+            int gwh = mc.getWindow().getGuiScaledHeight();
+            java.util.Random rng = new java.util.Random(tGlitch / 3);
+            int flicker = 4 + rng.nextInt(8);
+            guiGraphics.fill(0, 0, gww, gwh, (flicker << 24) | 0xB8E600);
+            java.util.Random lineRng = new java.util.Random(tGlitch / 5);
+            for (int i = 0; i < 3; i++) {
+                int ly = lineRng.nextInt(gwh);
+                int la = 8 + lineRng.nextInt(18);
+                guiGraphics.fill(0, ly, gww, ly + 1, (la << 24) | 0xDDDDDD);
             }
         }
 
