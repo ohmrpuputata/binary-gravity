@@ -106,9 +106,13 @@ public final class InfectionManager {
         meter = getMeter(id);
         float meterDelta = meter - meterBefore;
 
-        // Тошнота — только пока статус Заражения активно повышается (аналог помех у радиации)
+        // Тошнота — только пока статус активно растёт; не сбрасываем экземпляр каждый тик,
+        // иначе ticksActive никогда не накопится и качание экрана не нарастёт.
         if (meterDelta > 0.0F) {
-            player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 80, 0, false, false));
+            var existing = player.getEffect(MobEffects.CONFUSION);
+            if (existing == null || existing.getDuration() < 60) {
+                player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 260, 0, false, true));
+            }
         }
 
         if (meter >= MAX) {

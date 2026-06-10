@@ -282,10 +282,10 @@ public final class RadiationManager {
             applyHealthDrain(player, id);
         }
 
-        // Помехи: 2=сильные (быстрый рост ≥1.5%/с или макс доза), 1=лёгкие (любой рост вблизи), 0=нет
-        if ((exposure > 0.0F && doseDelta >= 1.5F) || dose >= MAX_DOSE) SCREEN_GLITCH.put(id, 2);
-        else if (exposure > 0.0F && doseDelta > 0.0F)                   SCREEN_GLITCH.put(id, 1);
-        else                                                              SCREEN_GLITCH.remove(id);
+        // Помехи: 2=сильные (быстрый рост ≥1.5%/с), 1=лёгкие (любой рост вблизи), 0=нет
+        if (exposure > 0.0F && doseDelta >= 1.5F)  SCREEN_GLITCH.put(id, 2);
+        else if (exposure > 0.0F && doseDelta > 0.0F) SCREEN_GLITCH.put(id, 1);
+        else                                        SCREEN_GLITCH.remove(id);
 
         // Звук счётчика Гейгера вблизи источников
         if (exposure > 0.0F && level.random.nextFloat() < Math.min(0.8F, 0.1F + exposure * 0.06F)) {

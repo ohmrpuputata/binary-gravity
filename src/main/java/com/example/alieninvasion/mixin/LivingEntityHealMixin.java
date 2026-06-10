@@ -40,7 +40,7 @@ public class LivingEntityHealMixin {
             int amp = infTier >= 3 ? 1 : 0;
             self.addEffect(new MobEffectInstance(MobEffects.POISON, 100, amp, false, true));
         }
-        if (infTier >= 2) self.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 100, 0, false, true));
+        // Тошнота убрана из тиров — теперь применяется только при активном росте заражения
         if (infTier >= 3) self.addEffect(new MobEffectInstance(
                 BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.INFECTION), 100, 0, false, true));
 
