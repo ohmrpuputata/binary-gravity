@@ -264,15 +264,10 @@ public final class RadiationManager {
         if (exposure > 0.0F && doseDelta >= 1.5F) SCREEN_GLITCH.put(id, true);
         else                                       SCREEN_GLITCH.remove(id);
 
-        // HUD feedback: readout + Geiger clicks
-        if (exposure > 0.0F || dose >= 25.0F) {
-            String color = dose >= 75.0F ? "§4" : dose >= 50.0F ? "§c" : dose >= 25.0F ? "§e" : "§a";
-            player.displayClientMessage(Component.literal(
-                    color + "☢ Облучение: " + (int) dose + "%"), true);
-            if (exposure > 0.0F && level.random.nextFloat() < Math.min(0.8F, 0.1F + exposure * 0.06F)) {
-                level.playSound(null, player.blockPosition(), SoundEvents.STONE_BUTTON_CLICK_ON,
-                        SoundSource.PLAYERS, 0.25F, 1.7F + level.random.nextFloat() * 0.6F);
-            }
+        // Звук счётчика Гейгера вблизи источников
+        if (exposure > 0.0F && level.random.nextFloat() < Math.min(0.8F, 0.1F + exposure * 0.06F)) {
+            level.playSound(null, player.blockPosition(), SoundEvents.STONE_BUTTON_CLICK_ON,
+                    SoundSource.PLAYERS, 0.25F, 1.7F + level.random.nextFloat() * 0.6F);
         }
     }
 

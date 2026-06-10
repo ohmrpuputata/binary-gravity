@@ -156,9 +156,5 @@ public final class InfectionManager {
         if (newTier >= 2) player.addEffect(new MobEffectInstance(nausH, 100, 0, false, true));
         if (newTier >= 3) player.addEffect(new MobEffectInstance(infH,  100, 0, false, true));
 
-        if (meter >= 25.0F) {
-            String c = meter >= 75.0F ? "§4" : meter >= 50.0F ? "§c" : "§e";
-            player.displayClientMessage(Component.literal(c + "☣ Заражение: " + (int) meter + "%"), true);
-        }
     }
 }
