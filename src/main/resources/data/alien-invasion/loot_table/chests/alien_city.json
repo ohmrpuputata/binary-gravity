@@ -4,7 +4,7 @@
     {
       "rolls": { "type": "minecraft:uniform", "min": 3, "max": 5 },
       "entries": [
-        { "type": "minecraft:item", "name": "alien-invasion:alien_alloy", "weight": 20, "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 2, "max": 5 } }] },
+        { "type": "minecraft:item", "name": "alien-invasion:nibirium_ingot", "weight": 20, "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1, "max": 3 } }] },
         { "type": "minecraft:item", "name": "alien-invasion:cosmic_shard", "weight": 16, "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1, "max": 4 } }] },
         { "type": "minecraft:item", "name": "alien-invasion:cosmic_ingot", "weight": 10, "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1, "max": 2 } }] },
         { "type": "minecraft:item", "name": "alien-invasion:alien_battery", "weight": 12, "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1, "max": 2 } }] },

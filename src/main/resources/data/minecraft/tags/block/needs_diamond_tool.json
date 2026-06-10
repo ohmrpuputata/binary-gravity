@@ -1,8 +1,4 @@
 {
   "replace": false,
-  "values": [
-    "alien-invasion:plasma_ore",
-    "alien-invasion:iridium_ore",
-    "alien-invasion:dark_matter_ore"
-  ]
+  "values": []
 }

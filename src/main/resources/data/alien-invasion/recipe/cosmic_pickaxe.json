@@ -1,9 +1,0 @@
-{
-  "type": "minecraft:crafting_shaped",
-  "pattern": ["III", " D ", " D "],
-  "key": {
-    "I": { "item": "alien-invasion:cosmic_ingot" },
-    "D": { "item": "minecraft:diamond" }
-  },
-  "result": { "id": "alien-invasion:cosmic_pickaxe", "count": 1 }
-}
