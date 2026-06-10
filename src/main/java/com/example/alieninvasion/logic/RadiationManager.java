@@ -43,6 +43,8 @@ public final class RadiationManager {
     private static final Map<UUID, Integer> LAST_DOSE_TIER = new ConcurrentHashMap<>();
     private static final Map<UUID, Float>   HEALTH_DRAIN   = new ConcurrentHashMap<>();
     public  static final Map<UUID, Boolean> SCREEN_GLITCH  = new ConcurrentHashMap<>();
+    /** UUID игроков, у которых следующий вызов hurtTo() не должен показывать анимацию урона. */
+    public  static final java.util.Set<UUID> SUPPRESS_HURT_ANIM = java.util.Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     private static int stormTicks = 0;
 
@@ -85,6 +87,7 @@ public final class RadiationManager {
         DOSE.remove(id);
         LAST_DOSE_TIER.remove(id);
         HEALTH_DRAIN.remove(id);
+        SUPPRESS_HURT_ANIM.remove(id);
         if (player instanceof ServerPlayer sp) removeHealthDrain(sp);
     }
 
@@ -184,12 +187,15 @@ public final class RadiationManager {
         float drain = HEALTH_DRAIN.getOrDefault(id, 0.0F);
         var attr = player.getAttribute(Attributes.MAX_HEALTH);
         if (attr == null) return;
+        // Подавить анимацию урона — обработается в LocalPlayerMixin.hurtTo()
+        SUPPRESS_HURT_ANIM.add(id);
         attr.removeModifier(HEALTH_DRAIN_ID);
         if (drain > 0.01F) {
             attr.addTransientModifier(
                     new AttributeModifier(HEALTH_DRAIN_ID, -drain, AttributeModifier.Operation.ADD_VALUE));
-            float newMax = (float) player.getAttributeValue(Attributes.MAX_HEALTH);
-            if (player.getHealth() > newMax) player.setHealth(Math.max(1.0F, newMax));
+            // Minecraft сам зажмёт health через onAttributeUpdated(); явный setHealth не нужен
+        } else {
+            SUPPRESS_HURT_ANIM.remove(id); // дрейн нулевой — пакет не пойдёт, убираем флаг сразу
         }
     }
 

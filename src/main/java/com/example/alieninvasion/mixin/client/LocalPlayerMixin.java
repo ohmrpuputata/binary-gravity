@@ -1,5 +1,6 @@
 package com.example.alieninvasion.mixin.client;
 
+import com.example.alieninvasion.logic.RadiationManager;
 import com.example.alieninvasion.registry.ItemRegistry;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -22,8 +23,6 @@ public class LocalPlayerMixin {
     private void handleDoubleJump(CallbackInfo ci) {
         LocalPlayer player = (LocalPlayer) (Object) this;
 
-        // On the ground / in water / climbing / flying: recharge the air-jump and
-        // sync the held-jump state so it can't auto-trigger off a single hold.
         if (player.onGround() || player.isInWater() || player.onClimbable() || player.getAbilities().flying) {
             alien_canDoubleJump = true;
             alien_wasJumping = player.input.jumping;
@@ -31,7 +30,6 @@ public class LocalPlayerMixin {
         }
 
         boolean isJumping = player.input.jumping;
-        // Rising edge in mid-air = the SECOND tap of space -> air jump.
         if (isJumping && !alien_wasJumping && alien_canDoubleJump) {
             ItemStack feet = player.getItemBySlot(EquipmentSlot.FEET);
             if (feet.is(ItemRegistry.GRAVITY_BOOTS) && !player.getTags().contains("EmpActive")) {
@@ -42,5 +40,23 @@ public class LocalPlayerMixin {
             }
         }
         alien_wasJumping = isJumping;
+    }
+
+    /**
+     * Перехватываем hurtTo() чтобы при дрейфе максимального здоровья от облучения
+     * не показывалась анимация урона (красная вспышка, покачивание камеры).
+     * Флаг выставляется сервером в RadiationManager.applyHealthDrain() перед
+     * изменением атрибута MAX_HEALTH.
+     */
+    @Inject(method = "hurtTo", at = @At("HEAD"), cancellable = true)
+    private void suppressRadiationHealthDrainAnim(float health, CallbackInfo ci) {
+        LocalPlayer self = (LocalPlayer) (Object) this;
+        if (RadiationManager.SUPPRESS_HURT_ANIM.remove(self.getUUID())) {
+            // Просто обновить здоровье без установки hurtTime / invulnerableTime
+            if (!self.isDeadOrDying()) {
+                self.setHealth(health);
+            }
+            ci.cancel();
+        }
     }
 }
