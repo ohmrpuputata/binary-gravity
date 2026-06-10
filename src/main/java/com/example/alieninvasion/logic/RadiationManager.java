@@ -205,6 +205,7 @@ public final class RadiationManager {
         if (masked) exposure *= 0.5F;
 
         float dose = getDose(player);
+        float doseBefore = dose;
         if (exposure > 0.0F) {
             dose += exposure * GAIN;
         } else if (dose > 0.0F) {
@@ -212,6 +213,7 @@ public final class RadiationManager {
         }
         setDose(id, dose);
         dose = getDose(player);
+        float doseDelta = dose - doseBefore;
 
         int newTier  = dose >= MAX_DOSE ? 4 : dose >= 75.0F ? 3 : dose >= 50.0F ? 2 : dose >= 25.0F ? 1 : 0;
         int prevTier = LAST_DOSE_TIER.getOrDefault(id, 0);
@@ -249,8 +251,9 @@ public final class RadiationManager {
         }
         if (newTier >= 4) player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.DARKNESS, 60, 0, false, true));
 
-        if (newTier >= 2) SCREEN_GLITCH.put(id, true);
-        else              SCREEN_GLITCH.remove(id);
+        // Глитч — только вблизи источника при стремительном росте (≥1.5% в секунду)
+        if (exposure > 0.0F && doseDelta >= 1.5F) SCREEN_GLITCH.put(id, true);
+        else                                       SCREEN_GLITCH.remove(id);
 
         // HUD feedback: readout + Geiger clicks
         if (exposure > 0.0F || dose >= 25.0F) {
