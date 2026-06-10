@@ -355,8 +355,8 @@ public class ModEvents {
                 // Global world contamination: pre-infect chunks and update loaded chunks on day change.
                 int nowDay = SurvivalManager.getDay(level);
                 if (nowDay != lastKnownContaminationDay) {
+                    com.example.alieninvasion.logic.WorldContaminationManager.onDayChange(level, lastKnownContaminationDay, nowDay);
                     lastKnownContaminationDay = nowDay;
-                    com.example.alieninvasion.logic.WorldContaminationManager.onDayChange(level, nowDay);
                 }
                 com.example.alieninvasion.logic.WorldContaminationManager.tickQueues(level);
             }
