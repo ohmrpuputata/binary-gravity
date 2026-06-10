@@ -6,12 +6,15 @@ import com.example.alieninvasion.registry.ModEffects;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -20,37 +23,27 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Dose-based radiation survival mechanic.
- *
- * Instead of a binary "near a source -> get the effect" toggle, every player
- * carries an accumulating dose (rads). Standing in a uranium pocket, beside a
- * radiation crystal cluster, in toxic water, or out in a radioactive storm makes
- * the dose climb; getting clear lets the body slowly recover. The dose maps onto
- * escalating tiers of the RADIATION effect, so lingering is punished and a quick
- * dash past a source is survivable.
- *
- * Mitigation:
- *  - Full hazmat suit or a borer with a Toxic Seal module: blocks intake entirely.
- *  - Bio-filter mask (head slot): halves intake.
- *  - Rad pills / portable purifier: actively flush accumulated dose.
- *
- * Dose is kept in a static map (like the mod's other per-player session state); it
- * naturally clears over time and on death, so it is not persisted to disk.
- */
 public final class RadiationManager {
     private RadiationManager() {
     }
 
     public static final float MAX_DOSE = 100.0F;
-    private static final float GAIN = 0.45F;    // dose per intensity unit per second
+    private static final float GAIN = 0.45F;
+
+    // HP отнимается от максимума каждую секунду на активном тире
+    private static final float DRAIN_SLOW = 0.2F;  // ≥50%: ~1 сердце за 10 сек
+    private static final float DRAIN_FAST = 0.5F;  // ≥75%: ~1 сердце за 4 сек
+    private static final float DRAIN_MAX  = 16.0F; // максимум 8 сердец убрать (минимум 2)
+
+    private static final ResourceLocation HEALTH_DRAIN_ID =
+            ResourceLocation.fromNamespaceAndPath("alien-invasion", "radiation_health_drain");
 
     private static final Map<UUID, Float>   DOSE           = new ConcurrentHashMap<>();
     private static final Map<UUID, Float>   DOSE_MULT      = new ConcurrentHashMap<>();
     private static final Map<UUID, Integer> LAST_DOSE_TIER = new ConcurrentHashMap<>();
+    private static final Map<UUID, Float>   HEALTH_DRAIN   = new ConcurrentHashMap<>();
     public  static final Map<UUID, Boolean> SCREEN_GLITCH  = new ConcurrentHashMap<>();
 
-    // Radioactive storm: a world-wide fallout event (lifecycle ticked from ModEvents).
     private static int stormTicks = 0;
 
     public static float getDose(UUID id) {
@@ -70,21 +63,20 @@ public final class RadiationManager {
         }
     }
 
-    /** Set per-player dose intake multiplier (1.0 = normal, 0.5 = half speed). */
     public static void setDoseMultiplier(Player player, float mult) {
         if (mult == 1.0F) DOSE_MULT.remove(player.getUUID());
         else DOSE_MULT.put(player.getUUID(), mult);
     }
 
-    /** Cap dose at max — used by protective armor set bonuses. */
     public static void capDose(Player player, float max) {
         UUID id = player.getUUID();
         float d = DOSE.getOrDefault(id, 0.0F);
         if (d > max) DOSE.put(id, max);
     }
 
-    /** Flush accumulated dose (rad pills, purifier, cures). */
+    /** Снизить дозу (лечение). При ≥90% доза заблокирована — снижение невозможно. */
     public static void reduceDose(Player player, float amount) {
+        if (getDose(player) >= 90.0F) return;
         setDose(player.getUUID(), getDose(player) - amount);
     }
 
@@ -92,13 +84,14 @@ public final class RadiationManager {
         UUID id = player.getUUID();
         DOSE.remove(id);
         LAST_DOSE_TIER.remove(id);
+        HEALTH_DRAIN.remove(id);
+        if (player instanceof ServerPlayer sp) removeHealthDrain(sp);
     }
 
     public static boolean isStormActive() {
         return stormTicks > 0;
     }
 
-    /** Numeric "field" reading for the Geiger counter (weighted block scan). */
     public static int scanField(Level level, BlockPos center) {
         int danger = 0;
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
@@ -127,7 +120,6 @@ public final class RadiationManager {
         return 0;
     }
 
-    // Заражённые блоки дают очень слабый радиационный фон (0.3 за блок, 5× меньше токсичных)
     private static boolean isInfestedBlock(BlockState state) {
         return state.is(ModBlocks.INFESTED_STONE) || state.is(ModBlocks.INFESTED_DIRT)
                 || state.is(ModBlocks.INFESTED_GRASS) || state.is(ModBlocks.INFESTED_SAND)
@@ -135,7 +127,6 @@ public final class RadiationManager {
                 || state.is(ModBlocks.ALIEN_RESIDUE);
     }
 
-    // Distance-attenuated exposure used to drive dose: closer/denser = faster climb.
     private static float scanExposure(Level level, BlockPos center) {
         float exposure = 0.0F;
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
@@ -154,13 +145,13 @@ public final class RadiationManager {
             }
         }
         if (isStormActive() && level.canSeeSky(center)) {
-            exposure += 4.0F; // fallout from open sky during the storm
+            exposure += 4.0F;
         }
         return Math.min(12.0F, exposure);
     }
 
     public static boolean hasFullHazmat(Player player) {
-        return false; // Hazmat armor replaced in Phase 3 with new Химзащита/Химдоспех sets
+        return false;
     }
 
     public static boolean hasFullLightHazmat(Player player) {
@@ -180,26 +171,45 @@ public final class RadiationManager {
         player.removeEffect(net.minecraft.world.effect.MobEffects.DIG_SLOWDOWN);
         player.removeEffect(net.minecraft.world.effect.MobEffects.HUNGER);
         player.removeEffect(net.minecraft.world.effect.MobEffects.DARKNESS);
+        removeHealthDrain(player);
     }
 
-    /** Re-applies all active tier effects after milk — called from mixin. */
+    private static void removeHealthDrain(ServerPlayer player) {
+        var attr = player.getAttribute(Attributes.MAX_HEALTH);
+        if (attr != null) attr.removeModifier(HEALTH_DRAIN_ID);
+        if (player.getHealth() > player.getMaxHealth()) player.setHealth(player.getMaxHealth());
+    }
+
+    private static void applyHealthDrain(ServerPlayer player, UUID id) {
+        float drain = HEALTH_DRAIN.getOrDefault(id, 0.0F);
+        var attr = player.getAttribute(Attributes.MAX_HEALTH);
+        if (attr == null) return;
+        attr.removeModifier(HEALTH_DRAIN_ID);
+        if (drain > 0.01F) {
+            attr.addTransientModifier(
+                    new AttributeModifier(HEALTH_DRAIN_ID, -drain, AttributeModifier.Operation.ADD_VALUE));
+            float newMax = (float) player.getAttributeValue(Attributes.MAX_HEALTH);
+            if (player.getHealth() > newMax) player.setHealth(Math.max(1.0F, newMax));
+        }
+    }
+
     public static void reapplyDoseEffects(ServerPlayer player) {
         float dose = getDose(player);
         int tier = dose >= MAX_DOSE ? 4 : dose >= 75.0F ? 3 : dose >= 50.0F ? 2 : dose >= 25.0F ? 1 : 0;
         if (tier < 1) return;
         var irrH = BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.IRRADIATION);
         player.addEffect(new MobEffectInstance(irrH, 100, 0, false, true));
-        if (tier >= 2) player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.WITHER,             39, 0, false, true));
+        if (tier >= 2) player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.WITHER, 39, 0, false, true));
         if (tier >= 3) {
             player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.WEAKNESS,          100, 0, false, true));
             player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 100, 0, false, true));
             player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.DIG_SLOWDOWN,      100, 0, false, true));
             player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.HUNGER,            100, 0, false, true));
+            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.DARKNESS,          100, 0, false, true));
         }
-        if (tier >= 4) player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.DARKNESS, 100, 0, false, true));
+        applyHealthDrain(player, player.getUUID());
     }
 
-    /** Per-second player update. Call once a second (e.g. tickCount % 20 == 0). */
     public static void tickPlayer(ServerLevel level, ServerPlayer player) {
         UUID id = player.getUUID();
         if (player.isCreative() || player.isSpectator()) {
@@ -217,8 +227,9 @@ public final class RadiationManager {
         float doseBefore = dose;
         if (exposure > 0.0F) {
             dose += exposure * GAIN;
-        } else if (dose > 0.0F) {
-            dose = Math.max(0.0F, dose - 0.2F); // очень медленный естественный спад (~8 мин с 100% до 0%)
+        } else if (dose > 0.0F && dose < 90.0F) {
+            // Естественный спад только ниже 90% — выше доза не снижается сама
+            dose = Math.max(0.0F, dose - 0.2F);
         }
         setDose(id, dose);
         dose = getDose(player);
@@ -227,10 +238,10 @@ public final class RadiationManager {
         int newTier  = dose >= MAX_DOSE ? 4 : dose >= 75.0F ? 3 : dose >= 50.0F ? 2 : dose >= 25.0F ? 1 : 0;
         int prevTier = LAST_DOSE_TIER.getOrDefault(id, 0);
 
-        // Tier decreased — strip effects that no longer apply
+        // Снятие эффектов при понижении тира
         if (newTier < prevTier) {
-            if (newTier < 4) player.removeEffect(net.minecraft.world.effect.MobEffects.DARKNESS);
             if (newTier < 3) {
+                player.removeEffect(net.minecraft.world.effect.MobEffects.DARKNESS);
                 player.removeEffect(net.minecraft.world.effect.MobEffects.WEAKNESS);
                 player.removeEffect(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN);
                 player.removeEffect(net.minecraft.world.effect.MobEffects.DIG_SLOWDOWN);
@@ -243,24 +254,28 @@ public final class RadiationManager {
             LAST_DOSE_TIER.put(id, newTier);
         }
 
-        // Apply all cumulative effects for active tiers
+        // Применение накопленных эффектов
         var irrH = BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.IRRADIATION);
         if (newTier >= 1) player.addEffect(new MobEffectInstance(irrH, 60, 0, false, true));
-        // duration=39: 39%40 never == 0, so vanilla auto-damage never fires; we deal it directly below
-        if (newTier >= 2) player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.WITHER,            39, 0, false, true));
-        // Direct wither damage every 2 seconds (matches Wither I rate)
-        if (newTier >= 2 && player.tickCount % 40 == 0) {
-            player.hurt(level.damageSources().magic(), 1.0F);
-        }
+        // Иссушение — только визуал, duration=39 исключает авто-урон ваниллы (39%40≠0)
+        if (newTier >= 2) player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.WITHER, 39, 0, false, true));
         if (newTier >= 3) {
             player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.WEAKNESS,          60, 0, false, true));
             player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 60, 0, false, true));
             player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.DIG_SLOWDOWN,      60, 0, false, true));
             player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.HUNGER,            60, 0, false, true));
+            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.DARKNESS,          60, 0, false, true));
         }
-        if (newTier >= 4) player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.DARKNESS, 60, 0, false, true));
 
-        // Глитч — вблизи источника при стремительном росте (≥1.5%/сек) ИЛИ при максимальном облучении
+        // Постепенное уменьшение максимального здоровья
+        if (newTier >= 2) {
+            float rate = newTier >= 3 ? DRAIN_FAST : DRAIN_SLOW;
+            float current = HEALTH_DRAIN.getOrDefault(id, 0.0F);
+            HEALTH_DRAIN.put(id, Math.min(DRAIN_MAX, current + rate));
+            applyHealthDrain(player, id);
+        }
+
+        // Глитч — вблизи источника при стремительном росте ИЛИ при максимальном облучении
         if ((exposure > 0.0F && doseDelta >= 1.5F) || dose >= MAX_DOSE) SCREEN_GLITCH.put(id, true);
         else                                                              SCREEN_GLITCH.remove(id);
 
@@ -271,7 +286,6 @@ public final class RadiationManager {
         }
     }
 
-    /** World-tick lifecycle for the radioactive-storm event. */
     public static void tickStorm(ServerLevel level) {
         if (stormTicks > 0) {
             stormTicks--;
@@ -282,11 +296,10 @@ public final class RadiationManager {
             }
             return;
         }
-        // Day 5+, late at night, rare: a fallout storm sweeps the surface.
         if (level.isNight() && level.getGameTime() % 24000 == 15000
                 && SurvivalManager.getDay(level) >= 5 && level.random.nextFloat() < 0.18F
                 && !level.players().isEmpty()) {
-            stormTicks = 3000; // ~2.5 minutes
+            stormTicks = 3000;
             for (ServerPlayer p : level.players()) {
                 p.displayClientMessage(Component.literal(
                         "§4[!] РАДИОАКТИВНАЯ БУРЯ! Найдите укрытие или наденьте костюм химзащиты."), false);
