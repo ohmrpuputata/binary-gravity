@@ -121,11 +121,18 @@ public final class RadiationManager {
                 || state.is(ModBlocks.PURE_RADIATION_CRYSTAL_ORE)) {
             return 5;
         }
-        if (state.is(ModBlocks.TOXIC_WATER) || state.is(ModBlocks.TOXIC_BARREL)
-                || state.is(ModBlocks.INFESTED_STONE) || state.is(ModBlocks.ALIEN_RESIDUE)) {
+        if (state.is(ModBlocks.TOXIC_WATER) || state.is(ModBlocks.TOXIC_BARREL)) {
             return 1;
         }
         return 0;
+    }
+
+    // Заражённые блоки дают очень слабый радиационный фон (0.3 за блок, 5× меньше токсичных)
+    private static boolean isInfestedBlock(BlockState state) {
+        return state.is(ModBlocks.INFESTED_STONE) || state.is(ModBlocks.INFESTED_DIRT)
+                || state.is(ModBlocks.INFESTED_GRASS) || state.is(ModBlocks.INFESTED_SAND)
+                || state.is(ModBlocks.INFESTED_GRAVEL) || state.is(ModBlocks.INFESTED_DEEPSLATE)
+                || state.is(ModBlocks.ALIEN_RESIDUE);
     }
 
     // Distance-attenuated exposure used to drive dose: closer/denser = faster climb.
@@ -135,12 +142,14 @@ public final class RadiationManager {
         for (int x = -4; x <= 4; x++) {
             for (int y = -3; y <= 3; y++) {
                 for (int z = -4; z <= 4; z++) {
-                    int w = sourceWeight(level.getBlockState(cursor.set(
-                            center.getX() + x, center.getY() + y, center.getZ() + z)));
-                    if (w == 0) continue;
+                    BlockState bs = level.getBlockState(cursor.set(
+                            center.getX() + x, center.getY() + y, center.getZ() + z));
+                    int w = sourceWeight(bs);
+                    boolean soft = w == 0 && isInfestedBlock(bs);
+                    if (w == 0 && !soft) continue;
                     int distSq = x * x + y * y + z * z;
                     float falloff = distSq <= 4 ? 1.0F : distSq <= 16 ? 0.5F : 0.25F;
-                    exposure += w * falloff;
+                    exposure += w > 0 ? w * falloff : 0.3F * falloff;
                 }
             }
         }

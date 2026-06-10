@@ -33,8 +33,8 @@ public final class InfectionManager {
     }
 
     public static final float MAX = 100.0F;
-    private static final int GRACE_SECONDS = 2;
-    private static final float GAIN = 8.0F;  // meter per second while standing (post-grace)
+    private static final int GRACE_SECONDS = 3;
+    private static final float GAIN = 1.5F;  // meter per second while standing (post-grace)
 
     private static final Map<UUID, Float>   METER      = new ConcurrentHashMap<>();
     private static final Map<UUID, Float>   METER_MULT = new ConcurrentHashMap<>();
