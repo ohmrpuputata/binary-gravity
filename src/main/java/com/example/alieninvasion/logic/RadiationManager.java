@@ -180,7 +180,7 @@ public final class RadiationManager {
         if (tier < 1) return;
         var irrH = BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.IRRADIATION);
         player.addEffect(new MobEffectInstance(irrH, 100, 0, false, true));
-        if (tier >= 2) player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.WITHER,            100, 0, false, true));
+        if (tier >= 2) player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.WITHER,             39, 0, false, true));
         if (tier >= 3) {
             player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.WEAKNESS,          100, 0, false, true));
             player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 100, 0, false, true));
@@ -207,6 +207,8 @@ public final class RadiationManager {
         float dose = getDose(player);
         if (exposure > 0.0F) {
             dose += exposure * GAIN;
+        } else if (dose > 0.0F) {
+            dose = Math.max(0.0F, dose - 0.2F); // очень медленный естественный спад (~8 мин с 100% до 0%)
         }
         setDose(id, dose);
         dose = getDose(player);
@@ -233,7 +235,12 @@ public final class RadiationManager {
         // Apply all cumulative effects for active tiers
         var irrH = BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.IRRADIATION);
         if (newTier >= 1) player.addEffect(new MobEffectInstance(irrH, 60, 0, false, true));
-        if (newTier >= 2) player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.WITHER,            60, 0, false, true));
+        // duration=39: 39%40 never == 0, so vanilla auto-damage never fires; we deal it directly below
+        if (newTier >= 2) player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.WITHER,            39, 0, false, true));
+        // Direct wither damage every 2 seconds (matches Wither I rate)
+        if (newTier >= 2 && player.tickCount % 40 == 0) {
+            player.hurt(level.damageSources().magic(), 1.0F);
+        }
         if (newTier >= 3) {
             player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.WEAKNESS,          60, 0, false, true));
             player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 60, 0, false, true));
