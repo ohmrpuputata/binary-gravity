@@ -76,9 +76,7 @@ public final class RadiationManager {
         if (d > max) DOSE.put(id, max);
     }
 
-    /** Снизить дозу (лечение). При ≥90% доза заблокирована — снижение невозможно. */
     public static void reduceDose(Player player, float amount) {
-        if (getDose(player) >= 90.0F) return;
         setDose(player.getUUID(), getDose(player) - amount);
     }
 
@@ -233,7 +231,7 @@ public final class RadiationManager {
         float doseBefore = dose;
         if (exposure > 0.0F) {
             dose += exposure * GAIN;
-        } else if (dose > 0.0F && dose < 90.0F) {
+        } else if (dose > 0.0F) {
             // Естественный спад только ниже 90% — выше доза не снижается сама
             dose = Math.max(0.0F, dose - 0.2F);
         }
@@ -282,9 +280,9 @@ public final class RadiationManager {
         }
 
         // Помехи: 2=сильные (быстрый рост ≥1.5%/с), 1=лёгкие (любой рост вблизи), 0=нет
-        if      (exposure > 0.0F && doseDelta >= 1.5F) SCREEN_GLITCH.put(id, 2);
-        else if (exposure > 0.0F && doseDelta > 0.0F)  SCREEN_GLITCH.put(id, 1);
-        else                                            SCREEN_GLITCH.remove(id);
+        if      (exposure > 0.0F && (doseDelta >= 1.5F || dose >= MAX_DOSE)) SCREEN_GLITCH.put(id, 2);
+        else if (exposure > 0.0F && doseDelta > 0.0F)                       SCREEN_GLITCH.put(id, 1);
+        else                                                                 SCREEN_GLITCH.remove(id);
 
         // Звук счётчика Гейгера вблизи источников
         if (exposure > 0.0F && level.random.nextFloat() < Math.min(0.8F, 0.1F + exposure * 0.06F)) {
