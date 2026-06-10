@@ -260,9 +260,9 @@ public final class RadiationManager {
         }
         if (newTier >= 4) player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.DARKNESS, 60, 0, false, true));
 
-        // Глитч — только вблизи источника при стремительном росте (≥1.5% в секунду)
-        if (exposure > 0.0F && doseDelta >= 1.5F) SCREEN_GLITCH.put(id, true);
-        else                                       SCREEN_GLITCH.remove(id);
+        // Глитч — вблизи источника при стремительном росте (≥1.5%/сек) ИЛИ при максимальном облучении
+        if ((exposure > 0.0F && doseDelta >= 1.5F) || dose >= MAX_DOSE) SCREEN_GLITCH.put(id, true);
+        else                                                              SCREEN_GLITCH.remove(id);
 
         // Звук счётчика Гейгера вблизи источников
         if (exposure > 0.0F && level.random.nextFloat() < Math.min(0.8F, 0.1F + exposure * 0.06F)) {
