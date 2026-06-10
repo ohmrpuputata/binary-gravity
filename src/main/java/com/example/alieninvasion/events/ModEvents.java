@@ -19,6 +19,7 @@ import net.minecraft.world.InteractionResult;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -73,7 +74,16 @@ public class ModEvents {
 
     private static final ThreadLocal<Boolean> NIB_BREAKING = ThreadLocal.withInitial(() -> false);
 
+    private static int lastKnownContaminationDay = -1;
+
     public static void registerEvents() {
+        // Pre-contaminate chunks on load so unexplored areas match the current day's infection level.
+        ServerChunkEvents.CHUNK_LOAD.register((world, chunk) -> {
+            if (world instanceof ServerLevel sl && sl.dimension() == Level.OVERWORLD) {
+                com.example.alieninvasion.logic.WorldContaminationManager.onChunkLoad(sl, chunk);
+            }
+        });
+
         // Evict per-player radiation/infection session state on disconnect so the
         // static maps don't accumulate stale entries across a long-running server.
         net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
@@ -341,6 +351,14 @@ public class ModEvents {
             // once per dimension and the storm would end ~3x early.
             if (level.dimension() == net.minecraft.world.level.Level.OVERWORLD) {
                 com.example.alieninvasion.logic.RadiationManager.tickStorm(level);
+
+                // Global world contamination: pre-infect chunks and update loaded chunks on day change.
+                int nowDay = SurvivalManager.getDay(level);
+                if (nowDay != lastKnownContaminationDay) {
+                    lastKnownContaminationDay = nowDay;
+                    com.example.alieninvasion.logic.WorldContaminationManager.onDayChange(level, nowDay);
+                }
+                com.example.alieninvasion.logic.WorldContaminationManager.tickQueues(level);
             }
 
             // Update Active Gravity Anomalies
