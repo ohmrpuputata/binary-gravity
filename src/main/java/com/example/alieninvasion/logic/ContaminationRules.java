@@ -43,8 +43,12 @@ public final class ContaminationRules {
     }
 
     public static BlockState contaminatedStateFor(BlockState state) {
-        if (state.is(Blocks.GRASS_BLOCK) || state.is(Blocks.DIRT) || state.is(Blocks.COARSE_DIRT)
-                || state.is(Blocks.PODZOL) || state.is(Blocks.ROOTED_DIRT) || state.is(Blocks.MUD)) {
+        if (state.is(Blocks.GRASS_BLOCK) || state.is(Blocks.MYCELIUM)) {
+            return ModBlocks.INFESTED_GRASS.defaultBlockState();
+        }
+        if (state.is(Blocks.DIRT) || state.is(Blocks.COARSE_DIRT)
+                || state.is(Blocks.PODZOL) || state.is(Blocks.ROOTED_DIRT) || state.is(Blocks.MUD)
+                || state.is(Blocks.SNOW_BLOCK)) {
             return ModBlocks.INFESTED_DIRT.defaultBlockState();
         }
         if (state.is(BlockTags.SAND)) return ModBlocks.INFESTED_SAND.defaultBlockState();

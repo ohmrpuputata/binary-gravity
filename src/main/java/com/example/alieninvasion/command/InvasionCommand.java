@@ -59,8 +59,7 @@ public class InvasionCommand {
 
     private static int maxStage(CommandContext<CommandSourceStack> context) {
         ServerLevel level = context.getSource().getLevel();
-        InvasionManager manager = InvasionManager.get(level);
-        manager.setInvasionDays(FINAL_STAGE_DAY);
+        applyDay(level, FINAL_STAGE_DAY);
         context.getSource().sendSuccess(
                 () -> Component.literal("§c[Вторжение] Включена ПОСЛЕДНЯЯ стадия — Тотальная война! День: " + FINAL_STAGE_DAY),
                 true);
@@ -69,8 +68,7 @@ public class InvasionCommand {
 
     private static int status(CommandContext<CommandSourceStack> context) {
         ServerLevel level = context.getSource().getLevel();
-        InvasionManager manager = InvasionManager.get(level);
-        int days = manager.getInvasionDays();
+        int days = com.example.alieninvasion.logic.SurvivalManager.getDay(level);
 
         String difficultyStage = "Фаза разведки";
         if (days >= 5) {
@@ -79,10 +77,13 @@ public class InvasionCommand {
             difficultyStage = "Фаза штурма";
         }
         final String finalDifficulty = difficultyStage;
+        final int contamination = Math.round(
+                com.example.alieninvasion.logic.WorldContaminationManager.getTarget(days) * 100.0F);
 
         context.getSource().sendSuccess(() -> Component.literal("§a[Вторжение] Статус:"), false);
         context.getSource().sendSuccess(() -> Component.literal("§eДень: " + days), false);
         context.getSource().sendSuccess(() -> Component.literal("§cУровень угрозы: " + finalDifficulty), false);
+        context.getSource().sendSuccess(() -> Component.literal("§5Заражение мира: " + contamination + "%"), false);
 
         return 1;
     }
@@ -90,10 +91,9 @@ public class InvasionCommand {
     private static int setDay(CommandContext<CommandSourceStack> context) {
         int day = IntegerArgumentType.getInteger(context, "day");
         ServerLevel level = context.getSource().getLevel();
-        InvasionManager manager = InvasionManager.get(level);
-
-        manager.setInvasionDays(day);
-        context.getSource().sendSuccess(() -> Component.literal("§a[Вторжение] День вторжения установлен: " + day),
+        applyDay(level, day);
+        context.getSource().sendSuccess(() -> Component.literal(
+                "§a[Вторжение] День вторжения установлен: " + day + ". Мир заражается до уровня этого дня..."),
                 true);
         return 1;
     }
@@ -101,14 +101,25 @@ public class InvasionCommand {
     private static int addDays(CommandContext<CommandSourceStack> context) {
         int daysToAdd = IntegerArgumentType.getInteger(context, "days");
         ServerLevel level = context.getSource().getLevel();
-        InvasionManager manager = InvasionManager.get(level);
-
-        int newDay = manager.getInvasionDays() + daysToAdd;
-        manager.setInvasionDays(newDay);
-
+        int newDay = InvasionManager.get(level).getInvasionDays() + daysToAdd;
+        applyDay(level, newDay);
         context.getSource().sendSuccess(
                 () -> Component.literal("§a[Вторжение] Пропущено дней: " + daysToAdd + ". Текущий день: " + newDay),
                 true);
         return 1;
+    }
+
+    /**
+     * Sets the invasion stage AND fast-forwards world time to the same day (never
+     * backwards), so the HUD day, contamination level and stage all agree. The
+     * contamination manager picks up the day change on the next world tick and
+     * re-infects the chunks around players to the new level.
+     */
+    private static void applyDay(ServerLevel level, int day) {
+        InvasionManager.get(level).setInvasionDays(day);
+        long targetTime = day * 24000L + 1000L; // morning of that day
+        if (targetTime > level.getDayTime()) {
+            level.setDayTime(targetTime);
+        }
     }
 }

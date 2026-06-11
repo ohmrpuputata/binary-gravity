@@ -74,13 +74,21 @@ public class ModEvents {
 
     private static final ThreadLocal<Boolean> NIB_BREAKING = ThreadLocal.withInitial(() -> false);
 
-    private static int lastKnownContaminationDay = -1;
-
     public static void registerEvents() {
-        // Pre-contaminate chunks on load so unexplored areas match the current day's infection level.
+        // Pre-contaminate chunks on load so unexplored areas match the current day's
+        // infection level. The handler only enqueues; blocks are written from the
+        // world tick (writing during chunk load can cascade-load neighbour chunks).
         ServerChunkEvents.CHUNK_LOAD.register((world, chunk) -> {
             if (world instanceof ServerLevel sl && sl.dimension() == Level.OVERWORLD) {
                 com.example.alieninvasion.logic.WorldContaminationManager.onChunkLoad(sl, chunk);
+            }
+        });
+
+        // Drop queued contamination work when the world goes away so a freshly
+        // opened world never inherits chunk queues from the previous one.
+        net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents.UNLOAD.register((server, world) -> {
+            if (world.dimension() == Level.OVERWORLD) {
+                com.example.alieninvasion.logic.WorldContaminationManager.onWorldUnload();
             }
         });
 
@@ -352,13 +360,9 @@ public class ModEvents {
             if (level.dimension() == net.minecraft.world.level.Level.OVERWORLD) {
                 com.example.alieninvasion.logic.RadiationManager.tickStorm(level);
 
-                // Global world contamination: pre-infect chunks and update loaded chunks on day change.
-                int nowDay = SurvivalManager.getDay(level);
-                if (nowDay != lastKnownContaminationDay) {
-                    com.example.alieninvasion.logic.WorldContaminationManager.onDayChange(level, lastKnownContaminationDay, nowDay);
-                    lastKnownContaminationDay = nowDay;
-                }
-                com.example.alieninvasion.logic.WorldContaminationManager.tickQueues(level);
+                // Global world contamination: detects day changes, re-queues visible
+                // chunks and drains the work queues under a per-tick write budget.
+                com.example.alieninvasion.logic.WorldContaminationManager.tick(level);
             }
 
             // Update Active Gravity Anomalies

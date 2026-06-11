@@ -3,7 +3,7 @@
   "pattern": [" C ", " A ", " D "],
   "key": {
     "C": { "item": "alien-invasion:cosmic_shard" },
-    "A": { "item": "alien-invasion:alien_alloy" },
+    "A": { "item": "alien-invasion:platinum_ingot" },
     "D": { "item": "minecraft:diamond" }
   },
   "result": { "id": "alien-invasion:purifier_wand", "count": 1 }

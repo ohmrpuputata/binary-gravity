@@ -8,8 +8,13 @@ import net.minecraft.world.level.storage.DimensionDataStorage;
 public class InvasionManager extends SavedData {
     private static final String DATA_NAME = "alien_invasion_manager";
     private int invasionDays = 0;
-    /** Minecraft days per invasion stage - higher = slower escalation. Was effectively 1. */
-    private static final int MC_DAYS_PER_STAGE = 2;
+    /**
+     * Minecraft days per invasion stage. MUST stay 1: the HUD, the world
+     * contamination and every day-gated event read the world-time day, so a
+     * slower stage clock here desyncs the announced day from what the player
+     * actually sees happening to the world.
+     */
+    private static final int MC_DAYS_PER_STAGE = 1;
     private long lastDayTime = 0;
     private boolean victoryAchieved = false;
     private boolean retreatComplete = false;
@@ -59,14 +64,19 @@ public class InvasionManager extends SavedData {
 
     public void tick(ServerLevel level) {
         long time = level.getDayTime();
+        this.lastDayTime = time;
 
-        // The invasion escalates one stage every MC_DAYS_PER_STAGE Minecraft days -
-        // not every single ~20-minute day - so the ramp to the Day-8 boss is gradual
-        // and the player gets time to prepare. Stage 1 still begins on the first
-        // morning so the invasion kicks off promptly.
+        // FINALE: once the Swarm Mother is dead, the invasion is over - run the
+        // evacuation (aliens flee, carriers lift them away), stop ALL spawning and
+        // freeze the day counter so the world stops escalating after the victory.
+        if (this.victoryAchieved) {
+            tickRetreat(level);
+            return;
+        }
+
         // Comparing the target stage against invasionDays (not against elapsed time)
         // means the counter only ever moves UP - so existing saves keep the progress
-        // they already reached and never regress.
+        // they already reached and never regress, and "/invasion set" stays sticky.
         int targetStage = stageForDays((int) (time / 24000L));
         if (targetStage > invasionDays) {
             invasionDays = targetStage;
@@ -75,15 +85,6 @@ public class InvasionManager extends SavedData {
                             .literal("§c[Вторжение] Начинается день " + invasionDays + "... Рой становится сильнее."),
                     false);
             this.setDirty();
-        }
-
-        this.lastDayTime = time;
-
-        // FINALE: once the Swarm Mother is dead, the invasion is over - run the
-        // evacuation (aliens flee, carriers lift them away) and stop ALL spawning.
-        if (this.victoryAchieved) {
-            tickRetreat(level);
-            return;
         }
 
         // VICTORY: Now triggered by defeating the Mother of the Swarm boss on Day 8+.
@@ -155,26 +156,15 @@ public class InvasionManager extends SavedData {
                     continue;
                 }
                 net.minecraft.world.level.block.state.BlockState s = level.getBlockState(p);
-                net.minecraft.world.level.block.Block out = null;
-                if (s.is(net.minecraft.world.level.block.Blocks.GRASS_BLOCK)) {
-                    out = com.example.alieninvasion.registry.ModBlocks.INFESTED_GRASS;
-                } else if (s.is(net.minecraft.world.level.block.Blocks.DIRT)) {
-                    out = com.example.alieninvasion.registry.ModBlocks.ALIEN_RESIDUE;
-                } else if (s.is(net.minecraft.tags.BlockTags.LOGS)) {
-                    out = com.example.alieninvasion.registry.ModBlocks.INFESTED_LOG;
-                } else if (s.is(net.minecraft.tags.BlockTags.LEAVES)) {
-                    out = com.example.alieninvasion.registry.ModBlocks.INFESTED_LEAVES;
-                } else if (s.is(net.minecraft.world.level.block.Blocks.STONE)
-                        || s.is(net.minecraft.world.level.block.Blocks.DEEPSLATE)
-                        || s.is(net.minecraft.world.level.block.Blocks.TUFF)
-                        || s.is(net.minecraft.world.level.block.Blocks.COBBLESTONE)
-                        || s.is(net.minecraft.world.level.block.Blocks.GRAVEL)
-                        || s.is(net.minecraft.world.level.block.Blocks.SAND)) {
-                    out = com.example.alieninvasion.registry.ModBlocks.INFESTED_STONE;
+                // Same conversion table as the global contamination system, so the
+                // creeping infection near players matches the world-wide apocalypse.
+                if (!com.example.alieninvasion.logic.ContaminationRules.canContaminate(level, p, s)) {
+                    continue;
                 }
-                if (out != null) {
-                    net.minecraft.world.level.block.state.BlockState newState = out.defaultBlockState();
-                    if (out == com.example.alieninvasion.registry.ModBlocks.INFESTED_LOG && s.hasProperty(net.minecraft.world.level.block.RotatedPillarBlock.AXIS)) {
+                net.minecraft.world.level.block.state.BlockState newState =
+                        com.example.alieninvasion.logic.ContaminationRules.contaminatedStateFor(s);
+                if (newState != null) {
+                    if (newState.hasProperty(net.minecraft.world.level.block.RotatedPillarBlock.AXIS) && s.hasProperty(net.minecraft.world.level.block.RotatedPillarBlock.AXIS)) {
                         newState = newState.setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS, s.getValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS));
                     }
                     level.setBlockAndUpdate(p, newState);
