@@ -1,5 +1,21 @@
 {
   "variants": {
-    "": { "model": "alien-invasion:block/blood_pool" }
+    "": [
+      {
+        "model": "alien-invasion:block/blood_pool"
+      },
+      {
+        "model": "alien-invasion:block/blood_pool",
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_pool",
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_pool",
+        "y": 270
+      }
+    ]
   }
 }

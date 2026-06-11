@@ -38,6 +38,38 @@ import net.minecraft.world.phys.Vec3;
  * Победа над ней завершает игру.
  */
 public class SwarmMotherEntity extends Monster implements IAlienUnit {
+    // ALIEN VOICE: quiet, pitched vanilla sounds remixed into something wrong -
+    // rarer and softer than the originals so the swarm unnerves instead of annoys.
+    @Override
+    protected net.minecraft.sounds.SoundEvent getAmbientSound() {
+        return net.minecraft.sounds.SoundEvents.WARDEN_AMBIENT;
+    }
+
+    @Override
+    protected net.minecraft.sounds.SoundEvent getHurtSound(net.minecraft.world.damagesource.DamageSource source) {
+        return net.minecraft.sounds.SoundEvents.WARDEN_HURT;
+    }
+
+    @Override
+    protected net.minecraft.sounds.SoundEvent getDeathSound() {
+        return net.minecraft.sounds.SoundEvents.WARDEN_DEATH;
+    }
+
+    @Override
+    public int getAmbientSoundInterval() {
+        return 280;
+    }
+
+    @Override
+    protected float getSoundVolume() {
+        return 0.8F;
+    }
+
+    @Override
+    public float getVoicePitch() {
+        return 0.8F + this.random.nextFloat() * 0.1F;
+    }
+
     private final ServerBossEvent bossEvent = (ServerBossEvent) new ServerBossEvent(
             Component.literal("Мать Роя"),
             BossEvent.BossBarColor.PURPLE,

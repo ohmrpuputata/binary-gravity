@@ -28,9 +28,23 @@ public class PurifierBlock extends Block {
     @Override
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
         super.onPlace(state, level, pos, oldState, isMoving);
-        if (!level.isClientSide) {
+        if (!level.isClientSide && level instanceof ServerLevel serverLevel) {
             level.scheduleTick(pos, this, 20);
+            // TERRITORY RECLAIM: the purifier claims its whole CHUNK - everything
+            // infested in it is scrubbed clean and the world contamination skips
+            // the chunk for as long as the purifier stands.
+            com.example.alieninvasion.logic.WorldContaminationManager.onPurifierPlaced(serverLevel, pos);
         }
+    }
+
+    @Override
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (!level.isClientSide && level instanceof ServerLevel serverLevel
+                && !state.is(newState.getBlock())) {
+            // Protection lost: the corruption immediately starts taking the chunk back.
+            com.example.alieninvasion.logic.WorldContaminationManager.onPurifierRemoved(serverLevel, pos);
+        }
+        super.onRemove(state, level, pos, newState, isMoving);
     }
 
     @Override

@@ -93,7 +93,7 @@ public class AlienGruntEntity extends Zombie implements IAlienUnit {
                         && !state.is(net.minecraft.world.level.block.Blocks.END_PORTAL)
                         && !state.is(net.minecraft.world.level.block.Blocks.COMMAND_BLOCK)
                         && !state.is(net.minecraft.world.level.block.Blocks.BARRIER),
-                60) {
+                30) {
             @Override public boolean canUse() { return !AlienGruntEntity.this.isScavenger() && super.canUse(); }
         });
 
@@ -145,6 +145,44 @@ public class AlienGruntEntity extends Zombie implements IAlienUnit {
     @Override
     public boolean canBreakDoors() {
         return true;
+    }
+
+    // ALIEN VOICE: quiet, low-pitched chittering instead of the loud zombie
+    // groan spam - rarer, softer and pitched down so it reads as "something
+    // wrong skittering nearby" rather than a moaning horde.
+    @Override
+    protected net.minecraft.sounds.SoundEvent getAmbientSound() {
+        return net.minecraft.sounds.SoundEvents.ENDERMITE_AMBIENT;
+    }
+
+    @Override
+    protected net.minecraft.sounds.SoundEvent getHurtSound(net.minecraft.world.damagesource.DamageSource source) {
+        return net.minecraft.sounds.SoundEvents.ENDERMITE_HURT;
+    }
+
+    @Override
+    protected net.minecraft.sounds.SoundEvent getDeathSound() {
+        return net.minecraft.sounds.SoundEvents.ENDERMITE_DEATH;
+    }
+
+    @Override
+    protected net.minecraft.sounds.SoundEvent getStepSound() {
+        return net.minecraft.sounds.SoundEvents.SPIDER_STEP;
+    }
+
+    @Override
+    public int getAmbientSoundInterval() {
+        return 240; // three times rarer than a zombie's groan
+    }
+
+    @Override
+    protected float getSoundVolume() {
+        return 0.6F;
+    }
+
+    @Override
+    public float getVoicePitch() {
+        return 0.55F + this.random.nextFloat() * 0.15F;
     }
 
     @Override

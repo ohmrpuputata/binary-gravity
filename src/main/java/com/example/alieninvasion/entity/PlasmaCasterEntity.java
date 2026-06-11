@@ -24,6 +24,38 @@ import net.minecraft.world.phys.Vec3;
 // Плазменщик (Пришелец-Артиллерист): Дальнобойный стрелок.
 // Держит дистанцию и стреляет прожигающими насквозь плазменными лучами.
 public class PlasmaCasterEntity extends Monster implements RangedAttackMob, IAlienUnit {
+    // ALIEN VOICE: quiet, pitched vanilla sounds remixed into something wrong -
+    // rarer and softer than the originals so the swarm unnerves instead of annoys.
+    @Override
+    protected net.minecraft.sounds.SoundEvent getAmbientSound() {
+        return net.minecraft.sounds.SoundEvents.BLAZE_AMBIENT;
+    }
+
+    @Override
+    protected net.minecraft.sounds.SoundEvent getHurtSound(net.minecraft.world.damagesource.DamageSource source) {
+        return net.minecraft.sounds.SoundEvents.BLAZE_HURT;
+    }
+
+    @Override
+    protected net.minecraft.sounds.SoundEvent getDeathSound() {
+        return net.minecraft.sounds.SoundEvents.BLAZE_DEATH;
+    }
+
+    @Override
+    public int getAmbientSoundInterval() {
+        return 240;
+    }
+
+    @Override
+    protected float getSoundVolume() {
+        return 0.55F;
+    }
+
+    @Override
+    public float getVoicePitch() {
+        return 0.6F + this.random.nextFloat() * 0.1F;
+    }
+
     public PlasmaCasterEntity(EntityType<? extends Monster> type, Level level) {
         super(type, level);
     }

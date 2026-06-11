@@ -112,6 +112,45 @@ public class AlienOutpostFeature extends Feature<NoneFeatureConfiguration> {
             }
         }
 
+        // TENDRIL PERIMETER: a glowing ring of growths marks the city's edge.
+        for (int i = 0; i < 28; i++) {
+            double ang = i / 28.0 * Math.PI * 2.0;
+            int tx = o.getX() + (int) Math.round(Math.cos(ang) * 11);
+            int tz = o.getZ() + (int) Math.round(Math.sin(ang) * 11);
+            int ty = surfaceY(level, o, tx, tz);
+            BlockPos tp = new BlockPos(tx, ty, tz);
+            if (rng.nextInt(3) != 0 && StructureUtil.getBlockState(level, tp).isAir()
+                    && !StructureUtil.getBlockState(level, tp.below()).isAir()) {
+                StructureUtil.set(level, tp, ModBlocks.ALIEN_TENDRILS.defaultBlockState());
+            }
+        }
+
+        // LANDING PAD: a parked scout saucer on the outskirts with its own cache
+        // and a ranged guard - the city now has its own airfield.
+        int px = o.getX() - 11, pz = o.getZ() + 10;
+        int py = surfaceY(level, o, px, pz);
+        BlockPos pad = new BlockPos(px, py, pz);
+        for (int dx = -3; dx <= 3; dx++) {
+            for (int dz = -3; dz <= 3; dz++) {
+                double d = Math.sqrt(dx * dx + dz * dz);
+                if (d > 3.2) continue;
+                StructureUtil.set(level, pad.offset(dx, -1, dz), Blocks.POLISHED_DEEPSLATE.defaultBlockState());
+                int hgt = (int) Math.round(1.8 - d * 0.5);
+                for (int dy = 0; dy <= hgt; dy++) {
+                    boolean shell = dy == hgt || d > 2.2;
+                    StructureUtil.set(level, pad.offset(dx, dy, dz), shell
+                            ? Blocks.DEEPSLATE_TILES.defaultBlockState()
+                            : Blocks.CAVE_AIR.defaultBlockState());
+                }
+            }
+        }
+        StructureUtil.set(level, pad.above(2), ModBlocks.COSMIC_CRYSTAL.defaultBlockState());
+        StructureUtil.placeLootChest(level, pad, rng, ModFeatures.ALIEN_CITY_LOOT);
+        StructureUtil.spawnGuard(level, pad.offset(3, 1, 0),
+                com.example.alieninvasion.registry.EntityRegistry.PLASMA_CASTER, rng);
+        StructureUtil.spawnGuard(level, pad.offset(-3, 1, 1),
+                com.example.alieninvasion.registry.EntityRegistry.ACID_SPITTER, rng);
+
         return true;
     }
 

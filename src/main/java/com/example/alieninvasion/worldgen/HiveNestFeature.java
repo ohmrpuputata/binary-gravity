@@ -106,6 +106,20 @@ public class HiveNestFeature extends Feature<NoneFeatureConfiguration> {
         // Two high-value caches flanking the dais.
         StructureUtil.placeLootChest(level, dais.offset(1, 1, 1), rng, ModFeatures.HIVE_NEST_LOOT);
         StructureUtil.placeLootChest(level, dais.offset(-1, 1, -1), rng, ModFeatures.HIVE_NEST_LOOT);
+
+        // BREEDING POOL + GROWTH: an infected-water birthing pool and glowing
+        // tendrils across the floor make the pit feel alive, with one spitter
+        // lurking at the waterline.
+        StructureUtil.fillBox(level, dais.offset(3, 0, 3), dais.offset(4, 0, 4),
+                ModBlocks.INFECTED_WATER.defaultBlockState(), false);
+        for (int i = 0; i < 8; i++) {
+            BlockPos tp = o.offset(rng.nextInt(9) - 4, baseY + 1, rng.nextInt(9) - 4);
+            if (StructureUtil.getBlockState(level, tp).isAir()
+                    && !StructureUtil.getBlockState(level, tp.below()).isAir()) {
+                StructureUtil.set(level, tp, ModBlocks.ALIEN_TENDRILS.defaultBlockState());
+            }
+        }
+        StructureUtil.spawnGuard(level, dais.offset(3, 1, 2), EntityRegistry.ACID_SPITTER, rng);
         return true;
     }
 }

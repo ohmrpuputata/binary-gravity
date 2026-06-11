@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 public class AlienGruntRenderer extends MobRenderer<AlienGruntEntity, AlienGruntModel> {
     public AlienGruntRenderer(EntityRendererProvider.Context context) {
         super(context, new AlienGruntModel(context.bakeLayer(ModModelLayers.ALIEN_GRUNT)), 0.5F);
+        this.addLayer(new AlienGruntEyesLayer(this));
     }
 
     @Override

@@ -23,6 +23,12 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
 public class AlienInvasionClient implements ClientModInitializer {
+        private static void registerHumanoid(net.minecraft.client.model.geom.ModelLayerLocation layer,
+                        com.example.alieninvasion.client.model.AlienHumanoidModel.Variant variant) {
+                EntityModelLayerRegistry.registerModelLayer(layer,
+                                () -> com.example.alieninvasion.client.model.AlienHumanoidModel.createBodyLayer(variant));
+        }
+
         @Override
         public void onInitializeClient() {
                 // Renderers
@@ -47,8 +53,12 @@ public class AlienInvasionClient implements ClientModInitializer {
                                 com.example.alieninvasion.client.HiveShamanRenderer::new);
                 EntityRendererRegistry.register(EntityRegistry.PARASITE,
                                 com.example.alieninvasion.client.ParasiteRenderer::new);
+                EntityRendererRegistry.register(EntityRegistry.INFESTED_WORM,
+                                com.example.alieninvasion.client.InfestedWormRenderer::new);
+                EntityRendererRegistry.register(EntityRegistry.ALIEN_RAPTOR,
+                                com.example.alieninvasion.client.AlienRaptorRenderer::new);
                 EntityRendererRegistry.register(EntityRegistry.INFESTED_PLAYER_CLONE,
-                                ctx -> new net.minecraft.client.renderer.entity.ZombieRenderer(ctx));
+                                com.example.alieninvasion.client.InfestedCloneRenderer::new);
                 EntityRendererRegistry.register(EntityRegistry.INFESTED_CREEPER,
                                 ctx -> new net.minecraft.client.renderer.entity.CreeperRenderer(ctx));
                 EntityRendererRegistry.register(EntityRegistry.INFESTED_SKELETON,
@@ -86,6 +96,31 @@ public class AlienInvasionClient implements ClientModInitializer {
                                 com.example.alieninvasion.client.model.MeteorModel::createBodyLayer);
                 EntityModelLayerRegistry.registerModelLayer(ModModelLayers.SWARM_MOTHER,
                                 com.example.alieninvasion.client.model.SwarmMotherModel::createBodyLayer);
+                EntityModelLayerRegistry.registerModelLayer(ModModelLayers.SKY_DRONE,
+                                com.example.alieninvasion.client.model.SkyDroneModel::createBodyLayer);
+                EntityModelLayerRegistry.registerModelLayer(ModModelLayers.INFESTED_WORM,
+                                com.example.alieninvasion.client.model.InfestedWormModel::createBodyLayer);
+                EntityModelLayerRegistry.registerModelLayer(ModModelLayers.PARASITE,
+                                com.example.alieninvasion.client.model.InfestedWormModel::createBodyLayer);
+                EntityModelLayerRegistry.registerModelLayer(ModModelLayers.ALIEN_RAPTOR,
+                                com.example.alieninvasion.client.model.AlienRaptorModel::createBodyLayer);
+                // Shared swarm-humanoid skeleton: one parametric model, eight builds.
+                registerHumanoid(ModModelLayers.ALIEN_BRUTE,
+                                com.example.alieninvasion.client.model.AlienHumanoidModel.Variant.BRUTE);
+                registerHumanoid(ModModelLayers.ALIEN_STALKER,
+                                com.example.alieninvasion.client.model.AlienHumanoidModel.Variant.STALKER);
+                registerHumanoid(ModModelLayers.PLASMA_CASTER,
+                                com.example.alieninvasion.client.model.AlienHumanoidModel.Variant.CASTER);
+                registerHumanoid(ModModelLayers.HIVE_SHAMAN,
+                                com.example.alieninvasion.client.model.AlienHumanoidModel.Variant.SHAMAN);
+                registerHumanoid(ModModelLayers.TELEKINETIC_ALIEN,
+                                com.example.alieninvasion.client.model.AlienHumanoidModel.Variant.TELEKINETIC);
+                registerHumanoid(ModModelLayers.ALIEN_TROLL,
+                                com.example.alieninvasion.client.model.AlienHumanoidModel.Variant.TROLL);
+                registerHumanoid(ModModelLayers.HIVE_TYRANT,
+                                com.example.alieninvasion.client.model.AlienHumanoidModel.Variant.TYRANT);
+                registerHumanoid(ModModelLayers.ACID_SPITTER,
+                                com.example.alieninvasion.client.model.AlienHumanoidModel.Variant.SPITTER);
                 // HUD Overlay
                 com.example.alieninvasion.client.InvasionHUDOverlay.register();
 
@@ -113,6 +148,9 @@ public class AlienInvasionClient implements ClientModInitializer {
                 BlockRenderLayerMap.INSTANCE.putFluids(RenderType.translucent(),
                                 ModFluids.INFECTED_WATER_STILL, ModFluids.INFECTED_WATER_FLOWING);
                 BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.cutout(),
-                                ModBlocks.INFESTED_LEAVES, ModBlocks.DEAD_INFESTED_CROP, ModBlocks.BLOOD_POOL);
+                                ModBlocks.INFESTED_LEAVES, ModBlocks.DEAD_INFESTED_CROP, ModBlocks.BLOOD_POOL,
+                                ModBlocks.ALIEN_TENDRILS, ModBlocks.INFESTED_DOOR, ModBlocks.INFESTED_TRAPDOOR,
+                                ModBlocks.INFESTED_GLASS);
+                BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.translucent(), ModBlocks.INFESTED_ICE);
         }
 }

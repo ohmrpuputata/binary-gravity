@@ -72,5 +72,33 @@ public class ToxicWaterBlock extends LiquidBlock {
                 }
             }
         }
+        // DOWNWARD ROT: toxin sinks - the column under a toxic surface converts
+        // with no depth limit, so pools end up toxic top to bottom.
+        BlockState below = level.getBlockState(pos.below());
+        if (below.is(net.minecraft.world.level.block.Blocks.WATER) && below.getFluidState().isSource()) {
+            level.setBlockAndUpdate(pos.below(), ModBlocks.TOXIC_WATER.defaultBlockState());
+        }
+        // Creeping water corruption: the toxin slowly eats adjacent clean water,
+        // but only along shallows (a bottom within 3 blocks), so it crawls along
+        // shores and ponds instead of swallowing whole oceans.
+        if (random.nextInt(3) == 0) {
+            Direction dir = Direction.getRandom(random);
+            if (dir == Direction.UP) dir = Direction.DOWN;
+            BlockPos target = pos.relative(dir);
+            BlockState targetState = level.getBlockState(target);
+            if (targetState.is(net.minecraft.world.level.block.Blocks.WATER)
+                    && targetState.getFluidState().isSource() && isShallow(level, target)) {
+                level.setBlockAndUpdate(target, ModBlocks.TOXIC_WATER.defaultBlockState());
+            }
+        }
+    }
+
+    static boolean isShallow(ServerLevel level, BlockPos pos) {
+        for (int i = 1; i <= 3; i++) {
+            if (level.getBlockState(pos.below(i)).getFluidState().isEmpty()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

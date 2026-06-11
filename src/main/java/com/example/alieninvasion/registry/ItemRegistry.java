@@ -157,6 +157,12 @@ public class ItemRegistry {
     public static final Item PARASITE_ITEM = registerItem("parasite_item",
             new com.example.alieninvasion.item.ParasiteItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
 
+    public static final Item INFESTED_WORM_SPAWN_EGG = registerItem("infested_worm_spawn_egg",
+            new SpawnEggItem(EntityRegistry.INFESTED_WORM, 0xB04467, 0x4E0E2C, new Item.Properties().rarity(Rarity.UNCOMMON)));
+
+    public static final Item ALIEN_RAPTOR_SPAWN_EGG = registerItem("alien_raptor_spawn_egg",
+            new SpawnEggItem(EntityRegistry.ALIEN_RAPTOR, 0x69784F, 0x2C381F, new Item.Properties().rarity(Rarity.UNCOMMON)));
+
     public static final Item PARASITE_SPAWN_EGG = registerItem("parasite_spawn_egg",
             new SpawnEggItem(EntityRegistry.PARASITE, 0x5D8A00, 0x8A008A, new Item.Properties().rarity(Rarity.UNCOMMON)));
 

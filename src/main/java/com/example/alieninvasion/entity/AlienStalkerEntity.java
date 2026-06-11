@@ -24,6 +24,38 @@ import net.minecraft.world.level.Level;
 // Сталкер (Пришелец-Убийца): Быстрый скрытный ассасин роя.
 // Умеет становиться невидимым и телепортироваться за спину жертве. Мало здоровья, высокий урон.
 public class AlienStalkerEntity extends Monster implements IAlienUnit {
+    // ALIEN VOICE: quiet, pitched vanilla sounds remixed into something wrong -
+    // rarer and softer than the originals so the swarm unnerves instead of annoys.
+    @Override
+    protected net.minecraft.sounds.SoundEvent getAmbientSound() {
+        return net.minecraft.sounds.SoundEvents.PHANTOM_AMBIENT;
+    }
+
+    @Override
+    protected net.minecraft.sounds.SoundEvent getHurtSound(net.minecraft.world.damagesource.DamageSource source) {
+        return net.minecraft.sounds.SoundEvents.PHANTOM_HURT;
+    }
+
+    @Override
+    protected net.minecraft.sounds.SoundEvent getDeathSound() {
+        return net.minecraft.sounds.SoundEvents.PHANTOM_DEATH;
+    }
+
+    @Override
+    public int getAmbientSoundInterval() {
+        return 260;
+    }
+
+    @Override
+    protected float getSoundVolume() {
+        return 0.5F;
+    }
+
+    @Override
+    public float getVoicePitch() {
+        return 0.65F + this.random.nextFloat() * 0.1F;
+    }
+
     private int blinkCooldown;
 
     public AlienStalkerEntity(EntityType<? extends Monster> type, Level level) {

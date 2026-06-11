@@ -69,6 +69,21 @@ public class ModEvents {
     }
     
     public static final java.util.List<GravityAnomaly> ACTIVE_ANOMALIES = new java.util.concurrent.CopyOnWriteArrayList<>();
+
+    /** Drifting acid-gas cloud: run from it or get under a roof. */
+    public static class AcidCloud {
+        public double x, z;
+        public double vx, vz;
+        public int radius;
+        public int ticksRemaining;
+
+        public AcidCloud(double x, double z, double vx, double vz, int radius, int ticks) {
+            this.x = x; this.z = z; this.vx = vx; this.vz = vz;
+            this.radius = radius; this.ticksRemaining = ticks;
+        }
+    }
+
+    public static final java.util.List<AcidCloud> ACTIVE_CLOUDS = new java.util.concurrent.CopyOnWriteArrayList<>();
     
     private static boolean isApplyingAPDamage = false;
 
@@ -207,6 +222,45 @@ public class ModEvents {
                 PARASITE_ATTACH.remove(deadPlayer.getUUID());
                 com.example.alieninvasion.logic.RadiationManager.clearDose(deadPlayer);
                 com.example.alieninvasion.logic.InfectionManager.clear(deadPlayer);
+
+                // CORPSE-RUNNER: from day 2 the swarm grows a clone out of every
+                // player corpse. It swallows the ENTIRE death drop, wears your best
+                // gear and hunts YOU first. Killing it returns everything. If your
+                // previous clone is still nearby, it claims the new drop instead.
+                if (entity.level() instanceof ServerLevel cloneLevel
+                        && cloneLevel.dimension() == net.minecraft.world.level.Level.OVERWORLD
+                        && SurvivalManager.getDay(cloneLevel) >= 2) {
+                    com.example.alieninvasion.entity.InfestedPlayerCloneEntity existing = null;
+                    for (com.example.alieninvasion.entity.InfestedPlayerCloneEntity c :
+                            cloneLevel.getEntitiesOfClass(com.example.alieninvasion.entity.InfestedPlayerCloneEntity.class,
+                                    deadPlayer.getBoundingBox().inflate(20.0D),
+                                    c -> c.isAlive() && c.isOwner(deadPlayer.getUUID()))) {
+                        existing = c;
+                        break;
+                    }
+                    if (existing != null) {
+                        existing.absorbDeathLoot(cloneLevel, deadPlayer.position());
+                    } else {
+                        com.example.alieninvasion.entity.InfestedPlayerCloneEntity clone =
+                                EntityRegistry.INFESTED_PLAYER_CLONE.create(cloneLevel);
+                        if (clone != null) {
+                            clone.moveTo(deadPlayer.getX(), deadPlayer.getY(), deadPlayer.getZ(),
+                                    deadPlayer.getYRot(), 0.0F);
+                            clone.bindOwner(deadPlayer);
+                            cloneLevel.addFreshEntity(clone);
+                            clone.absorbDeathLoot(cloneLevel, deadPlayer.position());
+                            cloneLevel.sendParticles(ParticleTypes.SCULK_SOUL,
+                                    deadPlayer.getX(), deadPlayer.getY() + 1.0D, deadPlayer.getZ(),
+                                    40, 0.4D, 0.9D, 0.4D, 0.04D);
+                            cloneLevel.playSound(null, deadPlayer.blockPosition(),
+                                    SoundEvents.SCULK_SHRIEKER_SHRIEK, SoundSource.HOSTILE, 1.0F, 0.4F);
+                            if (deadPlayer instanceof ServerPlayer sp) {
+                                sp.sendSystemMessage(Component.literal(
+                                        "§4Рой вырастил клона из вашего тела — он забрал ваши вещи. Убейте его, чтобы вернуть их."));
+                            }
+                        }
+                    }
+                }
             }
 
             // Infection logic: a host that dies while infected hatches a grunt.
@@ -227,16 +281,32 @@ public class ModEvents {
             // Scavengeable loot from slain aliens (motivation to fight back).
             dropAlienLoot(entity);
 
-            // Infected hosts burst into a fast 1-HP brain-parasite on death.
+            // THE LIFE CYCLE: infected hosts burst into worm broodlings on death
+            // (1-2 tiny worms; late-game one may emerge already grown), and sometimes
+            // a brain-parasite skitters out too.
             if ((entity instanceof com.example.alieninvasion.entity.InfestedZombieEntity
                     || entity instanceof com.example.alieninvasion.entity.InfestedCreeperEntity
                     || entity instanceof com.example.alieninvasion.entity.InfestedSkeletonEntity
                     || entity instanceof com.example.alieninvasion.entity.InfestedPlayerCloneEntity)
-                    && entity.level() instanceof ServerLevel pl && pl.random.nextFloat() < 0.5F) {
-                com.example.alieninvasion.entity.ParasiteEntity p = EntityRegistry.PARASITE.create(pl);
-                if (p != null) {
-                    p.moveTo(entity.getX(), entity.getY(), entity.getZ(), 0, 0);
-                    pl.addFreshEntity(p);
+                    && entity.level() instanceof ServerLevel pl) {
+                int wormDay = SurvivalManager.getDay(pl);
+                int worms = 1 + pl.random.nextInt(2);
+                for (int i = 0; i < worms; i++) {
+                    com.example.alieninvasion.entity.InfestedWormEntity worm = EntityRegistry.INFESTED_WORM.create(pl);
+                    if (worm != null) {
+                        worm.moveTo(entity.getX() + (pl.random.nextDouble() - 0.5) * 0.6,
+                                entity.getY() + 0.2, entity.getZ() + (pl.random.nextDouble() - 0.5) * 0.6,
+                                pl.random.nextFloat() * 360F, 0F);
+                        worm.setStage(wormDay >= 5 && pl.random.nextFloat() < 0.35F ? 1 : 0);
+                        pl.addFreshEntity(worm);
+                    }
+                }
+                if (pl.random.nextFloat() < 0.25F) {
+                    com.example.alieninvasion.entity.ParasiteEntity p = EntityRegistry.PARASITE.create(pl);
+                    if (p != null) {
+                        p.moveTo(entity.getX(), entity.getY(), entity.getZ(), 0, 0);
+                        pl.addFreshEntity(p);
+                    }
                 }
             }
         });
@@ -396,6 +466,58 @@ public class ModEvents {
                 }
             }
 
+            // ACID CLOUDS: slow drifting gas banks roam the wasteland from day 4.
+            // Standing in one under open sky melts you - sprint away or get under
+            // a roof. They sizzle audibly so you hear them coming.
+            for (AcidCloud cloud : ACTIVE_CLOUDS) {
+                cloud.ticksRemaining--;
+                if (cloud.ticksRemaining <= 0) {
+                    ACTIVE_CLOUDS.remove(cloud);
+                    continue;
+                }
+                cloud.x += cloud.vx;
+                cloud.z += cloud.vz;
+                int gy = level.getHeight(Heightmap.Types.MOTION_BLOCKING, (int) cloud.x, (int) cloud.z);
+                if (level.getGameTime() % 2L == 0L) {
+                    for (int i = 0; i < 6; i++) {
+                        double a = level.random.nextDouble() * Math.PI * 2.0;
+                        double r = Math.sqrt(level.random.nextDouble()) * cloud.radius;
+                        level.sendParticles(ParticleTypes.SNEEZE,
+                                cloud.x + Math.cos(a) * r, gy + 0.5 + level.random.nextDouble() * 2.5,
+                                cloud.z + Math.sin(a) * r, 1, 0.2, 0.1, 0.2, 0.0);
+                    }
+                }
+                if (level.getGameTime() % 60L == 0L) {
+                    level.playSound(null, BlockPos.containing(cloud.x, gy, cloud.z), SoundEvents.FIRE_EXTINGUISH,
+                            SoundSource.AMBIENT, 1.2F, 0.5F);
+                }
+                if (level.getGameTime() % 20L == 0L) {
+                    for (ServerPlayer p : level.players()) {
+                        double ddx = p.getX() - cloud.x, ddz = p.getZ() - cloud.z;
+                        if (ddx * ddx + ddz * ddz <= (double) cloud.radius * cloud.radius
+                                && level.canSeeSky(p.blockPosition()) && !p.getAbilities().invulnerable) {
+                            p.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.POISON, 80, 1, false, true));
+                            p.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.CONFUSION, 120, 0, false, false));
+                            p.displayClientMessage(Component.literal("§2☠ Кислотное облако! Бегите или под крышу!"), true);
+                        }
+                    }
+                }
+            }
+            if (level.getGameTime() % 1200 == 0 && level.random.nextFloat() < 0.12F
+                    && SurvivalManager.getDay(level) >= 4 && ACTIVE_CLOUDS.size() < 6) {
+                for (ServerPlayer player : level.players()) {
+                    double cx = player.getX() + (level.random.nextDouble() - 0.5) * 120.0;
+                    double cz = player.getZ() + (level.random.nextDouble() - 0.5) * 120.0;
+                    double ang = level.random.nextDouble() * Math.PI * 2.0;
+                    ACTIVE_CLOUDS.add(new AcidCloud(cx, cz,
+                            Math.cos(ang) * 0.045, Math.sin(ang) * 0.045,
+                            6 + level.random.nextInt(5), 1600 + level.random.nextInt(1200)));
+                    player.displayClientMessage(Component.literal(
+                            "§2[!] С пустошей ползёт кислотное облако..."), false);
+                    break;
+                }
+            }
+
             // Anomaly Gravity random trigger (Day 3+)
             if (level.getGameTime() % 400 == 0 && level.random.nextFloat() < 0.15F) {
                 for (ServerPlayer player : level.players()) {
@@ -514,9 +636,11 @@ public class ModEvents {
                                 level.random.nextInt(9) - 4);
                         if (level.getBlockState(sp).isAir() && level.getBlockState(sp.above()).isAir()
                                 && level.getBlockState(sp.below()).isSolidRender(level, sp.below())) {
-                            Mob a = level.random.nextBoolean()
-                                    ? EntityRegistry.ALIEN_GRUNT.create(level)
-                                    : EntityRegistry.CAVE_LURKER.create(level);
+                            Mob a = switch (level.random.nextInt(3)) {
+                                case 0 -> EntityRegistry.ALIEN_GRUNT.create(level);
+                                case 1 -> EntityRegistry.CAVE_LURKER.create(level);
+                                default -> EntityRegistry.ALIEN_RAPTOR.create(level);
+                            };
                             if (a != null) {
                                 a.moveTo(sp.getX() + 0.5D, sp.getY(), sp.getZ() + 0.5D, level.random.nextFloat() * 360F, 0F);
                                 a.setTarget(p);
@@ -563,6 +687,19 @@ public class ModEvents {
                                     g.setTarget(p);
                                     level.addFreshEntity(g);
                                 }
+                            }
+                        }
+                        for (int wi = 0; wi < 2; wi++) {
+                            double wx = p.getX() + (level.random.nextDouble() - 0.5D) * 14.0D;
+                            double wz = p.getZ() + (level.random.nextDouble() - 0.5D) * 14.0D;
+                            int wy = level.getHeight(Heightmap.Types.MOTION_BLOCKING, (int) wx, (int) wz);
+                            com.example.alieninvasion.entity.InfestedWormEntity wormSpawn =
+                                    EntityRegistry.INFESTED_WORM.create(level);
+                            if (wormSpawn != null) {
+                                wormSpawn.moveTo(wx, wy, wz, level.random.nextFloat() * 360F, 0F);
+                                wormSpawn.setStage(SurvivalManager.getDay(level) >= 6 ? 1 : 0);
+                                wormSpawn.setTarget(p);
+                                level.addFreshEntity(wormSpawn);
                             }
                         }
                         p.displayClientMessage(Component.literal("§5[!] Волна заражения роя! Земля гниёт вокруг."), false);
@@ -804,6 +941,22 @@ public class ModEvents {
                     }
                 }
 
+                // GEIGER COUNTER: just having it in the inventory makes it tick.
+                // Click bursts scale with the measured field - the closer you are to
+                // a source, the more frantic the crackle. A lone random click now and
+                // then is natural background. This sound (not a HUD bar) is how you
+                // "see" radiation without the counter equipped.
+                if (player.tickCount % 6 == 0 && player.getInventory().contains(
+                        new ItemStack(ItemRegistry.GEIGER_COUNTER))) {
+                    float fieldLevel = com.example.alieninvasion.logic.RadiationFieldManager.getFieldLevel(player);
+                    int clicks = fieldLevel >= 18.0F ? 3 : fieldLevel >= 9.0F ? 2 : fieldLevel > 0.0F ? 1
+                            : (level.random.nextInt(14) == 0 ? 1 : 0);
+                    for (int c = 0; c < clicks; c++) {
+                        level.playSound(null, player.blockPosition(), SoundEvents.TRIPWIRE_CLICK_ON,
+                                SoundSource.PLAYERS, 0.22F, 1.7F + level.random.nextFloat() * 0.5F);
+                    }
+                }
+
                 // Radiation check (dose-based survival mechanic - see RadiationManager)
                 if (player.tickCount % 20 == 0) {
                     com.example.alieninvasion.logic.RadiationManager.tickPlayer(level, player);
@@ -907,6 +1060,49 @@ public class ModEvents {
                     boolean infImmune = fullCosmic;
                     com.example.alieninvasion.logic.InfectionManager.tickPlayer(
                             level, player, onAlienGround, infImmune);
+                }
+
+                // BUNKER SANCTUARY: while the survivor-trader lives, his chunk stays
+                // inert - the one place the corruption cannot take.
+                if (player.tickCount % 100 == 0) {
+                    for (net.minecraft.world.entity.npc.Villager trader : level.getEntitiesOfClass(
+                            net.minecraft.world.entity.npc.Villager.class, player.getBoundingBox().inflate(48.0D),
+                            v -> v.isAlive() && v.getTags().contains("BunkerTrader"))) {
+                        var cdata = com.example.alieninvasion.logic.ChunkContaminationData.get(level);
+                        var vcp = new net.minecraft.world.level.ChunkPos(trader.blockPosition());
+                        if (!cdata.isInert(vcp)) cdata.setInert(vcp, true);
+                    }
+                }
+
+                // Day 3+: VILLAGE ASSIMILATION. Villagers whose homes the corruption
+                // has reached don't just die - they turn. A villager standing on
+                // infested ground twists into an infested zombie on the spot, so a
+                // rotten village becomes a swarm outpost.
+                if (player.tickCount % 100 == 0
+                        && com.example.alieninvasion.logic.SurvivalManager.getDay(level) >= 3) {
+                    for (net.minecraft.world.entity.npc.Villager villager : level.getEntitiesOfClass(
+                            net.minecraft.world.entity.npc.Villager.class, player.getBoundingBox().inflate(28.0D),
+                            v -> v.isAlive() && !v.hasCustomName())) {
+                        if (!isAlienGround(level.getBlockState(villager.blockPosition().below()))
+                                && !isAlienGround(level.getBlockState(villager.blockPosition()))) {
+                            continue;
+                        }
+                        if (level.random.nextFloat() > 0.30F) continue; // gradual, not instant
+                        com.example.alieninvasion.entity.InfestedZombieEntity turned =
+                                EntityRegistry.INFESTED_ZOMBIE.create(level);
+                        if (turned != null) {
+                            turned.moveTo(villager.getX(), villager.getY(), villager.getZ(),
+                                    villager.getYRot(), 0.0F);
+                            turned.setPersistenceRequired();
+                            level.sendParticles(ParticleTypes.SCULK_SOUL,
+                                    villager.getX(), villager.getY() + 1.0D, villager.getZ(),
+                                    25, 0.4D, 0.8D, 0.4D, 0.02D);
+                            level.playSound(null, villager.blockPosition(), SoundEvents.ZOMBIE_VILLAGER_CONVERTED,
+                                    SoundSource.HOSTILE, 1.0F, 0.7F);
+                            villager.discard();
+                            level.addFreshEntity(turned);
+                        }
+                    }
                 }
 
                 // Day 4+: corrupted ground rejects peaceful life. Wild animals that

@@ -1,22 +1,29 @@
 package com.example.alieninvasion.client;
 
+import com.example.alieninvasion.AlienInvasionMod;
+import com.example.alieninvasion.client.model.AlienHumanoidModel;
 import com.example.alieninvasion.entity.AlienBruteEntity;
-import net.minecraft.client.model.IronGolemModel;
-import net.minecraft.client.model.geom.ModelLayers;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 
-import com.example.alieninvasion.AlienInvasionMod;
-
-// Hybrid: the Brute now uses the vanilla Iron Golem model layout so it can wear
-// the Clash Royale golem texture imported from the pack.
-public class AlienBruteRenderer extends MobRenderer<AlienBruteEntity, IronGolemModel<AlienBruteEntity>> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID,
-            "textures/entity/alien_brute.png");
+// BRUTE build of the shared swarm-humanoid skeleton, with glowing eyes.
+public class AlienBruteRenderer extends MobRenderer<AlienBruteEntity, AlienHumanoidModel<AlienBruteEntity>> {
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(
+            AlienInvasionMod.MODID, "textures/entity/alien_brute.png");
+    private static final ResourceLocation EYES = ResourceLocation.fromNamespaceAndPath(
+            AlienInvasionMod.MODID, "textures/entity/alien_brute_eyes.png");
 
     public AlienBruteRenderer(EntityRendererProvider.Context context) {
-        super(context, new IronGolemModel<>(context.bakeLayer(ModelLayers.IRON_GOLEM)), 0.9F);
+        super(context, new AlienHumanoidModel<>(context.bakeLayer(ModModelLayers.ALIEN_BRUTE),
+                AlienHumanoidModel.Variant.BRUTE), 0.9F);
+        this.addLayer(new AlienEyesLayer<>(this, EYES));
+    }
+
+    @Override
+    protected void scale(AlienBruteEntity entity, PoseStack poseStack, float partialTick) {
+        poseStack.scale(1.7F, 1.7F, 1.7F);
     }
 
     @Override

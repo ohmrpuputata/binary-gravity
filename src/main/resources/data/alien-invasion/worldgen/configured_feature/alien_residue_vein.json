@@ -21,6 +21,15 @@
         "state": {
           "Name": "alien-invasion:alien_residue"
         }
+      },
+      {
+        "target": {
+          "predicate_type": "minecraft:tag_match",
+          "tag": "minecraft:base_stone_overworld"
+        },
+        "state": {
+          "Name": "alien-invasion:alien_residue"
+        }
       }
     ]
   }

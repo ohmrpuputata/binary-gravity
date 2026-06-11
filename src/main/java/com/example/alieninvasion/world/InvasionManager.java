@@ -19,6 +19,7 @@ public class InvasionManager extends SavedData {
     private boolean victoryAchieved = false;
     private boolean retreatComplete = false;
     private int retreatZeroTicks = 0;
+    private int lastSiegeDay = 0;
 
     // Survive this many invasion days to beat the game.
     public static final int VICTORY_DAY = 8;
@@ -47,6 +48,7 @@ public class InvasionManager extends SavedData {
         data.heavyArmorTicks = tag.getInt("HeavyArmorTicks");
         data.victoryAchieved = tag.getBoolean("VictoryAchieved");
         data.retreatComplete = tag.getBoolean("RetreatComplete");
+        data.lastSiegeDay = tag.getInt("LastSiegeDay");
         return data;
     }
 
@@ -59,6 +61,7 @@ public class InvasionManager extends SavedData {
         tag.putInt("HeavyArmorTicks", heavyArmorTicks);
         tag.putBoolean("VictoryAchieved", victoryAchieved);
         tag.putBoolean("RetreatComplete", retreatComplete);
+        tag.putInt("LastSiegeDay", lastSiegeDay);
         return tag;
     }
 
@@ -101,6 +104,17 @@ public class InvasionManager extends SavedData {
         // around every player, faster as the invasion drags on.
         if (level.getGameTime() % 100L == 0L) {
             infestNearPlayers(level);
+        }
+
+        // SIEGE: every second invasion day (from day 4), at night, the swarm
+        // deliberately storms RECLAIMED (purifier-protected) chunks - holding
+        // territory means defending it.
+        if (this.invasionDays >= 4 && this.invasionDays % 2 == 0 && this.invasionDays != this.lastSiegeDay
+                && !level.isDay() && level.getGameTime() % 200L == 0L) {
+            if (runSiege(level)) {
+                this.lastSiegeDay = this.invasionDays;
+                this.setDirty();
+            }
         }
 
         // Orbital bombardment from day 3: meteors hammer surface players while
@@ -179,6 +193,50 @@ public class InvasionManager extends SavedData {
                 }
             }
         }
+    }
+
+    /**
+     * The swarm storms reclaimed chunks: a wave of grunts plus a breacher (it chews
+     * through walls) spawns INSIDE one purifier-protected chunk near each player.
+     * One siege per player per siege-day. Tower-defense pressure on held land.
+     */
+    private boolean runSiege(ServerLevel level) {
+        com.example.alieninvasion.logic.ChunkContaminationData data =
+                com.example.alieninvasion.logic.ChunkContaminationData.get(level);
+        boolean any = false;
+        for (net.minecraft.server.level.ServerPlayer player : level.players()) {
+            net.minecraft.world.level.ChunkPos center = player.chunkPosition();
+            outer:
+            for (int dx = -3; dx <= 3; dx++) {
+                for (int dz = -3; dz <= 3; dz++) {
+                    net.minecraft.world.level.ChunkPos cp =
+                            new net.minecraft.world.level.ChunkPos(center.x + dx, center.z + dz);
+                    if (!data.isPurified(cp)) continue;
+                    int count = 4 + level.random.nextInt(3) + this.invasionDays / 3;
+                    for (int i = 0; i < count; i++) {
+                        int bx = cp.getMinBlockX() + level.random.nextInt(16);
+                        int bz = cp.getMinBlockZ() + level.random.nextInt(16);
+                        int by = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, bx, bz);
+                        net.minecraft.world.entity.Mob raider = (i % 4 == 3
+                                ? com.example.alieninvasion.registry.EntityRegistry.ALIEN_BREACHER
+                                : com.example.alieninvasion.registry.EntityRegistry.ALIEN_GRUNT).create(level);
+                        if (raider != null) {
+                            raider.moveTo(bx + 0.5D, by, bz + 0.5D, level.random.nextFloat() * 360.0F, 0.0F);
+                            raider.setTarget(player);
+                            level.addFreshEntity(raider);
+                        }
+                    }
+                    level.playSound(null, player.blockPosition(),
+                            net.minecraft.sounds.SoundEvents.SCULK_SHRIEKER_SHRIEK,
+                            net.minecraft.sounds.SoundSource.HOSTILE, 2.0F, 0.5F);
+                    player.sendSystemMessage(net.minecraft.network.chat.Component.literal(
+                            "§c§l[Рой] ОСАДА! §rРой штурмует вашу отвоёванную территорию!"));
+                    any = true;
+                    break outer; // one besieged chunk per player per siege-day
+                }
+            }
+        }
+        return any;
     }
 
     // Beat the game: NO vanilla credits. The swarm breaks and evacuates instead.

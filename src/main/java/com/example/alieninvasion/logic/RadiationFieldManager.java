@@ -36,17 +36,34 @@ public final class RadiationFieldManager {
         return best;
     }
 
+    /** Last measured field strength per player — drives the geiger counter clicks. */
+    private static final java.util.Map<java.util.UUID, Float> LAST_FIELD =
+            new java.util.concurrent.ConcurrentHashMap<>();
+
+    public static float getFieldLevel(ServerPlayer player) {
+        return LAST_FIELD.getOrDefault(player.getUUID(), 0.0F);
+    }
+
+    public static float getFieldLevel(java.util.UUID id) {
+        return LAST_FIELD.getOrDefault(id, 0.0F);
+    }
+
     public static void tickPlayer(ServerLevel level, ServerPlayer player) {
         if (player.isCreative() || player.isSpectator() || player.getAbilities().invulnerable) {
+            LAST_FIELD.remove(player.getUUID());
             return;
         }
         double dsq = nearestDistSq(level, player.blockPosition());
-        if (dsq == Double.MAX_VALUE) return;
+        if (dsq == Double.MAX_VALUE) {
+            LAST_FIELD.put(player.getUUID(), 0.0F);
+            return;
+        }
         double d = Math.sqrt(dsq);
         float dose;
         if (d <= 2.0)      dose = 20.0F;
         else if (d <= 4.0) dose = 10.0F;
         else               dose = 5.0F;
+        LAST_FIELD.put(player.getUUID(), dose);
         RadiationManager.addDose(player, dose);
     }
 }

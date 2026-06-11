@@ -166,7 +166,6 @@
   "tooltip.alien-invasion.alien_stash": "The Swarm collects what it considers valuable. Judging by the contents — much of it matches your own opinion.",
   "tooltip.alien-invasion.radiation_crystal_cluster": "A cluster of crystals. Beautiful and deadly — like almost everything the Swarm brought.",
   "tooltip.alien-invasion.contaminated_bones": "Bones saturated with biomass. The Swarm doesn't leave its dead simply lying around.",
-
   "block.alien-invasion.pure_radiation_block": "Radiation Crystal Ore",
   "item.alien-invasion.radiation_crystal": "Radiation Crystal",
   "effect.alien-invasion.strong_radiation": "Strong Radiation",
@@ -426,5 +425,22 @@
   "upgrade.alien-invasion.nibirium.applies_to": "Diamond Tools/Armor and Hazmat Suit",
   "upgrade.alien-invasion.nibirium.ingredients": "Nibirium Ingot",
   "upgrade.alien-invasion.nibirium.base_slot_description": "Add a diamond tool, weapon, or Hazmat Suit piece",
-  "upgrade.alien-invasion.nibirium.additions_slot_description": "Add a Nibirium Ingot"
+  "upgrade.alien-invasion.nibirium.additions_slot_description": "Add a Nibirium Ingot",
+  "block.alien-invasion.infested_sandstone": "Infested Sandstone",
+  "block.alien-invasion.infested_terracotta": "Infested Terracotta",
+  "block.alien-invasion.infested_snow": "Infested Snow",
+  "block.alien-invasion.infested_ice": "Infested Ice",
+  "block.alien-invasion.alien_tendrils": "Alien Tendrils",
+  "block.alien-invasion.infested_stone_bricks": "Infested Stone Bricks",
+  "block.alien-invasion.infested_wool": "Infested Wool",
+  "block.alien-invasion.infested_glass": "Infested Glass",
+  "block.alien-invasion.infested_door": "Infested Door",
+  "block.alien-invasion.infested_trapdoor": "Infested Trapdoor",
+  "block.alien-invasion.alien_heart": "Infection Heart",
+  "block.alien-invasion.radio_transmitter": "Radio Transmitter",
+  "block.alien-invasion.infested_crafting_table": "Infested Crafting Table",
+  "entity.alien-invasion.infested_worm": "Infested Worm",
+  "entity.alien-invasion.alien_raptor": "Swarm Raptor",
+  "item.alien-invasion.infested_worm_spawn_egg": "Infested Worm Spawn Egg",
+  "item.alien-invasion.alien_raptor_spawn_egg": "Swarm Raptor Spawn Egg"
 }

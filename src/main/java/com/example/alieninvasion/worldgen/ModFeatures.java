@@ -30,6 +30,12 @@ public class ModFeatures {
             new AbandonedLabFeature(NoneFeatureConfiguration.CODEC);
     public static final Feature<NoneFeatureConfiguration> HIVE_NEST =
             new HiveNestFeature(NoneFeatureConfiguration.CODEC);
+    public static final Feature<NoneFeatureConfiguration> BURIED_MOTHERSHIP =
+            new BuriedMothershipFeature(NoneFeatureConfiguration.CODEC);
+    public static final Feature<NoneFeatureConfiguration> ALIEN_MONOLITH =
+            new AlienMonolithFeature(NoneFeatureConfiguration.CODEC);
+    public static final Feature<NoneFeatureConfiguration> SURVIVOR_BUNKER =
+            new SurvivorBunkerFeature(NoneFeatureConfiguration.CODEC);
 
     // Loot tables (data/alien-invasion/loot_table/chests/*.json)
     public static final ResourceKey<LootTable> CAVE_DUNGEON_LOOT =
@@ -44,6 +50,8 @@ public class ModFeatures {
             ResourceKey.create(Registries.LOOT_TABLE, rl("chests/abandoned_lab"));
     public static final ResourceKey<LootTable> HIVE_NEST_LOOT =
             ResourceKey.create(Registries.LOOT_TABLE, rl("chests/hive_nest"));
+    public static final ResourceKey<LootTable> MOTHERSHIP_LOOT =
+            ResourceKey.create(Registries.LOOT_TABLE, rl("chests/mothership"));
 
     // Placed feature keys (data/alien-invasion/worldgen/placed_feature/*.json)
     public static final ResourceKey<PlacedFeature> CAVE_DUNGEON_PLACED = pf("cave_dungeon");
@@ -53,6 +61,9 @@ public class ModFeatures {
     public static final ResourceKey<PlacedFeature> COSMIC_VAULT_PLACED = pf("cosmic_vault");
     public static final ResourceKey<PlacedFeature> ABANDONED_LAB_PLACED = pf("abandoned_lab");
     public static final ResourceKey<PlacedFeature> HIVE_NEST_PLACED = pf("hive_nest");
+    public static final ResourceKey<PlacedFeature> BURIED_MOTHERSHIP_PLACED = pf("buried_mothership");
+    public static final ResourceKey<PlacedFeature> ALIEN_MONOLITH_PLACED = pf("alien_monolith");
+    public static final ResourceKey<PlacedFeature> SURVIVOR_BUNKER_PLACED = pf("survivor_bunker");
 
     public static void register() {
         Registry.register(BuiltInRegistries.FEATURE, rl("cave_dungeon"), CAVE_DUNGEON);
@@ -62,6 +73,9 @@ public class ModFeatures {
         Registry.register(BuiltInRegistries.FEATURE, rl("cosmic_vault"), COSMIC_VAULT);
         Registry.register(BuiltInRegistries.FEATURE, rl("abandoned_lab"), ABANDONED_LAB);
         Registry.register(BuiltInRegistries.FEATURE, rl("hive_nest"), HIVE_NEST);
+        Registry.register(BuiltInRegistries.FEATURE, rl("buried_mothership"), BURIED_MOTHERSHIP);
+        Registry.register(BuiltInRegistries.FEATURE, rl("alien_monolith"), ALIEN_MONOLITH);
+        Registry.register(BuiltInRegistries.FEATURE, rl("survivor_bunker"), SURVIVOR_BUNKER);
 
         BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
                 GenerationStep.Decoration.UNDERGROUND_DECORATION, CAVE_DUNGEON_PLACED);
@@ -77,8 +91,14 @@ public class ModFeatures {
                 GenerationStep.Decoration.SURFACE_STRUCTURES, ALIEN_OUTPOST_PLACED);
         BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
                 GenerationStep.Decoration.SURFACE_STRUCTURES, CRASHED_UFO_PLACED);
+        BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
+                GenerationStep.Decoration.SURFACE_STRUCTURES, BURIED_MOTHERSHIP_PLACED);
+        BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
+                GenerationStep.Decoration.SURFACE_STRUCTURES, ALIEN_MONOLITH_PLACED);
+        BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
+                GenerationStep.Decoration.SURFACE_STRUCTURES, SURVIVOR_BUNKER_PLACED);
 
-        AlienInvasionMod.LOGGER.info("Registered worldgen structures: cave_dungeon, infested_mine, cosmic_vault, abandoned_lab, hive_nest, alien_outpost, crashed_ufo");
+        AlienInvasionMod.LOGGER.info("Registered worldgen structures: cave_dungeon, infested_mine, cosmic_vault, abandoned_lab, hive_nest, alien_outpost, crashed_ufo, buried_mothership, alien_monolith");
     }
 
     private static ResourceLocation rl(String path) {

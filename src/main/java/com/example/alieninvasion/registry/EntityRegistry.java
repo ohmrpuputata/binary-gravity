@@ -79,6 +79,20 @@ public class EntityRegistry {
             EntityType.Builder.of(MeteorEntity::new, MobCategory.MISC).sized(1.5f, 1.5f).build("meteor")
     );
 
+    public static final EntityType<com.example.alieninvasion.entity.InfestedWormEntity> INFESTED_WORM = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "infested_worm"),
+            EntityType.Builder.of(com.example.alieninvasion.entity.InfestedWormEntity::new, MobCategory.MONSTER)
+                    .sized(0.7f, 0.5f).build("infested_worm")
+    );
+
+    public static final EntityType<com.example.alieninvasion.entity.AlienRaptorEntity> ALIEN_RAPTOR = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "alien_raptor"),
+            EntityType.Builder.of(com.example.alieninvasion.entity.AlienRaptorEntity::new, MobCategory.MONSTER)
+                    .sized(0.85f, 1.1f).build("alien_raptor")
+    );
+
     public static final EntityType<ParasiteEntity> PARASITE = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
             ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "parasite"),
@@ -224,6 +238,8 @@ public class EntityRegistry {
         FabricDefaultAttributeRegistry.register(HIVE_TYRANT, HiveTyrantEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(ALIEN_TROLL, AlienTrollEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(PARASITE, com.example.alieninvasion.entity.ParasiteEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(INFESTED_WORM, com.example.alieninvasion.entity.InfestedWormEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(ALIEN_RAPTOR, com.example.alieninvasion.entity.AlienRaptorEntity.createAttributes());
 
         FabricDefaultAttributeRegistry.register(ALIEN_STALKER, AlienStalkerEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(ALIEN_BREACHER, AlienBreacherEntity.createAttributes());

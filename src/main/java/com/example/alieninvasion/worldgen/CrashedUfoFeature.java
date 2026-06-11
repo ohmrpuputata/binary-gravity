@@ -77,6 +77,36 @@ public class CrashedUfoFeature extends Feature<NoneFeatureConfiguration> {
         StructureUtil.set(level, hub.offset(0, 0, 1), ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState());
         StructureUtil.set(level, hub.offset(-2, 0, 0), ModBlocks.ALIEN_HIVE.defaultBlockState());
         StructureUtil.placeLootChest(level, hub.offset(1, 0, 1), rng, ModFeatures.ALIEN_CITY_LOOT);
+
+        // DEBRIS TRAIL: the saucer skidded in - a scatter of torn hull plates,
+        // burnt ground and tendrils stretching away from the crater.
+        int tdx = rng.nextBoolean() ? 1 : -1;
+        int tdz = rng.nextBoolean() ? 1 : -1;
+        for (int i = 3; i < 14; i++) {
+            if (rng.nextInt(3) == 0) continue;
+            int sx = c.getX() + tdx * i + rng.nextInt(5) - 2;
+            int sz = c.getZ() + tdz * i + rng.nextInt(5) - 2;
+            int sy = level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, sx, sz) - 1;
+            BlockPos dp = new BlockPos(sx, sy, sz);
+            BlockState ds = StructureUtil.getBlockState(level, dp);
+            if (ds.getFluidState().isEmpty() && !ds.isAir()) {
+                StructureUtil.set(level, dp, switch (rng.nextInt(5)) {
+                    case 0 -> hull;
+                    case 1 -> plate;
+                    case 2 -> ModBlocks.CRACKED_ALIEN_PIPE.defaultBlockState();
+                    default -> ModBlocks.INFESTED_STONE.defaultBlockState();
+                });
+                if (rng.nextInt(3) == 0 && StructureUtil.getBlockState(level, dp.above()).isAir()) {
+                    StructureUtil.set(level, dp.above(), ModBlocks.ALIEN_TENDRILS.defaultBlockState());
+                }
+            }
+        }
+
+        // SURVIVORS OF THE CRASH: the crew defends the wreck.
+        StructureUtil.spawnGuard(level, hub.offset(2, 1, -2),
+                com.example.alieninvasion.registry.EntityRegistry.ALIEN_STALKER, rng);
+        StructureUtil.spawnGuard(level, hub.offset(-2, 1, 2),
+                com.example.alieninvasion.registry.EntityRegistry.ACID_SPITTER, rng);
         return true;
     }
 }

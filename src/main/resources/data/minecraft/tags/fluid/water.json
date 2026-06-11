@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "alien-invasion:toxic_water",
+    "alien-invasion:flowing_toxic_water",
+    "alien-invasion:infected_water",
+    "alien-invasion:flowing_infected_water"
+  ]
+}

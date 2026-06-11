@@ -25,6 +25,38 @@ import net.minecraft.world.level.Level;
 // Шаман Роя (Пришелец-Поддержка): Поддерживающий юнит.
 // Лечит и усиливает союзных пришельцев поблизости (Регенерация + Сила), делая орду опаснее.
 public class HiveShamanEntity extends Monster implements IAlienUnit {
+    // ALIEN VOICE: quiet, pitched vanilla sounds remixed into something wrong -
+    // rarer and softer than the originals so the swarm unnerves instead of annoys.
+    @Override
+    protected net.minecraft.sounds.SoundEvent getAmbientSound() {
+        return net.minecraft.sounds.SoundEvents.EVOKER_AMBIENT;
+    }
+
+    @Override
+    protected net.minecraft.sounds.SoundEvent getHurtSound(net.minecraft.world.damagesource.DamageSource source) {
+        return net.minecraft.sounds.SoundEvents.EVOKER_HURT;
+    }
+
+    @Override
+    protected net.minecraft.sounds.SoundEvent getDeathSound() {
+        return net.minecraft.sounds.SoundEvents.EVOKER_DEATH;
+    }
+
+    @Override
+    public int getAmbientSoundInterval() {
+        return 240;
+    }
+
+    @Override
+    protected float getSoundVolume() {
+        return 0.6F;
+    }
+
+    @Override
+    public float getVoicePitch() {
+        return 0.7F + this.random.nextFloat() * 0.1F;
+    }
+
     public HiveShamanEntity(EntityType<? extends Monster> type, Level level) {
         super(type, level);
     }

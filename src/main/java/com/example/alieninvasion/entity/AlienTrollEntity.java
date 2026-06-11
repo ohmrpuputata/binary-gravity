@@ -26,6 +26,38 @@ import java.util.List;
 // Тролль-Пришелец: Быстрый и хрупкий воришка.
 // Не сражается напрямую, а подбегает, крадет предмет у игрока и убегает прятать его.
 public class AlienTrollEntity extends Monster implements IAlienUnit {
+    // ALIEN VOICE: quiet, pitched vanilla sounds remixed into something wrong -
+    // rarer and softer than the originals so the swarm unnerves instead of annoys.
+    @Override
+    protected net.minecraft.sounds.SoundEvent getAmbientSound() {
+        return net.minecraft.sounds.SoundEvents.RAVAGER_AMBIENT;
+    }
+
+    @Override
+    protected net.minecraft.sounds.SoundEvent getHurtSound(net.minecraft.world.damagesource.DamageSource source) {
+        return net.minecraft.sounds.SoundEvents.RAVAGER_HURT;
+    }
+
+    @Override
+    protected net.minecraft.sounds.SoundEvent getDeathSound() {
+        return net.minecraft.sounds.SoundEvents.RAVAGER_DEATH;
+    }
+
+    @Override
+    public int getAmbientSoundInterval() {
+        return 280;
+    }
+
+    @Override
+    protected float getSoundVolume() {
+        return 0.5F;
+    }
+
+    @Override
+    public float getVoicePitch() {
+        return 1.15F + this.random.nextFloat() * 0.1F;
+    }
+
     private ItemStack stolenItem = ItemStack.EMPTY;
     private int carryTicks;
 

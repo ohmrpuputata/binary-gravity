@@ -208,9 +208,10 @@ public class BlockBreakGoal extends Goal {
 
         if (this.breakTime >= this.breakSpeed) {
             // Capture the block id BEFORE destroying it so the break particles match.
+            // Event 2001 plays the block's OWN break sound + particles - no screeching
+            // "zombie breaks door" (1021) on every block.
             int blockId = Block.getId(this.mob.level().getBlockState(this.blockPos));
             this.mob.level().destroyBlock(this.blockPos, true);
-            this.mob.level().levelEvent(1021, this.blockPos, 0);
             this.mob.level().levelEvent(2001, this.blockPos, blockId);
             this.breakTime = 0;
             this.lastBreakProgress = -1;

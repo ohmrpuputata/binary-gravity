@@ -166,7 +166,6 @@
   "tooltip.alien-invasion.alien_stash": "Рой собирает то, что считает ценным. Судя по содержимому — многое совпадает с вашим мнением.",
   "tooltip.alien-invasion.radiation_crystal_cluster": "Скопление кристаллов. Красиво и смертоносно — как почти всё, что принёс Рой.",
   "tooltip.alien-invasion.contaminated_bones": "Кости, пропитанные биомассой. Рой не оставляет своих мёртвых просто лежать.",
-
   "block.alien-invasion.pure_radiation_block": "Рудный кристалл радиации",
   "item.alien-invasion.radiation_crystal": "Кристалл чистой радиации",
   "effect.alien-invasion.strong_radiation": "Сильная радиация",
@@ -426,5 +425,22 @@
   "upgrade.alien-invasion.nibirium.applies_to": "Алмазные инструменты/броня и Химзащита",
   "upgrade.alien-invasion.nibirium.ingredients": "Слиток нибирия",
   "upgrade.alien-invasion.nibirium.base_slot_description": "Добавьте алмазный инструмент, оружие или Химзащиту",
-  "upgrade.alien-invasion.nibirium.additions_slot_description": "Добавьте слиток нибирия"
+  "upgrade.alien-invasion.nibirium.additions_slot_description": "Добавьте слиток нибирия",
+  "block.alien-invasion.infested_sandstone": "Заражённый песчаник",
+  "block.alien-invasion.infested_terracotta": "Заражённая терракота",
+  "block.alien-invasion.infested_snow": "Заражённый снег",
+  "block.alien-invasion.infested_ice": "Заражённый лёд",
+  "block.alien-invasion.alien_tendrils": "Щупальца роя",
+  "block.alien-invasion.infested_stone_bricks": "Заражённые каменные кирпичи",
+  "block.alien-invasion.infested_wool": "Заражённая шерсть",
+  "block.alien-invasion.infested_glass": "Заражённое стекло",
+  "block.alien-invasion.infested_door": "Заражённая дверь",
+  "block.alien-invasion.infested_trapdoor": "Заражённый люк",
+  "block.alien-invasion.alien_heart": "Сердце заражения",
+  "block.alien-invasion.radio_transmitter": "Радиопередатчик",
+  "block.alien-invasion.infested_crafting_table": "Заражённый верстак",
+  "entity.alien-invasion.infested_worm": "Заражённый червь",
+  "entity.alien-invasion.alien_raptor": "Раптор роя",
+  "item.alien-invasion.infested_worm_spawn_egg": "Яйцо призыва заражённого червя",
+  "item.alien-invasion.alien_raptor_spawn_egg": "Яйцо призыва раптора роя"
 }

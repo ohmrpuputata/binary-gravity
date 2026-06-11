@@ -16,6 +16,38 @@ import net.minecraft.network.chat.Component;
 // Паразит-Мозгоед: стремительно мчится к игроку и ПРЫГАЕТ ему на голову.
 // Заняв слот шлема, мучает носителя (см. ModEvents). Очень быстрый и прыгучий.
 public class ParasiteEntity extends Silverfish implements IAlienUnit {
+    // ALIEN VOICE: quiet, pitched vanilla sounds remixed into something wrong -
+    // rarer and softer than the originals so the swarm unnerves instead of annoys.
+    @Override
+    protected net.minecraft.sounds.SoundEvent getAmbientSound() {
+        return net.minecraft.sounds.SoundEvents.SILVERFISH_AMBIENT;
+    }
+
+    @Override
+    protected net.minecraft.sounds.SoundEvent getHurtSound(net.minecraft.world.damagesource.DamageSource source) {
+        return net.minecraft.sounds.SoundEvents.SILVERFISH_HURT;
+    }
+
+    @Override
+    protected net.minecraft.sounds.SoundEvent getDeathSound() {
+        return net.minecraft.sounds.SoundEvents.SILVERFISH_DEATH;
+    }
+
+    @Override
+    public int getAmbientSoundInterval() {
+        return 160;
+    }
+
+    @Override
+    protected float getSoundVolume() {
+        return 0.5F;
+    }
+
+    @Override
+    public float getVoicePitch() {
+        return 1.45F + this.random.nextFloat() * 0.1F;
+    }
+
     public ParasiteEntity(EntityType<? extends Silverfish> type, Level level) {
         super(type, level);
     }

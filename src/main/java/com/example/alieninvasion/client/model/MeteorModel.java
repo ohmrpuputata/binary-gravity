@@ -6,41 +6,48 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.model.geom.builders.*;
 
+/**
+ * Tumbling meteor: an irregular boulder — core with offset rocky lumps on every
+ * face — that slowly somersaults as it falls. UV (64x64) mirrored in
+ * generate_machine_textures.py.
+ */
 public class MeteorModel extends EntityModel<MeteorEntity> {
-    private final ModelPart body;
+    private final ModelPart rock;
 
     public MeteorModel(ModelPart root) {
-        this.body = root.getChild("body");
+        this.rock = root.getChild("rock");
     }
 
     public static LayerDefinition createBodyLayer() {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
-        root.addOrReplaceChild("body", CubeListBuilder.create()
-                .texOffs(0, 0).addBox(-8.0F, -8.0F, -8.0F, 16.0F, 16.0F, 16.0F)     // Core
-                .texOffs(0, 32).addBox(-4.0F, -11.0F, -3.0F, 8.0F, 3.0F, 6.0F)      // Top crag
-                .texOffs(28, 32).addBox(-3.0F, 8.0F, -4.0F, 6.0F, 3.0F, 8.0F)       // Bottom crag
-                .texOffs(56, 0).addBox(-11.0F, -3.0F, -4.0F, 3.0F, 6.0F, 8.0F)      // Left crag
-                .texOffs(56, 14).addBox(8.0F, -4.0F, -3.0F, 4.0F, 8.0F, 6.0F)       // Right crag
-                .texOffs(80, 0).addBox(-4.0F, -4.0F, 8.0F, 8.0F, 8.0F, 3.0F)        // Back crag
-                .texOffs(80, 14).addBox(-3.0F, -5.0F, -11.0F, 6.0F, 10.0F, 3.0F),   // Front crag
-                PartPose.offset(0.0F, 0.0F, 0.0F));
-        return LayerDefinition.create(mesh, 128, 64);
+
+        root.addOrReplaceChild("rock", CubeListBuilder.create()
+                        .texOffs(0, 0).addBox(-5.0F, -5.0F, -5.0F, 10.0F, 10.0F, 10.0F)
+                        .texOffs(0, 21).addBox(-7.0F, -3.0F, -3.0F, 3.0F, 6.0F, 6.0F)
+                        .texOffs(0, 21).addBox(4.0F, -2.0F, -4.0F, 3.0F, 5.0F, 6.0F)
+                        .texOffs(19, 21).addBox(-3.0F, 4.0F, -3.0F, 6.0F, 3.0F, 6.0F)
+                        .texOffs(19, 21).addBox(-2.0F, -7.5F, -2.0F, 5.0F, 3.0F, 5.0F)
+                        .texOffs(41, 21).addBox(-3.0F, -3.0F, 4.0F, 5.0F, 5.0F, 3.0F)
+                        .texOffs(41, 21).addBox(-2.0F, -1.0F, -7.0F, 4.0F, 4.0F, 3.0F),
+                PartPose.offset(0.0F, 16.0F, 0.0F));
+
+        return LayerDefinition.create(mesh, 64, 64);
     }
 
     @Override
     public void setupAnim(MeteorEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks,
-            float netHeadYaw, float headPitch) {
+                          float netHeadYaw, float headPitch) {
+        this.rock.xRot = ageInTicks * 0.11F;
+        this.rock.yRot = ageInTicks * 0.07F;
+        this.rock.zRot = ageInTicks * 0.05F;
     }
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight,
-            int packedOverlay, int color) {
-        this.body.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+                               int packedOverlay, int color) {
+        rock.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
     }
 }

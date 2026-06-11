@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PP",
+    "PP"
+  ],
+  "key": {
+    "P": {
+      "item": "alien-invasion:infested_planks"
+    }
+  },
+  "result": {
+    "id": "alien-invasion:infested_crafting_table",
+    "count": 1
+  }
+}

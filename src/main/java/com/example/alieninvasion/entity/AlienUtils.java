@@ -20,7 +20,8 @@ public class AlienUtils {
                 || other instanceof AlienStalkerEntity || other instanceof PlasmaCasterEntity
                 || other instanceof HiveShamanEntity || other instanceof AlienBreacherEntity
                 || other instanceof SkyDroneEntity || other instanceof CaveLurkerEntity
-                || other instanceof AcidSpitterEntity || other instanceof SwarmMotherEntity) {
+                || other instanceof AcidSpitterEntity || other instanceof SwarmMotherEntity
+                || other instanceof InfestedWormEntity || other instanceof AlienRaptorEntity) {
             return true;
         }
         return false;

@@ -26,6 +26,11 @@
     "alien-invasion:palladium_ore",
     "alien-invasion:infested_diamond_ore",
     "alien-invasion:infested_redstone_ore",
-    "alien-invasion:pure_radiation_block"
+    "alien-invasion:pure_radiation_block",
+    "alien-invasion:infested_sandstone",
+    "alien-invasion:infested_terracotta",
+    "alien-invasion:infested_stone_bricks",
+    "alien-invasion:infested_ice",
+    "alien-invasion:radio_transmitter"
   ]
 }

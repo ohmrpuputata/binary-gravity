@@ -73,6 +73,25 @@ public class CaveDungeonFeature extends Feature<NoneFeatureConfiguration> {
 
         // The prize: a loot chest on the floor.
         StructureUtil.placeLootChest(level, o, rng, ModFeatures.CAVE_DUNGEON_LOOT);
+
+        // INNER SANCTUM: a second sealed chamber behind a tendril-choked corridor,
+        // holding the real prize under a shaman's watch. Turns the vault from a
+        // single box into a small two-room crawl.
+        BlockPos corridor = o.offset(rx + 1, 0, 0);
+        StructureUtil.fillBox(level, corridor.offset(0, -1, -1), corridor.offset(4, 3, 1), wall, false);
+        StructureUtil.fillBox(level, corridor.offset(0, 0, 0), corridor.offset(4, 2, 0), air, false);
+        if (rng.nextBoolean()) {
+            StructureUtil.set(level, corridor.offset(2, 0, 0), ModBlocks.ALIEN_TENDRILS.defaultBlockState());
+        }
+        BlockPos sanctum = o.offset(rx + 8, 0, 0);
+        StructureUtil.fillBox(level, sanctum.offset(-3, -1, -3), sanctum.offset(3, 4, 3), wall, false);
+        StructureUtil.fillBox(level, sanctum.offset(-2, 0, -2), sanctum.offset(2, 3, 2), air, false);
+        StructureUtil.set(level, sanctum.above(3), ModBlocks.COSMIC_CRYSTAL.defaultBlockState());
+        StructureUtil.set(level, sanctum.offset(-2, 0, 2), ModBlocks.RADIATION_CRYSTAL_CLUSTER.defaultBlockState());
+        StructureUtil.set(level, sanctum.offset(2, -1, -2), ModBlocks.TOXIC_WATER.defaultBlockState());
+        StructureUtil.placeLootChest(level, sanctum, rng, ModFeatures.CAVE_DUNGEON_LOOT);
+        StructureUtil.spawnGuard(level, sanctum.offset(1, 0, 1),
+                com.example.alieninvasion.registry.EntityRegistry.HIVE_SHAMAN, rng);
         return true;
     }
 }

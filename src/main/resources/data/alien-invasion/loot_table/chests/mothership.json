@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": { "type": "minecraft:uniform", "min": 4, "max": 7 },
+      "entries": [
+        { "type": "minecraft:item", "name": "alien-invasion:cosmic_shard", "weight": 16, "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 2, "max": 6 } }] },
+        { "type": "minecraft:item", "name": "alien-invasion:cosmic_ingot", "weight": 12, "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1, "max": 3 } }] },
+        { "type": "minecraft:item", "name": "alien-invasion:nibirium_ingot", "weight": 12, "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1, "max": 4 } }] },
+        { "type": "minecraft:item", "name": "alien-invasion:plasma_cell", "weight": 14, "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 3, "max": 8 } }] },
+        { "type": "minecraft:item", "name": "alien-invasion:alien_battery", "weight": 12, "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1, "max": 3 } }] },
+        { "type": "minecraft:item", "name": "alien-invasion:dark_matter_shard", "weight": 6, "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1, "max": 2 } }] },
+        { "type": "minecraft:item", "name": "alien-invasion:radiation_crystal", "weight": 10, "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1, "max": 3 } }] },
+        { "type": "minecraft:item", "name": "alien-invasion:platinum_ingot", "weight": 10, "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 2, "max": 5 } }] },
+        { "type": "minecraft:item", "name": "alien-invasion:rad_pills", "weight": 8, "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1, "max": 2 } }] },
+        { "type": "minecraft:item", "name": "alien-invasion:bio_serum", "weight": 8, "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1, "max": 2 } }] }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        { "type": "minecraft:item", "name": "alien-invasion:blink_core", "weight": 5 },
+        { "type": "minecraft:item", "name": "alien-invasion:hive_core", "weight": 5 },
+        { "type": "minecraft:item", "name": "alien-invasion:gravity_gun", "weight": 3 },
+        { "type": "minecraft:item", "name": "alien-invasion:alien_blaster", "weight": 3 },
+        { "type": "minecraft:item", "name": "alien-invasion:nibirium_smithing_template", "weight": 4 },
+        { "type": "minecraft:item", "name": "alien-invasion:cosmic_helmet", "weight": 2 },
+        { "type": "minecraft:empty", "weight": 10 }
+      ]
+    }
+  ]
+}

@@ -14,6 +14,38 @@ import net.minecraft.world.level.Level;
 // Тиран Роя (Босс пришельцев): Грозный мини-босс вторжения.
 // Создан на основе Вардена, преследует игрока, издает звуковые атаки. Имеет 300 HP.
 public class HiveTyrantEntity extends Warden implements IAlienUnit {
+    // ALIEN VOICE: quiet, pitched vanilla sounds remixed into something wrong -
+    // rarer and softer than the originals so the swarm unnerves instead of annoys.
+    @Override
+    protected net.minecraft.sounds.SoundEvent getAmbientSound() {
+        return net.minecraft.sounds.SoundEvents.WARDEN_AMBIENT;
+    }
+
+    @Override
+    protected net.minecraft.sounds.SoundEvent getHurtSound(net.minecraft.world.damagesource.DamageSource source) {
+        return net.minecraft.sounds.SoundEvents.WARDEN_HURT;
+    }
+
+    @Override
+    protected net.minecraft.sounds.SoundEvent getDeathSound() {
+        return net.minecraft.sounds.SoundEvents.WARDEN_DEATH;
+    }
+
+    @Override
+    public int getAmbientSoundInterval() {
+        return 300;
+    }
+
+    @Override
+    protected float getSoundVolume() {
+        return 0.6F;
+    }
+
+    @Override
+    public float getVoicePitch() {
+        return 1.25F + this.random.nextFloat() * 0.1F;
+    }
+
     public HiveTyrantEntity(EntityType<? extends Warden> type, Level level) {
         super(type, level);
     }

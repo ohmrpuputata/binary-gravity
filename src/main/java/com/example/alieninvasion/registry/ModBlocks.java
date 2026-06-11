@@ -126,6 +126,64 @@ public class ModBlocks {
             new InfestedLeavesBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(0.2F)
                     .randomTicks().sound(SoundType.GRASS).noOcclusion()));
 
+    public static final Block INFESTED_SANDSTONE = registerBlock("infested_sandstone",
+            new InfestedBlock(BlockBehaviour.Properties.of().mapColor(MapColor.SAND).strength(0.9F)
+                    .randomTicks().sound(SoundType.STONE)));
+
+    public static final Block INFESTED_TERRACOTTA = registerBlock("infested_terracotta",
+            new InfestedBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(1.25F)
+                    .randomTicks().sound(SoundType.STONE)));
+
+    public static final Block INFESTED_SNOW = registerBlock("infested_snow",
+            new InfestedBlock(BlockBehaviour.Properties.of().mapColor(MapColor.SNOW).strength(0.3F)
+                    .randomTicks().sound(SoundType.SNOW)));
+
+    public static final Block INFESTED_ICE = registerBlock("infested_ice",
+            new InfestedBlock(BlockBehaviour.Properties.of().mapColor(MapColor.ICE).strength(0.6F)
+                    .friction(0.98F).randomTicks().sound(SoundType.GLASS).noOcclusion()));
+
+    public static final Block INFESTED_STONE_BRICKS = registerBlock("infested_stone_bricks",
+            new InfestedBlock(BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_GRAY).strength(1.6F)
+                    .randomTicks().sound(SoundType.STONE)));
+
+    public static final Block INFESTED_WOOL = registerBlock("infested_wool",
+            new InfestedBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(0.6F)
+                    .randomTicks().sound(SoundType.WOOL)));
+
+    public static final Block INFESTED_GLASS = registerBlock("infested_glass",
+            new InfestedBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(0.3F)
+                    .randomTicks().sound(SoundType.GLASS).noOcclusion()));
+
+    public static final Block INFESTED_DOOR = registerBlock("infested_door",
+            new net.minecraft.world.level.block.DoorBlock(net.minecraft.world.level.block.state.properties.BlockSetType.OAK,
+                    BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(2.2F)
+                            .sound(SoundType.WOOD).noOcclusion().pushReaction(PushReaction.DESTROY)));
+
+    public static final Block INFESTED_TRAPDOOR = registerBlock("infested_trapdoor",
+            new net.minecraft.world.level.block.TrapDoorBlock(net.minecraft.world.level.block.state.properties.BlockSetType.OAK,
+                    BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(2.2F)
+                            .sound(SoundType.WOOD).noOcclusion()));
+
+    public static final Block INFESTED_CRAFTING_TABLE = registerBlock("infested_crafting_table",
+            new net.minecraft.world.level.block.CraftingTableBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_PURPLE).strength(2.5F).sound(SoundType.WOOD)) {});
+
+    public static final Block ALIEN_HEART = registerBlock("alien_heart",
+            new com.example.alieninvasion.block.AlienHeartBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_RED).strength(2.5F).randomTicks()
+                    .sound(SoundType.SLIME_BLOCK).lightLevel(state -> 7)));
+
+    public static final Block RADIO_TRANSMITTER = registerBlock("radio_transmitter",
+            new com.example.alieninvasion.block.RadioTransmitterBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.METAL).strength(2.5F).requiresCorrectToolForDrops()
+                    .sound(SoundType.METAL).lightLevel(state -> 3)));
+
+    public static final Block ALIEN_TENDRILS = registerBlock("alien_tendrils",
+            new com.example.alieninvasion.block.AlienTendrilsBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_PURPLE).noCollission().instabreak().noLootTable()
+                    .sound(SoundType.GRASS).lightLevel(state -> 5).noOcclusion()
+                    .pushReaction(PushReaction.DESTROY)));
+
     public static final Block DEAD_INFESTED_CROP = registerBlock("dead_infested_crop",
             new DeadInfestedCropBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).noCollission()
                     .strength(0.1F).sound(SoundType.CROP).noOcclusion()));

@@ -46,7 +46,7 @@ public class AlienBruteEntity extends IronGolem implements IAlienUnit {
                                                                 && !state.is(Blocks.END_PORTAL_FRAME)
                                                                 && !state.is(Blocks.END_PORTAL)
                                                                 && !state.is(Blocks.COMMAND_BLOCK),
-                                                40));
+                                                20));
                 this.goalSelector.addGoal(1, new com.example.alieninvasion.ai.BridgeToTargetGoal(this, 0.95D));
                 // CLIMB: tower up to a target perched out of reach.
                 this.goalSelector.addGoal(1, new com.example.alieninvasion.ai.PillarUpGoal(this));

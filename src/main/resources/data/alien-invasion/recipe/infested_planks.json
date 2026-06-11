@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "alien-invasion:infested_log"
+    }
+  ],
+  "result": {
+    "id": "alien-invasion:infested_planks",
+    "count": 4
+  }
+}

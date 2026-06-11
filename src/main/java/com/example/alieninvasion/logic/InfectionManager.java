@@ -28,6 +28,7 @@ public final class InfectionManager {
     private static final Map<UUID, Float>   METER_MULT = new ConcurrentHashMap<>();
     private static final Map<UUID, Integer> STAND      = new ConcurrentHashMap<>();
     private static final Map<UUID, Integer> LAST_TIER  = new ConcurrentHashMap<>();
+    private static final Map<UUID, Integer> WORM_TIMER   = new ConcurrentHashMap<>();
 
     public static float getMeter(UUID id) {
         return METER.getOrDefault(id, 0.0F);
@@ -70,6 +71,7 @@ public final class InfectionManager {
         METER.remove(id);
         STAND.remove(id);
         LAST_TIER.remove(id);
+        WORM_TIMER.remove(id);
         if (player instanceof ServerPlayer sp) {
             sp.removeEffect(MobEffects.CONFUSION);
         }
@@ -105,12 +107,17 @@ public final class InfectionManager {
         meter = getMeter(id);
         float meterDelta = meter - meterBefore;
 
-        if (meterDelta > 0.0F) {
-            var existing = player.getEffect(MobEffects.CONFUSION);
-            if (existing == null || existing.getDuration() < 60) {
-                player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 260, 0, false, true));
-            }
+        // Swimming IN infected water soaks the infection straight through the
+        // skin - several times faster than standing on rotten ground. Get out.
+        if (player.level().getBlockState(player.blockPosition())
+                .is(com.example.alieninvasion.registry.ModBlocks.INFECTED_WATER)) {
+            setMeter(id, getMeter(id) + 3.0F);
+            meter = getMeter(id);
+            player.displayClientMessage(Component.literal("§5☣ Заражённая вода проникает в кожу!"), true);
         }
+
+        // NOTE: no continuous nausea here. Constant screen-warp made the game
+        // unplayable; the only nausea left is a short burst on stage-up below.
 
         if (meter >= MAX) {
             player.hurt(level.damageSources().magic(), 1000.0F);
@@ -120,6 +127,8 @@ public final class InfectionManager {
         var poisH = MobEffects.POISON;
         var infH  = BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.INFECTION);
 
+        // STAGES: 1 (25%) malaise -> 2 (50%) fever + the mutation whisper ->
+        // 3 (75%) the worms start crawling out -> 100% the host bursts.
         int newTier  = meter >= 75.0F ? 3 : meter >= 50.0F ? 2 : meter >= 25.0F ? 1 : 0;
         int prevTier = LAST_TIER.getOrDefault(id, 0);
 
@@ -132,12 +141,53 @@ public final class InfectionManager {
             LAST_TIER.put(id, newTier);
         } else if (newTier > prevTier) {
             LAST_TIER.put(id, newTier);
+            // One SHORT dizzy spell when the disease reaches a new stage - a
+            // readable "it got worse" cue, never a permanent effect.
+            player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 120, 0, false, false));
+            if (newTier == 2) {
+                player.displayClientMessage(Component.literal(
+                        "§5Лихорадка усиливается. Лечитесь, пока черви не проснулись."), false);
+            } else if (newTier == 3) {
+                player.displayClientMessage(Component.literal(
+                        "§4Под кожей шевелятся черви..."), false);
+            }
         }
 
         if (newTier >= 1) {
             int amp = newTier >= 3 ? 1 : 0;
             player.addEffect(new MobEffectInstance(poisH, 100, amp, false, true));
         }
-        if (newTier >= 3) player.addEffect(new MobEffectInstance(infH, 100, 0, false, true));
+        if (newTier >= 2) {
+            // Fever: the body burns through food fighting the parasites. Tremors
+            // are rare and brief - pressure, not punishment.
+            player.addEffect(new MobEffectInstance(MobEffects.HUNGER, 120, 0, false, false));
+            if (level.random.nextInt(15) == 0) {
+                player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 60, 0, false, false));
+            }
+        }
+        if (newTier >= 3) {
+            player.addEffect(new MobEffectInstance(infH, 100, 0, false, true));
+            // Worms tear their way OUT of the host every ~12 seconds.
+            int t = WORM_TIMER.merge(id, 1, Integer::sum);
+            if (t >= 12) {
+                WORM_TIMER.remove(id);
+                com.example.alieninvasion.entity.InfestedWormEntity worm =
+                        com.example.alieninvasion.registry.EntityRegistry.INFESTED_WORM.create(level);
+                if (worm != null) {
+                    worm.moveTo(player.getX(), player.getY() + 0.3D, player.getZ(),
+                            level.random.nextFloat() * 360.0F, 0.0F);
+                    worm.setStage(0);
+                    level.addFreshEntity(worm);
+                    player.hurt(level.damageSources().magic(), 2.0F);
+                    level.sendParticles(ParticleTypes.DAMAGE_INDICATOR, player.getX(), player.getY() + 1.0D,
+                            player.getZ(), 12, 0.3D, 0.4D, 0.3D, 0.1D);
+                    level.playSound(null, player.blockPosition(), SoundEvents.SLIME_BLOCK_BREAK,
+                            SoundSource.PLAYERS, 0.9F, 0.5F);
+                    player.displayClientMessage(Component.literal("§4Червь прогрыз себе выход!"), true);
+                }
+            }
+        } else {
+            WORM_TIMER.remove(id);
+        }
     }
 }

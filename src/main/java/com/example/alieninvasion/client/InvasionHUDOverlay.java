@@ -138,14 +138,30 @@ public class InvasionHUDOverlay implements HudRenderCallback {
 
         int screenH = mc.getWindow().getGuiScaledHeight();
 
-        // Полоска Облучения (левый нижний угол)
+        // Полоска Облучения (левый нижний угол). РЕАЛИЗМ: дозу не чувствуешь -
+        // шкала видна ТОЛЬКО со счётчиком Гейгера в инвентаре ЛИБО в броне со
+        // встроенным дозиметром (гермокостюм / платина / космический).
+        boolean hasGeiger = mc.player.getInventory().contains(
+                new net.minecraft.world.item.ItemStack(com.example.alieninvasion.registry.ItemRegistry.GEIGER_COUNTER))
+                || fullSet(mc.player, com.example.alieninvasion.registry.ItemRegistry.ALIEN_HAZMAT_HELMET,
+                        com.example.alieninvasion.registry.ItemRegistry.ALIEN_HAZMAT_CHESTPLATE,
+                        com.example.alieninvasion.registry.ItemRegistry.ALIEN_HAZMAT_LEGGINGS,
+                        com.example.alieninvasion.registry.ItemRegistry.ALIEN_HAZMAT_BOOTS)
+                || fullSet(mc.player, com.example.alieninvasion.registry.ItemRegistry.PLATINUM_HELMET,
+                        com.example.alieninvasion.registry.ItemRegistry.PLATINUM_CHESTPLATE,
+                        com.example.alieninvasion.registry.ItemRegistry.PLATINUM_LEGGINGS,
+                        com.example.alieninvasion.registry.ItemRegistry.PLATINUM_BOOTS)
+                || fullSet(mc.player, com.example.alieninvasion.registry.ItemRegistry.COSMIC_HELMET,
+                        com.example.alieninvasion.registry.ItemRegistry.COSMIC_CHESTPLATE,
+                        com.example.alieninvasion.registry.ItemRegistry.COSMIC_LEGGINGS,
+                        com.example.alieninvasion.registry.ItemRegistry.COSMIC_BOOTS);
         float dose = (float) com.example.alieninvasion.logic.RadiationManager.getDose(mc.player);
         if (dose <= 0.0F && hasRadiation) {
             var re = mc.player.getEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.RADIATION));
             int amp = re != null ? re.getAmplifier() : 0;
             dose = amp >= 2 ? 85.0F : amp == 1 ? 55.0F : 25.0F;
         }
-        if (dose > 0.0F) {
+        if (dose > 0.0F && hasGeiger) {
             int barX = 5, barY = screenH - 28, barW = 102, barH = 9;
             float frac = Math.min(1.0F, dose / com.example.alieninvasion.logic.RadiationManager.MAX_DOSE);
             int fill = (int) (barW * frac);
@@ -170,6 +186,63 @@ public class InvasionHUDOverlay implements HudRenderCallback {
             guiGraphics.fill(bX - 1, bY - 1, bX + bW + 1, bY + bH + 1, 0xFF0A0F0A);
             guiGraphics.fill(bX, bY, bX + fill, bY + bH, col);
             guiGraphics.drawString(mc.font, "☣ Заражение  " + (int) inf + "%", bX, bY - 10, col, true);
+        }
+
+        // ТЕЛЕМЕТРИЯ КОСТЮМА: полный комплект брони превращает HUD в приборную
+        // панель — каждый сет показывает СВОИ точные данные (встроенные датчики).
+        String suitTitle = null;
+        int suitColor = 0xFFFFFFFF;
+        java.util.List<String> suitLines = new java.util.ArrayList<>();
+        float exactDose = (float) com.example.alieninvasion.logic.RadiationManager.getDose(mc.player);
+        float exactInf = (float) com.example.alieninvasion.logic.InfectionManager.getMeter(mc.player);
+        float fieldNow = com.example.alieninvasion.logic.RadiationFieldManager.getFieldLevel(mc.player.getUUID());
+        int stage = exactInf >= 75 ? 3 : exactInf >= 50 ? 2 : exactInf >= 25 ? 1 : 0;
+        if (fullSet(mc.player, com.example.alieninvasion.registry.ItemRegistry.COSMIC_HELMET,
+                com.example.alieninvasion.registry.ItemRegistry.COSMIC_CHESTPLATE,
+                com.example.alieninvasion.registry.ItemRegistry.COSMIC_LEGGINGS,
+                com.example.alieninvasion.registry.ItemRegistry.COSMIC_BOOTS)) {
+            suitTitle = "КОСМИЧЕСКИЙ КОСТЮМ";
+            suitColor = 0xFFC9A0FF;
+            suitLines.add("§dПолный иммунитет: ☢ и ☣ нейтрализованы");
+            suitLines.add(String.format("§7Фон поля: %.0f  |  Ночное зрение: ВКЛ", fieldNow));
+        } else if (fullSet(mc.player, com.example.alieninvasion.registry.ItemRegistry.ALIEN_HAZMAT_HELMET,
+                com.example.alieninvasion.registry.ItemRegistry.ALIEN_HAZMAT_CHESTPLATE,
+                com.example.alieninvasion.registry.ItemRegistry.ALIEN_HAZMAT_LEGGINGS,
+                com.example.alieninvasion.registry.ItemRegistry.ALIEN_HAZMAT_BOOTS)) {
+            suitTitle = "ГЕРМОКОСТЮМ (дозиметр)";
+            suitColor = 0xFFFFC94A;
+            suitLines.add(String.format("§e☢ Доза: %.1f%%  |  Поле: %.0f ед.", exactDose, fieldNow));
+            suitLines.add("§7Набор дозы и заражения ×0.33");
+        } else if (fullSet(mc.player, com.example.alieninvasion.registry.ItemRegistry.ALIEN_CHEM_HELMET,
+                com.example.alieninvasion.registry.ItemRegistry.ALIEN_CHEM_CHESTPLATE,
+                com.example.alieninvasion.registry.ItemRegistry.ALIEN_CHEM_LEGGINGS,
+                com.example.alieninvasion.registry.ItemRegistry.ALIEN_CHEM_BOOTS)) {
+            suitTitle = "БИОКОСТЮМ (анализатор)";
+            suitColor = 0xFF8FE06A;
+            suitLines.add(String.format("§a☣ Заражение: %.1f%%  |  Стадия: %d/3", exactInf, stage));
+            suitLines.add("§7Набор дозы и заражения ×0.2");
+        } else if (fullSet(mc.player, com.example.alieninvasion.registry.ItemRegistry.PLATINUM_HELMET,
+                com.example.alieninvasion.registry.ItemRegistry.PLATINUM_CHESTPLATE,
+                com.example.alieninvasion.registry.ItemRegistry.PLATINUM_LEGGINGS,
+                com.example.alieninvasion.registry.ItemRegistry.PLATINUM_BOOTS)) {
+            suitTitle = "ПЛАТИНОВАЯ БРОНЯ";
+            suitColor = 0xFFE3E6EE;
+            suitLines.add(String.format("§f☢ Доза: %.1f%% (потолок 70%%)", exactDose));
+        } else if (fullSet(mc.player, com.example.alieninvasion.registry.ItemRegistry.PALLADIUM_HELMET,
+                com.example.alieninvasion.registry.ItemRegistry.PALLADIUM_CHESTPLATE,
+                com.example.alieninvasion.registry.ItemRegistry.PALLADIUM_LEGGINGS,
+                com.example.alieninvasion.registry.ItemRegistry.PALLADIUM_BOOTS)) {
+            suitTitle = "ПАЛЛАДИЕВАЯ БРОНЯ";
+            suitColor = 0xFF9FE6CF;
+            suitLines.add(String.format("§b☣ Заражение: %.1f%% (потолок 70%%)", exactInf));
+        }
+        if (suitTitle != null) {
+            int px = 5, py = screenH - 92 - suitLines.size() * 10;
+            guiGraphics.fill(px - 2, py - 3, px + 150, py + 11 + suitLines.size() * 10, 0x90000000);
+            guiGraphics.drawString(mc.font, suitTitle, px, py, suitColor, true);
+            for (int i = 0; i < suitLines.size(); i++) {
+                guiGraphics.drawString(mc.font, suitLines.get(i), px, py + 11 + i * 10, 0xFFFFFFFF, true);
+            }
         }
 
         // HUD вторжения (вверху по центру)
@@ -235,5 +308,14 @@ public class InvasionHUDOverlay implements HudRenderCallback {
             String empText = "§c[!] АКТИВЕН ЭМП-ИМПУЛЬС";
             guiGraphics.drawString(mc.font, empText, centerX - mc.font.width(empText) / 2, alertY, 0xFFAA00, true);
         }
+    }
+
+    private static boolean fullSet(net.minecraft.world.entity.player.Player p,
+            net.minecraft.world.item.Item helmet, net.minecraft.world.item.Item chest,
+            net.minecraft.world.item.Item legs, net.minecraft.world.item.Item boots) {
+        return p.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).is(helmet)
+                && p.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.CHEST).is(chest)
+                && p.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.LEGS).is(legs)
+                && p.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.FEET).is(boots);
     }
 }

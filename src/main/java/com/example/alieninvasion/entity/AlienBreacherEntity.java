@@ -24,6 +24,38 @@ import net.minecraft.world.level.block.Blocks;
 // Прорыватель Пещер (Пришелец-Разрушитель): Тяжелый шагоход.
 // Быстро прокапывается сквозь камень, грязь и постройки, чтобы выкурить игрока из пещер.
 public class AlienBreacherEntity extends Monster implements IAlienUnit {
+    // ALIEN VOICE: quiet, pitched vanilla sounds remixed into something wrong -
+    // rarer and softer than the originals so the swarm unnerves instead of annoys.
+    @Override
+    protected net.minecraft.sounds.SoundEvent getAmbientSound() {
+        return net.minecraft.sounds.SoundEvents.SILVERFISH_AMBIENT;
+    }
+
+    @Override
+    protected net.minecraft.sounds.SoundEvent getHurtSound(net.minecraft.world.damagesource.DamageSource source) {
+        return net.minecraft.sounds.SoundEvents.SILVERFISH_HURT;
+    }
+
+    @Override
+    protected net.minecraft.sounds.SoundEvent getDeathSound() {
+        return net.minecraft.sounds.SoundEvents.SILVERFISH_DEATH;
+    }
+
+    @Override
+    public int getAmbientSoundInterval() {
+        return 220;
+    }
+
+    @Override
+    protected float getSoundVolume() {
+        return 0.7F;
+    }
+
+    @Override
+    public float getVoicePitch() {
+        return 0.5F + this.random.nextFloat() * 0.1F;
+    }
+
     public AlienBreacherEntity(EntityType<? extends Monster> type, Level level) {
         super(type, level);
     }
@@ -49,7 +81,7 @@ public class AlienBreacherEntity extends Monster implements IAlienUnit {
                         && !state.is(Blocks.END_PORTAL_FRAME)
                         && !state.is(Blocks.END_PORTAL)
                         && !state.is(Blocks.COMMAND_BLOCK),
-                15)); // 15 ticks per block = 0.75 seconds
+                8)); // 8 ticks per block = 0.4 seconds - the dedicated wall-breaker
         this.goalSelector.addGoal(1, new com.example.alieninvasion.ai.BridgeToTargetGoal(this, 1.1D));
 
         this.goalSelector.addGoal(2, new AlienAttackGoal(this, 1.2D));

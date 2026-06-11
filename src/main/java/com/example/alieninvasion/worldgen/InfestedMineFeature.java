@@ -126,6 +126,25 @@ public class InfestedMineFeature extends Feature<NoneFeatureConfiguration> {
         // Two loot chests.
         StructureUtil.placeLootChest(level, o.offset(-3, 0, 0), rng, ModFeatures.MINE_LOOT);
         StructureUtil.placeLootChest(level, o.offset(3, 0, 0), rng, ModFeatures.MINE_LOOT);
+
+        // COLLAPSED GALLERY: a caved-in side tunnel - a webbed lurker nest with the
+        // dead crew's last cache and a toxic ground-water sump.
+        BlockPos gallery = o.offset(0, 0, 6);
+        StructureUtil.fillBox(level, gallery.offset(-2, -1, -2), gallery.offset(2, 3, 4),
+                ModBlocks.INFESTED_STONE.defaultBlockState(), false);
+        StructureUtil.fillBox(level, gallery.offset(-1, 0, -2), gallery.offset(1, 2, 3),
+                Blocks.CAVE_AIR.defaultBlockState(), false);
+        for (int i = 0; i < 7; i++) {
+            StructureUtil.set(level, gallery.offset(rng.nextInt(3) - 1, rng.nextInt(3), rng.nextInt(5) - 2),
+                    Blocks.COBWEB.defaultBlockState());
+        }
+        StructureUtil.set(level, gallery.offset(0, -1, 1), ModBlocks.TOXIC_WATER.defaultBlockState());
+        StructureUtil.set(level, gallery.offset(1, 0, 3), ModBlocks.CONTAMINATED_BONES.defaultBlockState());
+        StructureUtil.placeLootChest(level, gallery.offset(0, 0, 3), rng, ModFeatures.MINE_LOOT);
+        StructureUtil.spawnGuard(level, gallery,
+                com.example.alieninvasion.registry.EntityRegistry.CAVE_LURKER, rng);
+        StructureUtil.spawnGuard(level, gallery.offset(0, 0, 2),
+                com.example.alieninvasion.registry.EntityRegistry.CAVE_LURKER, rng);
         return true;
     }
 

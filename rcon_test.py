@@ -28,8 +28,8 @@ def read_packet(sock):
 def main():
     host, port, password = '127.0.0.1', 25575, 'test123'
     commands = sys.argv[1:]
-    sock = socket.create_connection((host, port), timeout=10)
-    sock.settimeout(10)
+    sock = socket.create_connection((host, port), timeout=90)
+    sock.settimeout(90)
     send_packet(sock, 1, 3, password)
     req_id, _, _ = read_packet(sock)
     if req_id == -1:

@@ -9,85 +9,77 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.util.Mth;
 
+/**
+ * A REAL flying saucer: wide layered hull disc, glass command dome on top, a
+ * rotating ring of running lights and a glowing tractor emitter underneath.
+ * UV (128x64) is mirrored in generate_machine_textures.py.
+ */
 public class UfoModel extends EntityModel<UfoEntity> {
-        private final ModelPart core;
-        private final ModelPart innerRing;
-        private final ModelPart midRing;
-        private final ModelPart outerRing;
+        private final ModelPart hull;
+        private final ModelPart dome;
+        private final ModelPart lights;
+        private final ModelPart emitter;
 
         public UfoModel(ModelPart root) {
-                this.core = root.getChild("core");
-                this.innerRing = root.getChild("inner_ring");
-                this.midRing = root.getChild("mid_ring");
-                this.outerRing = root.getChild("outer_ring");
+                this.hull = root.getChild("hull");
+                this.dome = root.getChild("dome");
+                this.lights = root.getChild("lights");
+                this.emitter = root.getChild("emitter");
         }
 
         public static LayerDefinition createBodyLayer() {
-                MeshDefinition meshdefinition = new MeshDefinition();
-                PartDefinition partdefinition = meshdefinition.getRoot();
+                MeshDefinition mesh = new MeshDefinition();
+                PartDefinition root = mesh.getRoot();
 
-                // CORE: Pulsating energy ball (cube)
-                partdefinition.addOrReplaceChild("core", CubeListBuilder.create()
-                                .texOffs(0, 0).addBox(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F)
-                                .texOffs(0, 16).addBox(-3.0F, -8.0F, -3.0F, 6.0F, 16.0F, 6.0F), // Vertical axis
-                                PartPose.offset(0.0F, 0.0F, 0.0F));
+                // Main disc + tapered top/bottom plates.
+                root.addOrReplaceChild("hull", CubeListBuilder.create()
+                                .texOffs(0, 0).addBox(-12.0F, -2.0F, -12.0F, 24.0F, 4.0F, 24.0F)
+                                .texOffs(0, 29).addBox(-8.0F, -4.0F, -8.0F, 16.0F, 2.0F, 16.0F)
+                                .texOffs(0, 29).addBox(-8.0F, 2.0F, -8.0F, 16.0F, 2.0F, 16.0F),
+                        PartPose.offset(0.0F, 16.0F, 0.0F));
 
-                // INNER RING: Spikes
-                partdefinition.addOrReplaceChild("inner_ring", CubeListBuilder.create()
-                                .texOffs(32, 0).addBox(-6.0F, -1.0F, -6.0F, 12.0F, 2.0F, 12.0F),
-                                PartPose.offset(0.0F, 0.0F, 0.0F));
+                // Glass command dome.
+                root.addOrReplaceChild("dome", CubeListBuilder.create()
+                                .texOffs(96, 0).addBox(-4.0F, -4.0F, -4.0F, 8.0F, 4.0F, 8.0F),
+                        PartPose.offset(0.0F, 12.0F, 0.0F));
 
-                // MID RING: Tech Details
-                PartDefinition midRing = partdefinition.addOrReplaceChild("mid_ring", CubeListBuilder.create()
-                                .texOffs(0, 48).addBox(-10.0F, -2.0F, -10.0F, 20.0F, 4.0F, 20.0F),
-                                PartPose.offset(0.0F, 0.0F, 0.0F));
+                // Running lights: eight studs around the rim, on a spinning carrier.
+                PartDefinition lights = root.addOrReplaceChild("lights",
+                        CubeListBuilder.create(), PartPose.offset(0.0F, 16.0F, 0.0F));
+                for (int i = 0; i < 8; i++) {
+                        double ang = i * Math.PI / 4.0;
+                        lights.addOrReplaceChild("light" + i, CubeListBuilder.create()
+                                        .texOffs(0, 48).addBox(-1.0F, -1.0F, -1.0F, 2.0F, 2.0F, 2.0F),
+                                PartPose.offset((float) (Math.cos(ang) * 12.5), 0.0F,
+                                        (float) (Math.sin(ang) * 12.5)));
+                }
 
-                midRing.addOrReplaceChild("thruster1",
-                                CubeListBuilder.create().texOffs(0, 38).addBox(-2.0F, 2.0F, 8.0F, 4.0F, 4.0F, 4.0F),
-                                PartPose.offset(0.0F, 0.0F, 0.0F));
-                midRing.addOrReplaceChild("thruster2",
-                                CubeListBuilder.create().texOffs(0, 38).addBox(-2.0F, 2.0F, -12.0F, 4.0F, 4.0F, 4.0F),
-                                PartPose.offset(0.0F, 0.0F, 0.0F));
-                midRing.addOrReplaceChild("thruster3",
-                                CubeListBuilder.create().texOffs(0, 38).addBox(8.0F, 2.0F, -2.0F, 4.0F, 4.0F, 4.0F),
-                                PartPose.offset(0.0F, 0.0F, 0.0F));
-                midRing.addOrReplaceChild("thruster4",
-                                CubeListBuilder.create().texOffs(0, 38).addBox(-12.0F, 2.0F, -2.0F, 4.0F, 4.0F, 4.0F),
-                                PartPose.offset(0.0F, 0.0F, 0.0F));
+                // Tractor emitter under the belly.
+                root.addOrReplaceChild("emitter", CubeListBuilder.create()
+                                .texOffs(16, 48).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 3.0F, 4.0F),
+                        PartPose.offset(0.0F, 18.0F, 0.0F));
 
-                // OUTER RING: Large, rotating
-                partdefinition.addOrReplaceChild("outer_ring", CubeListBuilder.create()
-                                .texOffs(0, 80).addBox(-14.0F, -1.0F, -14.0F, 28.0F, 2.0F, 28.0F),
-                                PartPose.offset(0.0F, 0.0F, 0.0F));
-
-                return LayerDefinition.create(meshdefinition, 128, 128); // Increased texture size
+                return LayerDefinition.create(mesh, 128, 64);
         }
 
         @Override
         public void setupAnim(UfoEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks,
                         float netHeadYaw, float headPitch) {
-                // Clear all rotations to keep model stable
-                this.core.yRot = 0.0F;
-                this.core.xRot = 0.0F;
-                this.innerRing.xRot = 0.0F;
-                this.innerRing.yRot = 0.0F;
-                this.midRing.yRot = 0.0F;
-                this.outerRing.xRot = 0.0F;
-                this.outerRing.zRot = 0.0F;
-
-                // Reset scales to defaults
-                this.core.xScale = 1.0F;
-                this.core.yScale = 1.0F;
-                this.core.zScale = 1.0F;
+                // The light ring spins steadily; the hull banks in a slow figure-eight.
+                this.lights.yRot = ageInTicks * 0.18F;
+                this.hull.zRot = Mth.sin(ageInTicks * 0.05F) * 0.05F;
+                this.hull.xRot = Mth.cos(ageInTicks * 0.04F) * 0.05F;
+                this.dome.zRot = this.hull.zRot;
+                this.dome.xRot = this.hull.xRot;
+                this.emitter.y = 18.0F + Mth.sin(ageInTicks * 0.25F) * 0.4F;
         }
 
         @Override
         public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight,
-                        int packedOverlay,
-                        int color) {
-                core.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-                innerRing.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-                midRing.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-                outerRing.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+                        int packedOverlay, int color) {
+                hull.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+                dome.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+                lights.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+                emitter.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
         }
 }

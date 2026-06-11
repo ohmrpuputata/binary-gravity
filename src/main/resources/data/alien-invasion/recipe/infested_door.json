@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PP",
+    "PP",
+    "PP"
+  ],
+  "key": {
+    "P": {
+      "item": "alien-invasion:infested_planks"
+    }
+  },
+  "result": {
+    "id": "alien-invasion:infested_door",
+    "count": 3
+  }
+}

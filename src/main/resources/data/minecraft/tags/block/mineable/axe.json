@@ -4,6 +4,9 @@
     "alien-invasion:dead_infested_crop",
     "alien-invasion:infested_leaves",
     "alien-invasion:infested_log",
-    "alien-invasion:infested_planks"
+    "alien-invasion:infested_planks",
+    "alien-invasion:infested_crafting_table",
+    "alien-invasion:infested_door",
+    "alien-invasion:infested_trapdoor"
   ]
 }

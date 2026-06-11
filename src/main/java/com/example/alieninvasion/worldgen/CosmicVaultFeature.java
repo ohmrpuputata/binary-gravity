@@ -66,6 +66,24 @@ public class CosmicVaultFeature extends Feature<NoneFeatureConfiguration> {
                 com.example.alieninvasion.registry.EntityRegistry.ALIEN_BRUTE, rng);
         StructureUtil.spawnGuard(level, o.offset(r - 1, 0, r - 1),
                 com.example.alieninvasion.registry.EntityRegistry.ALIEN_BRUTE, rng);
+
+        // TOXIC MOAT + WARDEN: the jackpot is ringed by a toxic trench and tendril
+        // snares, watched by a telekinetic - earning it is a fight AND a hazard.
+        for (int dx = -2; dx <= 2; dx++) {
+            for (int dz = -2; dz <= 2; dz++) {
+                int d2 = dx * dx + dz * dz;
+                if (d2 == 0) continue;
+                if (d2 <= 2) {
+                    StructureUtil.set(level, o.offset(dx, -1, dz), ModBlocks.TOXIC_WATER.defaultBlockState());
+                } else if (rng.nextInt(3) == 0
+                        && StructureUtil.getBlockState(level, o.offset(dx, 0, dz)).isAir()) {
+                    StructureUtil.set(level, o.offset(dx, 0, dz), ModBlocks.ALIEN_TENDRILS.defaultBlockState());
+                }
+            }
+        }
+        StructureUtil.set(level, o.below(), ModBlocks.COSMIC_CRYSTAL.defaultBlockState());
+        StructureUtil.spawnGuard(level, o.offset(0, 0, -r + 2),
+                com.example.alieninvasion.registry.EntityRegistry.TELEKINETIC_ALIEN, rng);
         StructureUtil.placeLootChest(level, o, rng, ModFeatures.COSMIC_VAULT_LOOT);
         return true;
     }
