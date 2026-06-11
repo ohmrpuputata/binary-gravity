@@ -386,7 +386,7 @@ public class ModEvents {
             // 3. Alien Melee AP damage against heavy armor players + infection fill
             if (source.getEntity() instanceof Mob alien && AlienUtils.isAlliedTo(null, alien) && entity instanceof Player player) {
                 // Every alien hit increases infection meter
-                InfectionManager.addMeter(player, 5.0F);
+                InfectionManager.addMeter(player, 1.0F);
 
                 // Apply marked effect on hit and alert allies
                 boolean isMarked = player.hasEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.MARKED));
