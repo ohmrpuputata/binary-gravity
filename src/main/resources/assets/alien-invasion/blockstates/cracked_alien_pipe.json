@@ -1,7 +1,16 @@
 {
   "variants": {
-    "": {
+    "axis=y": {
       "model": "alien-invasion:block/cracked_alien_pipe"
+    },
+    "axis=x": {
+      "model": "alien-invasion:block/cracked_alien_pipe",
+      "x": 90,
+      "y": 90
+    },
+    "axis=z": {
+      "model": "alien-invasion:block/cracked_alien_pipe",
+      "x": 90
     }
   }
 }

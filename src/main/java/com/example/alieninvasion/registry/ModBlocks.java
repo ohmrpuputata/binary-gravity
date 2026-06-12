@@ -278,7 +278,8 @@ public class ModBlocks {
                     .sound(SoundType.GLASS).lightLevel(state -> 12)));
 
     public static final Block CRACKED_ALIEN_PIPE = registerBlock("cracked_alien_pipe",
-            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(1.5F).sound(SoundType.METAL)));
+            new net.minecraft.world.level.block.RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE)
+                    .strength(1.5F).sound(SoundType.METAL).noOcclusion()));
 
     public static final Block TOXIC_BARREL = registerBlock("toxic_barrel",
             new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).strength(2.0F).sound(SoundType.METAL)));
