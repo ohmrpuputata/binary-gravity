@@ -284,7 +284,7 @@ public class HomeworldManager extends SavedData {
             BlockPos p = base.offset(r.nextInt(5) - 2, 0, r.nextInt(5) - 2);
             int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING, p.getX(), p.getZ());
             set(level, new BlockPos(p.getX(), y, p.getZ()),
-                    r.nextInt(6) == 0 ? ModBlocks.COSMIC_CRYSTAL : ModBlocks.RADIATION_CRYSTAL_CLUSTER);
+                    r.nextInt(6) == 0 ? ModBlocks.COSMIC_CRYSTAL : ModBlocks.PURE_RADIATION_BLOCK);
         }
     }
 
@@ -587,7 +587,7 @@ public class HomeworldManager extends SavedData {
         monolith(level, r, base);
         for (int sx : new int[] { -4, 4 }) {
             for (int sz : new int[] { -4, 4 }) {
-                set(level, base.offset(sx, 0, sz), ModBlocks.RADIATION_CRYSTAL_CLUSTER);
+                set(level, base.offset(sx, 0, sz), ModBlocks.PURE_RADIATION_BLOCK);
             }
         }
         tendrilGarden(level, r, base);

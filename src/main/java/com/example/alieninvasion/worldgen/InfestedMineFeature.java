@@ -86,7 +86,7 @@ public class InfestedMineFeature extends Feature<NoneFeatureConfiguration> {
         for (int i = 0; i < 4; i++) {
             BlockPos pocket = o.offset(rng.nextInt(13) - 6, rng.nextInt(h + 1), rng.nextBoolean() ? 2 : -2);
             StructureUtil.set(level, pocket, rng.nextBoolean()
-                    ? ModBlocks.RADIATION_CRYSTAL_CLUSTER.defaultBlockState()
+                    ? ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState()
                     : ModBlocks.TOXIC_BARREL.defaultBlockState());
         }
 
@@ -152,7 +152,7 @@ public class InfestedMineFeature extends Feature<NoneFeatureConfiguration> {
 
     private static BlockState randomMineOre(RandomSource rng) {
         return switch (rng.nextInt(10)) {
-            case 0 -> ModBlocks.RADIATION_CRYSTAL_CLUSTER.defaultBlockState();
+            case 0 -> ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState();
             case 1, 9 -> ModBlocks.PALLADIUM_ORE.defaultBlockState();
             case 2, 5, 6 -> ModBlocks.PLATINUM_ORE.defaultBlockState();
             case 3, 4 -> ModBlocks.INFESTED_DIAMOND_ORE.defaultBlockState();

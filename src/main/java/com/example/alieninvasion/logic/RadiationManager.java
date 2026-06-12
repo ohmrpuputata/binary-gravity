@@ -118,8 +118,7 @@ public final class RadiationManager {
     }
 
     private static int sourceWeight(BlockState state) {
-        if (state.is(ModBlocks.RADIATION_CRYSTAL_CLUSTER) || state.is(ModBlocks.PURE_RADIATION_BLOCK)
-                || state.is(ModBlocks.PURE_RADIATION_CRYSTAL_ORE)) {
+        if (state.is(ModBlocks.PURE_RADIATION_BLOCK)) {
             return 5;
         }
         if (state.is(ModBlocks.TOXIC_WATER) || state.is(ModBlocks.TOXIC_BARREL)) {

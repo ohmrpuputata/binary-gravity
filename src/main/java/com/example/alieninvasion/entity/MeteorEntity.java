@@ -163,12 +163,12 @@ public class MeteorEntity extends Entity {
             BlockPos core = center.below(2);
             sl.setBlock(core, ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState(), 2);
             if (sl.getBlockState(core.above()).isAir()) {
-                sl.setBlock(core.above(), ModBlocks.RADIATION_CRYSTAL_CLUSTER.defaultBlockState(), 2);
+                sl.setBlock(core.above(), ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState(), 2);
             }
             for (int i = 0; i < 4; i++) {
                 BlockPos cl = center.offset(this.random.nextInt(5) - 2, -1, this.random.nextInt(5) - 2);
                 if (sl.getBlockState(cl).isAir() && !sl.getBlockState(cl.below()).isAir()) {
-                    sl.setBlock(cl, ModBlocks.RADIATION_CRYSTAL_CLUSTER.defaultBlockState(), 2);
+                    sl.setBlock(cl, ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState(), 2);
                 }
             }
         }

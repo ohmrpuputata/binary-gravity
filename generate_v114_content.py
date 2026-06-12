@@ -136,7 +136,7 @@ STATION_BLOCKS = [
 
 DECOR_BLOCKS = [
     "warning_lamp", "cracked_alien_pipe", "toxic_barrel", "broken_lab_crate",
-    "radiation_crystal_cluster", "contaminated_bones",
+    "contaminated_bones",
 ]
 
 NEW_ITEMS = [
@@ -332,7 +332,6 @@ def generate_lang():
         "block.alien-invasion.cracked_alien_pipe": "Cracked Alien Pipe",
         "block.alien-invasion.toxic_barrel": "Toxic Barrel",
         "block.alien-invasion.broken_lab_crate": "Broken Lab Crate",
-        "block.alien-invasion.radiation_crystal_cluster": "Radiation Crystal Cluster",
         "block.alien-invasion.contaminated_bones": "Contaminated Bones",
     }
     ru = {
@@ -362,7 +361,6 @@ def generate_lang():
         "block.alien-invasion.cracked_alien_pipe": "Треснувшая инопланетная труба",
         "block.alien-invasion.toxic_barrel": "Токсичная бочка",
         "block.alien-invasion.broken_lab_crate": "Сломанный лабораторный ящик",
-        "block.alien-invasion.radiation_crystal_cluster": "Радиационный кристальный кластер",
         "block.alien-invasion.contaminated_bones": "Зараженные кости",
     }
     item_en = {

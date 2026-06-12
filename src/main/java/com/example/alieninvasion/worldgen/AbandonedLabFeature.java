@@ -107,7 +107,7 @@ public class AbandonedLabFeature extends Feature<NoneFeatureConfiguration> {
         // bars, warning lamps, and the experiment that walked out of its cell.
         BlockPos reactor = o.offset(-rx + 1, 0, -rz + 1);
         StructureUtil.set(level, reactor, ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState());
-        StructureUtil.set(level, reactor.above(), ModBlocks.RADIATION_CRYSTAL_CLUSTER.defaultBlockState());
+        StructureUtil.set(level, reactor.above(), ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState());
         StructureUtil.set(level, reactor.east(), Blocks.IRON_BARS.defaultBlockState());
         StructureUtil.set(level, reactor.south(), Blocks.IRON_BARS.defaultBlockState());
         StructureUtil.set(level, reactor.offset(2, 1, 0), ModBlocks.WARNING_LAMP.defaultBlockState());

@@ -88,7 +88,7 @@ public class HiveNestFeature extends Feature<NoneFeatureConfiguration> {
             BlockPos hp = o.offset(hx, hy, hz);
             if (!StructureUtil.getBlockState(level, hp).isAir()) continue;
             StructureUtil.set(level, hp, i % 3 == 0
-                    ? ModBlocks.RADIATION_CRYSTAL_CLUSTER.defaultBlockState()
+                    ? ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState()
                     : ModBlocks.ALIEN_HIVE.defaultBlockState());
         }
         StructureUtil.set(level, o.above(r - 1), ModBlocks.COSMIC_CRYSTAL.defaultBlockState());

@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "alien-invasion:block/radiation_crystal_cluster"
-  }
-}

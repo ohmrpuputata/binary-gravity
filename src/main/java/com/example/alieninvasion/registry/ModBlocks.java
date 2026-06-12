@@ -9,6 +9,7 @@ import com.example.alieninvasion.block.AlienStashBlockEntity;
 import com.example.alieninvasion.block.BlackMarketTerminalBlock;
 import com.example.alieninvasion.block.BloodPoolBlock;
 import com.example.alieninvasion.block.CosmicCrystalBlock;
+import com.example.alieninvasion.block.PureRadiationBlock;
 import com.example.alieninvasion.block.DeadInfestedCropBlock;
 import com.example.alieninvasion.block.InfestedBlock;
 import com.example.alieninvasion.block.InfestedGrassBlock;
@@ -50,16 +51,13 @@ public class ModBlocks {
                             .sound(SoundType.SLIME_BLOCK)));
 
     public static final Block PURE_RADIATION_BLOCK = registerBlock("pure_radiation_block",
-            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GREEN)
+            new PureRadiationBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GREEN)
                     .strength(3.0F).lightLevel(s -> 12).sound(SoundType.AMETHYST)));
 
     // --- New Day-3 ore blocks (converted from lapis/gold by contamination spread) ---
     public static final Block COSMIC_CRYSTAL_ORE = registerBlock("cosmic_crystal_ore",
             new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_YELLOW).strength(3.5F, 3.0F)
                     .requiresCorrectToolForDrops().sound(SoundType.AMETHYST).lightLevel(s -> 4)));
-    public static final Block PURE_RADIATION_CRYSTAL_ORE = registerBlock("pure_radiation_crystal_ore",
-            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GREEN).strength(3.5F, 3.0F)
-                    .requiresCorrectToolForDrops().sound(SoundType.AMETHYST).lightLevel(s -> 6)));
 
     // --- Day-infected ores ---
     public static final Block PLATINUM_ORE = registerBlock("platinum_ore",
@@ -292,10 +290,6 @@ public class ModBlocks {
 
     public static final Block BROKEN_LAB_CRATE = registerBlock("broken_lab_crate",
             new Block(BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(1.4F).sound(SoundType.WOOD)));
-
-    public static final Block RADIATION_CRYSTAL_CLUSTER = registerBlock("radiation_crystal_cluster",
-            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).strength(1.2F)
-                    .sound(SoundType.AMETHYST).lightLevel(state -> 11).noOcclusion()));
 
     public static final Block CONTAMINATED_BONES = registerBlock("contaminated_bones",
             new Block(BlockBehaviour.Properties.of().mapColor(MapColor.SAND).strength(0.7F).sound(SoundType.BONE_BLOCK)));

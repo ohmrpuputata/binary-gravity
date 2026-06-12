@@ -374,7 +374,6 @@ def generate_blocks():
     block_texture("cracked_alien_pipe", (50, 64, 64, 255), 402, CYAN, CYAN_HI, 3)
     block_texture("toxic_barrel", (58, 70, 52, 255), 403, GREEN, GREEN_HI, 6)
     block_texture("broken_lab_crate", (82, 72, 62, 255), 404, CYAN, CYAN_HI, 3)
-    block_texture("radiation_crystal_cluster", (42, 54, 48, 255), 405, GREEN, GREEN_HI, 8)
     block_texture("contaminated_bones", (130, 126, 104, 255), 406, GREEN, CYAN_HI, 3)
 
 

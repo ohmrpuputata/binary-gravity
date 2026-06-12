@@ -496,7 +496,7 @@ public final class WorldContaminationManager {
             cursor.set(wx, floorY + 1, wz);
             if (chunk.getBlockState(cursor).isAir()) {
                 place(level, new BlockPos(wx, floorY + 1, wz),
-                        ModBlocks.RADIATION_CRYSTAL_CLUSTER.defaultBlockState());
+                        ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState());
             }
         }
     }
@@ -595,7 +595,7 @@ public final class WorldContaminationManager {
             cursor.set(wx, bottomY, wz);
             if (chunk.getBlockState(cursor).isAir()) {
                 place(level, new BlockPos(wx, bottomY, wz),
-                        ModBlocks.RADIATION_CRYSTAL_CLUSTER.defaultBlockState());
+                        ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState());
             }
         } else {
             cursor.set(wx, bottomY, wz);

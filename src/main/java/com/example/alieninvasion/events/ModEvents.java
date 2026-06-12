@@ -1332,7 +1332,7 @@ public class ModEvents {
 
     private static boolean isRadiationSource(BlockState state) {
         return state.is(ModBlocks.PURE_RADIATION_BLOCK)
-                || state.is(ModBlocks.RADIATION_CRYSTAL_CLUSTER) || state.is(ModBlocks.TOXIC_BARREL)
+                || state.is(ModBlocks.TOXIC_BARREL)
                 || state.is(ModBlocks.TOXIC_WATER);
     }
 

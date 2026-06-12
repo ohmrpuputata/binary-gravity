@@ -83,7 +83,7 @@ public class BuriedMothershipFeature extends Feature<NoneFeatureConfiguration> {
         }
         for (BlockPos ring : new BlockPos[]{deck.east(), deck.west(), deck.north(), deck.south()}) {
             StructureUtil.set(level, ring, rng.nextBoolean()
-                    ? ModBlocks.RADIATION_CRYSTAL_CLUSTER.defaultBlockState()
+                    ? ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState()
                     : ModBlocks.CRACKED_ALIEN_PIPE.defaultBlockState());
         }
         StructureUtil.set(level, deck.offset(2, 2, 0), ModBlocks.WARNING_LAMP.defaultBlockState());

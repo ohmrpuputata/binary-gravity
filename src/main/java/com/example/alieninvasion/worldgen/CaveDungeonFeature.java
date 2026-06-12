@@ -89,7 +89,7 @@ public class CaveDungeonFeature extends Feature<NoneFeatureConfiguration> {
         StructureUtil.fillBox(level, sanctum.offset(-3, -1, -3), sanctum.offset(3, 4, 3), wall, false);
         StructureUtil.fillBox(level, sanctum.offset(-2, 0, -2), sanctum.offset(2, 3, 2), air, false);
         StructureUtil.set(level, sanctum.above(3), ModBlocks.COSMIC_CRYSTAL.defaultBlockState());
-        StructureUtil.set(level, sanctum.offset(-2, 0, 2), ModBlocks.RADIATION_CRYSTAL_CLUSTER.defaultBlockState());
+        StructureUtil.set(level, sanctum.offset(-2, 0, 2), ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState());
         StructureUtil.set(level, sanctum.offset(2, -1, -2), ModBlocks.TOXIC_WATER.defaultBlockState());
         StructureUtil.placeLootChest(level, sanctum, rng, ModFeatures.CAVE_DUNGEON_LOOT);
         StructureUtil.spawnGuard(level, sanctum.offset(1, 0, 1),

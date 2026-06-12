@@ -178,7 +178,7 @@ public final class ContaminationRules {
         }
         if (day >= 3) {
             if (state.is(BlockTags.LAPIS_ORES)) return ModBlocks.COSMIC_CRYSTAL_ORE.defaultBlockState();
-            if (state.is(BlockTags.GOLD_ORES)) return ModBlocks.PURE_RADIATION_CRYSTAL_ORE.defaultBlockState();
+            if (state.is(BlockTags.GOLD_ORES)) return ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState();
         }
         if (day >= 4) {
             if (state.is(BlockTags.DIAMOND_ORES)) return ModBlocks.INFESTED_DIAMOND_ORE.defaultBlockState();
