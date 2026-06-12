@@ -209,18 +209,7 @@ public class ItemRegistry {
     public static final Item RAW_PALLADIUM = registerItem("raw_palladium", new Item(new Item.Properties()));
     public static final Item PLATINUM_INGOT = registerItem("platinum_ingot", new Item(new Item.Properties()));
     public static final Item PALLADIUM_INGOT = registerItem("palladium_ingot", new Item(new Item.Properties()));
-    public static final Item NIBIRIUM_HELMET = registerItem("nibirium_helmet",
-            new net.minecraft.world.item.ArmorItem(com.example.alieninvasion.item.NibiriumArmorMaterial.INSTANCE,
-                    net.minecraft.world.item.ArmorItem.Type.HELMET, new Item.Properties().rarity(Rarity.RARE)));
-    public static final Item NIBIRIUM_CHESTPLATE = registerItem("nibirium_chestplate",
-            new net.minecraft.world.item.ArmorItem(com.example.alieninvasion.item.NibiriumArmorMaterial.INSTANCE,
-                    net.minecraft.world.item.ArmorItem.Type.CHESTPLATE, new Item.Properties().rarity(Rarity.RARE)));
-    public static final Item NIBIRIUM_LEGGINGS = registerItem("nibirium_leggings",
-            new net.minecraft.world.item.ArmorItem(com.example.alieninvasion.item.NibiriumArmorMaterial.INSTANCE,
-                    net.minecraft.world.item.ArmorItem.Type.LEGGINGS, new Item.Properties().rarity(Rarity.RARE)));
-    public static final Item NIBIRIUM_BOOTS = registerItem("nibirium_boots",
-            new net.minecraft.world.item.ArmorItem(com.example.alieninvasion.item.NibiriumArmorMaterial.INSTANCE,
-                    net.minecraft.world.item.ArmorItem.Type.BOOTS, new Item.Properties().rarity(Rarity.RARE)));
+
     public static final Item NIBIRIUM_INGOT = registerItem("nibirium_ingot",
             new Item(new Item.Properties().rarity(Rarity.RARE).fireResistant()));
     public static final Item ALIEN_SKIN = registerItem("alien_skin", new Item(new Item.Properties()));

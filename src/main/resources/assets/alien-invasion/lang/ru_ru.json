@@ -451,9 +451,5 @@
   "block.alien-invasion.bloody_stone_stairs": "Окровавленные каменные ступени",
   "block.alien-invasion.bloody_plank_slab": "Окровавленная деревянная плита",
   "block.alien-invasion.bloody_stone_slab": "Окровавленная каменная плита",
-  "block.alien-invasion.bloody_plank_fence": "Окровавленный забор",
-  "item.alien-invasion.nibirium_helmet": "Нибириевый шлем",
-  "item.alien-invasion.nibirium_chestplate": "Нибириевый нагрудник",
-  "item.alien-invasion.nibirium_leggings": "Нибириевые поножи",
-  "item.alien-invasion.nibirium_boots": "Нибириевые ботинки"
+  "block.alien-invasion.bloody_plank_fence": "Окровавленный забор"
 }

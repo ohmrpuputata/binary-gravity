@@ -451,9 +451,5 @@
   "block.alien-invasion.bloody_stone_stairs": "Bloody Stone Stairs",
   "block.alien-invasion.bloody_plank_slab": "Bloody Plank Slab",
   "block.alien-invasion.bloody_stone_slab": "Bloody Stone Slab",
-  "block.alien-invasion.bloody_plank_fence": "Bloody Plank Fence",
-  "item.alien-invasion.nibirium_helmet": "Nibirium Helmet",
-  "item.alien-invasion.nibirium_chestplate": "Nibirium Chestplate",
-  "item.alien-invasion.nibirium_leggings": "Nibirium Leggings",
-  "item.alien-invasion.nibirium_boots": "Nibirium Boots"
+  "block.alien-invasion.bloody_plank_fence": "Bloody Plank Fence"
 }
