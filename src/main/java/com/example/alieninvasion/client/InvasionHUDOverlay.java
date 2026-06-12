@@ -161,6 +161,18 @@ public class InvasionHUDOverlay implements HudRenderCallback {
             int amp = re != null ? re.getAmplifier() : 0;
             dose = amp >= 2 ? 85.0F : amp == 1 ? 55.0F : 25.0F;
         }
+        // ALWAYS-ON READOUT: with a geiger in the inventory the numbers are
+        // simply on screen - no clicking. Background field + accumulated dose.
+        if (hasGeiger) {
+            float fieldBg = com.example.alieninvasion.logic.RadiationFieldManager.getFieldLevel(mc.player.getUUID());
+            int bgDisplay = Math.round(fieldBg * 10.0F); // field units -> "uSv/h" feel
+            String fieldColor = fieldBg >= 18.0F ? "§c" : fieldBg >= 9.0F ? "§e" : "§a";
+            String doseColor = dose >= 80.0F ? "§c" : dose >= 45.0F ? "§6" : "§a";
+            guiGraphics.drawString(mc.font,
+                    fieldColor + "Фон: " + bgDisplay + " мкЗв/ч  "
+                            + doseColor + "| Доза: " + (int) dose + " рад",
+                    5, screenH - 40, 0xFFFFFFFF, true);
+        }
         if (dose > 0.0F && hasGeiger) {
             int barX = 5, barY = screenH - 28, barW = 102, barH = 9;
             float frac = Math.min(1.0F, dose / com.example.alieninvasion.logic.RadiationManager.MAX_DOSE);

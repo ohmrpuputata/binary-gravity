@@ -17,13 +17,13 @@ public class AlienTrollRenderer extends MobRenderer<AlienTrollEntity, AlienHuman
 
     public AlienTrollRenderer(EntityRendererProvider.Context context) {
         super(context, new AlienHumanoidModel<>(context.bakeLayer(ModModelLayers.ALIEN_TROLL),
-                AlienHumanoidModel.Variant.TROLL), 0.7F);
+                AlienHumanoidModel.Variant.TROLL), 0.4F);
         this.addLayer(new AlienEyesLayer<>(this, EYES));
     }
 
     @Override
     protected void scale(AlienTrollEntity entity, PoseStack poseStack, float partialTick) {
-        poseStack.scale(1.45F, 1.45F, 1.45F);
+        poseStack.scale(0.85F, 0.85F, 0.85F);
     }
 
     @Override

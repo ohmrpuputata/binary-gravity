@@ -109,7 +109,7 @@ public class InvasionManager extends SavedData {
         // SIEGE: every second invasion day (from day 4), at night, the swarm
         // deliberately storms RECLAIMED (purifier-protected) chunks - holding
         // territory means defending it.
-        if (this.invasionDays >= 4 && this.invasionDays % 2 == 0 && this.invasionDays != this.lastSiegeDay
+        if (this.invasionDays >= 5 && this.invasionDays % 2 == 0 && this.invasionDays != this.lastSiegeDay
                 && !level.isDay() && level.getGameTime() % 200L == 0L) {
             if (runSiege(level)) {
                 this.lastSiegeDay = this.invasionDays;
@@ -119,7 +119,7 @@ public class InvasionManager extends SavedData {
 
         // Orbital bombardment from day 3: meteors hammer surface players while
         // burrowing drills hunt anyone hiding deep underground.
-        if (this.invasionDays >= 3 && level.getGameTime() % 600L == 0L) {
+        if (this.invasionDays >= 4 && level.getGameTime() % 600L == 0L) {
             orbitalStrikes(level);
         }
     }
@@ -142,15 +142,19 @@ public class InvasionManager extends SavedData {
                     level.addFreshEntity(drill);
                 }
             } else {
-                double ox = player.getX() + (level.random.nextDouble() - 0.5) * 18.0;
-                double oz = player.getZ() + (level.random.nextDouble() - 0.5) * 18.0;
-                double oy = surfaceY + 45;
+                // Land NEAR the player, not on their head - a wide scatter and a
+                // near-vertical fall with only a slight drift, so it's a hazard to
+                // dodge, not a guided missile.
+                double ox = player.getX() + (level.random.nextDouble() - 0.5) * 60.0;
+                double oz = player.getZ() + (level.random.nextDouble() - 0.5) * 60.0;
+                double oy = surfaceY + 50;
                 com.example.alieninvasion.entity.MeteorEntity meteor = com.example.alieninvasion.registry.EntityRegistry.METEOR
                         .create(level);
                 if (meteor != null) {
                     meteor.setPos(ox, oy, oz);
                     meteor.setDifficulty(this.invasionDays);
-                    meteor.setDeltaMovement((player.getX() - ox) * 0.02, -1.2, (player.getZ() - oz) * 0.02);
+                    meteor.setDeltaMovement((level.random.nextDouble() - 0.5) * 0.3, -1.2,
+                            (level.random.nextDouble() - 0.5) * 0.3);
                     level.addFreshEntity(meteor);
                 }
             }
@@ -212,19 +216,25 @@ public class InvasionManager extends SavedData {
                     net.minecraft.world.level.ChunkPos cp =
                             new net.minecraft.world.level.ChunkPos(center.x + dx, center.z + dz);
                     if (!data.isPurified(cp)) continue;
+                    // The siege arrives BY DROPSHIP: a carrier descends over the
+                    // reclaimed chunk and unloads the assault squad on a light beam.
                     int count = 4 + level.random.nextInt(3) + this.invasionDays / 3;
-                    for (int i = 0; i < count; i++) {
-                        int bx = cp.getMinBlockX() + level.random.nextInt(16);
-                        int bz = cp.getMinBlockZ() + level.random.nextInt(16);
-                        int by = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, bx, bz);
-                        net.minecraft.world.entity.Mob raider = (i % 4 == 3
-                                ? com.example.alieninvasion.registry.EntityRegistry.ALIEN_BREACHER
-                                : com.example.alieninvasion.registry.EntityRegistry.ALIEN_GRUNT).create(level);
-                        if (raider != null) {
-                            raider.moveTo(bx + 0.5D, by, bz + 0.5D, level.random.nextFloat() * 360.0F, 0.0F);
-                            raider.setTarget(player);
-                            level.addFreshEntity(raider);
-                        }
+                    int breacherCount = Math.max(1, count / 4);
+                    int gruntCount = count - breacherCount;
+                    int bx = cp.getMinBlockX() + 8;
+                    int bz = cp.getMinBlockZ() + 8;
+                    int by = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, bx, bz);
+                    com.example.alieninvasion.entity.UfoEntity carrier =
+                            com.example.alieninvasion.registry.EntityRegistry.UFO.create(level);
+                    if (carrier != null) {
+                        carrier.moveTo(bx + 0.5D, by + 32, bz + 0.5D, level.random.nextFloat() * 360.0F, 0.0F);
+                        carrier.setVariant(com.example.alieninvasion.entity.UfoEntity.CARRIER);
+                        carrier.addTag("Dropship");
+                        carrier.addTag("grunts:" + gruntCount);
+                        carrier.addTag("breachers:" + breacherCount);
+                        carrier.addTag("diff:" + this.invasionDays);
+                        carrier.setPersistenceRequired();
+                        level.addFreshEntity(carrier);
                     }
                     level.playSound(null, player.blockPosition(),
                             net.minecraft.sounds.SoundEvents.SCULK_SHRIEKER_SHRIEK,

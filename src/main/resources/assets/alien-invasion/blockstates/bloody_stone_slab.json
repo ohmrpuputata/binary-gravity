@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "alien-invasion:block/bloody_stone_slab"
+    },
+    "type=top": {
+      "model": "alien-invasion:block/bloody_stone_slab_top"
+    },
+    "type=double": {
+      "model": "alien-invasion:block/bloody_stone"
+    }
+  }
+}

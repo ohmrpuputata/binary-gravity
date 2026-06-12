@@ -1,7 +1,7 @@
 {
   "feature": "alien-invasion:abandoned_lab",
   "placement": [
-    { "type": "minecraft:rarity_filter", "chance": 95 },
+    { "type": "minecraft:rarity_filter", "chance": 280 },
     { "type": "minecraft:in_square" },
     {
       "type": "minecraft:height_range",

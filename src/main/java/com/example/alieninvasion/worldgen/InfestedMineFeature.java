@@ -33,6 +33,8 @@ public class InfestedMineFeature extends Feature<NoneFeatureConfiguration> {
     @Override
     public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> ctx) {
         WorldGenLevel level = ctx.level();
+        // RECON PHASE: alien structures only appear once the invasion has landed.
+        if (com.example.alieninvasion.logic.SurvivalManager.getDay(level.getLevel()) < 2) return false;
         RandomSource rng = ctx.random();
         BlockPos o = ctx.origin();
         if (!isRock(level, o) || !isRock(level, o.above(3)) || !isRock(level, o.east(5)) || !isRock(level, o.west(5))) {

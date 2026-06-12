@@ -164,6 +164,52 @@ public class ModBlocks {
                     BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(2.2F)
                             .sound(SoundType.WOOD).noOcclusion()));
 
+    // --- Bloodstained blocks: shape-preserving gore. Right-click wipes them
+    // clean; touching water washes them instantly (see BloodyBlocks). ---
+    private static BlockBehaviour.Properties bloodyProps(float strength, SoundType sound) {
+        return BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED).strength(strength).sound(sound);
+    }
+
+    public static final Block BLOODY_PLANKS = registerBlock("bloody_planks",
+            new com.example.alieninvasion.block.BloodyBlocks.Plain(bloodyProps(2.0F, SoundType.WOOD),
+                    () -> net.minecraft.world.level.block.Blocks.OAK_PLANKS.defaultBlockState()));
+
+    public static final Block BLOODY_STONE = registerBlock("bloody_stone",
+            new com.example.alieninvasion.block.BloodyBlocks.Plain(bloodyProps(1.5F, SoundType.STONE),
+                    () -> net.minecraft.world.level.block.Blocks.STONE.defaultBlockState()));
+
+    public static final Block BLOODY_DIRT = registerBlock("bloody_dirt",
+            new com.example.alieninvasion.block.BloodyBlocks.Plain(bloodyProps(0.5F, SoundType.GRAVEL),
+                    () -> net.minecraft.world.level.block.Blocks.DIRT.defaultBlockState()));
+
+    public static final Block BLOODY_STONE_BRICKS = registerBlock("bloody_stone_bricks",
+            new com.example.alieninvasion.block.BloodyBlocks.Plain(bloodyProps(1.6F, SoundType.STONE),
+                    () -> net.minecraft.world.level.block.Blocks.STONE_BRICKS.defaultBlockState()));
+
+    public static final Block BLOODY_PLANK_STAIRS = registerBlock("bloody_plank_stairs",
+            new com.example.alieninvasion.block.BloodyBlocks.Stairs(
+                    net.minecraft.world.level.block.Blocks.OAK_PLANKS.defaultBlockState(),
+                    bloodyProps(2.0F, SoundType.WOOD),
+                    () -> net.minecraft.world.level.block.Blocks.OAK_STAIRS.defaultBlockState()));
+
+    public static final Block BLOODY_STONE_STAIRS = registerBlock("bloody_stone_stairs",
+            new com.example.alieninvasion.block.BloodyBlocks.Stairs(
+                    net.minecraft.world.level.block.Blocks.STONE.defaultBlockState(),
+                    bloodyProps(1.5F, SoundType.STONE),
+                    () -> net.minecraft.world.level.block.Blocks.STONE_STAIRS.defaultBlockState()));
+
+    public static final Block BLOODY_PLANK_SLAB = registerBlock("bloody_plank_slab",
+            new com.example.alieninvasion.block.BloodyBlocks.Slab(bloodyProps(2.0F, SoundType.WOOD),
+                    () -> net.minecraft.world.level.block.Blocks.OAK_SLAB.defaultBlockState()));
+
+    public static final Block BLOODY_STONE_SLAB = registerBlock("bloody_stone_slab",
+            new com.example.alieninvasion.block.BloodyBlocks.Slab(bloodyProps(1.5F, SoundType.STONE),
+                    () -> net.minecraft.world.level.block.Blocks.STONE_SLAB.defaultBlockState()));
+
+    public static final Block BLOODY_PLANK_FENCE = registerBlock("bloody_plank_fence",
+            new com.example.alieninvasion.block.BloodyBlocks.Fence(bloodyProps(2.0F, SoundType.WOOD),
+                    () -> net.minecraft.world.level.block.Blocks.OAK_FENCE.defaultBlockState()));
+
     public static final Block INFESTED_CRAFTING_TABLE = registerBlock("infested_crafting_table",
             new net.minecraft.world.level.block.CraftingTableBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_PURPLE).strength(2.5F).sound(SoundType.WOOD)) {});

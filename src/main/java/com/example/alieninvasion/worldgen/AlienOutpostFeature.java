@@ -46,6 +46,8 @@ public class AlienOutpostFeature extends Feature<NoneFeatureConfiguration> {
     @Override
     public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> ctx) {
         WorldGenLevel level = ctx.level();
+        // RECON PHASE: alien structures only appear once the invasion has landed.
+        if (com.example.alieninvasion.logic.SurvivalManager.getDay(level.getLevel()) < 2) return false;
         RandomSource rng = ctx.random();
         BlockPos o = ctx.origin();
         int baseY = surfaceY(level, o, o.getX(), o.getZ());
@@ -85,8 +87,8 @@ public class AlienOutpostFeature extends Feature<NoneFeatureConfiguration> {
         StructureUtil.set(level, spireBase.offset(0, 1, 0), ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState());
         // GUARD hives + two jackpot chests inside the spire
         StructureUtil.set(level, spireBase.offset(-1, 1, 1), ModBlocks.ALIEN_HIVE.defaultBlockState());
-        StructureUtil.placeLootChest(level, spireBase.offset(1, 1, 1), rng, ModFeatures.ALIEN_CITY_LOOT);
-        StructureUtil.placeLootChest(level, spireBase.offset(1, 4, 1), rng, ModFeatures.ALIEN_CITY_LOOT);
+        StructureUtil.placeLootChest(level, spireBase.offset(1, 1, 1), rng, ModFeatures.CAVE_DUNGEON_LOOT);
+        StructureUtil.placeLootChest(level, spireBase.offset(1, 4, 1), rng, ModFeatures.MINE_LOOT);
 
         // Four organic huts around the spire.
         buildHut(level, rng, o, o.getX() + 7, o.getZ() + 6, log, leaves, stone);
@@ -169,6 +171,6 @@ public class AlienOutpostFeature extends Feature<NoneFeatureConfiguration> {
         // doorway
         StructureUtil.set(level, base.offset(0, 1, -2), Blocks.AIR.defaultBlockState());
         StructureUtil.set(level, base.offset(0, 2, -2), Blocks.AIR.defaultBlockState());
-        StructureUtil.placeLootChest(level, base.offset(0, 1, 1), rng, ModFeatures.ALIEN_CITY_LOOT);
+        StructureUtil.placeLootChest(level, base.offset(0, 1, 1), rng, ModFeatures.CAVE_DUNGEON_LOOT);
     }
 }

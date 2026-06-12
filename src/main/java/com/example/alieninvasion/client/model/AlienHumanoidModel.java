@@ -20,7 +20,7 @@ import net.minecraft.world.entity.Mob;
 public class AlienHumanoidModel<T extends Mob> extends EntityModel<T> {
 
     public enum Variant {
-        BRUTE, STALKER, CASTER, SHAMAN, TELEKINETIC, TROLL, TYRANT, SPITTER
+        BRUTE, STALKER, CASTER, SHAMAN, TELEKINETIC, TROLL, TYRANT, SPITTER, BREACHER
     }
 
     private final Variant variant;
@@ -48,18 +48,21 @@ public class AlienHumanoidModel<T extends Mob> extends EntityModel<T> {
         PartDefinition root = mesh.getRoot();
 
         // --- proportions per variant ---
-        float headW = switch (v) { case BRUTE -> 7; case TELEKINETIC -> 9; case TYRANT -> 8; default -> 8; };
+        float headW = switch (v) { case BRUTE, BREACHER -> 7; case TELEKINETIC -> 9; default -> 8; };
         float headH = headW - 1;
-        float chestW = switch (v) { case BRUTE -> 12; case TYRANT -> 11; case TROLL -> 10;
+        float chestW = switch (v) { case BRUTE -> 12; case TYRANT, BREACHER -> 11; case TROLL -> 6;
                 case SPITTER -> 9; case CASTER -> 8; case TELEKINETIC -> 6; default -> 7; };
-        float chestH = switch (v) { case BRUTE, TYRANT -> 7; default -> 6; };
-        float armW = switch (v) { case BRUTE -> 4; case TYRANT, TROLL -> 3; default -> 2; };
+        float chestH = switch (v) { case BRUTE, TYRANT, BREACHER -> 7; default -> 6; };
+        float armW = switch (v) { case BRUTE, BREACHER -> 4; case TYRANT -> 3; default -> 2; };
         float armLen = switch (v) { case BRUTE -> 11; case TELEKINETIC, STALKER -> 12; default -> 9; };
-        boolean antennae = v == Variant.STALKER || v == Variant.TELEKINETIC || v == Variant.SHAMAN;
-        boolean horns = v == Variant.TYRANT || v == Variant.TROLL;
+        boolean antennae = v == Variant.STALKER || v == Variant.TELEKINETIC || v == Variant.SHAMAN
+                || v == Variant.TROLL;
+        boolean horns = v == Variant.TYRANT;
         boolean crest = v == Variant.SHAMAN;
-        boolean tail = v == Variant.STALKER || v == Variant.TYRANT || v == Variant.SPITTER;
+        boolean tail = v == Variant.STALKER || v == Variant.TYRANT || v == Variant.SPITTER
+                || v == Variant.TROLL;
         boolean cannon = v == Variant.CASTER;
+        boolean drills = v == Variant.BREACHER; // wedge-drills on BOTH arms
 
         float hw = headW / 2.0F;
         // HEAD: dome + eyes + jaw (+ antennae / horns / crest)
@@ -126,19 +129,23 @@ public class AlienHumanoidModel<T extends Mob> extends EntityModel<T> {
         CubeListBuilder rightArmCubes = CubeListBuilder.create()
                 .texOffs(0, 55).addBox(-armW / 2.0F - 1.0F, -1.0F, -2.0F, armW, 4.0F, 4.0F)
                 .texOffs(17, 55).addBox(-armW / 2.0F - 0.5F, 2.0F, -armW / 2.0F, armW, armLen, armW);
-        if (cannon) {
+        if (cannon || drills) {
             rightArmCubes.texOffs(30, 55).addBox(-armW / 2.0F - 2.0F, armLen - 3.0F, -2.5F, 5.0F, 6.0F, 5.0F);
         } else {
             rightArmCubes.texOffs(51, 55).addBox(-armW / 2.0F - 0.5F, armLen + 1.0F, -1.0F, 1.0F, 4.0F, 1.0F)
                     .texOffs(51, 55).addBox(armW / 2.0F - 1.5F, armLen + 1.0F, 0.0F, 1.0F, 4.0F, 1.0F);
         }
         root.addOrReplaceChild("right_arm", rightArmCubes, PartPose.offset(-armX, 1.5F, 0.0F));
-        root.addOrReplaceChild("left_arm", CubeListBuilder.create().mirror()
-                        .texOffs(0, 55).addBox(-armW / 2.0F + 1.0F, -1.0F, -2.0F, armW, 4.0F, 4.0F)
-                        .texOffs(17, 55).addBox(-armW / 2.0F + 0.5F, 2.0F, -armW / 2.0F, armW, armLen, armW)
-                        .texOffs(51, 55).addBox(-armW / 2.0F + 0.5F, armLen + 1.0F, -1.0F, 1.0F, 4.0F, 1.0F)
-                        .texOffs(51, 55).addBox(armW / 2.0F - 0.5F, armLen + 1.0F, 0.0F, 1.0F, 4.0F, 1.0F),
-                PartPose.offset(armX, 1.5F, 0.0F));
+        CubeListBuilder leftArmCubes = CubeListBuilder.create().mirror()
+                .texOffs(0, 55).addBox(-armW / 2.0F + 1.0F, -1.0F, -2.0F, armW, 4.0F, 4.0F)
+                .texOffs(17, 55).addBox(-armW / 2.0F + 0.5F, 2.0F, -armW / 2.0F, armW, armLen, armW);
+        if (drills) {
+            leftArmCubes.texOffs(30, 55).addBox(-armW / 2.0F - 1.0F, armLen - 3.0F, -2.5F, 5.0F, 6.0F, 5.0F);
+        } else {
+            leftArmCubes.texOffs(51, 55).addBox(-armW / 2.0F + 0.5F, armLen + 1.0F, -1.0F, 1.0F, 4.0F, 1.0F)
+                    .texOffs(51, 55).addBox(armW / 2.0F - 0.5F, armLen + 1.0F, 0.0F, 1.0F, 4.0F, 1.0F);
+        }
+        root.addOrReplaceChild("left_arm", leftArmCubes, PartPose.offset(armX, 1.5F, 0.0F));
 
         // LEGS: digitigrade
         float legX = Math.max(2.0F, cw - 1.5F);

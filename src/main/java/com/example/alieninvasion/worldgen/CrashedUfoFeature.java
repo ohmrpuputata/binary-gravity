@@ -25,6 +25,8 @@ public class CrashedUfoFeature extends Feature<NoneFeatureConfiguration> {
     @Override
     public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> ctx) {
         WorldGenLevel level = ctx.level();
+        // RECON PHASE: alien structures only appear once the invasion has landed.
+        if (com.example.alieninvasion.logic.SurvivalManager.getDay(level.getLevel()) < 1) return false;
         RandomSource rng = ctx.random();
         BlockPos o = ctx.origin();
         int baseY = level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, o.getX(), o.getZ());
@@ -76,7 +78,7 @@ public class CrashedUfoFeature extends Feature<NoneFeatureConfiguration> {
         StructureUtil.set(level, hub.offset(0, 1, 0), ModBlocks.COSMIC_CRYSTAL.defaultBlockState());
         StructureUtil.set(level, hub.offset(0, 0, 1), ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState());
         StructureUtil.set(level, hub.offset(-2, 0, 0), ModBlocks.ALIEN_HIVE.defaultBlockState());
-        StructureUtil.placeLootChest(level, hub.offset(1, 0, 1), rng, ModFeatures.ALIEN_CITY_LOOT);
+        StructureUtil.placeLootChest(level, hub.offset(1, 0, 1), rng, ModFeatures.MINE_LOOT);
 
         // DEBRIS TRAIL: the saucer skidded in - a scatter of torn hull plates,
         // burnt ground and tendrils stretching away from the crater.

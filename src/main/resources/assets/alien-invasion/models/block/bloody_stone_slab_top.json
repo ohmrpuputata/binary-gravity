@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "alien-invasion:block/bloody_stone",
+    "top": "alien-invasion:block/bloody_stone",
+    "side": "alien-invasion:block/bloody_stone"
+  }
+}

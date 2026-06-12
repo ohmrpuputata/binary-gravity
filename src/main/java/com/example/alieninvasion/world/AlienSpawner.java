@@ -69,35 +69,45 @@ public class AlienSpawner {
     }
 
     private static void spawnSquad(ServerLevel level, BlockPos pos, int difficulty) {
-        if (difficulty < 3) {
-            // Recon Squad: a couple of grunts + at most a lone scout chicken.
+        if (difficulty <= 0) {
+            // DAY 0 - PURE RECON: the swarm only scouts. A dropship unloads
+            // WORKERS that mine and haul; worms wriggle in the dirt; at most a
+            // single lone soldier, rarely. No combat squads whatsoever.
+            int workers = 1 + level.random.nextInt(2);
+            int wormCargo = 1 + level.random.nextInt(2);
+            int soloGrunt = level.random.nextFloat() < 0.15f ? 1 : 0;
+            // EVERYTHING arrives by dropship - nothing pops out of thin air.
+            spawnViaDropship(level, pos, soloGrunt, 0, 0, 0, 0, 0, 0, difficulty,
+                    "workers:" + workers, "worms:" + wormCargo);
+        } else if (difficulty < 3) {
+            // DAYS 1-2 - PROBING: small grunt packs with worms; raptors join on
+            // day 2. No casters, no brutes - escalation is gradual now.
             int grunts = 1 + level.random.nextInt(2);
-            int trolls = level.random.nextFloat() < 0.20f ? 1 : 0;
-            int casters = (difficulty >= 2 && level.random.nextFloat() < 0.12f) ? 1 : 0;
-            
-            spawnViaDropship(level, pos, grunts, 0, trolls, 0, 0, casters, 0, difficulty);
-            spawnMob(level, pos, EntityRegistry.ALIEN_CHICKEN, level.random.nextInt(2), difficulty); // chickens spawn on ground
+            int trolls = level.random.nextFloat() < 0.15f ? 1 : 0;
+
+            int wormCargo = level.random.nextInt(2);
+            int raptorCargo = (difficulty >= 2 && level.random.nextFloat() < 0.35f) ? 1 : 0;
+            spawnViaDropship(level, pos, grunts, 0, trolls, 0, 0, 0, 0, difficulty,
+                    "worms:" + wormCargo, "raptors:" + raptorCargo,
+                    "chickens:" + level.random.nextInt(2));
         } else if (difficulty < 6) {
-            // Assault Squad: a brute leading a small pack.
-            int brutes = 1;
+            // Assault Squad: brutes only join from day 4.
+            int brutes = difficulty >= 4 ? 1 : 0;
             int grunts = 2;
             int trolls = level.random.nextFloat() < 0.25f ? 1 : 0;
-            int casters = level.random.nextFloat() < 0.20f ? 1 : 0;
-            int stalkers = (difficulty >= 4 && level.random.nextFloat() < 0.12f) ? 1 : 0;
+            int casters = (difficulty >= 4 && level.random.nextFloat() < 0.20f) ? 1 : 0;
+            int stalkers = 0; // stalkers are elite hunters - Total War (day 6+) only
             
-            spawnViaDropship(level, pos, grunts, brutes, trolls, 0, stalkers, casters, 0, difficulty);
-            spawnMob(level, pos, EntityRegistry.ALIEN_CHICKEN, level.random.nextInt(2), difficulty);
-            if (difficulty >= 3 && level.random.nextFloat() < 0.25f) {
-                spawnMob(level, pos, EntityRegistry.ACID_SPITTER, 1, difficulty); // acid siege unit
-            }
+            int spitterCargo = (difficulty >= 3 && level.random.nextFloat() < 0.25f) ? 1 : 0;
+            spawnViaDropship(level, pos, grunts, brutes, trolls, 0, stalkers, casters, 0, difficulty,
+                    "chickens:" + level.random.nextInt(2), "spitters:" + spitterCargo);
         } else {
             // Total War: aerial / psychic threats, plus a rare Hive Tyrant boss + escorts.
             if (difficulty >= 8 && level.random.nextFloat() < 0.10f) {
                 int shamans = level.random.nextFloat() < 0.5f ? 1 : 0;
                 
-                spawnViaDropship(level, pos, 0, 0, 0, shamans, 0, 0, 0, difficulty);
-                spawnMob(level, pos, EntityRegistry.HIVE_TYRANT, 1, difficulty);
-                spawnMob(level, pos, EntityRegistry.ALIEN_CHICKEN, 1, difficulty);
+                spawnViaDropship(level, pos, 0, 0, 0, shamans, 0, 0, 0, difficulty, "chickens:1");
+                spawnMob(level, pos, EntityRegistry.HIVE_TYRANT, 1, difficulty); // boss bursts from the ground
             } else if (level.random.nextBoolean()) {
                 spawnMob(level, pos.above(10), EntityRegistry.UFO, 1, difficulty);
             } else {
@@ -113,7 +123,7 @@ public class AlienSpawner {
         }
     }
 
-    private static void spawnViaDropship(ServerLevel level, BlockPos groundPos, int grunts, int brutes, int trolls, int shamans, int stalkers, int casters, int telekinetics, int difficulty) {
+    private static void spawnViaDropship(ServerLevel level, BlockPos groundPos, int grunts, int brutes, int trolls, int shamans, int stalkers, int casters, int telekinetics, int difficulty, String... extraCargo) {
         BlockPos spawnPos = groundPos.above(35);
         UfoEntity ufo = EntityRegistry.UFO.create(level);
         if (ufo != null) {
@@ -128,6 +138,9 @@ public class AlienSpawner {
             if (stalkers > 0) ufo.addTag("stalkers:" + stalkers);
             if (casters > 0) ufo.addTag("casters:" + casters);
             if (telekinetics > 0) ufo.addTag("teles:" + telekinetics);
+            for (String extra : extraCargo) {
+                ufo.addTag(extra);
+            }
             ufo.addTag("diff:" + difficulty);
             ufo.setPersistenceRequired();
             level.addFreshEntity(ufo);
@@ -179,14 +192,16 @@ public class AlienSpawner {
         // weighted pick fixes both and keeps the day-by-day escalation.
         java.util.List<EntityType<?>> pool = new java.util.ArrayList<>();
         java.util.List<Integer> weights = new java.util.ArrayList<>();
-        pool.add(EntityRegistry.ALIEN_GRUNT);   weights.add(30);
-        pool.add(EntityRegistry.ALIEN_TROLL);   weights.add(8);
+        pool.add(EntityRegistry.ALIEN_GRUNT);   weights.add(difficulty < 1 ? 8 : 22);
+        pool.add(EntityRegistry.INFESTED_WORM); weights.add(20);
+        pool.add(EntityRegistry.ALIEN_TROLL);   weights.add(4);
         pool.add(EntityRegistry.ALIEN_CHICKEN); weights.add(6);
+        if (difficulty >= 2) { pool.add(EntityRegistry.ALIEN_RAPTOR);      weights.add(12); }
         if (difficulty >= 2) { pool.add(EntityRegistry.CAVE_LURKER);       weights.add(14); }
         if (difficulty >= 3) { pool.add(EntityRegistry.ALIEN_BREACHER);    weights.add(14); }
         if (difficulty >= 3) { pool.add(EntityRegistry.ACID_SPITTER);      weights.add(12); }
         if (difficulty >= 4) { pool.add(EntityRegistry.PLASMA_CASTER);     weights.add(10); }
-        if (difficulty >= 5) { pool.add(EntityRegistry.ALIEN_STALKER);     weights.add(9); }
+        if (difficulty >= 6) { pool.add(EntityRegistry.ALIEN_STALKER);     weights.add(9); }
         if (difficulty >= 6) { pool.add(EntityRegistry.TELEKINETIC_ALIEN); weights.add(8); }
 
         int total = 0;

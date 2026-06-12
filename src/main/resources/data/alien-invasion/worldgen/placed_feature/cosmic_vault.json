@@ -1,7 +1,7 @@
 {
   "feature": "alien-invasion:cosmic_vault",
   "placement": [
-    { "type": "minecraft:rarity_filter", "chance": 440 },
+    { "type": "minecraft:rarity_filter", "chance": 650 },
     { "type": "minecraft:in_square" },
     {
       "type": "minecraft:height_range",

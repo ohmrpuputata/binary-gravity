@@ -329,7 +329,8 @@ public class UfoEntity extends Ghast {
     protected float getSoundVolume() { return 0.0F; }
 
     private void spawnSquadMobs(ServerLevel level) {
-        int grunts = 0, brutes = 0, trolls = 0, shamans = 0, stalkers = 0, casters = 0, telekinetics = 0, difficulty = 1;
+        int grunts = 0, brutes = 0, trolls = 0, shamans = 0, stalkers = 0, casters = 0, telekinetics = 0;
+        int workers = 0, worms = 0, raptors = 0, chickens = 0, spitters = 0, breachers = 0, difficulty = 1;
         for (String tag : this.getTags()) {
             if (tag.startsWith("grunts:")) grunts = Integer.parseInt(tag.substring(7));
             else if (tag.startsWith("brutes:")) brutes = Integer.parseInt(tag.substring(7));
@@ -338,6 +339,12 @@ public class UfoEntity extends Ghast {
             else if (tag.startsWith("stalkers:")) stalkers = Integer.parseInt(tag.substring(9));
             else if (tag.startsWith("casters:")) casters = Integer.parseInt(tag.substring(8));
             else if (tag.startsWith("teles:")) telekinetics = Integer.parseInt(tag.substring(6));
+            else if (tag.startsWith("workers:")) workers = Integer.parseInt(tag.substring(8));
+            else if (tag.startsWith("worms:")) worms = Integer.parseInt(tag.substring(6));
+            else if (tag.startsWith("raptors:")) raptors = Integer.parseInt(tag.substring(8));
+            else if (tag.startsWith("chickens:")) chickens = Integer.parseInt(tag.substring(9));
+            else if (tag.startsWith("spitters:")) spitters = Integer.parseInt(tag.substring(9));
+            else if (tag.startsWith("breachers:")) breachers = Integer.parseInt(tag.substring(10));
             else if (tag.startsWith("diff:")) difficulty = Integer.parseInt(tag.substring(5));
         }
 
@@ -349,6 +356,26 @@ public class UfoEntity extends Ghast {
         spawnDropshipMob(level, spawnPos, com.example.alieninvasion.registry.EntityRegistry.ALIEN_STALKER, stalkers, difficulty);
         spawnDropshipMob(level, spawnPos, com.example.alieninvasion.registry.EntityRegistry.PLASMA_CASTER, casters, difficulty);
         spawnDropshipMob(level, spawnPos, com.example.alieninvasion.registry.EntityRegistry.TELEKINETIC_ALIEN, telekinetics, difficulty);
+        spawnDropshipMob(level, spawnPos, com.example.alieninvasion.registry.EntityRegistry.INFESTED_WORM, worms, difficulty);
+        spawnDropshipMob(level, spawnPos, com.example.alieninvasion.registry.EntityRegistry.ALIEN_RAPTOR, raptors, difficulty);
+        spawnDropshipMob(level, spawnPos, com.example.alieninvasion.registry.EntityRegistry.ALIEN_CHICKEN, chickens, difficulty);
+        spawnDropshipMob(level, spawnPos, com.example.alieninvasion.registry.EntityRegistry.ACID_SPITTER, spitters, difficulty);
+        spawnDropshipMob(level, spawnPos, com.example.alieninvasion.registry.EntityRegistry.ALIEN_BREACHER, breachers, difficulty);
+        // Workers ride the same ship: grunts flagged as scavengers on touchdown.
+        for (int i = 0; i < workers; i++) {
+            com.example.alieninvasion.entity.AlienGruntEntity worker =
+                    com.example.alieninvasion.registry.EntityRegistry.ALIEN_GRUNT.create(level);
+            if (worker != null) {
+                worker.moveTo(spawnPos.getX() + this.random.nextDouble() * 2.0D - 1.0D, spawnPos.getY(),
+                        spawnPos.getZ() + this.random.nextDouble() * 2.0D - 1.0D, this.random.nextFloat() * 360F, 0);
+                worker.finalizeSpawn(level, level.getCurrentDifficultyAt(spawnPos), MobSpawnType.EVENT, null);
+                worker.setScavenger(true);
+                worker.setCustomName(net.minecraft.network.chat.Component.literal("\u00a7a\u041f\u0440\u0438\u0448\u0435\u043b\u0435\u0446-\u0440\u0430\u0431\u043e\u0447\u0438\u0439"));
+                worker.setCustomNameVisible(true);
+                worker.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOW_FALLING, 100, 0));
+                level.addFreshEntity(worker);
+            }
+        }
     }
 
     private void spawnDropshipMob(ServerLevel level, BlockPos pos, EntityType<?> type, int count, int difficulty) {

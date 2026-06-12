@@ -31,6 +31,8 @@ public class BuriedMothershipFeature extends Feature<NoneFeatureConfiguration> {
     @Override
     public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> ctx) {
         WorldGenLevel level = ctx.level();
+        // RECON PHASE: alien structures only appear once the invasion has landed.
+        if (com.example.alieninvasion.logic.SurvivalManager.getDay(level.getLevel()) < 3) return false;
         RandomSource rng = ctx.random();
         BlockPos surface = ctx.origin();
         int surfaceY = level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, surface.getX(), surface.getZ());

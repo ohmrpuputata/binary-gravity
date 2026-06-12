@@ -85,29 +85,90 @@ public class MeteorEntity extends Entity {
         sl.sendParticles(ParticleTypes.LAVA, x, y, z, 90, 3.5, 1.0, 3.5, 0.2);
         sl.sendParticles(ParticleTypes.LARGE_SMOKE, x, y, z, 140, 4.5, 2.5, 4.5, 0.1);
 
-        // Carve a bowl-shaped crater and line it with infestation (NO aliens spawn).
+        // A REAL crater: a deep parabolic bowl dug into the actual terrain
+        // (per-column surface height, so it bites into slopes correctly), with a
+        // raised rim of scorched debris and burning patches at the heart.
         BlockPos center = this.blockPosition();
-        int R = 7;
-        for (int dx = -R; dx <= R; dx++) {
-            for (int dz = -R; dz <= R; dz++) {
+        final int R = 6;  // bowl radius
+        final int D = 5;  // depth at the centre - a funnel, not a pancake
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        for (int dx = -R - 1; dx <= R + 1; dx++) {
+            for (int dz = -R - 1; dz <= R + 1; dz++) {
                 double horiz = Math.sqrt(dx * dx + dz * dz);
-                if (horiz > R) continue;
-                int depth = (int) Math.round(3.0 - horiz * 0.35);
-                for (int dy = 3; dy >= -depth; dy--) {
-                    BlockPos p = center.offset(dx, dy, dz);
-                    if (sl.isOutsideBuildHeight(p)) continue;
-                    var state = sl.getBlockState(p);
-                    if (state.getDestroySpeed(sl, p) < 0) continue; // skip bedrock etc.
-                    if (dy > -depth) {
-                        if (!state.isAir()) {
-                            sl.setBlock(p, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 2);
+                if (horiz > R + 1) continue;
+                int wx = center.getX() + dx;
+                int wz = center.getZ() + dz;
+                int surfaceY = sl.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                        wx, wz) - 1;
+                if (sl.isOutsideBuildHeight(surfaceY) || surfaceY <= sl.getMinBuildHeight() + D + 1) continue;
+
+                if (horiz > R) {
+                    // RIM: a ragged ridge of scorched rock thrown up around the bowl,
+                    // randomly one or two blocks tall, occasionally on fire.
+                    if (this.random.nextFloat() < 0.75F) {
+                        cursor.set(wx, surfaceY + 1, wz);
+                        if (sl.getBlockState(cursor).isAir()) {
+                            sl.setBlock(cursor, ModBlocks.INFESTED_STONE.defaultBlockState(), 2);
+                            if (this.random.nextFloat() < 0.3F) {
+                                cursor.set(wx, surfaceY + 2, wz);
+                                if (sl.getBlockState(cursor).isAir()) {
+                                    sl.setBlock(cursor, this.random.nextBoolean()
+                                            ? ModBlocks.INFESTED_STONE.defaultBlockState()
+                                            : net.minecraft.world.level.block.Blocks.FIRE.defaultBlockState(), 2);
+                                }
+                            }
                         }
-                    } else {
-                        // crater floor -> infested scar
-                        sl.setBlock(p, this.random.nextFloat() < 0.3F
-                                ? ModBlocks.ALIEN_RESIDUE.defaultBlockState()
-                                : ModBlocks.INFESTED_STONE.defaultBlockState(), 2);
                     }
+                    continue;
+                }
+
+                // BOWL: parabolic depth from each column's own surface.
+                int dig = (int) Math.ceil(D * (1.0 - (horiz * horiz) / (double) (R * R)));
+                int top = Math.min(sl.getMaxBuildHeight() - 1, surfaceY + 4);
+                int bottom = surfaceY - dig;
+                for (int yy = top; yy > bottom; yy--) {
+                    cursor.set(wx, yy, wz);
+                    var state = sl.getBlockState(cursor);
+                    if (state.isAir()) continue;
+                    if (state.getDestroySpeed(sl, cursor) < 0) break; // bedrock: stop this column
+                    sl.setBlock(cursor, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState(), 2);
+                }
+                // Floor lining: infested scar, molten at the very heart.
+                cursor.set(wx, bottom, wz);
+                var floorState = sl.getBlockState(cursor);
+                if (!floorState.isAir() && floorState.getDestroySpeed(sl, cursor) >= 0) {
+                    net.minecraft.world.level.block.state.BlockState lining;
+                    if (horiz < 1.6) {
+                        lining = net.minecraft.world.level.block.Blocks.MAGMA_BLOCK.defaultBlockState();
+                    } else if (this.random.nextFloat() < 0.3F) {
+                        lining = ModBlocks.ALIEN_RESIDUE.defaultBlockState();
+                    } else {
+                        lining = ModBlocks.INFESTED_STONE.defaultBlockState();
+                    }
+                    sl.setBlock(cursor, lining, 2);
+                    if (horiz < 3 && this.random.nextFloat() < 0.25F) {
+                        cursor.set(wx, bottom + 1, wz);
+                        if (sl.getBlockState(cursor).isAir()) {
+                            sl.setBlock(cursor, net.minecraft.world.level.block.Blocks.FIRE.defaultBlockState(), 2);
+                        }
+                    }
+                }
+            }
+        }
+
+        // RADIOACTIVE STRIKE: about a third of impacts leave a glowing crystal
+        // core in the crater floor - a fresh radiation hazard the player must
+        // then deal with (or mine, carefully).
+        if (this.random.nextFloat() < 0.35F) {
+            BlockPos core = center.below(2);
+            sl.setBlock(core, ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState(), 2);
+            if (sl.getBlockState(core.above()).isAir()) {
+                sl.setBlock(core.above(), ModBlocks.RADIATION_CRYSTAL_CLUSTER.defaultBlockState(), 2);
+            }
+            for (int i = 0; i < 4; i++) {
+                BlockPos cl = center.offset(this.random.nextInt(5) - 2, -1, this.random.nextInt(5) - 2);
+                if (sl.getBlockState(cl).isAir() && !sl.getBlockState(cl.below()).isAir()) {
+                    sl.setBlock(cl, ModBlocks.RADIATION_CRYSTAL_CLUSTER.defaultBlockState(), 2);
                 }
             }
         }

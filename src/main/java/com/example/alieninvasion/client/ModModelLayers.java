@@ -22,6 +22,12 @@ public class ModModelLayers {
             ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "alien_raptor"), "main");
     public static final ModelLayerLocation PARASITE = new ModelLayerLocation(
             ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "parasite"), "main");
+    public static final ModelLayerLocation PLASMA_TURRET = new ModelLayerLocation(
+            ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "plasma_turret"), "main");
+    public static final ModelLayerLocation ALIEN_CHICKEN = new ModelLayerLocation(
+            ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "alien_chicken"), "main");
+    public static final ModelLayerLocation ALIEN_BREACHER = new ModelLayerLocation(
+            ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "alien_breacher"), "main");
     public static final ModelLayerLocation SKY_DRONE = new ModelLayerLocation(
             ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "sky_drone"), "main");
     public static final ModelLayerLocation SWARM_MOTHER = new ModelLayerLocation(

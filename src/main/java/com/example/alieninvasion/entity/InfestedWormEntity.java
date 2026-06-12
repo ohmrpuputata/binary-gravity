@@ -47,10 +47,11 @@ public class InfestedWormEntity extends Silverfish implements IAlienUnit {
         this.entityData.set(STAGE, stage);
         var scale = this.getAttribute(Attributes.SCALE);
         if (scale != null) scale.setBaseValue(0.8D + 0.8D * stage);
+        // Broodling = ONE HEART. It only becomes a threat by feeding and growing.
         var hp = this.getAttribute(Attributes.MAX_HEALTH);
-        if (hp != null) hp.setBaseValue(8.0D + 10.0D * stage);
+        if (hp != null) hp.setBaseValue(stage == 0 ? 2.0D : stage == 1 ? 12.0D : 24.0D);
         var dmg = this.getAttribute(Attributes.ATTACK_DAMAGE);
-        if (dmg != null) dmg.setBaseValue(3.0D + 2.5D * stage);
+        if (dmg != null) dmg.setBaseValue(2.0D + 2.5D * stage);
         this.setHealth(this.getMaxHealth());
     }
 
@@ -102,9 +103,9 @@ public class InfestedWormEntity extends Silverfish implements IAlienUnit {
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()
-                .add(Attributes.MAX_HEALTH, 8.0D)
+                .add(Attributes.MAX_HEALTH, 2.0D)   // one heart - a broodling
                 .add(Attributes.MOVEMENT_SPEED, 0.3D)
-                .add(Attributes.ATTACK_DAMAGE, 3.0D)
+                .add(Attributes.ATTACK_DAMAGE, 2.0D)
                 .add(Attributes.FOLLOW_RANGE, 28.0D);
     }
 

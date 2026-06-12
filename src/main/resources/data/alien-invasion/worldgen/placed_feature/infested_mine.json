@@ -1,7 +1,7 @@
 {
   "feature": "alien-invasion:infested_mine",
   "placement": [
-    { "type": "minecraft:rarity_filter", "chance": 120 },
+    { "type": "minecraft:rarity_filter", "chance": 300 },
     { "type": "minecraft:in_square" },
     {
       "type": "minecraft:height_range",

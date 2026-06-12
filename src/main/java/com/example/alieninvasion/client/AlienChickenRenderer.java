@@ -1,21 +1,22 @@
 package com.example.alieninvasion.client;
 
 import com.example.alieninvasion.AlienInvasionMod;
+import com.example.alieninvasion.client.model.AlienChickenModel;
 import com.example.alieninvasion.entity.AlienChickenEntity;
-import net.minecraft.client.model.ChickenModel;
-import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 
-// New alien: fast swarm "Alien Chicken" using the vanilla chicken model layout
-// with the (downscaled) alien-chicken texture from the pack.
-public class AlienChickenRenderer extends MobRenderer<AlienChickenEntity, ChickenModel<AlienChickenEntity>> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID,
-            "textures/entity/alien_chicken.png");
+// The swarm scout-bird on its own model: dome head, antennae, fluttering wings.
+public class AlienChickenRenderer extends MobRenderer<AlienChickenEntity, AlienChickenModel<AlienChickenEntity>> {
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(
+            AlienInvasionMod.MODID, "textures/entity/alien_chicken.png");
+    private static final ResourceLocation EYES = ResourceLocation.fromNamespaceAndPath(
+            AlienInvasionMod.MODID, "textures/entity/alien_chicken_eyes.png");
 
     public AlienChickenRenderer(EntityRendererProvider.Context context) {
-        super(context, new ChickenModel<>(context.bakeLayer(ModelLayers.CHICKEN)), 0.3F);
+        super(context, new AlienChickenModel<>(context.bakeLayer(ModModelLayers.ALIEN_CHICKEN)), 0.3F);
+        this.addLayer(new AlienEyesLayer<>(this, EYES));
     }
 
     @Override

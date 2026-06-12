@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/fence_side",
+  "textures": {
+    "texture": "alien-invasion:block/bloody_planks"
+  }
+}

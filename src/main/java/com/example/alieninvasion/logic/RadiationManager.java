@@ -137,11 +137,10 @@ public final class RadiationManager {
                     BlockState bs = level.getBlockState(cursor.set(
                             center.getX() + x, center.getY() + y, center.getZ() + z));
                     int w = sourceWeight(bs);
-                    boolean soft = w == 0 && isInfestedBlock(bs);
-                    if (w == 0 && !soft) continue;
+                    if (w == 0) continue; // ONLY real radioactive sources - infested blocks are clean
                     int distSq = x * x + y * y + z * z;
                     float falloff = distSq <= 4 ? 1.0F : distSq <= 16 ? 0.5F : 0.25F;
-                    exposure += w > 0 ? w * falloff : 0.3F * falloff;
+                    exposure += w * falloff;
                 }
             }
         }

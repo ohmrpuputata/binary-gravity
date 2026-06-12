@@ -72,23 +72,26 @@ public final class WorldContaminationManager {
     public static float getTarget(int day) {
         if (day <= 0) return 0f;
         switch (day) {
-            case 1:  return 0.15f;
-            case 2:  return 0.35f;
-            case 3:  return 0.60f;
-            case 4:  return 0.85f;
+            case 1:  return 0.05f;
+            case 2:  return 0.12f;
+            case 3:  return 0.25f;
+            case 4:  return 0.40f;
+            case 5:  return 0.55f;
+            case 6:  return 0.70f;
+            case 7:  return 0.85f;
             default: return 1.0f;
         }
     }
 
-    /** Fraction of water gone bad on day N: starts day 3, ALL of it by day 5. */
+    /** Fraction of water gone bad on day N: starts day 4, lags the land slightly. */
     private static float getWaterTarget(int day) {
-        if (day < 3) return 0f;
-        return getTarget(day);
+        if (day < 4) return 0f;
+        return getTarget(day - 1);
     }
 
-    /** Caves rot one day behind the surface — the corruption sinks in from above. */
+    /** Caves rot two days behind the surface — the corruption sinks in from above. */
     private static float getCaveTarget(int day) {
-        return getTarget(day - 1);
+        return getTarget(day - 2);
     }
 
     /** Called by ServerChunkEvents.CHUNK_LOAD. Only enqueues — never writes blocks. */
@@ -202,7 +205,7 @@ public final class WorldContaminationManager {
         if (newDay < 1) return;
         ChunkContaminationData data = ChunkContaminationData.get(level);
         int viewDist = Math.min(level.getServer().getPlayerList().getViewDistance(), 12);
-        boolean undergroundNeeded = newDay > prevDay && prevDay < 7; // caves/ores keep growing until day 6
+        boolean undergroundNeeded = newDay > prevDay && prevDay < 9; // caves/ores keep growing until day 8
         for (ServerPlayer player : level.players()) {
             ChunkPos center = player.chunkPosition();
             for (int dx = -viewDist; dx <= viewDist; dx++) {
@@ -339,7 +342,7 @@ public final class WorldContaminationManager {
                             }
                         }
                         // Scattered remains: rare contaminated bones on the dead ground.
-                        if (day >= 2 && ((h >>> 40) & 0x3FL) == 0L) {
+                        if (day >= 3 && ((h >>> 40) & 0x3FL) == 0L) {
                             cursor.set(x, groundY + 1, z);
                             if (chunk.getBlockState(cursor).isAir()) {
                                 place(level, new BlockPos(x, groundY + 1, z),
@@ -347,7 +350,7 @@ public final class WorldContaminationManager {
                             }
                         }
                         // Glowing alien tendrils sprouting from the corruption.
-                        if (day >= 2 && ((h >>> 46) & 0x1FL) == 0L) {
+                        if (day >= 3 && ((h >>> 46) & 0x1FL) == 0L) {
                             cursor.set(x, groundY + 1, z);
                             if (chunk.getBlockState(cursor).isAir()) {
                                 place(level, new BlockPos(x, groundY + 1, z),
@@ -367,7 +370,7 @@ public final class WorldContaminationManager {
         // organ on the surface. Destroy it -> the chunk goes inert (existing rot
         // stays, growth stops). It spawns exactly once: a broken heart flags the
         // chunk inert, and inert chunks never run this pass again.
-        if (day >= 3 && prevDay < 3) {
+        if (day >= 4 && prevDay < 4) {
             long hh = mix(chunkSeed ^ 0xD1B54A32D192ED03L);
             if (((hh >>> 8) & 0xFFL) < 90L) { // ~35% of chunks
                 int hx = cpos.getMinBlockX() + 2 + (int) ((hh >>> 16) % 12L);
@@ -392,14 +395,14 @@ public final class WorldContaminationManager {
      * never re-carved, and slots near player block entities (chests etc.) are skipped.
      */
     private static void carveCraters(ServerLevel level, LevelChunk chunk, int day, int prevDay, long chunkSeed) {
-        if (day < 2) return;
+        if (day < 3) return;
         ChunkPos cpos = chunk.getPos();
         int minY = level.getMinBuildHeight();
 
         for (int slot = 0; slot < CRATER_SLOTS; slot++) {
             long h = mix(chunkSeed ^ (0xC2B2AE3D27D4EB4FL * (slot + 1)));
             if (((h >>> 4) & 0xFFL) >= 100L) continue;            // ~39% of slots exist
-            int activationDay = 2 + (int) ((h >>> 12) % 5L);       // strikes land on days 2..6
+            int activationDay = 3 + (int) ((h >>> 12) % 5L);       // strikes land on days 3..7
             if (activationDay > day || activationDay <= prevDay) continue;
 
             int radius = 3 + (int) ((h >>> 20) % 3L);              // 3..5
@@ -505,14 +508,14 @@ public final class WorldContaminationManager {
      * logic as craters.
      */
     private static void carveDrillShafts(ServerLevel level, LevelChunk chunk, int day, int prevDay, long chunkSeed) {
-        if (day < 3) return;
+        if (day < 4) return;
         ChunkPos cpos = chunk.getPos();
         int minY = level.getMinBuildHeight();
 
         for (int slot = 0; slot < DRILL_SLOTS; slot++) {
             long h = mix(chunkSeed ^ (0xA0761D6478BD642FL * (slot + 1)));
             if (((h >>> 4) & 0xFFL) >= 56L) continue;             // ~22% of slots exist
-            int activationDay = 3 + (int) ((h >>> 12) % 4L);       // drills hit on days 3..6
+            int activationDay = 4 + (int) ((h >>> 12) % 4L);       // drills hit on days 4..7
             if (activationDay > day || activationDay <= prevDay) continue;
 
             int radius = 1 + (int) ((h >>> 20) % 2L);              // 1..2

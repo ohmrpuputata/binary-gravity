@@ -223,13 +223,13 @@ public class ModEvents {
                 com.example.alieninvasion.logic.RadiationManager.clearDose(deadPlayer);
                 com.example.alieninvasion.logic.InfectionManager.clear(deadPlayer);
 
-                // CORPSE-RUNNER: from day 2 the swarm grows a clone out of every
+                // CORPSE-RUNNER: from day 4 the swarm grows a clone out of every
                 // player corpse. It swallows the ENTIRE death drop, wears your best
                 // gear and hunts YOU first. Killing it returns everything. If your
                 // previous clone is still nearby, it claims the new drop instead.
                 if (entity.level() instanceof ServerLevel cloneLevel
                         && cloneLevel.dimension() == net.minecraft.world.level.Level.OVERWORLD
-                        && SurvivalManager.getDay(cloneLevel) >= 2) {
+                        && SurvivalManager.getDay(cloneLevel) >= 4) {
                     com.example.alieninvasion.entity.InfestedPlayerCloneEntity existing = null;
                     for (com.example.alieninvasion.entity.InfestedPlayerCloneEntity c :
                             cloneLevel.getEntitiesOfClass(com.example.alieninvasion.entity.InfestedPlayerCloneEntity.class,
@@ -386,7 +386,7 @@ public class ModEvents {
             // 3. Alien Melee AP damage against heavy armor players + infection fill
             if (source.getEntity() instanceof Mob alien && AlienUtils.isAlliedTo(null, alien) && entity instanceof Player player) {
                 // Every alien hit increases infection meter
-                InfectionManager.addMeter(player, 5.0F);
+                InfectionManager.addMeter(player, 1.0F);
 
                 // Apply marked effect on hit and alert allies
                 boolean isMarked = player.hasEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.MARKED));
@@ -416,6 +416,12 @@ public class ModEvents {
                         new BlockParticleOption(ParticleTypes.BLOCK, Blocks.REDSTONE_BLOCK.defaultBlockState()),
                         entity.getX(), entity.getY() + entity.getEyeHeight() * 0.7, entity.getZ(),
                         15, 0.2, 0.2, 0.2, 0.1);
+            }
+            // Heavy hits STAIN the floor: the block under the victim converts to
+            // its bloody twin (stairs/fences keep shape). Wipe with right-click
+            // or wash it off with water.
+            if (amount >= 4.0F && level.random.nextFloat() < 0.5F && level instanceof ServerLevel splatLevel) {
+                com.example.alieninvasion.block.BloodyBlocks.splatter(splatLevel, entity.blockPosition().below());
             }
             return true; // Allow damage
         });
@@ -504,7 +510,7 @@ public class ModEvents {
                 }
             }
             if (level.getGameTime() % 1200 == 0 && level.random.nextFloat() < 0.12F
-                    && SurvivalManager.getDay(level) >= 4 && ACTIVE_CLOUDS.size() < 6) {
+                    && SurvivalManager.getDay(level) >= 5 && ACTIVE_CLOUDS.size() < 6) {
                 for (ServerPlayer player : level.players()) {
                     double cx = player.getX() + (level.random.nextDouble() - 0.5) * 120.0;
                     double cz = player.getZ() + (level.random.nextDouble() - 0.5) * 120.0;
@@ -522,7 +528,7 @@ public class ModEvents {
             if (level.getGameTime() % 400 == 0 && level.random.nextFloat() < 0.15F) {
                 for (ServerPlayer player : level.players()) {
                     int day = SurvivalManager.getDay(level);
-                    if (day >= 3) {
+                    if (day >= 4) {
                         BlockPos spawnPos = player.blockPosition().offset(level.random.nextInt(31) - 15, level.random.nextInt(9) - 4, level.random.nextInt(31) - 15);
                         ACTIVE_ANOMALIES.add(new GravityAnomaly(spawnPos, 12, 600)); // 30 seconds
                         level.playSound(null, spawnPos, SoundEvents.BEACON_ACTIVATE, SoundSource.AMBIENT, 2.0F, 0.5F);
@@ -564,7 +570,7 @@ public class ModEvents {
             // EMP random trigger (Day 4+, at night)
             if (level.isNight() && level.getGameTime() % 24000 == 13000) { // Shortly after night starts
                 int day = SurvivalManager.getDay(level);
-                if (day >= 4 && level.random.nextFloat() < 0.35F && empTicksActive <= 0) {
+                if (day >= 5 && level.random.nextFloat() < 0.35F && empTicksActive <= 0) {
                     empTicksActive = 2400; // 2 minutes (2400 ticks)
                     for (ServerPlayer player : level.players()) {
                         player.addTag("EmpActive");
@@ -625,6 +631,7 @@ public class ModEvents {
             // --- Underground ambush: deep in the dark the swarm springs a trap,
             // erupting from the surrounding blocks already locked onto the player. ---
             if (level.getGameTime() % 600 == 0 && level.random.nextFloat() < 0.12F
+                    && SurvivalManager.getDay(level) >= 2
                     && !InvasionManager.get(level).isVictoryAchieved()) {
                 for (ServerPlayer p : level.players()) {
                     BlockPos pp = p.blockPosition();
@@ -659,6 +666,7 @@ public class ModEvents {
             // --- Hive overgrowth wave: at night the corruption surges - infested
             // ground spreads around the player and a few grunts crawl out of it. ---
             if (level.isNight() && level.getGameTime() % 900 == 0 && level.random.nextFloat() < 0.10F
+                    && SurvivalManager.getDay(level) >= 3
                     && !InvasionManager.get(level).isVictoryAchieved()) {
                 for (ServerPlayer p : level.players()) {
                     BlockPos pp = p.blockPosition();
@@ -686,6 +694,9 @@ public class ModEvents {
                                     g.moveTo(x, y, z, level.random.nextFloat() * 360F, 0F);
                                     g.setTarget(p);
                                     level.addFreshEntity(g);
+                                    // It CLAWS OUT of the rotten ground, not out of thin air.
+                                    level.levelEvent(2001, sp.below(), net.minecraft.world.level.block.Block.getId(
+                                            level.getBlockState(sp.below())));
                                 }
                             }
                         }
@@ -888,12 +899,7 @@ public class ModEvents {
                     boolean moving = player.getDeltaMovement().horizontalDistanceSqr() > 0.002D;
                     int cadence = heavy ? 8 : 18;
                     if (player.tickCount % cadence == 0 && (moving || heavy)) {
-                        BlockPos feet = player.blockPosition();
-                        BlockState at = level.getBlockState(feet);
-                        if ((at.isAir() || at.canBeReplaced()) && !at.is(ModBlocks.BLOOD_POOL)
-                                && level.getBlockState(feet.below()).isFaceSturdy(level, feet.below(), net.minecraft.core.Direction.UP)) {
-                            level.setBlock(feet, ModBlocks.BLOOD_POOL.defaultBlockState(), 3);
-                        }
+                        com.example.alieninvasion.block.BloodyBlocks.splatter(level, player.blockPosition().below());
                     }
 
                     // BLOOD SCENT: nearby hostiles + aliens with no target lock onto the
@@ -946,14 +952,42 @@ public class ModEvents {
                 // a source, the more frantic the crackle. A lone random click now and
                 // then is natural background. This sound (not a HUD bar) is how you
                 // "see" radiation without the counter equipped.
-                if (player.tickCount % 6 == 0 && player.getInventory().contains(
+                if (player.tickCount % 2 == 0 && player.getInventory().contains(
                         new ItemStack(ItemRegistry.GEIGER_COUNTER))) {
                     float fieldLevel = com.example.alieninvasion.logic.RadiationFieldManager.getFieldLevel(player);
-                    int clicks = fieldLevel >= 18.0F ? 3 : fieldLevel >= 9.0F ? 2 : fieldLevel > 0.0F ? 1
-                            : (level.random.nextInt(14) == 0 ? 1 : 0);
-                    for (int c = 0; c < clicks; c++) {
-                        level.playSound(null, player.blockPosition(), SoundEvents.TRIPWIRE_CLICK_ON,
-                                SoundSource.PLAYERS, 0.22F, 1.7F + level.random.nextFloat() * 0.5F);
+                    // ALWAYS-ON BACKGROUND: a real counter never goes fully silent -
+                    // lone random ticks at rest rising to a frantic crackle near a
+                    // source. Sharp dry clicks, loud enough to actually hear.
+                    float chance = 0.012F + fieldLevel * 0.045F;
+                    if (level.random.nextFloat() < chance) {
+                        int burst = 1 + (fieldLevel >= 18.0F ? level.random.nextInt(3)
+                                : fieldLevel >= 9.0F ? level.random.nextInt(2) : 0);
+                        for (int c = 0; c < burst; c++) {
+                            level.playSound(null, player.blockPosition(),
+                                    SoundEvents.NOTE_BLOCK_HAT.value(), SoundSource.PLAYERS,
+                                    0.55F, 1.8F + level.random.nextFloat() * 0.35F);
+                        }
+                    }
+
+                }
+
+                // SELF-AWARENESS: your character KNOWS something is wrong long
+                // before any meter maxes - quiet first-person thoughts, only yours.
+                {
+                    if (player.tickCount % 160 == 0 && !player.isCreative()) {
+                        float selfDose = (float) com.example.alieninvasion.logic.RadiationManager.getDose(player);
+                        float selfInf = com.example.alieninvasion.logic.InfectionManager.getMeter(player);
+                        String thought = null;
+                        if (selfDose >= 75.0F) thought = "Во рту привкус металла... дёсны кровоточат. Лечение, СРОЧНО.";
+                        else if (selfInf >= 75.0F) thought = "Под кожей что-то ШЕВЕЛИТСЯ. Я чувствую, как оно растёт.";
+                        else if (selfDose >= 40.0F) thought = "Накатывает слабость, кожу покалывает... это облучение.";
+                        else if (selfInf >= 50.0F) thought = "Меня лихорадит. Голод не отпускает, руки дрожат.";
+                        else if (player.getHealth() < player.getMaxHealth() * 0.25F) thought = "Перед глазами плывёт... слишком много крови потеряно.";
+                        else if (selfDose >= 15.0F) thought = "Лёгкая тошнота. Где-то рядом что-то фонит.";
+                        else if (selfInf >= 25.0F) thought = "Горло саднит, знобит. Кажется, я что-то подхватил.";
+                        if (thought != null) {
+                            player.displayClientMessage(Component.literal("§7§o" + thought), true);
+                        }
                     }
                 }
 
@@ -1008,7 +1042,16 @@ public class ModEvents {
                         && player.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.ALIEN_CHEM_BOOTS);
 
                 // Dose multiplier: chem(×5 slower) > hazmat(×3 slower) > platinum(×2 slower) > default
-                float doseMult = fullChem ? 0.2F : fullHazmat ? (1.0F / 3.0F) : fullPlatinum ? 0.5F : 1.0F;
+                // ANY armor shields a little - even a shirt stops some fallout.
+                // Per piece: helmet 3%, chest 5%, legs 4%, boots 3% => a full set of
+                // ANY armor (even leather) blocks 15%. Dedicated suits still rule.
+                float anyArmorShield = 0.0F;
+                if (!player.getItemBySlot(EquipmentSlot.HEAD).isEmpty())  anyArmorShield += 0.03F;
+                if (!player.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) anyArmorShield += 0.05F;
+                if (!player.getItemBySlot(EquipmentSlot.LEGS).isEmpty())  anyArmorShield += 0.04F;
+                if (!player.getItemBySlot(EquipmentSlot.FEET).isEmpty())  anyArmorShield += 0.03F;
+                float doseMult = fullChem ? 0.2F : fullHazmat ? (1.0F / 3.0F) : fullPlatinum ? 0.5F
+                        : (1.0F - anyArmorShield);
                 // Meter multiplier: chem(×5 slower) > hazmat(×3 slower) > palladium(×2 slower) > default
                 float meterMult = fullChem ? 0.2F : fullHazmat ? (1.0F / 3.0F) : fullPalladium ? 0.5F : 1.0F;
                 com.example.alieninvasion.logic.RadiationManager.setDoseMultiplier(player, doseMult);
@@ -1109,7 +1152,7 @@ public class ModEvents {
                 // stray onto infested terrain wither away (named/leashed pets spared,
                 // and farms on clean ground are untouched).
                 if (player.tickCount % 100 == 0
-                        && com.example.alieninvasion.logic.SurvivalManager.getDay(level) >= 4) {
+                        && com.example.alieninvasion.logic.SurvivalManager.getDay(level) >= 5) {
                     for (net.minecraft.world.entity.animal.Animal animal : level.getEntitiesOfClass(
                             net.minecraft.world.entity.animal.Animal.class, player.getBoundingBox().inflate(24.0D),
                             a -> a.isAlive() && !a.hasCustomName() && !a.isLeashed())) {
@@ -1188,8 +1231,9 @@ public class ModEvents {
                 }
             }
 
-            // Day Mimic Spawning
-            if (level.isDay() && level.getGameTime() % 600 == 0 && level.random.nextFloat() < 0.15F) {
+            // Day Mimic Spawning - only once the swarm starts infiltrating (day 3+).
+            if (level.isDay() && level.getGameTime() % 600 == 0 && level.random.nextFloat() < 0.15F
+                    && SurvivalManager.getDay(level) >= 3) {
                 for (ServerPlayer player : level.players()) {
                     double mx = player.getX() + (level.random.nextDouble() - 0.5D) * 40.0D;
                     double mz = player.getZ() + (level.random.nextDouble() - 0.5D) * 40.0D;
@@ -1218,7 +1262,8 @@ public class ModEvents {
             
             // Night Parasite Spawning: fast brain-leeches scuttle out of the dark
             // and sprint/leap straight at a player to latch onto their head.
-            if (level.isNight() && level.getGameTime() % 300 == 0 && level.random.nextFloat() < 0.30F) {
+            if (level.isNight() && level.getGameTime() % 300 == 0 && level.random.nextFloat() < 0.30F
+                    && SurvivalManager.getDay(level) >= 2) {
                 for (ServerPlayer player : level.players()) {
                     double px = player.getX() + (level.random.nextDouble() - 0.5D) * 28.0D;
                     double pz = player.getZ() + (level.random.nextDouble() - 0.5D) * 28.0D;
@@ -1230,12 +1275,15 @@ public class ModEvents {
                             parasite.moveTo(px, py, pz, level.random.nextFloat() * 360F, 0F);
                             parasite.setTarget(player);
                             level.addFreshEntity(parasite);
+                            // Wriggles up out of the soil.
+                            level.levelEvent(2001, ppos.below(), net.minecraft.world.level.block.Block.getId(
+                                    level.getBlockState(ppos.below())));
                         }
                     }
                 }
             }
 
-            if (SurvivalManager.isAlienInvasionActive(level)) {
+            if (SurvivalManager.isAlienInvasionActive(level) && SurvivalManager.getDay(level) >= 2) {
                 int day = SurvivalManager.getDay(level);
                 for (ServerPlayer player : level.players()) {
                     int nearbyEntities = level.getEntities(null, player.getBoundingBox().inflate(100)).size();
@@ -1368,11 +1416,18 @@ public class ModEvents {
         level.playSound(null, pos, SoundEvents.ENDERMAN_SCREAM, SoundSource.HOSTILE, 1.5F, 0.7F);
         level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, mimic.getX(), mimic.getY() + 0.5, mimic.getZ(), 1, 0.0, 0.0, 0.0, 0.0);
 
+        // A mimic is an infiltrator, NOT a heavy. It only ever hides a weak
+        // ambusher: a grunt, a raptor, or (late game) a wall-breacher. Never a
+        // telekinetic or a brute - those don't sneak around as livestock.
+        int mimicDay = SurvivalManager.getDay(level);
         net.minecraft.world.entity.Mob alien;
-        if (level.random.nextBoolean()) {
-            alien = EntityRegistry.TELEKINETIC_ALIEN.create(level);
+        float r = level.random.nextFloat();
+        if (mimicDay >= 5 && r < 0.25F) {
+            alien = EntityRegistry.ALIEN_BREACHER.create(level);
+        } else if (r < 0.55F) {
+            alien = EntityRegistry.ALIEN_RAPTOR.create(level);
         } else {
-            alien = EntityRegistry.ALIEN_BRUTE.create(level);
+            alien = EntityRegistry.ALIEN_GRUNT.create(level);
         }
 
         if (alien != null) {

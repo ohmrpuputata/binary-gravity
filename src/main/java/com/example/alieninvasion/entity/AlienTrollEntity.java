@@ -30,17 +30,17 @@ public class AlienTrollEntity extends Monster implements IAlienUnit {
     // rarer and softer than the originals so the swarm unnerves instead of annoys.
     @Override
     protected net.minecraft.sounds.SoundEvent getAmbientSound() {
-        return net.minecraft.sounds.SoundEvents.RAVAGER_AMBIENT;
+        return net.minecraft.sounds.SoundEvents.SILVERFISH_AMBIENT;
     }
 
     @Override
     protected net.minecraft.sounds.SoundEvent getHurtSound(net.minecraft.world.damagesource.DamageSource source) {
-        return net.minecraft.sounds.SoundEvents.RAVAGER_HURT;
+        return net.minecraft.sounds.SoundEvents.SILVERFISH_HURT;
     }
 
     @Override
     protected net.minecraft.sounds.SoundEvent getDeathSound() {
-        return net.minecraft.sounds.SoundEvents.RAVAGER_DEATH;
+        return net.minecraft.sounds.SoundEvents.SILVERFISH_DEATH;
     }
 
     @Override
@@ -50,12 +50,12 @@ public class AlienTrollEntity extends Monster implements IAlienUnit {
 
     @Override
     protected float getSoundVolume() {
-        return 0.5F;
+        return 0.4F;
     }
 
     @Override
     public float getVoicePitch() {
-        return 1.15F + this.random.nextFloat() * 0.1F;
+        return 1.8F + this.random.nextFloat() * 0.1F;
     }
 
     private ItemStack stolenItem = ItemStack.EMPTY;

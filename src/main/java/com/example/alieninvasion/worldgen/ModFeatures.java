@@ -36,6 +36,10 @@ public class ModFeatures {
             new AlienMonolithFeature(NoneFeatureConfiguration.CODEC);
     public static final Feature<NoneFeatureConfiguration> SURVIVOR_BUNKER =
             new SurvivorBunkerFeature(NoneFeatureConfiguration.CODEC);
+    public static final Feature<NoneFeatureConfiguration> SAFEHOUSE =
+            new SafehouseFeature(NoneFeatureConfiguration.CODEC);
+    public static final Feature<NoneFeatureConfiguration> FIELD_HOSPITAL =
+            new FieldHospitalFeature(NoneFeatureConfiguration.CODEC);
 
     // Loot tables (data/alien-invasion/loot_table/chests/*.json)
     public static final ResourceKey<LootTable> CAVE_DUNGEON_LOOT =
@@ -64,6 +68,8 @@ public class ModFeatures {
     public static final ResourceKey<PlacedFeature> BURIED_MOTHERSHIP_PLACED = pf("buried_mothership");
     public static final ResourceKey<PlacedFeature> ALIEN_MONOLITH_PLACED = pf("alien_monolith");
     public static final ResourceKey<PlacedFeature> SURVIVOR_BUNKER_PLACED = pf("survivor_bunker");
+    public static final ResourceKey<PlacedFeature> SAFEHOUSE_PLACED = pf("safehouse");
+    public static final ResourceKey<PlacedFeature> FIELD_HOSPITAL_PLACED = pf("field_hospital");
 
     public static void register() {
         Registry.register(BuiltInRegistries.FEATURE, rl("cave_dungeon"), CAVE_DUNGEON);
@@ -76,6 +82,8 @@ public class ModFeatures {
         Registry.register(BuiltInRegistries.FEATURE, rl("buried_mothership"), BURIED_MOTHERSHIP);
         Registry.register(BuiltInRegistries.FEATURE, rl("alien_monolith"), ALIEN_MONOLITH);
         Registry.register(BuiltInRegistries.FEATURE, rl("survivor_bunker"), SURVIVOR_BUNKER);
+        Registry.register(BuiltInRegistries.FEATURE, rl("safehouse"), SAFEHOUSE);
+        Registry.register(BuiltInRegistries.FEATURE, rl("field_hospital"), FIELD_HOSPITAL);
 
         BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
                 GenerationStep.Decoration.UNDERGROUND_DECORATION, CAVE_DUNGEON_PLACED);
@@ -97,6 +105,10 @@ public class ModFeatures {
                 GenerationStep.Decoration.SURFACE_STRUCTURES, ALIEN_MONOLITH_PLACED);
         BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
                 GenerationStep.Decoration.SURFACE_STRUCTURES, SURVIVOR_BUNKER_PLACED);
+        BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
+                GenerationStep.Decoration.SURFACE_STRUCTURES, SAFEHOUSE_PLACED);
+        BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(),
+                GenerationStep.Decoration.SURFACE_STRUCTURES, FIELD_HOSPITAL_PLACED);
 
         AlienInvasionMod.LOGGER.info("Registered worldgen structures: cave_dungeon, infested_mine, cosmic_vault, abandoned_lab, hive_nest, alien_outpost, crashed_ufo, buried_mothership, alien_monolith");
     }

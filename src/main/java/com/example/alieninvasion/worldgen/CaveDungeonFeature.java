@@ -32,6 +32,8 @@ public class CaveDungeonFeature extends Feature<NoneFeatureConfiguration> {
     @Override
     public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> ctx) {
         WorldGenLevel level = ctx.level();
+        // RECON PHASE: alien structures only appear once the invasion has landed.
+        if (com.example.alieninvasion.logic.SurvivalManager.getDay(level.getLevel()) < 2) return false;
         RandomSource rng = ctx.random();
         BlockPos o = ctx.origin();
 

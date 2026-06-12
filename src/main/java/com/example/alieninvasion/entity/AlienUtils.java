@@ -12,6 +12,12 @@ public class AlienUtils {
     public static boolean isAlliedTo(LivingEntity self, net.minecraft.world.entity.Entity other) {
         if (other == self)
             return true;
+        // CREATIVE/SPECTATOR INVISIBILITY: the swarm simply does not perceive
+        // builders - no targeting, no infested-ground bites, no parasites.
+        if (other instanceof net.minecraft.world.entity.player.Player player
+                && (player.isCreative() || player.isSpectator())) {
+            return true;
+        }
         if (other instanceof AlienGruntEntity || other instanceof AlienBruteEntity
                 || other instanceof TelekineticAlienEntity || other instanceof UfoEntity
                 || other instanceof AlienChickenEntity || other instanceof HiveTyrantEntity

@@ -27,7 +27,7 @@ public class MeteorRenderer extends EntityRenderer<MeteorEntity> {
     public void render(MeteorEntity entity, float yaw, float partialTick, PoseStack poseStack,
             MultiBufferSource buffer, int packedLight) {
         poseStack.pushPose();
-        poseStack.scale(-2.4F, -2.4F, 2.4F); // much bigger, massive meteor
+        poseStack.scale(-4.0F, -4.0F, 4.0F); // huge boulder to match the crater it digs
         float spin = (entity.tickCount + partialTick) * 14.0F;
         poseStack.mulPose(Axis.YP.rotationDegrees(spin));
         poseStack.mulPose(Axis.XP.rotationDegrees(spin * 0.6F));

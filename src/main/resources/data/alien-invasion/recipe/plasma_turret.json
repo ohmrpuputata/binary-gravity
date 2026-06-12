@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " L ",
+    "PBP",
+    "III"
+  ],
+  "key": {
+    "L": {
+      "item": "alien-invasion:plasma_cell"
+    },
+    "P": {
+      "item": "alien-invasion:platinum_ingot"
+    },
+    "B": {
+      "item": "alien-invasion:alien_battery"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "id": "alien-invasion:plasma_turret",
+    "count": 1
+  }
+}

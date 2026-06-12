@@ -96,6 +96,13 @@ public class AlienInvasionClient implements ClientModInitializer {
                                 com.example.alieninvasion.client.model.MeteorModel::createBodyLayer);
                 EntityModelLayerRegistry.registerModelLayer(ModModelLayers.SWARM_MOTHER,
                                 com.example.alieninvasion.client.model.SwarmMotherModel::createBodyLayer);
+                EntityModelLayerRegistry.registerModelLayer(ModModelLayers.PLASMA_TURRET,
+                                com.example.alieninvasion.client.model.PlasmaTurretModel::createBodyLayer);
+                net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry.register(
+                                com.example.alieninvasion.registry.ModBlocks.PLASMA_TURRET_BLOCK_ENTITY,
+                                com.example.alieninvasion.client.PlasmaTurretRenderer::new);
+                EntityModelLayerRegistry.registerModelLayer(ModModelLayers.ALIEN_CHICKEN,
+                                com.example.alieninvasion.client.model.AlienChickenModel::createBodyLayer);
                 EntityModelLayerRegistry.registerModelLayer(ModModelLayers.SKY_DRONE,
                                 com.example.alieninvasion.client.model.SkyDroneModel::createBodyLayer);
                 EntityModelLayerRegistry.registerModelLayer(ModModelLayers.INFESTED_WORM,
@@ -119,6 +126,8 @@ public class AlienInvasionClient implements ClientModInitializer {
                                 com.example.alieninvasion.client.model.AlienHumanoidModel.Variant.TROLL);
                 registerHumanoid(ModModelLayers.HIVE_TYRANT,
                                 com.example.alieninvasion.client.model.AlienHumanoidModel.Variant.TYRANT);
+                registerHumanoid(ModModelLayers.ALIEN_BREACHER,
+                                com.example.alieninvasion.client.model.AlienHumanoidModel.Variant.BREACHER);
                 registerHumanoid(ModModelLayers.ACID_SPITTER,
                                 com.example.alieninvasion.client.model.AlienHumanoidModel.Variant.SPITTER);
                 // HUD Overlay
