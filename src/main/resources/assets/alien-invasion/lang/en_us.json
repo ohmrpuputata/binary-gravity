@@ -95,7 +95,7 @@
   "tooltip.alien-invasion.gravity_gun.3": "Crafted from: Cosmic Shard + Platinum Ingots + Emerald Block.",
   "tooltip.alien-invasion.alien_blaster.1": "A captured Swarm emitter, reprogrammed for human hands. Fires dense radiation bolts.",
   "tooltip.alien-invasion.alien_blaster.2": "RMB: heavy beam — 20 damage, 3-second cooldown.",
-  "tooltip.alien-invasion.alien_blaster.3": "Shift+RMB: burst of 10 small bolts, wide spread, 1.5-second cooldown.",
+  "tooltip.alien-invasion.alien_blaster.3": "Shift+RMB: rapid machine-gun burst of 10 small bolts, 1.5-second cooldown.",
   "tooltip.alien-invasion.plasma_cell": "One click — full magazine. Store away from heat sources.",
   "tooltip.alien-invasion.rally_banner": "A raised banner — the signal to fight. Regeneration, protection, speed and absorption for everyone nearby.",
   "tooltip.alien-invasion.gravity_grenade": "Everything in range will suddenly want to meet at one point. Step back first.",
