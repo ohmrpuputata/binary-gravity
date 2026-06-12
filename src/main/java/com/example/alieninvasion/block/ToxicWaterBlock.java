@@ -51,7 +51,7 @@ public class ToxicWaterBlock extends LiquidBlock {
     }
 
     private boolean hasFullHazmat(LivingEntity entity) {
-        return false; // hazmat armor replaced in Phase 3
+        return com.example.alieninvasion.logic.ArmorProtection.hasSealedSuit(entity);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class ToxicWaterBlock extends LiquidBlock {
             BlockState targetState = level.getBlockState(target);
             if (targetState.is(BlockTags.CROPS) || targetState.is(BlockTags.SAPLINGS)) {
                 level.setBlockAndUpdate(target, ModBlocks.DEAD_INFESTED_CROP.defaultBlockState());
-            } else if (random.nextInt(10) == 0 && ContaminationRules.canContaminate(level, target, targetState)) {
+            } else if (random.nextInt(24) == 0 && ContaminationRules.canContaminate(level, target, targetState)) {
                 BlockState replacement = ContaminationRules.contaminatedStateFor(targetState);
                 if (replacement != null) {
                     level.setBlockAndUpdate(target, replacement);
@@ -81,7 +81,7 @@ public class ToxicWaterBlock extends LiquidBlock {
         // Creeping water corruption: the toxin slowly eats adjacent clean water,
         // but only along shallows (a bottom within 3 blocks), so it crawls along
         // shores and ponds instead of swallowing whole oceans.
-        if (random.nextInt(3) == 0) {
+        if (random.nextInt(8) == 0) {
             Direction dir = Direction.getRandom(random);
             if (dir == Direction.UP) dir = Direction.DOWN;
             BlockPos target = pos.relative(dir);

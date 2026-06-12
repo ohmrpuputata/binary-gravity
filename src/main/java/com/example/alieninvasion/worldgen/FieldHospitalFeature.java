@@ -41,11 +41,14 @@ public class FieldHospitalFeature extends Feature<NoneFeatureConfiguration> {
             BlockPos c = base.offset(t * 5, 0, 0);
             StructureUtil.fillBox(level, c.offset(-2, 0, -3), c.offset(2, 0, 3), tent, false);
             StructureUtil.fillBox(level, c.offset(-2, 1, -3), c.offset(2, 2, 3), tent, true);
-            StructureUtil.fillBox(level, c.offset(-1, 0, -3), c.offset(1, 1, 3), air, false);
+            StructureUtil.fillBox(level, c.offset(-1, 1, -2), c.offset(1, 2, 2), air, false);
+            StructureUtil.fillBox(level, c.offset(-1, 1, -3), c.offset(1, 2, -3), air, false);
             StructureUtil.fillBox(level, c.offset(-1, 3, -3), c.offset(1, 3, 3), tent, false);
             // Cots and a bloody floor - something went very wrong here.
-            StructureUtil.set(level, c.offset(-1, 1, -2), Blocks.WHITE_BED.defaultBlockState());
-            StructureUtil.set(level, c.offset(1, 1, 1), Blocks.WHITE_BED.defaultBlockState());
+            StructureUtil.placeBed(level, c.offset(-1, 1, -2), Blocks.WHITE_BED,
+                    net.minecraft.core.Direction.SOUTH);
+            StructureUtil.placeBed(level, c.offset(1, 1, 1), Blocks.WHITE_BED,
+                    net.minecraft.core.Direction.NORTH);
             StructureUtil.set(level, c.offset(0, 0, 0), ModBlocks.BLOODY_PLANKS.defaultBlockState());
             StructureUtil.set(level, c.offset(t, 0, -1), ModBlocks.BLOODY_DIRT.defaultBlockState());
         }

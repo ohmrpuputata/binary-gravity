@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": ["AAA", "ACA", "AAA"],
+  "pattern": ["PAP", "ACA", "PAP"],
   "key": {
     "A": { "item": "alien-invasion:platinum_ingot" },
+    "P": { "item": "alien-invasion:palladium_ingot" },
     "C": { "item": "alien-invasion:hive_core" }
   },
   "result": { "id": "alien-invasion:purifier", "count": 1 }

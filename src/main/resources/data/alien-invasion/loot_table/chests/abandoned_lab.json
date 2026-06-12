@@ -10,6 +10,8 @@
         { "type": "minecraft:item", "name": "minecraft:iron_ingot", "weight": 9, "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1, "max": 3 } }] },
         { "type": "minecraft:item", "name": "alien-invasion:weak_antidote", "weight": 10, "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1, "max": 2 } }] },
         { "type": "minecraft:item", "name": "alien-invasion:rad_pills", "weight": 9, "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1, "max": 2 } }] }
+        ,
+        { "type": "minecraft:item", "name": "alien-invasion:contaminated_food", "weight": 8, "functions": [{ "function": "minecraft:set_count", "count": { "type": "minecraft:uniform", "min": 1, "max": 3 } }] }
       ]
     },
     {

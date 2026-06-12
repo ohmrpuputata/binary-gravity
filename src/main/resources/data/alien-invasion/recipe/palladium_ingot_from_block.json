@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "alien-invasion:palladium_block"
+    }
+  ],
+  "result": {
+    "id": "alien-invasion:palladium_ingot",
+    "count": 9
+  }
+}

@@ -130,6 +130,54 @@ public class AlienInvasionClient implements ClientModInitializer {
                                 com.example.alieninvasion.client.model.AlienHumanoidModel.Variant.BREACHER);
                 registerHumanoid(ModModelLayers.ACID_SPITTER,
                                 com.example.alieninvasion.client.model.AlienHumanoidModel.Variant.SPITTER);
+                EntityModelLayerRegistry.registerModelLayer(ModModelLayers.PALLADIUM_ARMOR,
+                                com.example.alieninvasion.client.model.PalladiumArmorModel::createBodyLayer);
+                EntityModelLayerRegistry.registerModelLayer(ModModelLayers.COSMIC_ARMOR,
+                                () -> com.example.alieninvasion.client.model.AdvancedArmorModel.createBodyLayer(
+                                                com.example.alieninvasion.client.model.AdvancedArmorModel.Variant.COSMIC));
+                EntityModelLayerRegistry.registerModelLayer(ModModelLayers.HAZMAT_ARMOR,
+                                () -> com.example.alieninvasion.client.model.AdvancedArmorModel.createBodyLayer(
+                                                com.example.alieninvasion.client.model.AdvancedArmorModel.Variant.HAZMAT));
+                EntityModelLayerRegistry.registerModelLayer(ModModelLayers.CHEM_ARMOR,
+                                () -> com.example.alieninvasion.client.model.AdvancedArmorModel.createBodyLayer(
+                                                com.example.alieninvasion.client.model.AdvancedArmorModel.Variant.CHEM));
+                EntityModelLayerRegistry.registerModelLayer(ModModelLayers.PLATINUM_ARMOR,
+                                () -> com.example.alieninvasion.client.model.AdvancedArmorModel.createBodyLayer(
+                                                com.example.alieninvasion.client.model.AdvancedArmorModel.Variant.PLATINUM));
+                net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer.register(
+                                new com.example.alieninvasion.client.PalladiumArmorRenderer(),
+                                com.example.alieninvasion.registry.ItemRegistry.PALLADIUM_HELMET,
+                                com.example.alieninvasion.registry.ItemRegistry.PALLADIUM_CHESTPLATE,
+                                com.example.alieninvasion.registry.ItemRegistry.PALLADIUM_LEGGINGS,
+                                com.example.alieninvasion.registry.ItemRegistry.PALLADIUM_BOOTS);
+                net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer.register(
+                                new com.example.alieninvasion.client.AdvancedArmorRenderer(
+                                                ModModelLayers.COSMIC_ARMOR, "cosmic"),
+                                com.example.alieninvasion.registry.ItemRegistry.COSMIC_HELMET,
+                                com.example.alieninvasion.registry.ItemRegistry.COSMIC_CHESTPLATE,
+                                com.example.alieninvasion.registry.ItemRegistry.COSMIC_LEGGINGS,
+                                com.example.alieninvasion.registry.ItemRegistry.COSMIC_BOOTS);
+                net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer.register(
+                                new com.example.alieninvasion.client.AdvancedArmorRenderer(
+                                                ModModelLayers.HAZMAT_ARMOR, "alien_hazmat"),
+                                com.example.alieninvasion.registry.ItemRegistry.ALIEN_HAZMAT_HELMET,
+                                com.example.alieninvasion.registry.ItemRegistry.ALIEN_HAZMAT_CHESTPLATE,
+                                com.example.alieninvasion.registry.ItemRegistry.ALIEN_HAZMAT_LEGGINGS,
+                                com.example.alieninvasion.registry.ItemRegistry.ALIEN_HAZMAT_BOOTS);
+                net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer.register(
+                                new com.example.alieninvasion.client.AdvancedArmorRenderer(
+                                                ModModelLayers.CHEM_ARMOR, "alien_chem"),
+                                com.example.alieninvasion.registry.ItemRegistry.ALIEN_CHEM_HELMET,
+                                com.example.alieninvasion.registry.ItemRegistry.ALIEN_CHEM_CHESTPLATE,
+                                com.example.alieninvasion.registry.ItemRegistry.ALIEN_CHEM_LEGGINGS,
+                                com.example.alieninvasion.registry.ItemRegistry.ALIEN_CHEM_BOOTS);
+                net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer.register(
+                                new com.example.alieninvasion.client.AdvancedArmorRenderer(
+                                                ModModelLayers.PLATINUM_ARMOR, "platinum"),
+                                com.example.alieninvasion.registry.ItemRegistry.PLATINUM_HELMET,
+                                com.example.alieninvasion.registry.ItemRegistry.PLATINUM_CHESTPLATE,
+                                com.example.alieninvasion.registry.ItemRegistry.PLATINUM_LEGGINGS,
+                                com.example.alieninvasion.registry.ItemRegistry.PLATINUM_BOOTS);
                 // HUD Overlay
                 com.example.alieninvasion.client.InvasionHUDOverlay.register();
 

@@ -3,20 +3,23 @@
   "pattern": [
     " L ",
     "PBP",
-    "III"
+    "IAI"
   ],
   "key": {
     "L": {
       "item": "alien-invasion:plasma_cell"
     },
     "P": {
-      "item": "alien-invasion:platinum_ingot"
+      "item": "alien-invasion:palladium_ingot"
     },
     "B": {
       "item": "alien-invasion:alien_battery"
     },
     "I": {
       "item": "minecraft:iron_ingot"
+    },
+    "A": {
+      "item": "alien-invasion:platinum_ingot"
     }
   },
   "result": {

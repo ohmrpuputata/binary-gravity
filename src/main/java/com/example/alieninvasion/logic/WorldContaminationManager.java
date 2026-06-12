@@ -68,18 +68,19 @@ public final class WorldContaminationManager {
     private static int lastKnownDay = -1;
     private static int writesThisTick;
 
-    /** Fraction of the surface eaten by the corruption on day N: the whole world by day 5. */
+    /** Fraction of eligible columns corrupted by day N. The apocalypse stays gradual. */
     public static float getTarget(int day) {
         if (day <= 0) return 0f;
         switch (day) {
-            case 1:  return 0.05f;
-            case 2:  return 0.12f;
-            case 3:  return 0.25f;
-            case 4:  return 0.40f;
-            case 5:  return 0.55f;
-            case 6:  return 0.70f;
-            case 7:  return 0.85f;
-            default: return 1.0f;
+            case 1:  return 0.02f;
+            case 2:  return 0.05f;
+            case 3:  return 0.10f;
+            case 4:  return 0.18f;
+            case 5:  return 0.28f;
+            case 6:  return 0.40f;
+            case 7:  return 0.55f;
+            case 8:  return 0.68f;
+            default: return 0.78f;
         }
     }
 
@@ -197,9 +198,8 @@ public final class WorldContaminationManager {
     }
 
     /**
-     * Re-queues loaded chunks around players so already-visible areas catch up to the
-     * new day immediately (this is what makes "/invasion set 5" visibly rot the world
-     * around you within seconds).
+     * Re-queues already loaded chunks on a day change. The deterministic target is
+     * identical everywhere; player position only tells us which chunks are loaded.
      */
     private static void onDayChange(ServerLevel level, int prevDay, int newDay) {
         if (newDay < 1) return;

@@ -1,10 +1,11 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [" A ", "RIR", "III"],
+  "pattern": [" A ", "RIR", "PPP"],
   "key": {
     "A": { "item": "alien-invasion:alien_battery" },
     "R": { "item": "minecraft:redstone" },
-    "I": { "item": "minecraft:iron_ingot" }
+    "I": { "item": "minecraft:iron_ingot" },
+    "P": { "item": "alien-invasion:palladium_ingot" }
   },
   "result": { "id": "alien-invasion:comms_beacon", "count": 1 }
 }

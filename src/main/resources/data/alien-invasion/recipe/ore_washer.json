@@ -2,8 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "BGB",
-    "ICI",
-    "BIB"
+    "PCP",
+    "BPB"
   ],
   "key": {
     "B": {
@@ -12,8 +12,8 @@
     "G": {
       "item": "minecraft:glass"
     },
-    "I": {
-      "item": "minecraft:iron_ingot"
+    "P": {
+      "item": "alien-invasion:palladium_ingot"
     },
     "C": {
       "item": "alien-invasion:cosmic_shard"

@@ -52,7 +52,8 @@ public class SafehouseFeature extends Feature<NoneFeatureConfiguration> {
         StructureUtil.set(level, base.offset(2, 2, -3), Blocks.OAK_TRAPDOOR.defaultBlockState());
 
         // Interior: beds, furnace, crafting table, lantern, supplies.
-        StructureUtil.set(level, base.offset(-2, 1, 1), Blocks.RED_BED.defaultBlockState());
+        StructureUtil.placeBed(level, base.offset(-2, 1, 1), Blocks.RED_BED,
+                net.minecraft.core.Direction.EAST);
         StructureUtil.set(level, base.offset(2, 1, 1), Blocks.FURNACE.defaultBlockState());
         StructureUtil.set(level, base.offset(2, 1, 0), Blocks.CRAFTING_TABLE.defaultBlockState());
         StructureUtil.set(level, base.offset(0, 3, 0), Blocks.LANTERN.defaultBlockState()

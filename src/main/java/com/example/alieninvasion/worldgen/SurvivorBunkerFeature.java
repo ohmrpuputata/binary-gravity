@@ -50,8 +50,7 @@ public class SurvivorBunkerFeature extends Feature<NoneFeatureConfiguration> {
         StructureUtil.fillBox(level, c.offset(-7, -1, -4), c.offset(7, 4, 4), wall, false);
         StructureUtil.fillBox(level, c.offset(-6, 0, -3), c.offset(2, 3, 3), air, false);   // main hall
         StructureUtil.fillBox(level, c.offset(4, 0, -3), c.offset(6, 3, 3), air, false);    // storage annex
-        StructureUtil.set(level, c.offset(3, 1, 0), air);                                   // doorway
-        StructureUtil.set(level, c.offset(3, 2, 0), air);
+        StructureUtil.fillBox(level, c.offset(3, 0, -1), c.offset(3, 2, 1), air, false);   // wide doorway
 
         // Lighting.
         StructureUtil.set(level, c.offset(-5, 3, -2), ModBlocks.WARNING_LAMP.defaultBlockState());
@@ -59,8 +58,10 @@ public class SurvivorBunkerFeature extends Feature<NoneFeatureConfiguration> {
         StructureUtil.set(level, c.offset(5, 3, 0), ModBlocks.WARNING_LAMP.defaultBlockState());
 
         // Living corner: two bunks, furnace + crafting, a little carrot patch.
-        StructureUtil.set(level, c.offset(-6, 0, -3), Blocks.RED_BED.defaultBlockState());
-        StructureUtil.set(level, c.offset(-6, 0, 3), Blocks.WHITE_BED.defaultBlockState());
+        StructureUtil.placeBed(level, c.offset(-6, 0, -3), Blocks.RED_BED,
+                net.minecraft.core.Direction.SOUTH);
+        StructureUtil.placeBed(level, c.offset(-6, 0, 3), Blocks.WHITE_BED,
+                net.minecraft.core.Direction.NORTH);
         StructureUtil.set(level, c.offset(-4, 0, 3), Blocks.CRAFTING_TABLE.defaultBlockState());
         StructureUtil.set(level, c.offset(-3, 0, 3), Blocks.FURNACE.defaultBlockState());
         StructureUtil.set(level, c.offset(-2, 0, 3), Blocks.SMOKER.defaultBlockState());
@@ -72,7 +73,7 @@ public class SurvivorBunkerFeature extends Feature<NoneFeatureConfiguration> {
         StructureUtil.set(level, c.offset(6, 0, -3), Blocks.BARREL.defaultBlockState());
         StructureUtil.set(level, c.offset(6, 1, -3), Blocks.BARREL.defaultBlockState());
         StructureUtil.set(level, c.offset(6, 0, 3), ModBlocks.BROKEN_LAB_CRATE.defaultBlockState());
-        StructureUtil.set(level, c.offset(5, 0, 3), ModBlocks.TOXIC_BARREL.defaultBlockState());
+        StructureUtil.set(level, c.offset(5, 0, 3), Blocks.BARREL.defaultBlockState());
         StructureUtil.placeLootChest(level, c.offset(6, 0, 0), rng, ModFeatures.ABANDONED_LAB_LOOT);
         StructureUtil.placeLootChest(level, c.offset(4, 0, -3), rng, ModFeatures.CAVE_DUNGEON_LOOT);
 
@@ -96,12 +97,14 @@ public class SurvivorBunkerFeature extends Feature<NoneFeatureConfiguration> {
         StructureUtil.set(level, hatch.above(6), ModBlocks.WARNING_LAMP.defaultBlockState());
         StructureUtil.set(level, hatch.east().above(), ModBlocks.WARNING_LAMP.defaultBlockState());
         com.example.alieninvasion.logic.StructureLocationsData.get(level.getLevel()).add("bunker", hatch);
+        com.example.alieninvasion.logic.ChunkContaminationData.get(level.getLevel())
+                .setInert(new net.minecraft.world.level.ChunkPos(c), true);
 
         // THE TRADER: each bunker shelters a DIFFERENT survivor - a medic, a
         // farmer or an engineer - with their own face, name and barter list.
         Villager trader = EntityType.VILLAGER.create(level.getLevel());
         if (trader != null) {
-            trader.moveTo(c.getX() + 0.5D, c.getY(), c.getZ() + 0.5D, rng.nextFloat() * 360.0F, 0.0F);
+            trader.moveTo(c.getX() - 2.5D, c.getY(), c.getZ() + 0.5D, rng.nextFloat() * 360.0F, 0.0F);
             int profile = rng.nextInt(3);
             VillagerProfession prof = profile == 0 ? VillagerProfession.CLERIC
                     : profile == 1 ? VillagerProfession.FARMER : VillagerProfession.TOOLSMITH;
@@ -112,6 +115,7 @@ public class SurvivorBunkerFeature extends Feature<NoneFeatureConfiguration> {
             trader.setCustomNameVisible(true);
             trader.setPersistenceRequired();
             trader.addTag("BunkerTrader");
+            trader.addTag("RadiationImmune");
             if (profile == 0) { // МЕДИК: лекарства за кристаллы и реагенты
                 trader.getOffers().add(new MerchantOffer(
                         new ItemCost(com.example.alieninvasion.registry.ItemRegistry.RADIATION_CRYSTAL, 2),

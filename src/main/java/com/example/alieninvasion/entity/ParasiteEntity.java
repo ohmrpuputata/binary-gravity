@@ -139,7 +139,7 @@ public class ParasiteEntity extends Silverfish implements IAlienUnit {
     }
 
     private boolean hasFullHazmat(Player p) {
-        return false; // hazmat armor replaced in Phase 3
+        return com.example.alieninvasion.logic.ArmorProtection.hasSealedSuit(p);
     }
     
     @Override

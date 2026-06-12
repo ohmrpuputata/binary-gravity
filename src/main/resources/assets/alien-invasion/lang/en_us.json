@@ -43,6 +43,7 @@
   "tooltip.alien-invasion.contaminated_food": "Food touched by Swarm spores. It feeds you. But something changes a little with every bite.",
   "tooltip.alien-invasion.purified_water_flask": "Clean water has become rare. This flask is a small reminder of the world before the invasion.",
   "tooltip.alien-invasion.plasma_bolt": "A stabilized plasma clot. The Swarm hurls them like stones.",
+  "item.alien-invasion.plasma_bolt": "Plasma Bolt",
   "tooltip.alien-invasion.pure_radiation_block": "Radiation Crystal Ore. Rapidly fills the Irradiation bar on approach. Aliens are immune. Drops a radiation crystal.",
   "tooltip.alien-invasion.radiation_crystal": "In theory, a single crystal like this could power an entire city. Here, it simply kills slowly.",
   "tooltip.alien-invasion.platinum_chunk": "The coal vein has changed. Beneath the black dust — something white and dense. The Swarm rewrote geology.",
@@ -421,6 +422,7 @@
   "tooltip.alien-invasion.palladium_leggings.2": "Full set: Infection accumulates at half speed and cannot exceed 70%.",
   "tooltip.alien-invasion.palladium_boots.1": "The feet take the first hit. Spores don't pass through palladium.",
   "tooltip.alien-invasion.palladium_boots.2": "Full set: Infection accumulates at half speed and cannot exceed 70%.",
+  "block.alien-invasion.palladium_block": "Palladium Block",
   "upgrade.alien-invasion.nibirium": "Nibirium Upgrade",
   "upgrade.alien-invasion.nibirium.applies_to": "Diamond Tools/Armor and Hazmat Suit",
   "upgrade.alien-invasion.nibirium.ingredients": "Nibirium Ingot",
@@ -451,5 +453,6 @@
   "block.alien-invasion.bloody_stone_stairs": "Bloody Stone Stairs",
   "block.alien-invasion.bloody_plank_slab": "Bloody Plank Slab",
   "block.alien-invasion.bloody_stone_slab": "Bloody Stone Slab",
-  "block.alien-invasion.bloody_plank_fence": "Bloody Plank Fence"
+  "block.alien-invasion.bloody_plank_fence": "Bloody Plank Fence",
+  "block.alien-invasion.blood_pool": "Blood Pool"
 }

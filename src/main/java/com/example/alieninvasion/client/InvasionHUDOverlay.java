@@ -200,62 +200,10 @@ public class InvasionHUDOverlay implements HudRenderCallback {
             guiGraphics.drawString(mc.font, "☣ Заражение  " + (int) inf + "%", bX, bY - 10, col, true);
         }
 
-        // ТЕЛЕМЕТРИЯ КОСТЮМА: полный комплект брони превращает HUD в приборную
-        // панель — каждый сет показывает СВОИ точные данные (встроенные датчики).
-        String suitTitle = null;
-        int suitColor = 0xFFFFFFFF;
-        java.util.List<String> suitLines = new java.util.ArrayList<>();
         float exactDose = (float) com.example.alieninvasion.logic.RadiationManager.getDose(mc.player);
         float exactInf = (float) com.example.alieninvasion.logic.InfectionManager.getMeter(mc.player);
         float fieldNow = com.example.alieninvasion.logic.RadiationFieldManager.getFieldLevel(mc.player.getUUID());
-        int stage = exactInf >= 75 ? 3 : exactInf >= 50 ? 2 : exactInf >= 25 ? 1 : 0;
-        if (fullSet(mc.player, com.example.alieninvasion.registry.ItemRegistry.COSMIC_HELMET,
-                com.example.alieninvasion.registry.ItemRegistry.COSMIC_CHESTPLATE,
-                com.example.alieninvasion.registry.ItemRegistry.COSMIC_LEGGINGS,
-                com.example.alieninvasion.registry.ItemRegistry.COSMIC_BOOTS)) {
-            suitTitle = "КОСМИЧЕСКИЙ КОСТЮМ";
-            suitColor = 0xFFC9A0FF;
-            suitLines.add("§dПолный иммунитет: ☢ и ☣ нейтрализованы");
-            suitLines.add(String.format("§7Фон поля: %.0f  |  Ночное зрение: ВКЛ", fieldNow));
-        } else if (fullSet(mc.player, com.example.alieninvasion.registry.ItemRegistry.ALIEN_HAZMAT_HELMET,
-                com.example.alieninvasion.registry.ItemRegistry.ALIEN_HAZMAT_CHESTPLATE,
-                com.example.alieninvasion.registry.ItemRegistry.ALIEN_HAZMAT_LEGGINGS,
-                com.example.alieninvasion.registry.ItemRegistry.ALIEN_HAZMAT_BOOTS)) {
-            suitTitle = "ГЕРМОКОСТЮМ (дозиметр)";
-            suitColor = 0xFFFFC94A;
-            suitLines.add(String.format("§e☢ Доза: %.1f%%  |  Поле: %.0f ед.", exactDose, fieldNow));
-            suitLines.add("§7Набор дозы и заражения ×0.33");
-        } else if (fullSet(mc.player, com.example.alieninvasion.registry.ItemRegistry.ALIEN_CHEM_HELMET,
-                com.example.alieninvasion.registry.ItemRegistry.ALIEN_CHEM_CHESTPLATE,
-                com.example.alieninvasion.registry.ItemRegistry.ALIEN_CHEM_LEGGINGS,
-                com.example.alieninvasion.registry.ItemRegistry.ALIEN_CHEM_BOOTS)) {
-            suitTitle = "БИОКОСТЮМ (анализатор)";
-            suitColor = 0xFF8FE06A;
-            suitLines.add(String.format("§a☣ Заражение: %.1f%%  |  Стадия: %d/3", exactInf, stage));
-            suitLines.add("§7Набор дозы и заражения ×0.2");
-        } else if (fullSet(mc.player, com.example.alieninvasion.registry.ItemRegistry.PLATINUM_HELMET,
-                com.example.alieninvasion.registry.ItemRegistry.PLATINUM_CHESTPLATE,
-                com.example.alieninvasion.registry.ItemRegistry.PLATINUM_LEGGINGS,
-                com.example.alieninvasion.registry.ItemRegistry.PLATINUM_BOOTS)) {
-            suitTitle = "ПЛАТИНОВАЯ БРОНЯ";
-            suitColor = 0xFFE3E6EE;
-            suitLines.add(String.format("§f☢ Доза: %.1f%% (потолок 70%%)", exactDose));
-        } else if (fullSet(mc.player, com.example.alieninvasion.registry.ItemRegistry.PALLADIUM_HELMET,
-                com.example.alieninvasion.registry.ItemRegistry.PALLADIUM_CHESTPLATE,
-                com.example.alieninvasion.registry.ItemRegistry.PALLADIUM_LEGGINGS,
-                com.example.alieninvasion.registry.ItemRegistry.PALLADIUM_BOOTS)) {
-            suitTitle = "ПАЛЛАДИЕВАЯ БРОНЯ";
-            suitColor = 0xFF9FE6CF;
-            suitLines.add(String.format("§b☣ Заражение: %.1f%% (потолок 70%%)", exactInf));
-        }
-        if (suitTitle != null) {
-            int px = 5, py = screenH - 92 - suitLines.size() * 10;
-            guiGraphics.fill(px - 2, py - 3, px + 150, py + 11 + suitLines.size() * 10, 0x90000000);
-            guiGraphics.drawString(mc.font, suitTitle, px, py, suitColor, true);
-            for (int i = 0; i < suitLines.size(); i++) {
-                guiGraphics.drawString(mc.font, suitLines.get(i), px, py + 11 + i * 10, 0xFFFFFFFF, true);
-            }
-        }
+        renderSuitHud(guiGraphics, mc, screenH, exactDose, exactInf, fieldNow);
 
         // HUD вторжения (вверху по центру)
         int w = mc.getWindow().getGuiScaledWidth();
@@ -320,6 +268,159 @@ public class InvasionHUDOverlay implements HudRenderCallback {
             String empText = "§c[!] АКТИВЕН ЭМП-ИМПУЛЬС";
             guiGraphics.drawString(mc.font, empText, centerX - mc.font.width(empText) / 2, alertY, 0xFFAA00, true);
         }
+    }
+
+    private static void renderSuitHud(GuiGraphics gui, Minecraft mc, int screenH,
+            float dose, float infection, float field) {
+        net.minecraft.world.item.Item[][] sets = {
+                {
+                        com.example.alieninvasion.registry.ItemRegistry.COSMIC_HELMET,
+                        com.example.alieninvasion.registry.ItemRegistry.COSMIC_CHESTPLATE,
+                        com.example.alieninvasion.registry.ItemRegistry.COSMIC_LEGGINGS,
+                        com.example.alieninvasion.registry.ItemRegistry.COSMIC_BOOTS
+                },
+                {
+                        com.example.alieninvasion.registry.ItemRegistry.ALIEN_HAZMAT_HELMET,
+                        com.example.alieninvasion.registry.ItemRegistry.ALIEN_HAZMAT_CHESTPLATE,
+                        com.example.alieninvasion.registry.ItemRegistry.ALIEN_HAZMAT_LEGGINGS,
+                        com.example.alieninvasion.registry.ItemRegistry.ALIEN_HAZMAT_BOOTS
+                },
+                {
+                        com.example.alieninvasion.registry.ItemRegistry.ALIEN_CHEM_HELMET,
+                        com.example.alieninvasion.registry.ItemRegistry.ALIEN_CHEM_CHESTPLATE,
+                        com.example.alieninvasion.registry.ItemRegistry.ALIEN_CHEM_LEGGINGS,
+                        com.example.alieninvasion.registry.ItemRegistry.ALIEN_CHEM_BOOTS
+                },
+                {
+                        com.example.alieninvasion.registry.ItemRegistry.PLATINUM_HELMET,
+                        com.example.alieninvasion.registry.ItemRegistry.PLATINUM_CHESTPLATE,
+                        com.example.alieninvasion.registry.ItemRegistry.PLATINUM_LEGGINGS,
+                        com.example.alieninvasion.registry.ItemRegistry.PLATINUM_BOOTS
+                },
+                {
+                        com.example.alieninvasion.registry.ItemRegistry.PALLADIUM_HELMET,
+                        com.example.alieninvasion.registry.ItemRegistry.PALLADIUM_CHESTPLATE,
+                        com.example.alieninvasion.registry.ItemRegistry.PALLADIUM_LEGGINGS,
+                        com.example.alieninvasion.registry.ItemRegistry.PALLADIUM_BOOTS
+                }
+        };
+        String[] names = {
+                "COSMIC // ORBITAL",
+                "HAZMAT // SEALED",
+                "CHEM // BIO-LAB",
+                "PLATINUM // AEGIS",
+                "PALLADIUM // SENTINEL"
+        };
+        int[] colors = {0xFFC786FF, 0xFFFFC247, 0xFF8BFF75, 0xFFE8F3FF, 0xFF79E8D0};
+        net.minecraft.world.entity.EquipmentSlot[] slots = {
+                net.minecraft.world.entity.EquipmentSlot.HEAD,
+                net.minecraft.world.entity.EquipmentSlot.CHEST,
+                net.minecraft.world.entity.EquipmentSlot.LEGS,
+                net.minecraft.world.entity.EquipmentSlot.FEET
+        };
+
+        int best = -1;
+        int pieceCount = 0;
+        for (int set = 0; set < sets.length; set++) {
+            int count = 0;
+            for (int piece = 0; piece < slots.length; piece++) {
+                if (mc.player.getItemBySlot(slots[piece]).is(sets[set][piece])) count++;
+            }
+            if (count > pieceCount) {
+                best = set;
+                pieceCount = count;
+            }
+        }
+        if (best < 0) return;
+
+        int screenW = mc.getWindow().getGuiScaledWidth();
+        int color = colors[best];
+        int panelX = 5;
+        int panelY = Math.max(48, screenH - 137);
+        int panelW = 194;
+        int panelH = 59;
+        int pulse = 35 + (int) ((Math.sin(mc.level.getGameTime() / 7.0D) + 1.0D) * 18.0D);
+        int faint = (pulse << 24) | (color & 0x00FFFFFF);
+
+        gui.fill(panelX, panelY, panelX + panelW, panelY + panelH, 0xB0060A0D);
+        gui.fill(panelX, panelY, panelX + panelW, panelY + 1, color);
+        gui.fill(panelX, panelY + panelH - 1, panelX + panelW, panelY + panelH, faint);
+        gui.fill(panelX, panelY, panelX + 2, panelY + panelH, faint);
+        gui.fill(panelX + panelW - 2, panelY, panelX + panelW, panelY + panelH, faint);
+
+        int scanX = panelX + 2 + (int) ((mc.level.getGameTime() % 90L) * (panelW - 5) / 90.0D);
+        gui.fill(scanX, panelY + 1, scanX + 1, panelY + panelH - 1, faint);
+        gui.drawString(mc.font, names[best], panelX + 7, panelY + 5, color, true);
+        gui.drawString(mc.font, pieceCount == 4 ? "LINK: STABLE" : "LINK: PARTIAL",
+                panelX + 112, panelY + 5, pieceCount == 4 ? 0xFF8CFF9B : 0xFFFFB35C, true);
+
+        for (int piece = 0; piece < slots.length; piece++) {
+            int bx = panelX + 8 + piece * 18;
+            boolean online = mc.player.getItemBySlot(slots[piece]).is(sets[best][piece]);
+            gui.fill(bx, panelY + 18, bx + 13, panelY + 27, online ? color : 0xFF242B30);
+            gui.fill(bx + 2, panelY + 20, bx + 11, panelY + 25, online ? 0xFF10171B : 0xFF111315);
+            gui.drawString(mc.font, "HCLB".substring(piece, piece + 1),
+                    bx + 4, panelY + 19, online ? color : 0xFF60686D, false);
+        }
+        gui.drawString(mc.font, "MODULES " + pieceCount + "/4", panelX + 84, panelY + 19,
+                0xFFD7E2E8, false);
+
+        int integrity = suitIntegrity(mc.player, sets[best], slots);
+        drawTechBar(gui, panelX + 8, panelY + 34, 112, integrity / 100.0F, color);
+        gui.drawString(mc.font, "INTEGRITY " + integrity + "%", panelX + 126, panelY + 32,
+                integrity < 25 ? 0xFFFF5555 : 0xFFD7E2E8, false);
+
+        int radColor = dose >= 70.0F ? 0xFFFF4A38 : 0xFFC9F45A;
+        int infColor = infection >= 70.0F ? 0xFF7DFF46 : 0xFF62C992;
+        gui.drawString(mc.font, String.format("RAD %03.0f | INF %03.0f | FIELD %02.0f", dose, infection, field),
+                panelX + 8, panelY + 47, dose >= infection ? radColor : infColor, false);
+
+        if (mc.player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).is(sets[best][0])) {
+            drawHelmetFrame(gui, screenW, screenH, color, faint);
+        }
+    }
+
+    private static int suitIntegrity(net.minecraft.world.entity.player.Player player,
+            net.minecraft.world.item.Item[] set,
+            net.minecraft.world.entity.EquipmentSlot[] slots) {
+        float total = 0.0F;
+        int present = 0;
+        for (int i = 0; i < slots.length; i++) {
+            net.minecraft.world.item.ItemStack stack = player.getItemBySlot(slots[i]);
+            if (!stack.is(set[i])) continue;
+            present++;
+            total += stack.isDamageableItem()
+                    ? 1.0F - stack.getDamageValue() / (float) Math.max(1, stack.getMaxDamage())
+                    : 1.0F;
+        }
+        return present == 0 ? 0 : Math.round(total * 100.0F / present);
+    }
+
+    private static void drawTechBar(GuiGraphics gui, int x, int y, int width, float fraction, int color) {
+        gui.fill(x, y, x + width, y + 6, 0xFF172025);
+        int filled = Math.round(Math.max(0.0F, Math.min(1.0F, fraction)) * width);
+        for (int px = 0; px < filled; px += 5) {
+            gui.fill(x + px, y + 1, x + Math.min(px + 3, filled), y + 5, color);
+        }
+    }
+
+    private static void drawHelmetFrame(GuiGraphics gui, int width, int height, int color, int faint) {
+        int arm = 24;
+        gui.fill(3, 3, 3 + arm, 5, faint);
+        gui.fill(3, 3, 5, 3 + arm, faint);
+        gui.fill(width - 3 - arm, 3, width - 3, 5, faint);
+        gui.fill(width - 5, 3, width - 3, 3 + arm, faint);
+        gui.fill(3, height - 5, 3 + arm, height - 3, faint);
+        gui.fill(3, height - 3 - arm, 5, height - 3, faint);
+        gui.fill(width - 3 - arm, height - 5, width - 3, height - 3, faint);
+        gui.fill(width - 5, height - 3 - arm, width - 3, height - 3, faint);
+
+        int cx = width / 2;
+        int cy = height / 2;
+        gui.fill(cx - 8, cy, cx - 2, cy + 1, color);
+        gui.fill(cx + 3, cy, cx + 9, cy + 1, color);
+        gui.fill(cx, cy - 8, cx + 1, cy - 2, color);
+        gui.fill(cx, cy + 3, cx + 1, cy + 9, color);
     }
 
     private static boolean fullSet(net.minecraft.world.entity.player.Player p,

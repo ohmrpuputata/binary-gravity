@@ -663,8 +663,9 @@ public class ModEvents {
                 }
             }
 
-            // --- Hive overgrowth wave: at night the corruption surges - infested
-            // ground spreads around the player and a few grunts crawl out of it. ---
+            // --- Hive assault: mobs may emerge from already contaminated ground.
+            // This event never writes contamination around the player; world spread
+            // is handled globally and deterministically by WorldContaminationManager. ---
             if (level.isNight() && level.getGameTime() % 900 == 0 && level.random.nextFloat() < 0.10F
                     && SurvivalManager.getDay(level) >= 3
                     && !InvasionManager.get(level).isVictoryAchieved()) {
@@ -676,11 +677,7 @@ public class ModEvents {
                         int rz = pp.getZ() + level.random.nextInt(25) - 12;
                         int ry = level.getHeight(Heightmap.Types.MOTION_BLOCKING, rx, rz) - 1;
                         BlockPos gp = new BlockPos(rx, ry, rz);
-                        BlockState gs = level.getBlockState(gp);
-                        if (ContaminationRules.canContaminate(level, gp, gs)) {
-                            BlockState c = ContaminationRules.contaminatedStateFor(gs);
-                            if (c != null) { level.setBlockAndUpdate(gp, c); infected++; }
-                        }
+                        if (ContaminationRules.isContaminated(level.getBlockState(gp))) infected++;
                     }
                     if (infected > 0) {
                         for (int i = 0; i < 3; i++) {
@@ -1315,7 +1312,7 @@ public class ModEvents {
     }
 
     private static boolean hasFullHazmat(LivingEntity entity) {
-        return false; // hazmat armor replaced in Phase 3
+        return com.example.alieninvasion.logic.ArmorProtection.hasSealedSuit(entity);
     }
 
     private static boolean isRadiationSource(BlockState state) {
@@ -1342,8 +1339,9 @@ public class ModEvents {
     private static void radiatePeacefulEntities(ServerLevel level, ServerPlayer anchor) {
         for (LivingEntity living : level.getEntitiesOfClass(LivingEntity.class, anchor.getBoundingBox().inflate(10.0D),
                 e -> e != anchor && e.isAlive() && (e instanceof Animal || e instanceof AbstractVillager))) {
-            if (hasFullHazmat(living)) {
+            if (com.example.alieninvasion.logic.ArmorProtection.isRadiationImmune(living)) {
                 living.removeEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.RADIATION));
+                living.removeEffect(net.minecraft.world.effect.MobEffects.POISON);
                 continue;
             }
             if (isNearRadiationSource(level, living.blockPosition(), 5, 3)) {

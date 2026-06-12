@@ -43,6 +43,7 @@
   "tooltip.alien-invasion.contaminated_food": "Еда, тронутая спорами Роя. Насыщает. Но что-то после каждого укуса становится чуть другим.",
   "tooltip.alien-invasion.purified_water_flask": "Чистая вода стала редкостью. Эта фляга — маленькое напоминание о мире до вторжения.",
   "tooltip.alien-invasion.plasma_bolt": "Стабилизированный сгусток плазмы. Пришельцы бросаются им как камнями.",
+  "item.alien-invasion.plasma_bolt": "Плазменный заряд",
   "tooltip.alien-invasion.pure_radiation_block": "Рудный кристалл радиации. При сближении стремительно заполняет полоску Облучения. Пришельцы невосприимчивы. Выпадает кристалл радиации.",
   "tooltip.alien-invasion.radiation_crystal": "В теории один такой кристалл питал бы целый город. Здесь он просто медленно убивает.",
   "tooltip.alien-invasion.platinum_chunk": "Угольная жила изменилась. Под чёрной пылью — что-то белое и плотное. Рой переписал геологию.",
@@ -421,6 +422,7 @@
   "tooltip.alien-invasion.palladium_leggings.2": "Полный комплект: Заражение накапливается вдвое медленнее и не поднимается выше 70%.",
   "tooltip.alien-invasion.palladium_boots.1": "Ноги — первое, что принимает удар. Споры не проходят сквозь палладий.",
   "tooltip.alien-invasion.palladium_boots.2": "Полный комплект: Заражение накапливается вдвое медленнее и не поднимается выше 70%.",
+  "block.alien-invasion.palladium_block": "Палладиевый блок",
   "upgrade.alien-invasion.nibirium": "Улучшение нибирием",
   "upgrade.alien-invasion.nibirium.applies_to": "Алмазные инструменты/броня и Химзащита",
   "upgrade.alien-invasion.nibirium.ingredients": "Слиток нибирия",
@@ -451,5 +453,6 @@
   "block.alien-invasion.bloody_stone_stairs": "Окровавленные каменные ступени",
   "block.alien-invasion.bloody_plank_slab": "Окровавленная деревянная плита",
   "block.alien-invasion.bloody_stone_slab": "Окровавленная каменная плита",
-  "block.alien-invasion.bloody_plank_fence": "Окровавленный забор"
+  "block.alien-invasion.bloody_plank_fence": "Окровавленный забор",
+  "block.alien-invasion.blood_pool": "Кровавая лужа"
 }

@@ -1,12 +1,17 @@
 package com.example.alieninvasion.worldgen;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.BedBlock;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -63,6 +68,19 @@ public final class StructureUtil {
         if (be instanceof RandomizableContainerBlockEntity rc) {
             rc.setLootTable(table, rng.nextLong());
         }
+    }
+
+    /** Place both halves of a bed with a valid facing and clear headroom. */
+    public static void placeBed(WorldGenLevel level, BlockPos foot, Block bed, Direction facing) {
+        BlockPos head = foot.relative(facing);
+        set(level, foot.above(), Blocks.CAVE_AIR.defaultBlockState());
+        set(level, head.above(), Blocks.CAVE_AIR.defaultBlockState());
+        set(level, foot, bed.defaultBlockState()
+                .setValue(HorizontalDirectionalBlock.FACING, facing)
+                .setValue(BedBlock.PART, BedPart.FOOT));
+        set(level, head, bed.defaultBlockState()
+                .setValue(HorizontalDirectionalBlock.FACING, facing)
+                .setValue(BedBlock.PART, BedPart.HEAD));
     }
 
     /** Spawn a dungeon guard (mob) that does not despawn. */

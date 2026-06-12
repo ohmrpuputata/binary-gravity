@@ -68,6 +68,9 @@ public class ModBlocks {
     public static final Block PALLADIUM_ORE = registerBlock("palladium_ore",
             new Block(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(3.0F, 3.0F)
                     .requiresCorrectToolForDrops().sound(SoundType.STONE)));
+    public static final Block PALLADIUM_BLOCK = registerBlock("palladium_block",
+            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GREEN).strength(5.0F, 6.0F)
+                    .requiresCorrectToolForDrops().sound(SoundType.METAL)));
     public static final Block ALIEN_FLESH = registerBlock("alien_flesh",
             new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED).strength(0.6F)
                     .sound(SoundType.SLIME_BLOCK)));
