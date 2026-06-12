@@ -11,6 +11,8 @@ import com.example.alieninvasion.registry.ModBlocks;
 import com.example.alieninvasion.registry.ItemRegistry;
 import com.example.alieninvasion.item.ModToolTiers;
 import com.example.alieninvasion.world.InvasionManager;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.item.ItemStack;
 import com.example.alieninvasion.entity.AlienUtils;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
@@ -116,6 +118,25 @@ public class ModEvents {
                 com.example.alieninvasion.logic.RadiationManager.onDisconnect(p);
                 com.example.alieninvasion.logic.InfectionManager.clear(p);
             }
+        });
+
+        // Palladium and Platinum sword effects on hit
+        net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
+            if (source.getEntity() instanceof Player player) {
+                ItemStack weapon = player.getMainHandItem();
+                if (!weapon.isEmpty()) {
+                    if (weapon.is(ItemRegistry.PALLADIUM_SWORD)) {
+                        entity.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                                net.minecraft.world.effect.MobEffects.POISON, 100, 0));
+                    } else if (weapon.is(ItemRegistry.PLATINUM_SWORD)) {
+                        entity.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                                net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 100, 0));
+                        entity.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                                net.minecraft.world.effect.MobEffects.WEAKNESS, 100, 0));
+                    }
+                }
+            }
+            return true;
         });
 
         // Platinum tools: repair when mining infested blocks
