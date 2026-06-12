@@ -10,7 +10,8 @@
     "LivingEntityAccessor",
     "LivingEntityHealMixin",
     "MobMixin",
-    "EntityNameMixin"
+    "EntityNameMixin",
+    "ItemStackMixin"
   ],
   "injectors": {
     "defaultRequire": 1

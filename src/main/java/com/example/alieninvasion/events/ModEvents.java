@@ -9,6 +9,7 @@ import com.example.alieninvasion.registry.EntityRegistry;
 import com.example.alieninvasion.registry.ModEffects;
 import com.example.alieninvasion.registry.ModBlocks;
 import com.example.alieninvasion.registry.ItemRegistry;
+import com.example.alieninvasion.item.ModToolTiers;
 import com.example.alieninvasion.world.InvasionManager;
 import com.example.alieninvasion.entity.AlienUtils;
 import net.minecraft.world.entity.EntityType;
@@ -114,6 +115,28 @@ public class ModEvents {
             if (p != null) {
                 com.example.alieninvasion.logic.RadiationManager.onDisconnect(p);
                 com.example.alieninvasion.logic.InfectionManager.clear(p);
+            }
+        });
+
+        // Platinum tools: repair when mining infested blocks
+        net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, be) -> {
+            if (world.isClientSide) {
+                return;
+            }
+            net.minecraft.world.item.ItemStack tool = player.getMainHandItem();
+            if (tool.isEmpty()) {
+                return;
+            }
+            if (tool.getItem() instanceof net.minecraft.world.item.TieredItem tiered) {
+                if (tiered.getTier() == ModToolTiers.PLATINUM) {
+                    if (isInfested(state)) {
+                        int currentDamage = tool.getDamageValue();
+                        if (currentDamage > 0) {
+                            // Net repair by reducing damage value
+                            tool.setDamageValue(Math.max(0, currentDamage - 3));
+                        }
+                    }
+                }
             }
         });
 
@@ -1452,5 +1475,16 @@ public class ModEvents {
 
         mimic.discard();
         player.displayClientMessage(Component.literal("§c[!] Существо оказалось мимиком роя!"), true);
+    }
+
+    private static boolean isInfested(net.minecraft.world.level.block.state.BlockState state) {
+        var key = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(state.getBlock());
+        if (!key.getNamespace().equals("alien-invasion")) {
+            return false;
+        }
+        String path = key.getPath();
+        return path.contains("infested") || path.contains("infected") 
+            || path.contains("bloody") || path.equals("blood_pool") 
+            || path.startsWith("alien_");
     }
 }
