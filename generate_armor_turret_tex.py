@@ -17,13 +17,16 @@ head = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
 hp = head.load()
 for y in range(64):
     for x in range(64):
-        g = 70 + random.randint(-8, 8) - (12 if (x % 6 == 0 or y % 6 == 0) else 0)
-        hp[x, y] = (g, clamp(g + 6), clamp(g + 12), 255)
+        g = 75 + random.randint(-6, 6)
+        # Use bevel borders at box boundaries instead of a repeating %6 mesh grid
+        is_border = (x in (0, 7, 8, 15, 16, 23, 24, 31, 32, 39, 40, 47, 48, 55, 56, 63) or 
+                     y in (0, 3, 4, 7, 8, 11, 12, 15, 16, 19, 20, 23, 24, 27, 28, 31))
+        shade = -25 if is_border else 0
+        hp[x, y] = (clamp(g + shade), clamp(g + 6 + shade), clamp(g + 14 + shade), 255)
 # светящиеся жерла стволов (область texOffs 34,9 -> muzzle 3x3)
-for bx in (34, 34):
-    for y in range(9, 14):
-        for x in range(34, 40):
-            hp[x, y] = (140, 255, 150, 255)
+for y in range(9, 14):
+    for x in range(34, 40):
+        hp[x, y] = (140, 255, 150, 255)
 head.save(ASSETS + "/textures/block/plasma_turret_head.png")
 print("tex plasma_turret_head 64x64")
 

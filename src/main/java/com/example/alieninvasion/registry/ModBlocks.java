@@ -256,7 +256,7 @@ public class ModBlocks {
 
     public static final Block PLASMA_TURRET = registerBlock("plasma_turret",
             new com.example.alieninvasion.block.PlasmaTurretBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN)
-                    .strength(3.5F).requiresCorrectToolForDrops().sound(SoundType.METAL)));
+                    .strength(3.5F).requiresCorrectToolForDrops().sound(SoundType.METAL).noOcclusion()));
 
     public static final Block BLACK_MARKET_TERMINAL = registerBlock("black_market_terminal",
             new BlackMarketTerminalBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).strength(3.0F)
