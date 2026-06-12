@@ -2,17 +2,35 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "alien-invasion:uranium_dust"
+      "item": "alien-invasion:platinum_chunk"
     },
     {
-      "item": "alien-invasion:bio_serum"
+      "item": "alien-invasion:platinum_chunk"
     },
     {
-      "item": "minecraft:sugar"
+      "item": "alien-invasion:platinum_chunk"
+    },
+    {
+      "item": "alien-invasion:platinum_chunk"
+    },
+    {
+      "item": "alien-invasion:platinum_chunk"
+    },
+    {
+      "item": "alien-invasion:platinum_chunk"
+    },
+    {
+      "item": "alien-invasion:platinum_chunk"
+    },
+    {
+      "item": "alien-invasion:platinum_chunk"
+    },
+    {
+      "item": "minecraft:dandelion"
     }
   ],
   "result": {
     "id": "alien-invasion:rad_pills",
-    "count": 4
+    "count": 1
   }
 }

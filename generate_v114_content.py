@@ -149,7 +149,7 @@ NEW_ITEMS = [
     "plasma_axe", "plasma_shovel", "plasma_hoe", "iridium_sword",
     "iridium_pickaxe", "iridium_axe", "iridium_shovel", "iridium_hoe",
     "radiation_drill_head", "purifier_drill_head", "toxic_water_pump",
-    "geiger_counter", "portable_purifier", "rad_pills", "bio_filter_mask",
+    "geiger_counter", "portable_purifier", "rad_pills", "infection_pills", "bio_filter_mask",
     "contaminated_food", "purified_water_flask",
 ]
 
@@ -287,7 +287,9 @@ def generate_recipes():
     w(os.path.join(r, "portable_purifier.json"),
       shaped(["GCG", "ABA", "IRI"], {"G": "minecraft:glass", "C": f"{NS}:cosmic_shard", "A": f"{NS}:alien_alloy", "B": f"{NS}:alien_battery", "I": "minecraft:iron_ingot", "R": "minecraft:redstone"}, "portable_purifier"))
     w(os.path.join(r, "rad_pills.json"),
-      shapeless([f"{NS}:uranium_dust", f"{NS}:bio_serum", "minecraft:sugar"], "rad_pills", 4))
+      shapeless([f"{NS}:platinum_chunk"] * 8 + ["minecraft:dandelion"], "rad_pills", 1))
+    w(os.path.join(r, "infection_pills.json"),
+      shapeless([f"{NS}:palladium_chunk"] * 8 + ["minecraft:sweet_berries"], "infection_pills", 1))
     w(os.path.join(r, "bio_filter_mask.json"),
       shaped(["CFC", "BHB", "CFC"], {"C": f"{NS}:bio_fiber", "F": "minecraft:charcoal", "B": "minecraft:black_wool", "H": f"{NS}:hazmat_helmet"}, "bio_filter_mask"))
     w(os.path.join(r, "purified_water_flask.json"),
@@ -336,8 +338,11 @@ def generate_lang():
         "block.alien-invasion.warning_lamp": "Warning Lamp",
         "block.alien-invasion.cracked_alien_pipe": "Cracked Alien Pipe",
         "block.alien-invasion.toxic_barrel": "Toxic Barrel",
-        "block.alien-invasion.broken_lab_crate": "Broken Lab Crate",
         "block.alien-invasion.contaminated_bones": "Contaminated Bones",
+        "tooltip.alien-invasion.rad_pills": "Slowly reduces accumulated radiation dose over a minute.",
+        "tooltip.alien-invasion.infection_pills": "Slowly reduces infection level over a minute.",
+        "effect.alien-invasion.radiation_cleanse": "Radiation Cleanse",
+        "effect.alien-invasion.infection_cleanse": "Infection Cleanse",
     }
     ru = {
         "block.alien-invasion.toxic_water": "Токсичная вода",
@@ -367,6 +372,10 @@ def generate_lang():
         "block.alien-invasion.toxic_barrel": "Токсичная бочка",
         "block.alien-invasion.broken_lab_crate": "Сломанный лабораторный ящик",
         "block.alien-invasion.contaminated_bones": "Зараженные кости",
+        "tooltip.alien-invasion.rad_pills": "Постепенно снижает накопленную дозу облучения в течение минуты.",
+        "tooltip.alien-invasion.infection_pills": "Постепенно снижает уровень заражения в течение минуты.",
+        "effect.alien-invasion.radiation_cleanse": "Очищение от радиации",
+        "effect.alien-invasion.infection_cleanse": "Очищение от заражения",
     }
     item_en = {
         "alien_scrap": "Alien Scrap",
@@ -407,6 +416,7 @@ def generate_lang():
         "geiger_counter": "Geiger Counter",
         "portable_purifier": "Portable Purifier",
         "rad_pills": "Rad Pills",
+        "infection_pills": "Infection Pills",
         "bio_filter_mask": "Bio-Filter Mask",
         "contaminated_food": "Contaminated Food",
         "purified_water_flask": "Purified Water Flask",
@@ -450,6 +460,7 @@ def generate_lang():
         "geiger_counter": "Счетчик Гейгера",
         "portable_purifier": "Портативный очиститель",
         "rad_pills": "Таблетки от радиации",
+        "infection_pills": "Таблетки от заражения",
         "bio_filter_mask": "Био-фильтр маска",
         "contaminated_food": "Зараженная еда",
         "purified_water_flask": "Фляга очищенной воды",

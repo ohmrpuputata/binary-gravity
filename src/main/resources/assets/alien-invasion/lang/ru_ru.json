@@ -38,7 +38,7 @@
   "tooltip.alien-invasion.toxic_water_bucket": "Жидкость, разъедающая всё живое. Размещайте с умом — и подальше от себя.",
   "tooltip.alien-invasion.geiger_counter": "Тикает тревожнее, чем хотелось бы. Но лучше знать — чем не знать.",
   "tooltip.alien-invasion.portable_purifier": "Очищает заражённые блоки в радиусе вытянутой руки. Медленно. Но это лучше, чем ничего.",
-  "tooltip.alien-invasion.rad_pills": "Дозу радиации нельзя почувствовать — но эту таблетку можно принять. Сбрасывает накопленное облучение полностью.",
+  "tooltip.alien-invasion.rad_pills": "Постепенно снижает накопленную дозу облучения в течение минуты.",
   "tooltip.alien-invasion.bio_filter_mask": "Двухслойный органический фильтр. Воздух снаружи уже не тот. Эта маска об этом знает.",
   "tooltip.alien-invasion.contaminated_food": "Еда, тронутая спорами Роя. Насыщает. Но что-то после каждого укуса становится чуть другим.",
   "tooltip.alien-invasion.purified_water_flask": "Чистая вода стала редкостью. Эта фляга — маленькое напоминание о мире до вторжения.",
@@ -500,5 +500,9 @@
   "item.alien-invasion.headlamp_module": "Модуль фары",
   "item.alien-invasion.radiation_drill_head": "Радиационная буровая головка",
   "item.alien-invasion.purifier_drill_head": "Очистительная буровая головка",
-  "item.alien-invasion.toxic_water_pump": "Насос токсичной воды"
+  "item.alien-invasion.toxic_water_pump": "Насос токсичной воды",
+  "tooltip.alien-invasion.infection_pills": "Постепенно снижает уровень заражения в течение минуты.",
+  "effect.alien-invasion.radiation_cleanse": "Очищение от радиации",
+  "effect.alien-invasion.infection_cleanse": "Очищение от заражения",
+  "item.alien-invasion.infection_pills": "Таблетки от заражения"
 }

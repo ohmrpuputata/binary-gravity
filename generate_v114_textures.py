@@ -408,6 +408,7 @@ def generate_items():
     item_module("geiger_counter", (54, 62, 60, 255), GREEN_HI, 563)
     item_module("portable_purifier", CYAN, CYAN_HI, 564)
     simple_icon("rad_pills", (220, 230, 180, 255), GREEN_HI, 565)
+    simple_icon("infection_pills", (230, 190, 220, 255), MAGENTA, 570)
     item_module("bio_filter_mask", (42, 72, 60, 255), GREEN_HI, 566)
     simple_icon("contaminated_food", (96, 72, 46, 255), GREEN_HI, 567)
     simple_icon("purified_water_flask", (96, 180, 230, 255), CYAN_HI, 568)

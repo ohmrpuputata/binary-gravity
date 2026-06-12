@@ -381,6 +381,9 @@ public class ItemRegistry {
     public static final Item RAD_PILLS = registerItem("rad_pills",
             new com.example.alieninvasion.item.RadPillItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16)));
 
+    public static final Item INFECTION_PILLS = registerItem("infection_pills",
+            new com.example.alieninvasion.item.InfectionPillItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16)));
+
     public static final Item BIO_FILTER_MASK = registerItem("bio_filter_mask",
             new com.example.alieninvasion.item.BioFilterMaskItem(
                     new Item.Properties().rarity(Rarity.UNCOMMON)

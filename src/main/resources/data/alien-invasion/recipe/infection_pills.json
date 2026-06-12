@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "alien-invasion:palladium_chunk"
+    },
+    {
+      "item": "alien-invasion:palladium_chunk"
+    },
+    {
+      "item": "alien-invasion:palladium_chunk"
+    },
+    {
+      "item": "alien-invasion:palladium_chunk"
+    },
+    {
+      "item": "alien-invasion:palladium_chunk"
+    },
+    {
+      "item": "alien-invasion:palladium_chunk"
+    },
+    {
+      "item": "alien-invasion:palladium_chunk"
+    },
+    {
+      "item": "alien-invasion:palladium_chunk"
+    },
+    {
+      "item": "minecraft:sweet_berries"
+    }
+  ],
+  "result": {
+    "id": "alien-invasion:infection_pills",
+    "count": 1
+  }
+}

@@ -38,7 +38,7 @@
   "tooltip.alien-invasion.toxic_water_bucket": "A liquid that corrodes everything living. Place with care — and keep away from yourself.",
   "tooltip.alien-invasion.geiger_counter": "Ticks more anxiously than you'd like. But it's better to know than not to know.",
   "tooltip.alien-invasion.portable_purifier": "Cleanses infested blocks within arm's reach. Slowly. But it's better than nothing.",
-  "tooltip.alien-invasion.rad_pills": "You can't feel radiation — but you can take this pill. Clears accumulated irradiation completely.",
+  "tooltip.alien-invasion.rad_pills": "Slowly reduces accumulated radiation dose over a minute.",
   "tooltip.alien-invasion.bio_filter_mask": "A dual-layer organic filter. The air outside isn't what it used to be. This mask remembers that.",
   "tooltip.alien-invasion.contaminated_food": "Food touched by Swarm spores. It feeds you. But something changes a little with every bite.",
   "tooltip.alien-invasion.purified_water_flask": "Clean water has become rare. This flask is a small reminder of the world before the invasion.",
@@ -500,5 +500,9 @@
   "item.alien-invasion.headlamp_module": "Headlamp Module",
   "item.alien-invasion.radiation_drill_head": "Radiation Drill Head",
   "item.alien-invasion.purifier_drill_head": "Purifier Drill Head",
-  "item.alien-invasion.toxic_water_pump": "Toxic-Water Pump"
+  "item.alien-invasion.toxic_water_pump": "Toxic-Water Pump",
+  "tooltip.alien-invasion.infection_pills": "Slowly reduces infection level over a minute.",
+  "effect.alien-invasion.radiation_cleanse": "Radiation Cleanse",
+  "effect.alien-invasion.infection_cleanse": "Infection Cleanse",
+  "item.alien-invasion.infection_pills": "Infection Pills"
 }
