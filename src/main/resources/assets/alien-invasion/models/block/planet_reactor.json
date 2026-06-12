@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "alien-invasion:block/planet_reactor_top",
+    "bottom": "alien-invasion:block/planet_reactor_top",
+    "side": "alien-invasion:block/planet_reactor_side"
+  }
+}

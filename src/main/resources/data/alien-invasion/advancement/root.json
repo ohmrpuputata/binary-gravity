@@ -1,0 +1,17 @@
+{
+  "display": {
+    "icon": { "id": "alien-invasion:infested_flesh" },
+    "title": { "translate": "advancements.alien-invasion.root.title" },
+    "description": { "translate": "advancements.alien-invasion.root.description" },
+    "frame": "task",
+    "background": "alien-invasion:textures/block/infested_stone.png",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "tick": {
+      "trigger": "minecraft:tick"
+    }
+  }
+}

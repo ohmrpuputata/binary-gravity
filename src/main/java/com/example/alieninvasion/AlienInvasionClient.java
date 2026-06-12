@@ -67,6 +67,8 @@ public class AlienInvasionClient implements ClientModInitializer {
                                 ctx -> new net.minecraft.client.renderer.entity.ZombieRenderer(ctx));
                 EntityRendererRegistry.register(EntityRegistry.SWARM_MOTHER,
                                 com.example.alieninvasion.client.SwarmMotherRenderer::new);
+                EntityRendererRegistry.register(EntityRegistry.HUNTER,
+                                com.example.alieninvasion.client.HunterRenderer::new);
                 EntityRendererRegistry.register(EntityRegistry.GRAVITY_GRENADE,
                                 ctx -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(ctx));
                 EntityRendererRegistry.register(EntityRegistry.EMP_GRENADE,
@@ -208,6 +210,7 @@ public class AlienInvasionClient implements ClientModInitializer {
                                 ModBlocks.INFESTED_LEAVES, ModBlocks.DEAD_INFESTED_CROP, ModBlocks.BLOOD_POOL,
                                 ModBlocks.ALIEN_TENDRILS, ModBlocks.INFESTED_DOOR, ModBlocks.INFESTED_TRAPDOOR,
                                 ModBlocks.INFESTED_GLASS);
-                BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.translucent(), ModBlocks.INFESTED_ICE);
+                BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.translucent(), ModBlocks.INFESTED_ICE,
+                                ModBlocks.ALIEN_PORTAL);
         }
 }

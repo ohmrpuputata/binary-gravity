@@ -23,12 +23,19 @@ public final class InfectionManager {
     public static final float MAX = 100.0F;
     private static final int   GRACE_SECONDS = 3;
     private static final float GAIN = 1.5F;
+    // Укусы НЕ убивают сами по себе: тычки толпы загоняют шкалу максимум до 90%,
+    // а смертельный взрыв на 100% даёт только среда (земля, вода, кристаллы).
+    private static final float BITE_CAP = 90.0F;
+    // Между «заразными» укусами — короткая неуязвимость шкалы (аналог ванильных
+    // i-frames): восемь мобов, ударивших за секунду, = 1-2 укуса, а не шот до 100.
+    private static final int BITE_COOLDOWN_TICKS = 10;
 
     private static final Map<UUID, Float>   METER      = new ConcurrentHashMap<>();
     private static final Map<UUID, Float>   METER_MULT = new ConcurrentHashMap<>();
     private static final Map<UUID, Integer> STAND      = new ConcurrentHashMap<>();
     private static final Map<UUID, Integer> LAST_TIER  = new ConcurrentHashMap<>();
     private static final Map<UUID, Integer> WORM_TIMER   = new ConcurrentHashMap<>();
+    private static final Map<UUID, Long>    LAST_BITE  = new ConcurrentHashMap<>();
 
     public static float getMeter(UUID id) {
         return METER.getOrDefault(id, 0.0F);
@@ -61,6 +68,23 @@ public final class InfectionManager {
         setMeter(player.getUUID(), getMeter(player) + amount * mult);
     }
 
+    /** Заражение от укусов/тычек мобов — с откатом и потолком 90% (см. BITE_CAP). */
+    public static void addMeterFromBite(Player player, float amount) {
+        UUID id = player.getUUID();
+        long now = player.level().getGameTime();
+        long last = LAST_BITE.getOrDefault(id, -1000L);
+        if (now - last < BITE_COOLDOWN_TICKS) {
+            return;
+        }
+        float meter = getMeter(id);
+        if (meter >= BITE_CAP) {
+            return;
+        }
+        LAST_BITE.put(id, now);
+        float mult = METER_MULT.getOrDefault(id, 1.0F);
+        setMeter(id, Math.min(BITE_CAP, meter + amount * mult));
+    }
+
     public static void capMeter(Player player, float max) {
         float cur = getMeter(player);
         if (cur > max) setMeter(player.getUUID(), max);
@@ -69,9 +93,11 @@ public final class InfectionManager {
     public static void clear(Player player) {
         UUID id = player.getUUID();
         METER.remove(id);
+        METER_MULT.remove(id);
         STAND.remove(id);
         LAST_TIER.remove(id);
         WORM_TIMER.remove(id);
+        LAST_BITE.remove(id);
         if (player instanceof ServerPlayer sp) {
             sp.removeEffect(MobEffects.CONFUSION);
         }
@@ -168,11 +194,18 @@ public final class InfectionManager {
         if (newTier >= 3) {
             player.addEffect(new MobEffectInstance(infH, 100, 0, false, true));
             // Worms tear their way OUT of the host every ~12 seconds.
+            // CAP: no more than 4 live worms around the host - without the cap a
+            // player stuck on tier 3 bred an endless worm army (lag + unwinnable).
             int t = WORM_TIMER.merge(id, 1, Integer::sum);
             if (t >= 12) {
                 WORM_TIMER.remove(id);
-                com.example.alieninvasion.entity.InfestedWormEntity worm =
-                        com.example.alieninvasion.registry.EntityRegistry.INFESTED_WORM.create(level);
+                int nearbyWorms = level.getEntitiesOfClass(
+                        com.example.alieninvasion.entity.InfestedWormEntity.class,
+                        player.getBoundingBox().inflate(24.0D),
+                        w -> w.isAlive()).size();
+                com.example.alieninvasion.entity.InfestedWormEntity worm = nearbyWorms < 4
+                        ? com.example.alieninvasion.registry.EntityRegistry.INFESTED_WORM.create(level)
+                        : null;
                 if (worm != null) {
                     worm.moveTo(player.getX(), player.getY() + 0.3D, player.getZ(),
                             level.random.nextFloat() * 360.0F, 0.0F);

@@ -74,7 +74,9 @@ public class InfestedWormEntity extends Silverfish implements IAlienUnit {
     public boolean doHurtTarget(net.minecraft.world.entity.Entity target) {
         boolean hit = super.doHurtTarget(target);
         if (hit && target instanceof Player player && !this.level().isClientSide) {
-            InfectionManager.addMeter(player, 6.0F + 3.0F * getStage());
+            // Через addMeterFromBite: пачка червей больше не разгоняет шкалу до
+            // смертельных 100% за секунды (потолок укусов 90% + откат между укусами).
+            InfectionManager.addMeterFromBite(player, 4.0F + 2.0F * getStage());
         }
         return hit;
     }

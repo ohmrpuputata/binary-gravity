@@ -18,10 +18,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class LivingEntityHealMixin {
 
     @Inject(method = "heal", at = @At("HEAD"), cancellable = true)
-    private void alien_blockHealIfIrradiated(float healAmount, CallbackInfo ci) {
+    private void alien_weakenHealIfIrradiated(float healAmount, CallbackInfo ci) {
         LivingEntity entity = (LivingEntity) (Object) this;
         if (entity.hasEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.IRRADIATION))) {
+            // Лучевая болезнь ослабляет регенерацию в 4 раза, а не отключает её:
+            // полная блокировка делала зелья/еду бесполезными и превращала
+            // облучение в гарантированную смерть без таблеток.
             ci.cancel();
+            float weakened = healAmount * 0.25F;
+            if (weakened > 0.0F && entity.getHealth() > 0.0F) {
+                entity.setHealth(Math.min(entity.getMaxHealth(), entity.getHealth() + weakened));
+            }
         }
     }
 

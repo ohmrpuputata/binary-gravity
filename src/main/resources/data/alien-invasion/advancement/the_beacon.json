@@ -1,0 +1,22 @@
+{
+  "parent": "alien-invasion:dark_matter",
+  "display": {
+    "icon": { "id": "alien-invasion:swarm_beacon" },
+    "title": { "translate": "advancements.alien-invasion.the_beacon.title" },
+    "description": { "translate": "advancements.alien-invasion.the_beacon.description" },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_beacon": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          { "items": ["alien-invasion:swarm_beacon"] }
+        ]
+      }
+    }
+  }
+}

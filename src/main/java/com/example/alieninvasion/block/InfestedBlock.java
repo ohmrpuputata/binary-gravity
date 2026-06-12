@@ -26,8 +26,7 @@ public class InfestedBlock extends Block {
     public void stepOn(Level level, BlockPos pos, BlockState state, Entity entity) {
         if (!level.isClientSide && entity instanceof LivingEntity living && !AlienUtils.isAlliedTo(null, living)) {
             boolean protectedSuit = living instanceof net.minecraft.world.entity.player.Player p
-                    && (com.example.alieninvasion.logic.RadiationManager.hasFullLightHazmat(p)
-                        || com.example.alieninvasion.logic.RadiationManager.hasFullHazmat(p));
+                    && com.example.alieninvasion.logic.ArmorProtection.hasSealedSuit(p);
             if (!protectedSuit) {
                 living.addEffect(new net.minecraft.world.effect.MobEffectInstance(
                         net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 60, 0));

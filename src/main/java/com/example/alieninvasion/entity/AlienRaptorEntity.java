@@ -42,7 +42,7 @@ public class AlienRaptorEntity extends Monster implements IAlienUnit {
     public boolean doHurtTarget(net.minecraft.world.entity.Entity target) {
         boolean hit = super.doHurtTarget(target);
         if (hit && target instanceof Player player && !this.level().isClientSide) {
-            InfectionManager.addMeter(player, 4.0F);
+            InfectionManager.addMeterFromBite(player, 4.0F);
         }
         return hit;
     }

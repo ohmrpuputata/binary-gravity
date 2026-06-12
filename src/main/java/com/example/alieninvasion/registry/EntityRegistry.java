@@ -193,6 +193,14 @@ public class EntityRegistry {
                     .sized(1.8f, 2.8f).build("swarm_mother")
     );
 
+    // CREATURE, не MONSTER: охотник не должен исчезать на мирной сложности.
+    public static final EntityType<com.example.alieninvasion.entity.HunterEntity> HUNTER = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "hunter"),
+            EntityType.Builder.of(com.example.alieninvasion.entity.HunterEntity::new, MobCategory.CREATURE)
+                    .sized(0.6f, 1.95f).fireImmune().build("hunter")
+    );
+
     public static final EntityType<com.example.alieninvasion.entity.SkyDroneEntity> SKY_DRONE = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
             ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "sky_drone"),
@@ -253,5 +261,6 @@ public class EntityRegistry {
         FabricDefaultAttributeRegistry.register(SKY_DRONE, com.example.alieninvasion.entity.SkyDroneEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(CAVE_LURKER, com.example.alieninvasion.entity.CaveLurkerEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(ACID_SPITTER, com.example.alieninvasion.entity.AcidSpitterEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(HUNTER, com.example.alieninvasion.entity.HunterEntity.createAttributes());
     }
 }

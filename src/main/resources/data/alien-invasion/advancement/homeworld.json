@@ -1,0 +1,20 @@
+{
+  "parent": "alien-invasion:mother_slayer",
+  "display": {
+    "icon": { "id": "minecraft:crying_obsidian" },
+    "title": { "translate": "advancements.alien-invasion.homeworld.title" },
+    "description": { "translate": "advancements.alien-invasion.homeworld.description" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "entered": {
+      "trigger": "minecraft:changed_dimension",
+      "conditions": {
+        "to": "alien-invasion:homeworld"
+      }
+    }
+  }
+}

@@ -68,7 +68,11 @@ public class PlasmaTurretBlockEntity extends BlockEntity {
         LivingEntity closest = null;
         double closestDistSq = radius * radius;
 
-        for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, area, e -> e.isAlive() && AlienUtils.isAlliedTo(null, e))) {
+        // isAlliedTo(null, e) истинен и для creative/spectator-игроков — без явного
+        // исключения турель выбирала их целью и жгла заряд по неуязвимым.
+        for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, area,
+                e -> e.isAlive() && !(e instanceof net.minecraft.world.entity.player.Player)
+                        && AlienUtils.isAlliedTo(null, e))) {
             double distSq = entity.distanceToSqr(worldPosition.getX() + 0.5D, worldPosition.getY() + 0.5D, worldPosition.getZ() + 0.5D);
             if (distSq < closestDistSq) {
                 closest = entity;

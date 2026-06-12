@@ -1,0 +1,30 @@
+{
+  "parent": "alien-invasion:geared_up",
+  "display": {
+    "icon": { "id": "alien-invasion:platinum_ingot" },
+    "title": { "translate": "advancements.alien-invasion.metallurgist.title" },
+    "description": { "translate": "advancements.alien-invasion.metallurgist.description" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_platinum": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          { "items": ["alien-invasion:platinum_ingot"] }
+        ]
+      }
+    },
+    "has_palladium": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          { "items": ["alien-invasion:palladium_ingot"] }
+        ]
+      }
+    }
+  }
+}

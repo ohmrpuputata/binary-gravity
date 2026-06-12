@@ -79,20 +79,52 @@ public class SwarmMotherEntity extends Monster implements IAlienUnit {
     private int tickTimer = 0;
     private boolean scaledForPlayers = false;
     private int phase = 1;
+    // Кинематографичное появление: маяк ставит её высоко в небо, и она медленно
+    // спускается на луче света, неуязвимая, пока не коснётся земли.
+    private boolean descending = false;
+    private int descentTicks = 0;
 
     public SwarmMotherEntity(EntityType<? extends Monster> type, Level level) {
         super(type, level);
         this.xpReward = 1000;
     }
 
+    /** Включает режим нисхождения с орбиты (вызывается Маяком Роя при призыве). */
+    public void beginDescent() {
+        this.descending = true;
+        this.descentTicks = 0;
+        this.setNoGravity(true);
+        this.setInvulnerable(true);
+    }
+
+    @Override
+    public void addAdditionalSaveData(net.minecraft.nbt.CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        tag.putBoolean("Descending", this.descending);
+        tag.putInt("DescentTicks", this.descentTicks);
+    }
+
+    @Override
+    public void readAdditionalSaveData(net.minecraft.nbt.CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        this.descending = tag.getBoolean("Descending");
+        this.descentTicks = tag.getInt("DescentTicks");
+        if (this.descending) {
+            this.setNoGravity(true);
+            this.setInvulnerable(true);
+        }
+    }
+
     @Override
     public AlienRole getAlienRole() { return AlienRole.SUPREME; }
 
     public static AttributeSupplier.Builder createAttributes() {
+        // 12 базового урона (растёт до 20 по фазам): при прежних 8 финальный босс
+        // бил слабее рядового Hive Tyrant (25) и не пугал даже в железной броне.
         return Monster.createMonsterAttributes()
                 .add(Attributes.MAX_HEALTH, 300.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.25D)
-                .add(Attributes.ATTACK_DAMAGE, 8.0D)
+                .add(Attributes.ATTACK_DAMAGE, 12.0D)
                 .add(Attributes.FOLLOW_RANGE, 64.0D)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1.0D);
     }
@@ -129,6 +161,11 @@ public class SwarmMotherEntity extends Monster implements IAlienUnit {
         }
 
         this.bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
+
+        if (this.descending) {
+            tickDescent();
+            return;
+        }
 
         tickTimer++;
 
@@ -171,6 +208,61 @@ public class SwarmMotherEntity extends Monster implements IAlienUnit {
         }
     }
 
+    private void tickDescent() {
+        if (!(this.level() instanceof ServerLevel sl)) {
+            return;
+        }
+        this.descentTicks++;
+        // Медленное грозное падение; навигация и гравитация отключены.
+        this.setDeltaMovement(0.0D, -0.06D, 0.0D);
+        this.hurtMarked = true;
+        this.getNavigation().stop();
+
+        // Светящаяся тройная спираль вокруг неё + столб портальных частиц.
+        double angle = this.descentTicks * 0.35D;
+        for (int arm = 0; arm < 3; arm++) {
+            double a = angle + arm * (Math.PI * 2.0D / 3.0D);
+            sl.sendParticles(ParticleTypes.END_ROD,
+                    this.getX() + Math.cos(a) * 2.2D, this.getY() + 1.2D, this.getZ() + Math.sin(a) * 2.2D,
+                    1, 0.0D, 0.0D, 0.0D, 0.0D);
+        }
+        sl.sendParticles(ParticleTypes.PORTAL, this.getX(), this.getY(), this.getZ(), 8, 0.8D, 1.4D, 0.8D, 0.25D);
+        if (this.descentTicks % 20 == 0) {
+            sl.playSound(null, this.blockPosition(), SoundEvents.WARDEN_HEARTBEAT, SoundSource.HOSTILE, 3.0F, 0.6F);
+        }
+
+        // Приземление (или страховка от зависания через 30 секунд).
+        if (this.onGround() || this.descentTicks > 600) {
+            finishDescent(sl);
+        }
+    }
+
+    private void finishDescent(ServerLevel sl) {
+        this.descending = false;
+        this.setNoGravity(false);
+        this.setInvulnerable(false);
+        // Ударная волна приземления: гром, кольцо пыли, игроков отбрасывает.
+        sl.playSound(null, this.blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.HOSTILE, 4.0F, 0.4F);
+        sl.playSound(null, this.blockPosition(), SoundEvents.WARDEN_ROAR, SoundSource.HOSTILE, 4.0F, 0.5F);
+        sl.sendParticles(ParticleTypes.EXPLOSION_EMITTER, this.getX(), this.getY() + 0.5D, this.getZ(), 2, 0.5D, 0.5D, 0.5D, 0.0D);
+        for (int i = 0; i < 32; i++) {
+            double a = i * Math.PI / 16.0D;
+            sl.sendParticles(ParticleTypes.CLOUD,
+                    this.getX() + Math.cos(a) * 3.0D, this.getY() + 0.2D, this.getZ() + Math.sin(a) * 3.0D,
+                    1, 0.0D, 0.0D, 0.0D, 0.12D);
+        }
+        AABB area = this.getBoundingBox().inflate(10.0D);
+        for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class, area,
+                en -> en != this && en.isAlive() && en instanceof Player)) {
+            Vec3 push = e.position().subtract(this.position()).normalize().scale(1.4D);
+            e.setDeltaMovement(push.x, 0.6D, push.z);
+            e.hurtMarked = true;
+        }
+        AlienUtils.broadcastTitle(sl,
+                Component.literal("§5МАТЬ РОЯ"),
+                Component.literal("§dБой за Землю начинается"));
+    }
+
     private void emitAura(int currentPhase) {
         if (!(this.level() instanceof ServerLevel sl)) {
             return;
@@ -199,16 +291,32 @@ public class SwarmMotherEntity extends Monster implements IAlienUnit {
             e.setDeltaMovement(push.x, 0.5D, push.z);
             e.hurtMarked = true;
         }
+        // Урон растёт по фазам (12 -> 16 -> 20): бой обязан становиться страшнее,
+        // а не только менять цвет частиц.
+        var attack = this.getAttribute(Attributes.ATTACK_DAMAGE);
+        if (attack != null) {
+            attack.setBaseValue(newPhase == 3 ? 20.0D : newPhase == 2 ? 16.0D : 12.0D);
+        }
+        // Каждый переход фазы сопровождается волной подкрепления.
+        spawnMinions(this.getTarget());
         if (newPhase == 2) {
             this.bossEvent.setName(Component.literal("Мать Роя — Бомбардировка"));
+            AlienUtils.broadcastTitle(sl,
+                    Component.literal("§6Мать Роя зовёт огонь с орбиты"),
+                    Component.literal("§eНе стойте на месте!"));
         } else if (newPhase == 3) {
             this.bossEvent.setName(Component.literal("Мать Роя — Ярость"));
             this.bossEvent.setColor(BossEvent.BossBarColor.RED);
+            AlienUtils.broadcastTitle(sl,
+                    Component.literal("§4ЯРОСТЬ РОЯ"),
+                    Component.literal("§cОна сражается за своё потомство"));
         }
     }
 
     private void spawnMinions(LivingEntity target) {
-        ServerLevel sl = (ServerLevel) this.level();
+        if (!(this.level() instanceof ServerLevel sl)) {
+            return;
+        }
         sl.playSound(null, this.blockPosition(), SoundEvents.EVOKER_PREPARE_SUMMON, SoundSource.HOSTILE, 2.0F, 0.8F);
         
         for (int i = 0; i < 3; i++) {
@@ -285,12 +393,30 @@ public class SwarmMotherEntity extends Monster implements IAlienUnit {
         super.die(source);
         if (!this.level().isClientSide) {
             ServerLevel sl = (ServerLevel) this.level();
-            InvasionManager.get(sl).triggerVictory(sl);
+            InvasionManager.get(sl).triggerVictory(sl, this.blockPosition());
             sl.sendParticles(ParticleTypes.EXPLOSION_EMITTER, this.getX(), this.getY() + 1.0D, this.getZ(), 3, 0.5D, 0.5D, 0.5D, 0.1D);
             sl.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, this.getX(), this.getY() + 1.0D, this.getZ(), 60, 1.2D, 1.5D, 1.2D, 0.15D);
             sl.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, this.getX(), this.getY() + 1.5D, this.getZ(), 50, 1.0D, 1.2D, 1.0D, 0.3D);
             sl.playSound(null, this.blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.HOSTILE, 3.0F, 0.5F);
             sl.playSound(null, this.blockPosition(), SoundEvents.WITHER_DEATH, SoundSource.HOSTILE, 2.0F, 0.8F);
+            // Кольцо визуальных молний вокруг туши — смерть королевы видно издалека.
+            for (int i = 0; i < 5; i++) {
+                net.minecraft.world.entity.LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(sl);
+                if (bolt != null) {
+                    double a = i * (Math.PI * 2.0D / 5.0D);
+                    bolt.moveTo(this.getX() + Math.cos(a) * 6.0D, this.getY(), this.getZ() + Math.sin(a) * 6.0D);
+                    bolt.setVisualOnly(true);
+                    sl.addFreshEntity(bolt);
+                }
+            }
+            // Гарантированные трофеи: тёмная материя, ядра улья и шаблон нибирия —
+            // победитель уносит то, ради чего другим приходится грабить материнский корабль.
+            this.spawnAtLocation(new net.minecraft.world.item.ItemStack(
+                    com.example.alieninvasion.registry.ItemRegistry.DARK_MATTER_SHARD, 3));
+            this.spawnAtLocation(new net.minecraft.world.item.ItemStack(
+                    com.example.alieninvasion.registry.ItemRegistry.HIVE_CORE, 2));
+            this.spawnAtLocation(new net.minecraft.world.item.ItemStack(
+                    com.example.alieninvasion.registry.ItemRegistry.NIBIRIUM_SMITHING_TEMPLATE, 1));
         }
     }
 }

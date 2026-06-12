@@ -1,0 +1,22 @@
+{
+  "parent": "alien-invasion:first_blood",
+  "display": {
+    "icon": { "id": "alien-invasion:alien_hazmat_chestplate" },
+    "title": { "translate": "advancements.alien-invasion.geared_up.title" },
+    "description": { "translate": "advancements.alien-invasion.geared_up.description" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_hazmat_chest": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          { "items": ["alien-invasion:alien_hazmat_chestplate"] }
+        ]
+      }
+    }
+  }
+}

@@ -73,6 +73,12 @@ public class ItemRegistry {
     public static final Item SWARM_MOTHER_SPAWN_EGG = registerItem("swarm_mother_spawn_egg",
             new SpawnEggItem(EntityRegistry.SWARM_MOTHER, 0x8A008A, 0x000000, new Item.Properties().rarity(Rarity.RARE)));
 
+    public static final Item HUNTER_SPAWN_EGG = registerItem("hunter_spawn_egg",
+            new SpawnEggItem(EntityRegistry.HUNTER, 0x1A1A1A, 0xCC2222, new Item.Properties().rarity(Rarity.EPIC)));
+
+    public static final Item HUNTER_TOKEN = registerItem("hunter_token",
+            new Item(new Item.Properties().rarity(Rarity.EPIC).fireResistant().stacksTo(1)));
+
     public static final Item HIVE_CORE = registerItem("hive_core",
             new Item(new Item.Properties().rarity(Rarity.EPIC).fireResistant()));
 

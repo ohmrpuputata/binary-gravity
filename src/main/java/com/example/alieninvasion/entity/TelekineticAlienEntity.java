@@ -18,7 +18,8 @@ public class TelekineticAlienEntity extends EnderMan implements IAlienUnit {
     public AlienRole getAlienRole() { return AlienRole.PSYCHIC; }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 20.0D).add(Attributes.MOVEMENT_SPEED, 0.25D)
+        // 30 HP: psychic elite of day 6+ shouldn't die in two hits - teleporting didn't save it.
+        return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 30.0D).add(Attributes.MOVEMENT_SPEED, 0.25D)
                 .add(Attributes.ATTACK_DAMAGE, 3.0D);
     }
 

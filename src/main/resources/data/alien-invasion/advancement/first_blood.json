@@ -1,0 +1,70 @@
+﻿{
+  "parent": "alien-invasion:root",
+  "display": {
+    "icon": { "id": "minecraft:iron_sword" },
+    "title": { "translate": "advancements.alien-invasion.first_blood.title" },
+    "description": { "translate": "advancements.alien-invasion.first_blood.description" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "killed_grunt": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": { "type": "alien-invasion:alien_grunt" }
+          }
+        ]
+      }
+    },
+    "killed_worm": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": { "type": "alien-invasion:infested_worm" }
+          }
+        ]
+      }
+    },
+    "killed_raptor": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": { "type": "alien-invasion:alien_raptor" }
+          }
+        ]
+      }
+    },
+    "killed_chicken": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": { "type": "alien-invasion:alien_chicken" }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "killed_grunt",
+      "killed_worm",
+      "killed_raptor",
+      "killed_chicken"
+    ]
+  ]
+}

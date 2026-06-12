@@ -33,6 +33,16 @@ public class AlienUtils {
         return false;
     }
 
+    /** Полноэкранный титр всем игрокам сервера — для ключевых моментов финала. */
+    public static void broadcastTitle(ServerLevel level, net.minecraft.network.chat.Component title,
+            net.minecraft.network.chat.Component subtitle) {
+        for (net.minecraft.server.level.ServerPlayer p : level.getServer().getPlayerList().getPlayers()) {
+            p.connection.send(new net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket(10, 70, 20));
+            p.connection.send(new net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket(title));
+            p.connection.send(new net.minecraft.network.protocol.game.ClientboundSetSubtitleTextPacket(subtitle));
+        }
+    }
+
     public static void spawnGoreParticles(LivingEntity entity, float damageAmount) {
         if (entity.level() instanceof ServerLevel serverLevel && damageAmount > 0) {
             int particleCount = (int) Math.max(1, damageAmount);

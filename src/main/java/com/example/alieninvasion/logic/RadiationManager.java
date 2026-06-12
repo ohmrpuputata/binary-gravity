@@ -89,6 +89,13 @@ public final class RadiationManager {
         if (player instanceof ServerPlayer sp) removeHealthDrain(sp);
     }
 
+    /** Полная очистка состояния игрока при выходе с сервера — иначе UUID-записи копятся вечно. */
+    public static void onDisconnect(Player player) {
+        clearDose(player);
+        DOSE_MULT.remove(player.getUUID());
+        SCREEN_GLITCH.remove(player.getUUID());
+    }
+
     public static boolean isStormActive() {
         return stormTicks > 0;
     }
@@ -148,14 +155,6 @@ public final class RadiationManager {
             exposure += 4.0F;
         }
         return Math.min(12.0F, exposure);
-    }
-
-    public static boolean hasFullHazmat(Player player) {
-        return false;
-    }
-
-    public static boolean hasFullLightHazmat(Player player) {
-        return false;
     }
 
     public static void addDose(Player player, float amount) {
@@ -231,7 +230,8 @@ public final class RadiationManager {
         if (exposure > 0.0F) {
             dose += exposure * GAIN;
         } else if (dose > 0.0F) {
-            // Естественный спад только ниже 90% — выше доза не снижается сама
+            // Вне источников доза всегда медленно спадает (~1%/сек) — выход
+            // из смертельной спирали возможен и без таблеток, просто долгий.
             dose = Math.max(0.0F, dose - 0.2F);
         }
         setDose(id, dose);

@@ -46,6 +46,8 @@ public class HiveTyrantEntity extends Warden implements IAlienUnit {
         return 1.25F + this.random.nextFloat() * 0.1F;
     }
 
+    private boolean digPreventionLogged = false;
+
     public HiveTyrantEntity(EntityType<? extends Warden> type, Level level) {
         super(type, level);
     }
@@ -64,6 +66,12 @@ public class HiveTyrantEntity extends Warden implements IAlienUnit {
 
     @Override
     public void aiStep() {
+        // Снижаем желание мозга Вардена копать: dig-cooldown с первого тика.
+        // (Полная защита от исчезновения — в remove(): see ниже.)
+        if (!this.level().isClientSide && (this.tickCount <= 1 || this.tickCount % 20 == 0)) {
+            net.minecraft.world.entity.monster.warden.WardenAi.setDigCooldown(this);
+        }
+
         super.aiStep();
         if (this.level().isClientSide) {
             return;
@@ -145,5 +153,26 @@ public class HiveTyrantEntity extends Warden implements IAlienUnit {
     @Override
     public boolean isAlliedTo(net.minecraft.world.entity.Entity other) {
         return AlienUtils.isAlliedTo(this, other) || super.isAlliedTo(other);
+    }
+
+    @Override
+    public void remove(net.minecraft.world.entity.Entity.RemovalReason reason) {
+        // БОСС НЕ ИСЧЕЗАЕТ ЖИВЫМ. Поведение Digging Вардена дискардит сущность,
+        // когда мозг решает «закопаться» (dig-cooldown его не всегда удерживает) —
+        // так Тиран пропадал с трона в городе Роя. Отклоняем такой discard и
+        // возвращаем босса в строй. Исключение — наши лучи эвакуации/растворение
+        // (помечают тег EvacBeam перед discard) и смерть.
+        if (!this.level().isClientSide && reason == net.minecraft.world.entity.Entity.RemovalReason.DISCARDED
+                && !this.isDeadOrDying() && !this.getTags().contains("EvacBeam")) {
+            this.setPose(net.minecraft.world.entity.Pose.STANDING);
+            net.minecraft.world.entity.monster.warden.WardenAi.setDigCooldown(this);
+            if (!this.digPreventionLogged) {
+                this.digPreventionLogged = true; // мозг пробует копать каждые ~5с — логируем один раз
+                com.example.alieninvasion.AlienInvasionMod.LOGGER.info(
+                        "[HiveTyrant] dig-despawn prevented at {}", this.blockPosition());
+            }
+            return; // отказываемся удаляться
+        }
+        super.remove(reason);
     }
 }

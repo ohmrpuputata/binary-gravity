@@ -1,13 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "III",
+    "IDI",
     "I I",
     "I I"
   ],
   "key": {
     "I": {
       "item": "alien-invasion:cosmic_ingot"
+    },
+    "D": {
+      "item": "alien-invasion:dark_matter_shard"
     }
   },
   "result": {

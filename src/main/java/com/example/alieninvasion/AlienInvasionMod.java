@@ -30,6 +30,7 @@ public class AlienInvasionMod implements ModInitializer {
 		LOGGER.info("Alien Invasion Mod Initialized (Fabric)");
 
 		ModEffects.registerEffects();
+		com.example.alieninvasion.registry.ModSounds.registerSounds();
 		ModFluids.registerFluids();
 		com.example.alieninvasion.registry.ModBlocks.registerBlocks(); // Register Blocks
 		EntityRegistry.registerEntities();
@@ -72,6 +73,16 @@ public class AlienInvasionMod implements ModInitializer {
 		net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents.END_WORLD_TICK.register(level -> {
 			if (level.dimension() == net.minecraft.world.level.Level.OVERWORLD) {
 				com.example.alieninvasion.world.InvasionManager.get(level).tick(level);
+			} else if (level.dimension().equals(com.example.alieninvasion.logic.HomeworldManager.HOMEWORLD)) {
+				// Родной мир Роя: очередь декорирования свежих чанков (дюны, шпили,
+				// озёра, гнёзда) — плоская заготовка оживает по мере исследования.
+				com.example.alieninvasion.logic.HomeworldManager.tickWorld(level);
+			}
+		});
+
+		net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents.CHUNK_LOAD.register((world, chunk) -> {
+			if (world.dimension().equals(com.example.alieninvasion.logic.HomeworldManager.HOMEWORLD)) {
+				com.example.alieninvasion.logic.HomeworldManager.onChunkLoad(world, chunk);
 			}
 		});
 	}

@@ -1,0 +1,26 @@
+{
+  "hunter.hello": {
+    "sounds": [{ "name": "alien-invasion:hunter/hello", "stream": false }],
+    "subtitle": "subtitles.alien-invasion.hunter"
+  },
+  "hunter.gift": {
+    "sounds": [{ "name": "alien-invasion:hunter/gift", "stream": false }],
+    "subtitle": "subtitles.alien-invasion.hunter"
+  },
+  "hunter.angry": {
+    "sounds": [{ "name": "alien-invasion:hunter/angry", "stream": false }],
+    "subtitle": "subtitles.alien-invasion.hunter"
+  },
+  "hunter.kill": {
+    "sounds": [{ "name": "alien-invasion:hunter/kill", "stream": false }],
+    "subtitle": "subtitles.alien-invasion.hunter"
+  },
+  "hunter.death": {
+    "sounds": [{ "name": "alien-invasion:hunter/death", "stream": false }],
+    "subtitle": "subtitles.alien-invasion.hunter"
+  },
+  "hunter.idle": {
+    "sounds": [{ "name": "alien-invasion:hunter/idle", "stream": false }],
+    "subtitle": "subtitles.alien-invasion.hunter"
+  }
+}

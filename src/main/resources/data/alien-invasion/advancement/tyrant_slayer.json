@@ -1,0 +1,26 @@
+﻿{
+  "parent": "alien-invasion:metallurgist",
+  "display": {
+    "icon": { "id": "alien-invasion:dark_matter_shard" },
+    "title": { "translate": "advancements.alien-invasion.tyrant_slayer.title" },
+    "description": { "translate": "advancements.alien-invasion.tyrant_slayer.description" },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "killed_tyrant": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": { "type": "alien-invasion:hive_tyrant" }
+          }
+        ]
+      }
+    }
+  }
+}

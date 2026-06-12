@@ -1,0 +1,22 @@
+{
+  "parent": "alien-invasion:tyrant_slayer",
+  "display": {
+    "icon": { "id": "alien-invasion:dark_matter_shard" },
+    "title": { "translate": "advancements.alien-invasion.dark_matter.title" },
+    "description": { "translate": "advancements.alien-invasion.dark_matter.description" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_dark_matter": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          { "items": ["alien-invasion:dark_matter_shard"] }
+        ]
+      }
+    }
+  }
+}

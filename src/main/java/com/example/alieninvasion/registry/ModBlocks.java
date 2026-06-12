@@ -71,6 +71,9 @@ public class ModBlocks {
     public static final Block PALLADIUM_BLOCK = registerBlock("palladium_block",
             new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GREEN).strength(5.0F, 6.0F)
                     .requiresCorrectToolForDrops().sound(SoundType.METAL)));
+    public static final Block PLATINUM_BLOCK = registerBlock("platinum_block",
+            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.QUARTZ).strength(5.0F, 6.0F)
+                    .requiresCorrectToolForDrops().sound(SoundType.METAL)));
     public static final Block ALIEN_FLESH = registerBlock("alien_flesh",
             new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED).strength(0.6F)
                     .sound(SoundType.SLIME_BLOCK)));
@@ -313,6 +316,24 @@ public class ModBlocks {
             BuiltInRegistries.BLOCK_ENTITY_TYPE,
             ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "plasma_turret"),
             BlockEntityType.Builder.of(com.example.alieninvasion.block.PlasmaTurretBlockEntity::new, PLASMA_TURRET).build(null)
+    );
+
+    // --- Финальный акт: портал в мир Роя и реактор охотника ---
+    public static final Block ALIEN_PORTAL = registerBlockNoItem("alien_portal",
+            new com.example.alieninvasion.block.AlienPortalBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_PURPLE).strength(-1.0F, 3600000.0F).noLootTable()
+                    .noCollission().lightLevel(s -> 11).sound(SoundType.GLASS)
+                    .pushReaction(PushReaction.BLOCK)));
+
+    public static final Block PLANET_REACTOR = registerBlock("planet_reactor",
+            new com.example.alieninvasion.block.PlanetReactorBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_ORANGE).strength(25.0F, 1200.0F)
+                    .requiresCorrectToolForDrops().lightLevel(s -> 9).sound(SoundType.NETHERITE_BLOCK)));
+
+    public static final BlockEntityType<com.example.alieninvasion.block.PlanetReactorBlockEntity> PLANET_REACTOR_BLOCK_ENTITY = Registry.register(
+            BuiltInRegistries.BLOCK_ENTITY_TYPE,
+            ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "planet_reactor"),
+            BlockEntityType.Builder.of(com.example.alieninvasion.block.PlanetReactorBlockEntity::new, PLANET_REACTOR).build(null)
     );
 
     private static Block registerBlock(String name, Block block) {

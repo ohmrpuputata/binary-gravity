@@ -67,7 +67,9 @@ public class RadiationBoltEntity extends ThrowableItemProjectile {
         super.onHitEntity(result);
         if (!this.level().isClientSide && result.getEntity() instanceof LivingEntity victim) {
             LivingEntity shooter = (LivingEntity) this.getOwner();
-            float damage = isBig() ? 20.0F : 6.0F;
+            // Малый болт 4.0: при 6.0 burst-режим бластера (10 болтов / 1.25с) давал
+            // ~48 DPS и обесценивал всё остальное оружие мода.
+            float damage = isBig() ? 20.0F : 4.0F;
             victim.hurt(this.damageSources().thrown(this, shooter), damage);
         }
     }

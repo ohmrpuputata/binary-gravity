@@ -1,0 +1,46 @@
+{
+  "parent": "alien-invasion:cosmic_dawn",
+  "display": {
+    "icon": { "id": "alien-invasion:cosmic_chestplate" },
+    "title": { "translate": "advancements.alien-invasion.star_guardian.title" },
+    "description": { "translate": "advancements.alien-invasion.star_guardian.description" },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_helmet": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          { "items": ["alien-invasion:cosmic_helmet"] }
+        ]
+      }
+    },
+    "has_chestplate": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          { "items": ["alien-invasion:cosmic_chestplate"] }
+        ]
+      }
+    },
+    "has_leggings": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          { "items": ["alien-invasion:cosmic_leggings"] }
+        ]
+      }
+    },
+    "has_boots": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          { "items": ["alien-invasion:cosmic_boots"] }
+        ]
+      }
+    }
+  }
+}

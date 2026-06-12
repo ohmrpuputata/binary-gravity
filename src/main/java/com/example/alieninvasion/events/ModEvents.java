@@ -112,7 +112,7 @@ public class ModEvents {
         net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
             net.minecraft.server.level.ServerPlayer p = handler.player;
             if (p != null) {
-                com.example.alieninvasion.logic.RadiationManager.clearDose(p);
+                com.example.alieninvasion.logic.RadiationManager.onDisconnect(p);
                 com.example.alieninvasion.logic.InfectionManager.clear(p);
             }
         });
@@ -284,11 +284,15 @@ public class ModEvents {
             // THE LIFE CYCLE: infected hosts burst into worm broodlings on death
             // (1-2 tiny worms; late-game one may emerge already grown), and sometimes
             // a brain-parasite skitters out too.
+            // После победы цикл прерывается: из убитых заражённых черви больше не
+            // лезут — иначе добивание остатков вечно держало бы «пришельцев рядом»
+            // и блокировало отступление роя (и приход Макса).
             if ((entity instanceof com.example.alieninvasion.entity.InfestedZombieEntity
                     || entity instanceof com.example.alieninvasion.entity.InfestedCreeperEntity
                     || entity instanceof com.example.alieninvasion.entity.InfestedSkeletonEntity
                     || entity instanceof com.example.alieninvasion.entity.InfestedPlayerCloneEntity)
-                    && entity.level() instanceof ServerLevel pl) {
+                    && entity.level() instanceof ServerLevel pl
+                    && !InvasionManager.get(pl).isVictoryAchieved()) {
                 int wormDay = SurvivalManager.getDay(pl);
                 int worms = 1 + pl.random.nextInt(2);
                 for (int i = 0; i < worms; i++) {
@@ -385,8 +389,9 @@ public class ModEvents {
 
             // 3. Alien Melee AP damage against heavy armor players + infection fill
             if (source.getEntity() instanceof Mob alien && AlienUtils.isAlliedTo(null, alien) && entity instanceof Player player) {
-                // Every alien hit increases infection meter
-                InfectionManager.addMeter(player, 1.0F);
+                // Every alien hit increases infection meter (bite path: capped at 90%
+                // with a short cooldown, so a dogpile can't burst the meter to lethal 100)
+                InfectionManager.addMeterFromBite(player, 1.0F);
 
                 // Apply marked effect on hit and alert allies
                 boolean isMarked = player.hasEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.MARKED));
@@ -438,7 +443,11 @@ public class ModEvents {
 
                 // Global world contamination: detects day changes, re-queues visible
                 // chunks and drains the work queues under a per-tick write budget.
-                com.example.alieninvasion.logic.WorldContaminationManager.tick(level);
+                // После уничтожения планеты Роя мир ИСЦЕЛЯЕТСЯ (см. InvasionManager) —
+                // глобальное заражение больше не должно перезаписывать вылеченные блоки.
+                if (!com.example.alieninvasion.world.InvasionManager.get(level).isPlanetDestroyed()) {
+                    com.example.alieninvasion.logic.WorldContaminationManager.tick(level);
+                }
             }
 
             // Update Active Gravity Anomalies
@@ -1117,9 +1126,11 @@ public class ModEvents {
                 // Day 3+: VILLAGE ASSIMILATION. Villagers whose homes the corruption
                 // has reached don't just die - they turn. A villager standing on
                 // infested ground twists into an infested zombie on the spot, so a
-                // rotten village becomes a swarm outpost.
+                // rotten village becomes a swarm outpost. Stops after the victory —
+                // the swarm is fleeing, it no longer takes hosts.
                 if (player.tickCount % 100 == 0
-                        && com.example.alieninvasion.logic.SurvivalManager.getDay(level) >= 3) {
+                        && com.example.alieninvasion.logic.SurvivalManager.getDay(level) >= 3
+                        && !InvasionManager.get(level).isVictoryAchieved()) {
                     for (net.minecraft.world.entity.npc.Villager villager : level.getEntitiesOfClass(
                             net.minecraft.world.entity.npc.Villager.class, player.getBoundingBox().inflate(28.0D),
                             v -> v.isAlive() && !v.hasCustomName())) {
@@ -1283,9 +1294,13 @@ public class ModEvents {
             if (SurvivalManager.isAlienInvasionActive(level) && SurvivalManager.getDay(level) >= 2) {
                 int day = SurvivalManager.getDay(level);
                 for (ServerPlayer player : level.players()) {
-                    int nearbyEntities = level.getEntities(null, player.getBoundingBox().inflate(100)).size();
+                    // Кап только по пришельцам: общий getEntities() считал дропы,
+                    // стрелы и животных — ферма предметов глушила спавн UFO.
+                    int nearbyAliens = level.getEntitiesOfClass(net.minecraft.world.entity.Mob.class,
+                            player.getBoundingBox().inflate(100),
+                            e -> com.example.alieninvasion.entity.AlienUtils.isAlliedTo(null, e)).size();
 
-                    if (level.random.nextFloat() < (0.02f + (day * 0.01f)) && nearbyEntities < 30) {
+                    if (level.random.nextFloat() < (0.02f + (day * 0.01f)) && nearbyAliens < 30) {
                         double x = player.getX() + (level.random.nextDouble() - 0.5) * 60;
                         double z = player.getZ() + (level.random.nextDouble() - 0.5) * 60;
                         double y = player.getY() + 35 + level.random.nextInt(15);

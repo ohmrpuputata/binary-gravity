@@ -1,0 +1,20 @@
+{
+  "parent": "alien-invasion:homeworld",
+  "display": {
+    "icon": { "id": "alien-invasion:planet_reactor" },
+    "title": { "translate": "advancements.alien-invasion.planet_destroyed.title" },
+    "description": { "translate": "advancements.alien-invasion.planet_destroyed.description" },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "rewards": {
+    "experience": 2000
+  },
+  "criteria": {
+    "destroyed": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

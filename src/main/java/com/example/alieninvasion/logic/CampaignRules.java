@@ -10,17 +10,18 @@ import net.minecraft.world.level.levelgen.Heightmap;
 
 import java.util.List;
 
-// Campaign rules: this is an Overworld-only survival run. The Nether and the End
-// are disabled - any player who ends up outside the Overworld is immediately
-// pulled back. The win condition (survive 8 days) lives in InvasionManager.
+// Campaign rules: the Nether and the End are disabled - any player who ends up
+// there is immediately pulled back. Allowed dimensions: the Overworld and (for
+// the finale) the Swarm homeworld. The win condition lives in InvasionManager.
 public final class CampaignRules {
     private CampaignRules() {
     }
 
     public static void register() {
         ServerTickEvents.END_WORLD_TICK.register(level -> {
-            if (level.dimension() == Level.OVERWORLD) {
-                return; // the only allowed dimension
+            if (level.dimension() == Level.OVERWORLD
+                    || level.dimension().equals(com.example.alieninvasion.logic.HomeworldManager.HOMEWORLD)) {
+                return; // allowed dimensions: Earth and the Swarm homeworld
             }
             if (level.players().isEmpty()) {
                 return;
@@ -46,6 +47,6 @@ public final class CampaignRules {
         player.teleportTo(overworld, target.getX() + 0.5D, target.getY(), target.getZ() + 0.5D,
                 player.getYRot(), player.getXRot());
         player.sendSystemMessage(Component.literal(
-                "§cИзмерения отключены. Цель — выжить 8 дней в Верхнем мире."));
+                "§cНезер и Энд отключены. Доступны только Земля и родной мир Роя."));
     }
 }

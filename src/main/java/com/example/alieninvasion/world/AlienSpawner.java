@@ -20,7 +20,14 @@ public class AlienSpawner {
     // snowballing into hundreds of mobs (which both lags the game, leaves no room
     // for vanilla mobs to spawn, and is impossible to survive).
     private static final int MAX_NEARBY_ALIENS = 14;
+    // Co-op: each extra player sharing the area raises the local cap, so a group
+    // faces a bigger swarm instead of four players splitting one solo-sized cap.
+    private static final int CAP_PER_EXTRA_PLAYER = 6;
     private static final double POP_RADIUS = 48.0D;
+    // Server-wide ceiling: per-player events otherwise stack hundreds of
+    // persistent aliens on a big server with players spread across the map.
+    private static final int GLOBAL_CAP_BASE = 60;
+    private static final int GLOBAL_CAP_PER_PLAYER = 30;
 
     public static void spawnerTick(ServerLevel level, int difficulty) {
         if (InvasionManager.get(level).isVictoryAchieved()) {
@@ -33,10 +40,14 @@ public class AlienSpawner {
         if (players.isEmpty())
             return;
 
+        if (countAllAliens(level) >= GLOBAL_CAP_BASE + GLOBAL_CAP_PER_PLAYER * players.size()) {
+            return;
+        }
+
         ServerPlayer player = players.get(level.random.nextInt(players.size()));
 
         // Respect the population cap so we never bury the player in mobs.
-        if (countNearbyAliens(level, player.blockPosition(), POP_RADIUS) >= MAX_NEARBY_ALIENS) {
+        if (countNearbyAliens(level, player.blockPosition(), POP_RADIUS) >= localAlienCap(level, player)) {
             return;
         }
 
@@ -218,6 +229,26 @@ public class AlienSpawner {
         return level.getEntitiesOfClass(Mob.class,
                 new net.minecraft.world.phys.AABB(center).inflate(radius),
                 e -> AlienUtils.isAlliedTo(null, e)).size();
+    }
+
+    private static int localAlienCap(ServerLevel level, ServerPlayer around) {
+        int nearbyPlayers = 0;
+        for (ServerPlayer p : level.players()) {
+            if (!p.isSpectator() && p.distanceToSqr(around) <= 96.0D * 96.0D) {
+                nearbyPlayers++;
+            }
+        }
+        return MAX_NEARBY_ALIENS + CAP_PER_EXTRA_PLAYER * Math.max(0, nearbyPlayers - 1);
+    }
+
+    private static int countAllAliens(ServerLevel level) {
+        int total = 0;
+        for (net.minecraft.world.entity.Entity e : level.getAllEntities()) {
+            if (e instanceof Mob && AlienUtils.isAlliedTo(null, e)) {
+                total++;
+            }
+        }
+        return total;
     }
 
     private static void spawnMob(ServerLevel level, BlockPos pos, EntityType<?> type, int count, int difficulty) {

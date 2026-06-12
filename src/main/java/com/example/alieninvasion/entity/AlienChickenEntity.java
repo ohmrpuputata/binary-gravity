@@ -31,7 +31,7 @@ public class AlienChickenEntity extends Monster implements RangedAttackMob, IAli
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()
-                .add(Attributes.MAX_HEALTH, 4.0D)        // very low HP - dies fast
+                .add(Attributes.MAX_HEALTH, 8.0D)        // low HP, but survives one stray hit
                 .add(Attributes.MOVEMENT_SPEED, 0.35D)   // skittish
                 .add(Attributes.ATTACK_DAMAGE, 0.0D)     // melee does nothing - it's a ranged pest
                 .add(Attributes.FOLLOW_RANGE, 20.0D);

@@ -1,0 +1,22 @@
+{
+  "parent": "alien-invasion:metallurgist",
+  "display": {
+    "icon": { "id": "alien-invasion:cosmic_ingot" },
+    "title": { "translate": "advancements.alien-invasion.cosmic_dawn.title" },
+    "description": { "translate": "advancements.alien-invasion.cosmic_dawn.description" },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_cosmic": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          { "items": ["alien-invasion:cosmic_ingot"] }
+        ]
+      }
+    }
+  }
+}

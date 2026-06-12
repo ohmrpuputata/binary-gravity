@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "alien-invasion:platinum_block"
+    }
+  ],
+  "result": {
+    "id": "alien-invasion:platinum_ingot",
+    "count": 9
+  }
+}

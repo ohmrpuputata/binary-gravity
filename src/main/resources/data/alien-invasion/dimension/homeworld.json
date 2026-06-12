@@ -1,0 +1,19 @@
+{
+  "type": "alien-invasion:homeworld",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "biome": "alien-invasion:hive_wastes",
+      "lakes": false,
+      "features": false,
+      "layers": [
+        { "block": "minecraft:bedrock", "height": 1 },
+        { "block": "alien-invasion:infested_deepslate", "height": 30 },
+        { "block": "alien-invasion:infested_stone", "height": 25 },
+        { "block": "alien-invasion:infested_dirt", "height": 3 },
+        { "block": "alien-invasion:infested_grass", "height": 1 }
+      ],
+      "structure_overrides": []
+    }
+  }
+}
