@@ -91,7 +91,7 @@ public class HiveNestFeature extends Feature<NoneFeatureConfiguration> {
                     ? ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState()
                     : ModBlocks.ALIEN_HIVE.defaultBlockState());
         }
-        StructureUtil.set(level, o.above(r - 1), ModBlocks.COSMIC_CRYSTAL.defaultBlockState());
+        StructureUtil.set(level, o.above(r - 1), ModBlocks.DARK_MATTER_ORE.defaultBlockState());
 
         // Central dais with the mini-boss and its retinue.
         int baseY = -(int) Math.sqrt(Math.max(0, r * r)) + 1; // floor at center

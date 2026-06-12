@@ -193,8 +193,13 @@ def generate_tags():
     ] + [
         f"{NS}:infested_stone", f"{NS}:infested_deepslate", f"{NS}:infested_netherrack",
         f"{NS}:alien_residue", f"{NS}:alien_hive", f"{NS}:cosmic_ore",
-        f"{NS}:cosmic_crystal", f"{NS}:cosmic_block", f"{NS}:plasma_turret",
-        f"{NS}:swarm_beacon", f"{NS}:purifier",
+        f"{NS}:dark_matter_ore", f"{NS}:cosmic_block", f"{NS}:plasma_turret",
+        f"{NS}:swarm_beacon", f"{NS}:purifier", f"{NS}:platinum_ore",
+        f"{NS}:palladium_ore", f"{NS}:palladium_block", f"{NS}:platinum_block",
+        f"{NS}:planet_reactor", f"{NS}:infested_diamond_ore", f"{NS}:infested_redstone_ore",
+        f"{NS}:pure_radiation_block", f"{NS}:infested_sandstone", f"{NS}:infested_terracotta",
+        f"{NS}:infested_stone_bricks", f"{NS}:infested_ice", f"{NS}:radio_transmitter",
+        f"{NS}:cosmic_crystal_ore",
     ]
     shovel = [f"{NS}:infested_dirt", f"{NS}:infested_sand", f"{NS}:infested_gravel", f"{NS}:infested_clay"]
     axe = [f"{NS}:infested_log", f"{NS}:infested_planks", f"{NS}:infested_leaves", f"{NS}:dead_infested_crop"]
@@ -205,7 +210,7 @@ def generate_tags():
     w(os.path.join(DATA, "minecraft", "tags", "block", "mineable", "axe.json"),
       {"replace": False, "values": sorted(set(axe))})
     w(os.path.join(DATA, "minecraft", "tags", "block", "needs_iron_tool.json"),
-      {"replace": False, "values": [f"{NS}:uranium_ore", f"{NS}:deepslate_uranium_ore", f"{NS}:xenocrystal_ore", f"{NS}:bio_vein_ore"]})
+      {"replace": False, "values": [f"{NS}:uranium_ore", f"{NS}:deepslate_uranium_ore", f"{NS}:xenocrystal_ore", f"{NS}:bio_vein_ore", f"{NS}:platinum_ore", f"{NS}:palladium_ore", f"{NS}:palladium_block", f"{NS}:platinum_block", f"{NS}:cosmic_crystal_ore", f"{NS}:infested_diamond_ore", f"{NS}:infested_redstone_ore"]})
     w(os.path.join(DATA, "minecraft", "tags", "block", "needs_diamond_tool.json"),
       {"replace": False, "values": [f"{NS}:plasma_ore", f"{NS}:iridium_ore", f"{NS}:dark_matter_ore"]})
 

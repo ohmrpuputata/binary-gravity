@@ -49,7 +49,7 @@ public class AlienMonolithFeature extends Feature<NoneFeatureConfiguration> {
                 }
             }
         }
-        StructureUtil.set(level, base.above(11), ModBlocks.COSMIC_CRYSTAL.defaultBlockState());
+        StructureUtil.set(level, base.above(11), ModBlocks.DARK_MATTER_ORE.defaultBlockState());
 
         // Corrupted ground ring + tendrils: the monolith poisons the earth around it.
         for (int dx = -4; dx <= 4; dx++) {
@@ -73,7 +73,7 @@ public class AlienMonolithFeature extends Feature<NoneFeatureConfiguration> {
         StructureUtil.fillBox(level, vault.offset(-2, 0, -2), vault.offset(2, 3, 2),
                 Blocks.CAVE_AIR.defaultBlockState(), false);
         StructureUtil.set(level, vault.offset(-2, 1, -2), ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState());
-        StructureUtil.set(level, vault.offset(2, 1, 2), ModBlocks.COSMIC_CRYSTAL.defaultBlockState());
+        StructureUtil.set(level, vault.offset(2, 1, 2), ModBlocks.DARK_MATTER_ORE.defaultBlockState());
         StructureUtil.placeLootChest(level, vault, rng, ModFeatures.COSMIC_VAULT_LOOT);
         StructureUtil.spawnGuard(level, vault.offset(1, 0, -1), EntityRegistry.TELEKINETIC_ALIEN, rng);
 

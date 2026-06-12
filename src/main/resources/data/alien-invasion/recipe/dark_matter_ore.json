@@ -9,5 +9,5 @@
     "S": { "item": "alien-invasion:cosmic_shard" },
     "G": { "item": "minecraft:glass" }
   },
-  "result": { "id": "alien-invasion:cosmic_crystal", "count": 1 }
+  "result": { "id": "alien-invasion:dark_matter_ore", "count": 1 }
 }

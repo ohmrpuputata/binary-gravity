@@ -82,8 +82,8 @@ public class AlienOutpostFeature extends Feature<NoneFeatureConfiguration> {
         StructureUtil.set(level, spireBase.offset(0, 2, -2), Blocks.AIR.defaultBlockState());
         // beacon + crystal crown
         StructureUtil.set(level, spireBase.offset(0, 10, 0), ModBlocks.ALIEN_BEACON.defaultBlockState());
-        StructureUtil.set(level, spireBase.offset(-2, 10, -2), ModBlocks.COSMIC_CRYSTAL.defaultBlockState());
-        StructureUtil.set(level, spireBase.offset(2, 10, 2), ModBlocks.COSMIC_CRYSTAL.defaultBlockState());
+        StructureUtil.set(level, spireBase.offset(-2, 10, -2), ModBlocks.DARK_MATTER_ORE.defaultBlockState());
+        StructureUtil.set(level, spireBase.offset(2, 10, 2), ModBlocks.DARK_MATTER_ORE.defaultBlockState());
         StructureUtil.set(level, spireBase.offset(0, 1, 0), ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState());
         // GUARD hives + two jackpot chests inside the spire
         StructureUtil.set(level, spireBase.offset(-1, 1, 1), ModBlocks.ALIEN_HIVE.defaultBlockState());
@@ -146,7 +146,7 @@ public class AlienOutpostFeature extends Feature<NoneFeatureConfiguration> {
                 }
             }
         }
-        StructureUtil.set(level, pad.above(2), ModBlocks.COSMIC_CRYSTAL.defaultBlockState());
+        StructureUtil.set(level, pad.above(2), ModBlocks.DARK_MATTER_ORE.defaultBlockState());
         StructureUtil.placeLootChest(level, pad, rng, ModFeatures.ALIEN_CITY_LOOT);
         StructureUtil.spawnGuard(level, pad.offset(3, 1, 0),
                 com.example.alieninvasion.registry.EntityRegistry.PLASMA_CASTER, rng);

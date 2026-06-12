@@ -58,7 +58,7 @@ public class BuriedMothershipFeature extends Feature<NoneFeatureConfiguration> {
                     if (d2 >= 0.80) {
                         boolean porthole = dy == 0 && d2 >= 0.93
                                 && Math.floorMod((int) Math.round(Math.toDegrees(Math.atan2(dz, dx))), 30) < 4;
-                        StructureUtil.set(level, p, porthole ? ModBlocks.COSMIC_CRYSTAL.defaultBlockState()
+                        StructureUtil.set(level, p, porthole ? ModBlocks.DARK_MATTER_ORE.defaultBlockState()
                                 : ((dx + dz) % 2 == 0 ? hull : plate));
                     } else {
                         StructureUtil.set(level, p, air);
@@ -92,7 +92,7 @@ public class BuriedMothershipFeature extends Feature<NoneFeatureConfiguration> {
         // --- 4) Command bridge (north): terminal + the jackpot. ---
         BlockPos bridge = deck.offset(0, 0, -(R - 6));
         StructureUtil.set(level, bridge, ModBlocks.BLACK_MARKET_TERMINAL.defaultBlockState());
-        StructureUtil.set(level, bridge.above(), ModBlocks.COSMIC_CRYSTAL.defaultBlockState());
+        StructureUtil.set(level, bridge.above(), ModBlocks.DARK_MATTER_ORE.defaultBlockState());
         StructureUtil.placeLootChest(level, bridge.east(2), rng, ModFeatures.MOTHERSHIP_LOOT);
         StructureUtil.placeLootChest(level, bridge.west(2), rng, ModFeatures.MOTHERSHIP_LOOT);
         StructureUtil.spawnGuard(level, bridge.south(2), EntityRegistry.PLASMA_CASTER, rng);

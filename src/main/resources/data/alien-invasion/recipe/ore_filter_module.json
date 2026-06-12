@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IXI",
+    "XBX",
+    "IXI"
+  ],
+  "key": {
+    "I": {
+      "item": "alien-invasion:iridium_plate"
+    },
+    "X": {
+      "item": "alien-invasion:xenocrystal"
+    },
+    "B": {
+      "item": "alien-invasion:alien_battery"
+    }
+  },
+  "result": {
+    "id": "alien-invasion:ore_filter_module",
+    "count": 1
+  }
+}

@@ -63,7 +63,7 @@ public class CaveDungeonFeature extends Feature<NoneFeatureConfiguration> {
         }
 
         // Cosmic crystal hanging from the ceiling for eerie glow.
-        StructureUtil.set(level, o.above(ry), ModBlocks.COSMIC_CRYSTAL.defaultBlockState());
+        StructureUtil.set(level, o.above(ry), ModBlocks.DARK_MATTER_ORE.defaultBlockState());
         // A node of pure radiation makes the vault a hazard, not just a fight.
         StructureUtil.set(level, o.offset(-rx, 0, rz), ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState());
 
@@ -88,7 +88,7 @@ public class CaveDungeonFeature extends Feature<NoneFeatureConfiguration> {
         BlockPos sanctum = o.offset(rx + 8, 0, 0);
         StructureUtil.fillBox(level, sanctum.offset(-3, -1, -3), sanctum.offset(3, 4, 3), wall, false);
         StructureUtil.fillBox(level, sanctum.offset(-2, 0, -2), sanctum.offset(2, 3, 2), air, false);
-        StructureUtil.set(level, sanctum.above(3), ModBlocks.COSMIC_CRYSTAL.defaultBlockState());
+        StructureUtil.set(level, sanctum.above(3), ModBlocks.DARK_MATTER_ORE.defaultBlockState());
         StructureUtil.set(level, sanctum.offset(-2, 0, 2), ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState());
         StructureUtil.set(level, sanctum.offset(2, -1, -2), ModBlocks.TOXIC_WATER.defaultBlockState());
         StructureUtil.placeLootChest(level, sanctum, rng, ModFeatures.CAVE_DUNGEON_LOOT);

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ICI",
+    "CBC",
+    "ICI"
+  ],
+  "key": {
+    "I": {
+      "item": "alien-invasion:iridium_plate"
+    },
+    "C": {
+      "item": "minecraft:chest"
+    },
+    "B": {
+      "item": "alien-invasion:alien_battery"
+    }
+  },
+  "result": {
+    "id": "alien-invasion:storage_bay_module",
+    "count": 1
+  }
+}

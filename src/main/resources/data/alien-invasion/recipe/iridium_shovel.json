@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "M",
+    "R",
+    "R"
+  ],
+  "key": {
+    "M": {
+      "item": "alien-invasion:iridium_plate"
+    },
+    "R": {
+      "item": "alien-invasion:uranium_rod"
+    }
+  },
+  "result": {
+    "id": "alien-invasion:iridium_shovel",
+    "count": 1
+  }
+}

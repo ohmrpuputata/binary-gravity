@@ -56,8 +56,8 @@ public class CosmicVaultFeature extends Feature<NoneFeatureConfiguration> {
         }
 
         // Crystal lighting in the ceiling corners.
-        StructureUtil.set(level, o.offset(-r, r, -r), ModBlocks.COSMIC_CRYSTAL.defaultBlockState());
-        StructureUtil.set(level, o.offset(r, r, r), ModBlocks.COSMIC_CRYSTAL.defaultBlockState());
+        StructureUtil.set(level, o.offset(-r, r, -r), ModBlocks.DARK_MATTER_ORE.defaultBlockState());
+        StructureUtil.set(level, o.offset(r, r, r), ModBlocks.DARK_MATTER_ORE.defaultBlockState());
         StructureUtil.set(level, o.offset(-r + 1, 0, r - 1), ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState());
 
         // HEAVY GUARDS: a brute spawner + hives - the vault is well defended.
@@ -83,7 +83,7 @@ public class CosmicVaultFeature extends Feature<NoneFeatureConfiguration> {
                 }
             }
         }
-        StructureUtil.set(level, o.below(), ModBlocks.COSMIC_CRYSTAL.defaultBlockState());
+        StructureUtil.set(level, o.below(), ModBlocks.DARK_MATTER_ORE.defaultBlockState());
         StructureUtil.spawnGuard(level, o.offset(0, 0, -r + 2),
                 com.example.alieninvasion.registry.EntityRegistry.TELEKINETIC_ALIEN, rng);
         StructureUtil.placeLootChest(level, o, rng, ModFeatures.COSMIC_VAULT_LOOT);

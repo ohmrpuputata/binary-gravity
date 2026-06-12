@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "item": "alien-invasion:radiation_crystal"
+      "item": "alien-invasion:uranium_dust"
     },
     {
       "item": "alien-invasion:bio_serum"

@@ -75,7 +75,7 @@ public class CrashedUfoFeature extends Feature<NoneFeatureConfiguration> {
         }
 
         // Glowing innards + loot.
-        StructureUtil.set(level, hub.offset(0, 1, 0), ModBlocks.COSMIC_CRYSTAL.defaultBlockState());
+        StructureUtil.set(level, hub.offset(0, 1, 0), ModBlocks.DARK_MATTER_ORE.defaultBlockState());
         StructureUtil.set(level, hub.offset(0, 0, 1), ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState());
         StructureUtil.set(level, hub.offset(-2, 0, 0), ModBlocks.ALIEN_HIVE.defaultBlockState());
         StructureUtil.placeLootChest(level, hub.offset(1, 0, 1), rng, ModFeatures.MINE_LOOT);

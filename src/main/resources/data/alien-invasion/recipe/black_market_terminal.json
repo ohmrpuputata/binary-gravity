@@ -10,10 +10,10 @@
       "item": "minecraft:iron_block"
     },
     "C": {
-      "item": "alien-invasion:cosmic_shard"
+      "item": "alien-invasion:cosmic_credit"
     },
     "A": {
-      "item": "alien-invasion:platinum_ingot"
+      "item": "alien-invasion:alien_alloy"
     },
     "B": {
       "item": "alien-invasion:alien_battery"

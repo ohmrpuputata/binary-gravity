@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "OCO",
+    "PBP",
+    "OCO"
+  ],
+  "key": {
+    "O": {
+      "item": "minecraft:obsidian"
+    },
+    "C": {
+      "item": "alien-invasion:cosmic_shard"
+    },
+    "P": {
+      "item": "alien-invasion:plasma_core"
+    },
+    "B": {
+      "item": "alien-invasion:alien_battery"
+    }
+  },
+  "result": {
+    "id": "alien-invasion:lava_cooling_module",
+    "count": 1
+  }
+}

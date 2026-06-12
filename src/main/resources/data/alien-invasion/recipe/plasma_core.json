@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "XPX",
+    "PBP",
+    "XPX"
+  ],
+  "key": {
+    "X": {
+      "item": "alien-invasion:xenocrystal"
+    },
+    "P": {
+      "item": "alien-invasion:plasma_cell"
+    },
+    "B": {
+      "item": "alien-invasion:alien_battery"
+    }
+  },
+  "result": {
+    "id": "alien-invasion:plasma_core",
+    "count": 1
+  }
+}

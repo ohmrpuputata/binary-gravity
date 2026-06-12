@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GLG",
+    "CBC",
+    "IRI"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:glowstone_dust"
+    },
+    "L": {
+      "item": "minecraft:lantern"
+    },
+    "C": {
+      "item": "alien-invasion:cosmic_shard"
+    },
+    "B": {
+      "item": "alien-invasion:alien_battery"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    }
+  },
+  "result": {
+    "id": "alien-invasion:headlamp_module",
+    "count": 1
+  }
+}

@@ -284,7 +284,7 @@ public class HomeworldManager extends SavedData {
             BlockPos p = base.offset(r.nextInt(5) - 2, 0, r.nextInt(5) - 2);
             int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING, p.getX(), p.getZ());
             set(level, new BlockPos(p.getX(), y, p.getZ()),
-                    r.nextInt(6) == 0 ? ModBlocks.COSMIC_CRYSTAL : ModBlocks.PURE_RADIATION_BLOCK);
+                    r.nextInt(6) == 0 ? ModBlocks.DARK_MATTER_ORE : ModBlocks.PURE_RADIATION_BLOCK);
         }
     }
 
@@ -328,7 +328,7 @@ public class HomeworldManager extends SavedData {
         for (int y = 0; y < height; y++) {
             set(level, base.above(y), ModBlocks.INFESTED_STONE_BRICKS);
         }
-        set(level, base.above(height), ModBlocks.COSMIC_CRYSTAL);
+        set(level, base.above(height), ModBlocks.DARK_MATTER_ORE);
     }
 
     // ------------------------------------------------------------------
@@ -457,7 +457,7 @@ public class HomeworldManager extends SavedData {
                 set(level, base.offset(sx, height + 1, sz), ModBlocks.WARNING_LAMP);
             }
         }
-        set(level, base.above(height + 1), ModBlocks.COSMIC_CRYSTAL);
+        set(level, base.above(height + 1), ModBlocks.DARK_MATTER_ORE);
         // Лут и охрана на первом этаже.
         if (r.nextBoolean()) {
             set(level, base.offset(half - 1, 1, -half + 1), ModBlocks.ALIEN_STASH);
@@ -488,7 +488,7 @@ public class HomeworldManager extends SavedData {
         for (int y = 0; y < 2; y++) {
             set(level, base.above(y), ModBlocks.PURE_RADIATION_BLOCK);
         }
-        set(level, base.above(2), ModBlocks.COSMIC_CRYSTAL);
+        set(level, base.above(2), ModBlocks.DARK_MATTER_ORE);
         if (r.nextBoolean()) {
             set(level, base.offset(2, 0, -2), ModBlocks.ALIEN_STASH);
         }
@@ -646,7 +646,7 @@ public class HomeworldManager extends SavedData {
         for (int sx : new int[] { -radius, radius }) {
             for (int sz : new int[] { -radius, radius }) {
                 for (int y = 1; y <= 3; y++) {
-                    set(level, base.offset(sx, height + y, sz), ModBlocks.COSMIC_CRYSTAL);
+                    set(level, base.offset(sx, height + y, sz), ModBlocks.DARK_MATTER_ORE);
                 }
             }
         }

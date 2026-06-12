@@ -1,28 +1,36 @@
 package com.example.alieninvasion.block;
 
 import com.example.alieninvasion.logic.InfectionManager;
+import com.example.alieninvasion.registry.ItemRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.List;
-
-public class CosmicCrystalBlock extends Block {
-    public CosmicCrystalBlock(BlockBehaviour.Properties properties) {
+public class DarkMatterOreBlock extends Block {
+    public DarkMatterOreBlock(BlockBehaviour.Properties properties) {
         super(properties);
     }
 
     @Override
-    protected List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
-        return List.of(new ItemStack(this));
+    public float getDestroyProgress(BlockState state, Player player, BlockGetter world, BlockPos pos) {
+        if (player.isCreative()) {
+            return super.getDestroyProgress(state, player, world, pos);
+        }
+        ItemStack stack = player.getMainHandItem();
+        if (stack.is(ItemRegistry.NIBIRIUM_PICKAXE)) {
+            return super.getDestroyProgress(state, player, world, pos);
+        }
+        // Mining speed is extremely slow if not using Nibirium Pickaxe
+        return super.getDestroyProgress(state, player, world, pos) * 0.03F;
     }
 
     @Override

@@ -8,7 +8,7 @@ import com.example.alieninvasion.block.AlienStashBlock;
 import com.example.alieninvasion.block.AlienStashBlockEntity;
 import com.example.alieninvasion.block.BlackMarketTerminalBlock;
 import com.example.alieninvasion.block.BloodPoolBlock;
-import com.example.alieninvasion.block.CosmicCrystalBlock;
+import com.example.alieninvasion.block.DarkMatterOreBlock;
 import com.example.alieninvasion.block.PureRadiationBlock;
 import com.example.alieninvasion.block.DeadInfestedCropBlock;
 import com.example.alieninvasion.block.InfestedBlock;
@@ -254,8 +254,8 @@ public class ModBlocks {
             new com.example.alieninvasion.block.SwarmBeaconBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE)
                     .strength(3.0F).sound(SoundType.METAL).lightLevel(state -> 8)));
 
-    public static final Block COSMIC_CRYSTAL = registerBlock("cosmic_crystal",
-            new CosmicCrystalBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_YELLOW).strength(2.0F)
+    public static final Block DARK_MATTER_ORE = registerBlock("dark_matter_ore",
+            new DarkMatterOreBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_YELLOW).strength(2.0F)
                     .sound(SoundType.GLASS).lightLevel(state -> 15)));
 
     public static final Block PLASMA_TURRET = registerBlock("plasma_turret",

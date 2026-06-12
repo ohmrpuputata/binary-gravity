@@ -365,7 +365,7 @@ public class PlayerMixin implements com.example.alieninvasion.logic.InfectionTra
         
         String path = BuiltInRegistries.ITEM.getKey(item).getPath();
         if (path.contains("cosmic_block")) return 15;
-        if (path.contains("cosmic_crystal")) return 15;
+        if (path.contains("dark_matter_ore")) return 15;
         if (path.contains("purifier")) return 12;
 
         return 0;

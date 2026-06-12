@@ -108,7 +108,7 @@ public class InfestedMineFeature extends Feature<NoneFeatureConfiguration> {
         // Guard hives at the tunnel ends + central crystal light.
         StructureUtil.set(level, o.offset(-6, 0, 0), ModBlocks.ALIEN_HIVE.defaultBlockState());
         StructureUtil.set(level, o.offset(6, 0, 0), ModBlocks.ALIEN_HIVE.defaultBlockState());
-        StructureUtil.set(level, o.offset(0, h, 0), ModBlocks.COSMIC_CRYSTAL.defaultBlockState());
+        StructureUtil.set(level, o.offset(0, h, 0), ModBlocks.DARK_MATTER_ORE.defaultBlockState());
         StructureUtil.set(level, o.offset(2, 0, 0), ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState());
 
         // GUARDS: grunts in the middle of the shaft.
