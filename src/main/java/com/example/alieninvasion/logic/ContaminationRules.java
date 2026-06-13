@@ -34,16 +34,17 @@ public final class ContaminationRules {
 
     public static boolean isProtectedBlock(BlockState state) {
         if (isOreOrValuable(state)) return true;
-        // NOTE: the crafting table is NOT protected anymore - it rots into the
-        // infested crafting table, which still works as a crafting table.
+        // NOTE: the crafting table + village work stations (barrel, cartography/
+        // smithing/fletching tables, loom, stonecutter, grindstone) are NOT protected
+        // anymore - they rot into their infested twins (look like vanilla, but consumed
+        // by the biomass), so a contaminated village turns cohesive. Storage/smelting/
+        // utility tile-entities below stay protected so their contents aren't erased.
         return state.is(Blocks.FURNACE) || state.is(Blocks.BLAST_FURNACE)
                 || state.is(Blocks.SMOKER) || state.is(Blocks.CHEST) || state.is(Blocks.TRAPPED_CHEST)
-                || state.is(Blocks.BARREL) || state.is(Blocks.ENDER_CHEST) || state.is(Blocks.ANVIL)
+                || state.is(Blocks.ENDER_CHEST) || state.is(Blocks.ANVIL)
                 || state.is(Blocks.CHIPPED_ANVIL) || state.is(Blocks.DAMAGED_ANVIL)
                 || state.is(Blocks.ENCHANTING_TABLE) || state.is(Blocks.BREWING_STAND)
-                || state.is(Blocks.SMITHING_TABLE) || state.is(Blocks.GRINDSTONE) || state.is(Blocks.STONECUTTER)
-                || state.is(Blocks.CARTOGRAPHY_TABLE) || state.is(Blocks.FLETCHING_TABLE)
-                || state.is(Blocks.LOOM) || state.is(Blocks.COMPOSTER) || state.is(Blocks.BEACON)
+                || state.is(Blocks.COMPOSTER) || state.is(Blocks.BEACON)
                 || state.is(Blocks.HOPPER) || state.is(Blocks.DISPENSER) || state.is(Blocks.DROPPER)
                 || state.is(Blocks.CRAFTER);
     }
@@ -60,7 +61,9 @@ public final class ContaminationRules {
 
     public static boolean canContaminate(LevelAccessor level, BlockPos pos, BlockState state) {
         if (state.isAir() || state.getDestroySpeed(level, pos) < 0.0F) return false;
-        if (level.getBlockEntity(pos) != null) return false;
+        // Tile-entity blocks are normally left alone, but the barrel is a work station
+        // we DO consume (its infested twin is decorative, contents are forfeited).
+        if (level.getBlockEntity(pos) != null && !state.is(Blocks.BARREL)) return false;
         if (isProtectedBlock(state)) return false;
         // Purifier-claimed chunks are reclaimed territory: no spread of any kind.
         if (level instanceof net.minecraft.server.level.ServerLevel serverLevel
@@ -128,6 +131,14 @@ public final class ContaminationRules {
         // counterparts (orientation preserved via copyProperties); carved shapes
         // (stairs/slabs/fences) are swallowed into formless infested mass.
         if (state.is(Blocks.CRAFTING_TABLE)) return ModBlocks.INFESTED_CRAFTING_TABLE.defaultBlockState();
+        // Village work stations -> infested twins (look like vanilla, but rotted).
+        if (state.is(Blocks.BARREL)) return ModBlocks.INFESTED_BARREL.defaultBlockState();
+        if (state.is(Blocks.CARTOGRAPHY_TABLE)) return ModBlocks.INFESTED_CARTOGRAPHY_TABLE.defaultBlockState();
+        if (state.is(Blocks.SMITHING_TABLE)) return ModBlocks.INFESTED_SMITHING_TABLE.defaultBlockState();
+        if (state.is(Blocks.FLETCHING_TABLE)) return ModBlocks.INFESTED_FLETCHING_TABLE.defaultBlockState();
+        if (state.is(Blocks.LOOM)) return ModBlocks.INFESTED_LOOM.defaultBlockState();
+        if (state.is(Blocks.STONECUTTER)) return ModBlocks.INFESTED_STONECUTTER.defaultBlockState();
+        if (state.is(Blocks.GRINDSTONE)) return ModBlocks.INFESTED_GRINDSTONE.defaultBlockState();
         if (state.is(BlockTags.WOODEN_DOORS)) return ModBlocks.INFESTED_DOOR.defaultBlockState();
         if (state.is(BlockTags.WOODEN_TRAPDOORS)) return ModBlocks.INFESTED_TRAPDOOR.defaultBlockState();
         if (state.is(BlockTags.WOODEN_STAIRS) || state.is(BlockTags.WOODEN_SLABS)
@@ -205,6 +216,13 @@ public final class ContaminationRules {
         if (state.is(ModBlocks.INFESTED_LOG)) return Blocks.OAK_LOG.defaultBlockState();
         if (state.is(ModBlocks.INFESTED_PLANKS)) return Blocks.OAK_PLANKS.defaultBlockState();
         if (state.is(ModBlocks.INFESTED_CRAFTING_TABLE)) return Blocks.CRAFTING_TABLE.defaultBlockState();
+        if (state.is(ModBlocks.INFESTED_BARREL)) return Blocks.BARREL.defaultBlockState();
+        if (state.is(ModBlocks.INFESTED_CARTOGRAPHY_TABLE)) return Blocks.CARTOGRAPHY_TABLE.defaultBlockState();
+        if (state.is(ModBlocks.INFESTED_SMITHING_TABLE)) return Blocks.SMITHING_TABLE.defaultBlockState();
+        if (state.is(ModBlocks.INFESTED_FLETCHING_TABLE)) return Blocks.FLETCHING_TABLE.defaultBlockState();
+        if (state.is(ModBlocks.INFESTED_LOOM)) return Blocks.LOOM.defaultBlockState();
+        if (state.is(ModBlocks.INFESTED_STONECUTTER)) return Blocks.STONECUTTER.defaultBlockState();
+        if (state.is(ModBlocks.INFESTED_GRINDSTONE)) return Blocks.GRINDSTONE.defaultBlockState();
         if (state.is(ModBlocks.INFESTED_DOOR)) return Blocks.OAK_DOOR.defaultBlockState();
         if (state.is(ModBlocks.INFESTED_TRAPDOOR)) return Blocks.OAK_TRAPDOOR.defaultBlockState();
         if (state.is(ModBlocks.INFESTED_STONE_BRICKS)) return Blocks.STONE_BRICKS.defaultBlockState();

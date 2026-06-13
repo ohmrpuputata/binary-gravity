@@ -13,7 +13,7 @@ public class SwarmMotherRenderer extends MobRenderer<SwarmMotherEntity, SwarmMot
             "textures/entity/swarm_mother.png");
 
     public SwarmMotherRenderer(EntityRendererProvider.Context context) {
-        super(context, new SwarmMotherModel(context.bakeLayer(ModModelLayers.SWARM_MOTHER)), 1.4F);
+        super(context, new SwarmMotherModel(context.bakeLayer(ModModelLayers.SWARM_MOTHER)), 1.8F);
     }
 
     @Override

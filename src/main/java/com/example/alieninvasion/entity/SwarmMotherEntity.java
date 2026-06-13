@@ -25,6 +25,8 @@ import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -76,9 +78,16 @@ public class SwarmMotherEntity extends Monster implements IAlienUnit {
             BossEvent.BossBarOverlay.NOTCHED_12
     ).setPlayBossMusic(true).setDarkenScreen(true);
 
+    // Базовое HP королевы (масштабируется по числу игроков). Поднято с 300 — финальный
+    // босс должен быть стеной, а не падать за минуту.
+    public static final double BASE_HEALTH = 600.0D;
+
     private int tickTimer = 0;
     private boolean scaledForPlayers = false;
+    private boolean enraged = false;
     private int phase = 1;
+    // Кулдауны приёмов (как у Макса — у каждого приёма свой таймер, бой динамичный).
+    private int cdSummon, cdMeteor, cdSlam, cdNova, cdGrasp, cdCharge, cdAura;
     // Кинематографичное появление: маяк ставит её высоко в небо, и она медленно
     // спускается на луче света, неуязвимая, пока не коснётся земли.
     private boolean descending = false;
@@ -119,13 +128,15 @@ public class SwarmMotherEntity extends Monster implements IAlienUnit {
     public AlienRole getAlienRole() { return AlienRole.SUPREME; }
 
     public static AttributeSupplier.Builder createAttributes() {
-        // 12 базового урона (растёт до 20 по фазам): при прежних 8 финальный босс
-        // бил слабее рядового Hive Tyrant (25) и не пугал даже в железной броне.
+        // Финальный босс: толстый, бронированный, бьёт больно. Урон 22 -> 30 -> 38 по
+        // фазам, плюс броня и стойкость к нокбеку — теперь это стена, а не мешок с HP.
         return Monster.createMonsterAttributes()
-                .add(Attributes.MAX_HEALTH, 300.0D)
-                .add(Attributes.MOVEMENT_SPEED, 0.25D)
-                .add(Attributes.ATTACK_DAMAGE, 12.0D)
-                .add(Attributes.FOLLOW_RANGE, 64.0D)
+                .add(Attributes.MAX_HEALTH, BASE_HEALTH)
+                .add(Attributes.MOVEMENT_SPEED, 0.28D)
+                .add(Attributes.ATTACK_DAMAGE, 22.0D)
+                .add(Attributes.ARMOR, 12.0D)
+                .add(Attributes.ARMOR_TOUGHNESS, 8.0D)
+                .add(Attributes.FOLLOW_RANGE, 80.0D)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1.0D);
     }
 
@@ -154,7 +165,7 @@ public class SwarmMotherEntity extends Monster implements IAlienUnit {
             int players = (this.getServer() != null)
                     ? Math.max(1, this.getServer().getPlayerList().getPlayers().size()) : 1;
             if (players > 1) {
-                double newMax = 300.0D * (1.0D + 0.6D * (players - 1));
+                double newMax = BASE_HEALTH * (1.0D + 0.6D * (players - 1));
                 this.getAttribute(Attributes.MAX_HEALTH).setBaseValue(newMax);
                 this.setHealth((float) newMax);
             }
@@ -182,28 +193,43 @@ public class SwarmMotherEntity extends Monster implements IAlienUnit {
             emitAura(currentPhase);
         }
         if (currentPhase == 3) {
-            this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.35D);
+            this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.40D);
         }
 
         if (this.getTarget() != null && !this.level().isClientSide) {
             LivingEntity target = this.getTarget();
-            // Фаза 1 (100%–66%): призыв миньонов каждые 15 сек
+            double dist = this.distanceTo(target);
+            // Кулдауны быстрее с ростом фазы — финал должен душить.
+            float cdMul = currentPhase == 3 ? 0.6f : currentPhase == 2 ? 0.8f : 1.0f;
+            if (cdSummon > 0) cdSummon--;
+            if (cdMeteor > 0) cdMeteor--;
+            if (cdSlam > 0) cdSlam--;
+            if (cdNova > 0) cdNova--;
+            if (cdGrasp > 0) cdGrasp--;
+            if (cdCharge > 0) cdCharge--;
+            if (cdAura > 0) cdAura--;
+
+            // Поле заражения — постоянная аура слабости вокруг королевы.
+            if (cdAura <= 0) { infestAura(); cdAura = 40; }
+
             if (currentPhase == 1) {
-                if (tickTimer % 300 == 0) {
-                    spawnMinions(target);
-                }
-            }
-            // Фаза 2 (66%–33%): орбитальный удар метеорами каждые 6 сек
-            else if (currentPhase == 2) {
-                if (tickTimer % 120 == 0) {
-                    launchMeteorStrike(target);
-                }
-            }
-            // Фаза 3 (<33%): телекинетические шоковые волны каждые 4 сек
-            else {
-                if (tickTimer % 80 == 0) {
-                    telekineticShockwave(target);
-                }
+                // Фаза 1: непрерывные подкрепления + рывок, чтобы достать беглеца.
+                if (cdSummon <= 0) { spawnMinions(target); cdSummon = (int) (190 * cdMul); }
+                if (dist > 6.0 && cdCharge <= 0) { chargeDash(target); cdCharge = (int) (90 * cdMul); }
+                if (dist < 7.0 && cdNova <= 0) { acidNova(); cdNova = (int) (170 * cdMul); }
+            } else if (currentPhase == 2) {
+                // Фаза 2: орбитальная бомбардировка + телекинез + слэм вблизи.
+                if (cdMeteor <= 0) { launchMeteorBarrage(target); cdMeteor = (int) (150 * cdMul); }
+                if (dist > 5.0 && cdGrasp <= 0) { voidGrasp(); cdGrasp = (int) (150 * cdMul); }
+                if (dist < 7.0 && cdSlam <= 0) { groundSlam(); cdSlam = (int) (140 * cdMul); }
+                if (cdSummon <= 0) { spawnMinions(target); cdSummon = (int) (300 * cdMul); }
+            } else {
+                // Фаза 3 (ярость): всё и сразу, очень быстро.
+                if (cdSlam <= 0) { groundSlam(); cdSlam = (int) (110 * cdMul); }
+                if (cdNova <= 0) { acidNova(); cdNova = (int) (120 * cdMul); }
+                if (dist > 4.0 && cdGrasp <= 0) { voidGrasp(); cdGrasp = (int) (120 * cdMul); }
+                if (cdMeteor <= 0) { launchMeteorBarrage(target); cdMeteor = (int) (180 * cdMul); }
+                if (tickTimer % 70 == 0) { telekineticShockwave(target); }
             }
         }
     }
@@ -291,11 +317,11 @@ public class SwarmMotherEntity extends Monster implements IAlienUnit {
             e.setDeltaMovement(push.x, 0.5D, push.z);
             e.hurtMarked = true;
         }
-        // Урон растёт по фазам (12 -> 16 -> 20): бой обязан становиться страшнее,
+        // Урон растёт по фазам (22 -> 30 -> 38): бой обязан становиться страшнее,
         // а не только менять цвет частиц.
         var attack = this.getAttribute(Attributes.ATTACK_DAMAGE);
         if (attack != null) {
-            attack.setBaseValue(newPhase == 3 ? 20.0D : newPhase == 2 ? 16.0D : 12.0D);
+            attack.setBaseValue(newPhase == 3 ? 38.0D : newPhase == 2 ? 30.0D : 22.0D);
         }
         // Каждый переход фазы сопровождается волной подкрепления.
         spawnMinions(this.getTarget());
@@ -307,6 +333,15 @@ public class SwarmMotherEntity extends Monster implements IAlienUnit {
         } else if (newPhase == 3) {
             this.bossEvent.setName(Component.literal("Мать Роя — Ярость"));
             this.bossEvent.setColor(BossEvent.BossBarColor.RED);
+            // ЯРОСТЬ: разовый лечащий всплеск + ускорение, чтобы финальная фаза была пиком,
+            // а не агонией. Лечит на 20% макс. HP и навсегда ускоряется.
+            if (!this.enraged) {
+                this.enraged = true;
+                this.heal((float) (this.getMaxHealth() * 0.20D));
+                this.getAttribute(Attributes.MOVEMENT_SPEED).setBaseValue(0.40D);
+                sl.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, this.getX(), this.getY() + 1.5D, this.getZ(),
+                        40, 1.0D, 1.2D, 1.0D, 0.4D);
+            }
             AlienUtils.broadcastTitle(sl,
                     Component.literal("§4ЯРОСТЬ РОЯ"),
                     Component.literal("§cОна сражается за своё потомство"));
@@ -342,19 +377,96 @@ public class SwarmMotherEntity extends Monster implements IAlienUnit {
         }
     }
 
-    private void launchMeteorStrike(LivingEntity target) {
+    /** Орбитальный залп: три метеора накрывают площадь вокруг цели. */
+    private void launchMeteorBarrage(LivingEntity target) {
         ServerLevel sl = (ServerLevel) this.level();
-        sl.playSound(null, this.blockPosition(), SoundEvents.WIND_CHARGE_THROW, SoundSource.HOSTILE, 2.0F, 0.5F);
+        sl.playSound(null, this.blockPosition(), SoundEvents.WIND_CHARGE_THROW, SoundSource.HOSTILE, 2.5F, 0.45F);
+        for (int i = 0; i < 3; i++) {
+            double ox = target.getX() + (this.random.nextDouble() - 0.5D) * 12.0D;
+            double oz = target.getZ() + (this.random.nextDouble() - 0.5D) * 12.0D;
+            double oy = target.getY() + 30.0D + i * 2.0D;
+            com.example.alieninvasion.entity.MeteorEntity meteor = EntityRegistry.METEOR.create(sl);
+            if (meteor != null) {
+                meteor.setPos(ox, oy, oz);
+                meteor.setDeltaMovement((target.getX() - ox) * 0.04D, -1.0D, (target.getZ() - oz) * 0.04D);
+                sl.addFreshEntity(meteor);
+            }
+        }
+    }
 
-        double ox = target.getX() + (this.random.nextDouble() - 0.5D) * 10.0D;
-        double oz = target.getZ() + (this.random.nextDouble() - 0.5D) * 10.0D;
-        double oy = target.getY() + 30.0D;
+    /** Рывок: королева бросается на цель, чтобы догнать беглеца. */
+    private void chargeDash(LivingEntity target) {
+        if (!(this.level() instanceof ServerLevel sl)) return;
+        Vec3 dir = target.position().subtract(this.position()).normalize();
+        this.setDeltaMovement(dir.x * 1.5D, 0.42D, dir.z * 1.5D);
+        this.hurtMarked = true;
+        this.getLookControl().setLookAt(target, 60.0F, 60.0F);
+        sl.playSound(null, this.blockPosition(), SoundEvents.RAVAGER_ROAR, SoundSource.HOSTILE, 2.2F, 0.7F);
+        sl.sendParticles(ParticleTypes.SCULK_SOUL, this.getX(), this.getY() + 1.0D, this.getZ(), 14, 0.5D, 0.5D, 0.5D, 0.05D);
+    }
 
-        com.example.alieninvasion.entity.MeteorEntity meteor = EntityRegistry.METEOR.create(sl);
-        if (meteor != null) {
-            meteor.setPos(ox, oy, oz);
-            meteor.setDeltaMovement((target.getX() - ox) * 0.04D, -1.0D, (target.getZ() - oz) * 0.04D);
-            sl.addFreshEntity(meteor);
+    /** Удар по земле: купол урона и подброс всех вокруг. */
+    private void groundSlam() {
+        if (!(this.level() instanceof ServerLevel sl)) return;
+        sl.playSound(null, this.blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.HOSTILE, 2.6F, 0.6F);
+        sl.playSound(null, this.blockPosition(), SoundEvents.RAVAGER_STUNNED, SoundSource.HOSTILE, 2.0F, 0.6F);
+        double radius = 6.5D;
+        float dmg = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.8F;
+        for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(radius),
+                en -> en != this && en.isAlive() && en instanceof Player)) {
+            if (this.distanceToSqr(e) <= radius * radius) {
+                e.hurt(this.damageSources().mobAttack(this), dmg);
+                Vec3 push = e.position().subtract(this.position()).normalize().scale(0.8D);
+                e.setDeltaMovement(push.x, 1.1D, push.z);
+                e.hurtMarked = true;
+            }
+        }
+        for (int i = 0; i < 44; i++) {
+            double a = i * Math.PI / 22.0D;
+            sl.sendParticles(ParticleTypes.EXPLOSION,
+                    this.getX() + Math.cos(a) * radius, this.getY() + 0.2D, this.getZ() + Math.sin(a) * radius,
+                    1, 0.0D, 0.0D, 0.0D, 0.0D);
+        }
+    }
+
+    /** Телекинетический захват: притягивает игроков из 16 блоков к королеве. */
+    private void voidGrasp() {
+        if (!(this.level() instanceof ServerLevel sl)) return;
+        sl.playSound(null, this.blockPosition(), SoundEvents.WARDEN_SONIC_CHARGE, SoundSource.HOSTILE, 2.2F, 0.6F);
+        double radius = 16.0D;
+        for (Player p : sl.getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(radius),
+                pl -> pl.isAlive() && !pl.isCreative() && !pl.isSpectator())) {
+            Vec3 pull = this.position().subtract(p.position()).normalize().scale(2.4D);
+            p.setDeltaMovement(pull.x, 0.35D, pull.z);
+            p.hurtMarked = true;
+            p.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1, false, true));
+            sl.sendParticles(ParticleTypes.PORTAL, p.getX(), p.getY() + 1.0D, p.getZ(), 12, 0.3D, 0.5D, 0.3D, 0.6D);
+        }
+    }
+
+    /** Кислотная новая: взрыв биомассы вокруг — урон + яд + иссушение. */
+    private void acidNova() {
+        if (!(this.level() instanceof ServerLevel sl)) return;
+        sl.playSound(null, this.blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.HOSTILE, 2.4F, 1.5F);
+        sl.sendParticles(ParticleTypes.SCULK_CHARGE_POP, this.getX(), this.getY() + 1.0D, this.getZ(), 70, 4.0D, 1.5D, 4.0D, 0.1D);
+        double radius = 7.0D;
+        for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(radius),
+                en -> en != this && en.isAlive() && en instanceof Player)) {
+            if (this.distanceToSqr(e) <= radius * radius) {
+                e.hurt(this.damageSources().mobAttack(this), 9.0F);
+                e.addEffect(new MobEffectInstance(MobEffects.POISON, 120, 1));
+                e.addEffect(new MobEffectInstance(MobEffects.WITHER, 80, 0));
+                e.addEffect(new MobEffectInstance(MobEffects.HUNGER, 120, 1));
+            }
+        }
+    }
+
+    /** Поле заражения: лёгкая слабость на всех игроков рядом (постоянная аура). */
+    private void infestAura() {
+        if (!(this.level() instanceof ServerLevel sl)) return;
+        for (Player p : sl.getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(12.0D),
+                pl -> pl.isAlive() && !pl.isCreative() && !pl.isSpectator())) {
+            p.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 80, 0, false, false));
         }
     }
 

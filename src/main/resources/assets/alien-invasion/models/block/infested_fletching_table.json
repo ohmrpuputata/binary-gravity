@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "alien-invasion:block/infested_fletching_table_front",
+    "down": "alien-invasion:block/infested_planks",
+    "up": "alien-invasion:block/infested_fletching_table_top",
+    "north": "alien-invasion:block/infested_fletching_table_front",
+    "south": "alien-invasion:block/infested_fletching_table_front",
+    "east": "alien-invasion:block/infested_fletching_table_side",
+    "west": "alien-invasion:block/infested_fletching_table_side"
+  }
+}

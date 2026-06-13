@@ -1,0 +1,10 @@
+{
+  "parent": "minecraft:block/stonecutter",
+  "textures": {
+    "particle": "alien-invasion:block/infested_stonecutter_bottom",
+    "bottom": "alien-invasion:block/infested_stonecutter_bottom",
+    "top": "alien-invasion:block/infested_stonecutter_top",
+    "side": "alien-invasion:block/infested_stonecutter_side",
+    "saw": "alien-invasion:block/infested_stonecutter_saw"
+  }
+}

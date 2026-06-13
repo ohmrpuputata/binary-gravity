@@ -190,7 +190,7 @@ public class EntityRegistry {
             BuiltInRegistries.ENTITY_TYPE,
             ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "swarm_mother"),
             EntityType.Builder.of(com.example.alieninvasion.entity.SwarmMotherEntity::new, MobCategory.MONSTER)
-                    .sized(1.8f, 2.8f).build("swarm_mother")
+                    .sized(2.2f, 3.4f).build("swarm_mother")
     );
 
     // CREATURE, не MONSTER: охотник не должен исчезать на мирной сложности.

@@ -235,6 +235,24 @@ public class ModBlocks {
             new net.minecraft.world.level.block.CraftingTableBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_PURPLE).strength(2.5F).sound(SoundType.WOOD)) {});
 
+    // Заражённые станции деревни: выглядят как ванильные, но поглощены биомассой
+    // (декоративные руины — не функциональны). Заражение переводит ванильные
+    // станции в эти блоки, очиститель возвращает обратно (см. ContaminationRules).
+    public static final Block INFESTED_BARREL = registerBlock("infested_barrel",
+            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(2.5F).sound(SoundType.WOOD)));
+    public static final Block INFESTED_CARTOGRAPHY_TABLE = registerBlock("infested_cartography_table",
+            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(2.5F).sound(SoundType.WOOD)));
+    public static final Block INFESTED_SMITHING_TABLE = registerBlock("infested_smithing_table",
+            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(2.5F).sound(SoundType.WOOD)));
+    public static final Block INFESTED_FLETCHING_TABLE = registerBlock("infested_fletching_table",
+            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(2.5F).sound(SoundType.WOOD)));
+    public static final Block INFESTED_LOOM = registerBlock("infested_loom",
+            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(2.5F).sound(SoundType.WOOD)));
+    public static final Block INFESTED_STONECUTTER = registerBlock("infested_stonecutter",
+            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(3.5F).sound(SoundType.STONE).noOcclusion()));
+    public static final Block INFESTED_GRINDSTONE = registerBlock("infested_grindstone",
+            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(3.5F).sound(SoundType.STONE).noOcclusion()));
+
     public static final Block ALIEN_HEART = registerBlock("alien_heart",
             new com.example.alieninvasion.block.AlienHeartBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_RED).strength(2.5F).randomTicks()

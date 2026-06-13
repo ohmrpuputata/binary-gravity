@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "alien-invasion:block/infested_barrel_top",
+    "bottom": "alien-invasion:block/infested_barrel_bottom",
+    "side": "alien-invasion:block/infested_barrel_side"
+  }
+}
