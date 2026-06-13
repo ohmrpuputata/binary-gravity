@@ -20,6 +20,8 @@ import com.example.alieninvasion.item.ModToolTiers;
 import com.example.alieninvasion.item.AlienBlasterItem;
 import com.example.alieninvasion.item.GravityBootsItem;
 import com.example.alieninvasion.item.InvasionTrackerItem;
+import com.example.alieninvasion.item.PalladiumSwordItem;
+import com.example.alieninvasion.item.PlatinumSwordItem;
 import com.example.alieninvasion.item.AlienHazmatArmorMaterial;
 import com.example.alieninvasion.item.AlienChemArmorMaterial;
 import com.example.alieninvasion.item.PlatinumArmorMaterial;
@@ -222,7 +224,7 @@ public class ItemRegistry {
 
     // Platinum tools — iron speed, diamond durability
     public static final Item PLATINUM_SWORD = registerItem("platinum_sword",
-            new SwordItem(ModToolTiers.PLATINUM,
+            new PlatinumSwordItem(ModToolTiers.PLATINUM,
                     new Item.Properties().attributes(SwordItem.createAttributes(ModToolTiers.PLATINUM, 3, -2.4F))));
     public static final Item PLATINUM_PICKAXE = registerItem("platinum_pickaxe",
             new PickaxeItem(ModToolTiers.PLATINUM,
@@ -239,7 +241,7 @@ public class ItemRegistry {
 
     // Palladium tools — diamond speed, iron durability
     public static final Item PALLADIUM_SWORD = registerItem("palladium_sword",
-            new SwordItem(ModToolTiers.PALLADIUM,
+            new PalladiumSwordItem(ModToolTiers.PALLADIUM,
                     new Item.Properties().attributes(SwordItem.createAttributes(ModToolTiers.PALLADIUM, 4, -2.35F))));
     public static final Item PALLADIUM_PICKAXE = registerItem("palladium_pickaxe",
             new PickaxeItem(ModToolTiers.PALLADIUM,

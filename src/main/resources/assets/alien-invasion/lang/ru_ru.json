@@ -504,5 +504,7 @@
   "tooltip.alien-invasion.infection_pills": "Постепенно снижает уровень заражения в течение минуты.",
   "effect.alien-invasion.radiation_cleanse": "Очищение от радиации",
   "effect.alien-invasion.infection_cleanse": "Очищение от заражения",
-  "item.alien-invasion.infection_pills": "Таблетки от заражения"
+  "item.alien-invasion.infection_pills": "Таблетки от заражения",
+  "effect.alien-invasion.platinum_health_boost": "Платиновое укрепление",
+  "effect.alien-invasion.platinum_health_drain": "Осушение здоровья"
 }
