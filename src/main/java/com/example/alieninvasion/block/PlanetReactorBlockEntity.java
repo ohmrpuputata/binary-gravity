@@ -60,7 +60,37 @@ public class PlanetReactorBlockEntity extends BlockEntity {
                     Component.literal("§c1:40 до детонации. Отбивайте его и бегите к порталу!"));
             sl.getServer().getPlayerList().broadcastSystemMessage(Component.literal(
                     "§6[Макс Максбетов] §fПошёл отсчёт, бомжи! Минута сорок! Держите рой подальше от моей малышки!"), false);
+            summonMaxDefender(sl);
         }
+    }
+
+    /**
+     * КО-ОП ДЛЯ КАЗУАЛОВ: Макс приходит через разрыв и прикрывает реактор — рвёт
+     * волны роя, так что отбить детонацию сможет даже новичок. Спавним одного.
+     */
+    private void summonMaxDefender(ServerLevel sl) {
+        boolean alreadyHere = !sl.getEntitiesOfClass(com.example.alieninvasion.entity.HunterEntity.class,
+                new AABB(worldPosition).inflate(28.0D)).isEmpty();
+        if (alreadyHere) {
+            return;
+        }
+        com.example.alieninvasion.entity.HunterEntity max = EntityRegistry.HUNTER.create(sl);
+        if (max == null) {
+            return;
+        }
+        int hy = sl.getHeight(Heightmap.Types.MOTION_BLOCKING, worldPosition.getX() + 2, worldPosition.getZ() + 2);
+        max.moveTo(worldPosition.getX() + 2.5D, hy, worldPosition.getZ() + 2.5D, 180.0F, 0.0F);
+        max.setupAsReactorDefender();
+        max.setPersistenceRequired();
+        sl.addFreshEntity(max);
+        net.minecraft.world.entity.LightningBolt bolt = net.minecraft.world.entity.EntityType.LIGHTNING_BOLT.create(sl);
+        if (bolt != null) {
+            bolt.moveTo(max.getX(), max.getY(), max.getZ());
+            bolt.setVisualOnly(true);
+            sl.addFreshEntity(bolt);
+        }
+        sl.getServer().getPlayerList().broadcastSystemMessage(Component.literal(
+                "§6[Макс Максбетов] §fЛадно, бомжи, прикрою. Держитесь рядом — со мной не пропадёте."), false);
     }
 
     public String statusLine() {

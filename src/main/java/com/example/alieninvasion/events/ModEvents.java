@@ -120,6 +120,15 @@ public class ModEvents {
             }
         });
 
+        // При входе шлём игроку актуальное состояние победы, чтобы HUD сразу был
+        // в правильном виде (скрыт, если вторжение уже выиграно в этом мире).
+        net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            ServerLevel ow = server.getLevel(Level.OVERWORLD);
+            boolean won = ow != null && InvasionManager.get(ow).isVictoryAchieved();
+            net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(handler.player,
+                    new com.example.alieninvasion.network.VictoryPayload(won));
+        });
+
         // Palladium and Platinum sword effects on hit
         net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
             if (source.getEntity() instanceof Player player) {

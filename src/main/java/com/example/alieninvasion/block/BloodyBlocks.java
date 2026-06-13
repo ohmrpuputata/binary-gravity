@@ -54,11 +54,13 @@ public final class BloodyBlocks {
         if (state.is(BlockTags.WOODEN_FENCES)) {
             return ContaminationRules.copyProperties(state, ModBlocks.BLOODY_PLANK_FENCE.defaultBlockState());
         }
-        // Полнокубические блоки — кровавый куб по типу звука. Тайл-энтити (сундуки,
-        // машины, реактор), небьющиеся и частичные блоки НЕ трогаем.
+        // Полнокубические НЕПРОЗРАЧНЫЕ блоки — кровавый куб по типу звука. НЕ трогаем:
+        // тайл-энтити (сундуки/машины/реактор), небьющиеся, частичные И прозрачные
+        // (листва/стекло/лёд) — иначе заражённая листва превращалась в земляной куб.
         if (state.hasBlockEntity()
                 || state.getDestroySpeed(level, pos) < 0.0F
-                || !state.isCollisionShapeFullBlock(level, pos)) {
+                || !state.isCollisionShapeFullBlock(level, pos)
+                || !state.isSolidRender(level, pos)) {
             return null;
         }
         return cubeFor(state).defaultBlockState();

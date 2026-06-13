@@ -183,6 +183,13 @@ public class AlienInvasionClient implements ClientModInitializer {
                 // HUD Overlay
                 com.example.alieninvasion.client.InvasionHUDOverlay.register();
 
+                // Победа: сервер шлёт пакет — клиент прячет HUD вторжения.
+                net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.registerGlobalReceiver(
+                                com.example.alieninvasion.network.VictoryPayload.TYPE,
+                                (payload, context) -> com.example.alieninvasion.client.ClientInvasionState.victoryShown = payload.won());
+                net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents.DISCONNECT.register(
+                                (handler, client) -> com.example.alieninvasion.client.ClientInvasionState.victoryShown = false);
+
                 FluidRenderHandlerRegistry.INSTANCE.register(
                                 ModFluids.TOXIC_WATER_STILL,
                                 ModFluids.TOXIC_WATER_FLOWING,

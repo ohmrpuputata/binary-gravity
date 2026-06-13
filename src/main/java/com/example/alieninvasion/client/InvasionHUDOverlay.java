@@ -27,6 +27,10 @@ public class InvasionHUDOverlay implements HudRenderCallback {
         if (mc.player == null || mc.level == null || mc.options.hideGui) {
             return;
         }
+        // После победы (Мать Роя пала) интерфейс вторжения полностью скрыт.
+        if (ClientInvasionState.victoryShown) {
+            return;
+        }
 
         Level level = mc.level;
         int day = SurvivalManager.getDay(level);

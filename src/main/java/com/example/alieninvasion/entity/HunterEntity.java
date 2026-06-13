@@ -285,6 +285,16 @@ public class HunterEntity extends PathfinderMob {
         }
     }
 
+    /**
+     * Спавн как боевой союзник у реактора (ко-оп финал для казуалов): без
+     * вступительной сцены и без повторной выдачи реактора — сразу рвёт волны роя.
+     * Игроков не трогает (targetSelector берёт игрока только в режиме мести).
+     */
+    public void setupAsReactorDefender() {
+        this.dialogueStage = 99;
+        this.reactorGiven = true;
+    }
+
     public static AttributeSupplier.Builder createAttributes() {
         // 80 HP — он намеренно ХРУПКИЙ по «мясу». Живучесть держится на трёх китах:
         // зачарованная броня (Защита IV сильно режет урон), манёвр (блинки, рывки,

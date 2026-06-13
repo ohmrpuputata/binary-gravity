@@ -321,6 +321,8 @@ public class InvasionManager extends SavedData {
                 net.minecraft.network.chat.Component.literal("§a§lМАТЬ РОЯ ПАЛА"),
                 net.minecraft.network.chat.Component.literal("§eРой отступает. Земля выстояла."));
         for (net.minecraft.server.level.ServerPlayer p : level.getServer().getPlayerList().getPlayers()) {
+            net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(p,
+                    new com.example.alieninvasion.network.VictoryPayload(true));
             level.playSound(null, p.blockPosition(),
                     net.minecraft.sounds.SoundEvents.UI_TOAST_CHALLENGE_COMPLETE,
                     net.minecraft.sounds.SoundSource.MASTER, 1.0F, 1.0F);

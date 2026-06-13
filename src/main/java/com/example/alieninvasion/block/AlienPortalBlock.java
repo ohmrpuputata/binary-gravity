@@ -31,7 +31,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class AlienPortalBlock extends Block {
     private static final Map<UUID, Long> COOLDOWN = new ConcurrentHashMap<>();
-    private static final long COOLDOWN_TICKS = 100L;
+    // Wall-clock (мс), а НЕ игровое время измерения: у homeworld своё, обычно
+    // меньшее, gameTime — из-за чего общий кулдаун по UUID давал отрицательную
+    // разницу и НАВСЕГДА блокировал обратный портал (игрок застревал в мире Роя).
+    private static final long COOLDOWN_MS = 2000L;
 
     public AlienPortalBlock(Properties properties) {
         super(properties);
@@ -47,9 +50,9 @@ public class AlienPortalBlock extends Block {
         if (level.isClientSide || !(entity instanceof ServerPlayer player)) {
             return;
         }
-        long now = level.getGameTime();
+        long now = System.currentTimeMillis();
         Long last = COOLDOWN.get(player.getUUID());
-        if (last != null && now - last < COOLDOWN_TICKS) {
+        if (last != null && now - last < COOLDOWN_MS) {
             return;
         }
         COOLDOWN.put(player.getUUID(), now);

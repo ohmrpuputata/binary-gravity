@@ -37,6 +37,11 @@ public class AlienInvasionMod implements ModInitializer {
 		ItemRegistry.registerItems();
 		ModItemGroups.registerItemGroups();
 
+		// Сетевой пакет победы (S2C) — чтобы клиент скрыл HUD после победы.
+		net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry.playS2C().register(
+				com.example.alieninvasion.network.VictoryPayload.TYPE,
+				com.example.alieninvasion.network.VictoryPayload.CODEC);
+
 		// EventHandler.registerEvents(); // Old
 		com.example.alieninvasion.events.ModEvents.registerEvents();
 
