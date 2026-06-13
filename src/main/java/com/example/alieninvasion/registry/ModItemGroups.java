@@ -21,10 +21,16 @@ public class ModItemGroups {
                         // EVERYTHING the mod registers, automatically - new blocks and
                         // items can never be forgotten out of the creative tab again.
                         for (Item item : BuiltInRegistries.ITEM) {
-                            if (BuiltInRegistries.ITEM.getKey(item).getNamespace()
-                                    .equals(AlienInvasionMod.MODID)) {
-                                entries.accept(item);
+                            ResourceLocation key = BuiltInRegistries.ITEM.getKey(item);
+                            if (!key.getNamespace().equals(AlienInvasionMod.MODID)) {
+                                continue;
                             }
+                            // Окровавленные блоки — транзитный боевой декор (появляются от
+                            // брызг крови, смываются). В креативе не нужны — только мешают.
+                            if (key.getPath().startsWith("bloody_")) {
+                                continue;
+                            }
+                            entries.accept(item);
                         }
                     })
                     .build());

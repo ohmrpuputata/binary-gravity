@@ -414,13 +414,8 @@ public class InvasionHUDOverlay implements HudRenderCallback {
         gui.fill(3, height - 3 - arm, 5, height - 3, faint);
         gui.fill(width - 3 - arm, height - 5, width - 3, height - 3, faint);
         gui.fill(width - 5, height - 3 - arm, width - 3, height - 3, faint);
-
-        int cx = width / 2;
-        int cy = height / 2;
-        gui.fill(cx - 8, cy, cx - 2, cy + 1, color);
-        gui.fill(cx + 3, cy, cx + 9, cy + 1, color);
-        gui.fill(cx, cy - 8, cx + 1, cy - 2, color);
-        gui.fill(cx, cy + 3, cx + 1, cy + 9, color);
+        // Центральный прицел НЕ рисуем: он накладывался на ванильный, и в шлеме
+        // было видно сразу два прицела. Оставляем только уголки визора по краям.
     }
 
     private static boolean fullSet(net.minecraft.world.entity.player.Player p,
