@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "alien-invasion:item/purifier_drill_head"
-  }
-}
