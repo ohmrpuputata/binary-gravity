@@ -386,7 +386,7 @@ def generate_items():
     simple_icon("bio_fiber", (92, 188, 74, 255), GREEN_HI, 506)
     item_crystal("plasma_core", ORANGE, YELLOW, 507)
     item_ingot("iridium_plate", (164, 162, 180, 255), CYAN_HI, 508)
-    item_crystal("dark_matter_shard", PURPLE, MAGENTA, 509)
+    # item_crystal("dark_matter_shard", PURPLE, MAGENTA, 509)
     item_module("drill_fuel_cell", GREEN, GREEN_HI, 510)
     item_module("reinforced_drill_head", METAL, CYAN_HI, 511)
     item_module("lava_cooling_module", ORANGE, YELLOW, 512)
@@ -394,7 +394,7 @@ def generate_items():
     item_module("toxic_seal_module", GREEN, GREEN_HI, 514)
     item_module("storage_bay_module", (122, 92, 60, 255), YELLOW, 515)
     item_module("headlamp_module", YELLOW, CYAN_HI, 516)
-    bucket_icon()
+    # bucket_icon()
     for tier, head, accent, seed in [
         ("uranium", (120, 196, 96, 255), (176, 232, 140, 255), 530),
         ("plasma", ORANGE, YELLOW, 540),
@@ -405,12 +405,12 @@ def generate_items():
     item_module("radiation_drill_head", GREEN, YELLOW, 560)
     item_module("purifier_drill_head", CYAN, GREEN_HI, 561)
     item_module("toxic_water_pump", GREEN, CYAN_HI, 562)
-    item_module("geiger_counter", (54, 62, 60, 255), GREEN_HI, 563)
+    # item_module("geiger_counter", (54, 62, 60, 255), GREEN_HI, 563)
     item_module("portable_purifier", CYAN, CYAN_HI, 564)
     simple_icon("rad_pills", (220, 230, 180, 255), GREEN_HI, 565)
     simple_icon("infection_pills", (230, 190, 220, 255), MAGENTA, 570)
-    item_module("bio_filter_mask", (42, 72, 60, 255), GREEN_HI, 566)
-    simple_icon("contaminated_food", (96, 72, 46, 255), GREEN_HI, 567)
+    # item_module("bio_filter_mask", (42, 72, 60, 255), GREEN_HI, 566)
+    # simple_icon("contaminated_food", (96, 72, 46, 255), GREEN_HI, 567)
     simple_icon("purified_water_flask", (96, 180, 230, 255), CYAN_HI, 568)
     simple_icon("dead_infested_crop", (78, 52, 34, 255), GREEN_HI, 569)
 
