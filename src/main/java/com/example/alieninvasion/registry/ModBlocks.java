@@ -40,6 +40,14 @@ public class ModBlocks {
                     .noCollission().instabreak().replaceable().randomTicks().noLootTable().noOcclusion()
                     .sound(SoundType.SLIME_BLOCK).pushReaction(PushReaction.DESTROY)));
 
+    // Стойкая кровавая декаль поверх ЛЮБОГО блока (не исчезает сама; ПКМ/вода смывают).
+    // Кладётся splatter'ом на блоки, которые нельзя превратить в кровавый куб
+    // (листва, стекло, модовые/нестандартные блоки) — чтобы кровь была на ВСём.
+    public static final Block BLOOD_LAYER = registerBlockNoItem("blood_layer",
+            new com.example.alieninvasion.block.BloodLayerBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED)
+                    .noCollission().instabreak().noLootTable().noOcclusion()
+                    .sound(SoundType.SLIME_BLOCK).pushReaction(PushReaction.DESTROY)));
+
     public static final Block INFECTED_WATER = registerBlockNoItem("infected_water",
             new com.example.alieninvasion.block.InfectedWaterBlock(ModFluids.INFECTED_WATER_STILL,
                     BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).replaceable().noCollission()

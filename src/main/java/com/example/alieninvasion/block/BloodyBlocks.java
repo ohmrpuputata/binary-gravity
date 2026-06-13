@@ -17,13 +17,15 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * BLOODSTAINED BLOCKS: heavy wounds splatter the floor. ЛЮБОЙ полнокубический
- * блок (ваниль, мод, заражённый) превращается в обобщённый кровавый «двойник»
- * (по типу звука: дерево→доски, земля/песок→земля, остальное→камень), а его
- * ТОЧНЫЙ оригинал сохраняется в BloodyBlockEntity. RIGHT-CLICK протирает,
- * вода смывает — и возвращается именно исходный блок. Лестницы/плиты/заборы
- * сохраняют форму. Блоки с тайл-энтити (сундуки, машины, реактор), небьющиеся
- * (бедрок, портал) и частичные блоки не пачкаются.
+ * BLOODSTAINED BLOCKS: heavy wounds splatter the floor. Кровь ложится на ВСЕ
+ * блоки — и ванильные, и модовые. Полнокубический непрозрачный блок (камень,
+ * земля, дерево, заражёнка) превращается в кровавый «двойник» по типу звука
+ * (дерево→доски, земля/песок→земля, остальное→камень), а его ТОЧНЫЙ оригинал
+ * сохраняется в BloodyBlockEntity — RIGHT-CLICK протирает, вода смывает, и
+ * возвращается именно исходный блок. Лестницы/плиты/заборы сохраняют форму.
+ * Любой блок, который нельзя превратить без потери вида (листва, стекло,
+ * нестандартная форма, тайл-энтити, машины), получает стойкую кровавую ДЕКАЛЬ
+ * ({@link BloodLayerBlock}) сверху — сам блок при этом не меняется.
  */
 public final class BloodyBlocks {
     private BloodyBlocks() {}
@@ -101,12 +103,28 @@ public final class BloodyBlocks {
     /** Stain the block under the given position, remembering the exact original. */
     public static void splatter(ServerLevel level, BlockPos under) {
         BlockState floor = level.getBlockState(under);
+        if (floor.isAir() || !floor.getFluidState().isEmpty() || isBloody(floor)) {
+            return;
+        }
         BlockState bloody = bloodyFor(level, under, floor);
         if (bloody != null) {
+            // Камень/земля/дерево/заражёнка — превращаем весь блок в кровавый двойник.
             level.setBlock(under, bloody, 2 | 16);
             if (level.getBlockEntity(under) instanceof BloodyBlockEntity be) {
                 be.setOriginal(floor);
             }
+            return;
+        }
+        // Любой ДРУГОЙ блок (листва, стекло, нестандартная форма, тайл-энтити,
+        // модовые машины и т.п.) нельзя превратить, не потеряв его вид — поэтому
+        // кладём стойкую кровавую ДЕКАЛЬ ПОВЕРХ него, сам блок не трогаем. Так кровь
+        // оказывается вообще на всех существующих блоках, и ванильных, и модовых.
+        BlockPos top = under.above();
+        BlockState above = level.getBlockState(top);
+        if ((above.isAir() || above.canBeReplaced())
+                && above.getFluidState().isEmpty()
+                && !above.is(ModBlocks.BLOOD_LAYER)) {
+            level.setBlock(top, ModBlocks.BLOOD_LAYER.defaultBlockState(), 2 | 16);
         }
     }
 
