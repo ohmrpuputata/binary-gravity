@@ -68,6 +68,10 @@ public class HunterEntity extends PathfinderMob {
     private float strafeDir = 1.0F;
     private int tauntTimer = 0;
     private boolean saidLowHp = false;
+    // Экипировку зачаровываем при первом серверном тике (в конструкторе registry ещё не готов).
+    private boolean gearEnchanted = false;
+    private int hazardCooldown = 0;  // антиспам реакции на опасную среду (лава/огонь/падение)
+    private int buildCooldown = 0;   // антиспам инженерных приёмов (стена/укрытие/столб)
 
     // ------------------------------------------------------------- РЕПЛИКИ
     private static final String[] IDLE_QUIPS = {
@@ -178,6 +182,28 @@ public class HunterEntity extends PathfinderMob {
             "Конец сета. 6:0.",
             "Запомни: профи не промахиваются дважды."
     };
+    // Реакция на опасную среду — он НЕ истукан, который стоит в лаве.
+    private static final String[] HAZARD_LINES = {
+            "Опа. Пол горит. Я не на пикнике.",
+            "Лава? Серьёзно? Я тебе что, турист?",
+            "Отошёл. Профи не геройствуют в огне.",
+            "Ой, всё. Тут жарковато, отойду-ка.",
+            "Чуть не вляпался. КЛЮЧЕВОЕ — чуть."
+    };
+    // Тактическое отступление — это не бегство, это перегруппировка.
+    private static final String[] RETREAT_LINES = {
+            "Тактический отход. Запиши: это не бегство.",
+            "Перегруппировка, бомж. Учись, пока я добрый.",
+            "Дам тебе фору. Секунду. Наслаждайся.",
+            "Шаг назад — два шага к твоим похоронам."
+    };
+    // Инженерные приёмы — он не только машет мечом.
+    private static final String[] BUILD_LINES = {
+            "Стенку поставлю. Подумай о жизни пока.",
+            "Фортификация уровня «бог». Учись.",
+            "Я и строитель, и могильщик. Универсал.",
+            "Минутку, окопаюсь. Тебе же хуже."
+    };
 
     private static String pick(net.minecraft.util.RandomSource random, String[] pool) {
         return pool[random.nextInt(pool.length)];
@@ -190,7 +216,8 @@ public class HunterEntity extends PathfinderMob {
         this.setCustomNameVisible(true);
         this.xpReward = 500;
         // Топовая броня надета честно (видна на модели); лицо открыто — шлемы для
-        // слабаков. Дроп экипировки выключен: наследство выдаёт die() по списку.
+        // слабаков. Зачаровывается при первом серверном тике (enchantGear), т.к. в
+        // конструкторе реестр чар ещё недоступен. Дроп выключен: наследство — в die().
         this.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST,
                 new ItemStack(ItemRegistry.COSMIC_CHESTPLATE));
         this.setItemSlot(net.minecraft.world.entity.EquipmentSlot.LEGS,
@@ -242,6 +269,22 @@ public class HunterEntity extends PathfinderMob {
             return;
         }
         if (appleCooldown > 0) appleCooldown--;
+        if (hazardCooldown > 0) hazardCooldown--;
+        if (buildCooldown > 0) buildCooldown--;
+
+        // Экипировка зачаровывается один раз — в конструкторе реестр чар недоступен.
+        if (!gearEnchanted) {
+            gearEnchanted = true;
+            enchantGear(sl);
+        }
+
+        // Он НЕ истукан в лаве: горит, увяз, стоит на магме, тонет — уходит на сушу.
+        if (hazardCooldown <= 0 && inDanger(sl)) {
+            hazardCooldown = 30;
+            if (escapeHazard(sl) && this.random.nextInt(3) == 0) {
+                say(sl, pick(sl.random, HAZARD_LINES));
+            }
+        }
 
         // Зачарованные яблоки — его перекус в любом режиме.
         if (this.getHealth() < this.getMaxHealth() * 0.55F && applesLeft > 0 && appleCooldown <= 0) {
@@ -451,7 +494,7 @@ public class HunterEntity extends PathfinderMob {
         // ТАКТИКА: постоянная смена манёвра, никакого «просто иду и бью».
         tacticTimer--;
         if (tacticTimer <= 0) {
-            tacticTimer = 50 + sl.random.nextInt(30);
+            tacticTimer = 32 + sl.random.nextInt(22); // чаще меняет манёвр — почти не стоит на месте
             chooseTactic(sl, target);
         }
 
@@ -469,9 +512,26 @@ public class HunterEntity extends PathfinderMob {
     private void chooseTactic(ServerLevel sl, LivingEntity target) {
         double dist = this.distanceTo(target);
 
-        // Мало HP — разорвать дистанцию и перекусить (яблоко съест общий тик).
-        if (this.getHealth() < this.getMaxHealth() * 0.3F && applesLeft > 0) {
-            blinkAway(sl, target, 11.0D);
+        // Критический HP — ТАКТИЧЕСКОЕ ОТСТУПЛЕНИЕ + ОКОП: рывок назад, стена между
+        // собой и врагом, а при совсем критическом — укрытие, пока регенерация тикает.
+        if (this.getHealth() < this.getMaxHealth() * 0.18F) {
+            tacticalRetreat(sl, target);
+            if (buildCooldown <= 0) {
+                buildCooldown = 220;
+                buildBunker(sl);
+            }
+            return;
+        }
+        // Мало HP — тактический отход с прикрытием стеной (перекус съест общий тик).
+        if (this.getHealth() < this.getMaxHealth() * 0.35F) {
+            tacticalRetreat(sl, target);
+            return;
+        }
+        // Зажали вплотную — иногда столбится вверх и поливает сверху (клатч в меру).
+        if (dist < 4.0D && buildCooldown <= 0 && sl.random.nextInt(100) < 30) {
+            buildCooldown = 170;
+            pillarUp(sl, 4 + sl.random.nextInt(3));
+            burstFire(sl, target, 3);
             return;
         }
         // Цель сбежала далеко или окопалась наверху — он уже за спиной.
@@ -725,6 +785,202 @@ public class HunterEntity extends PathfinderMob {
         }
     }
 
+    // ----------------------------------------------------- ЭКИПИРОВКА / ЧАРЫ
+
+    /** Зачаровывает экипировку «по-топовому». Вызывается один раз на сервере. */
+    private void enchantGear(ServerLevel sl) {
+        var reg = sl.registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.ENCHANTMENT);
+        // Меч: Острота V, Отбрасывание II, Огненный аспект II, Разящий клинок III, Прочность III.
+        ItemStack sword = new ItemStack(ItemRegistry.NIBIRIUM_SWORD);
+        sword.enchant(reg.getOrThrow(net.minecraft.world.item.enchantment.Enchantments.SHARPNESS), 5);
+        sword.enchant(reg.getOrThrow(net.minecraft.world.item.enchantment.Enchantments.KNOCKBACK), 2);
+        sword.enchant(reg.getOrThrow(net.minecraft.world.item.enchantment.Enchantments.FIRE_ASPECT), 2);
+        sword.enchant(reg.getOrThrow(net.minecraft.world.item.enchantment.Enchantments.SWEEPING_EDGE), 3);
+        sword.enchant(reg.getOrThrow(net.minecraft.world.item.enchantment.Enchantments.UNBREAKING), 3);
+        this.setItemSlot(net.minecraft.world.entity.EquipmentSlot.MAINHAND, sword);
+        // Броня: Защита IV + Прочность III + Шипы III на каждую часть.
+        ItemStack chest = new ItemStack(ItemRegistry.COSMIC_CHESTPLATE);
+        ItemStack legs = new ItemStack(ItemRegistry.COSMIC_LEGGINGS);
+        ItemStack boots = new ItemStack(ItemRegistry.COSMIC_BOOTS);
+        for (ItemStack piece : new ItemStack[]{chest, legs, boots}) {
+            piece.enchant(reg.getOrThrow(net.minecraft.world.item.enchantment.Enchantments.PROTECTION), 4);
+            piece.enchant(reg.getOrThrow(net.minecraft.world.item.enchantment.Enchantments.UNBREAKING), 3);
+            piece.enchant(reg.getOrThrow(net.minecraft.world.item.enchantment.Enchantments.THORNS), 3);
+        }
+        // Сапоги дополнительно: Невесомость IV (мягкое приземление) и Хождение по дну III.
+        boots.enchant(reg.getOrThrow(net.minecraft.world.item.enchantment.Enchantments.FEATHER_FALLING), 4);
+        boots.enchant(reg.getOrThrow(net.minecraft.world.item.enchantment.Enchantments.DEPTH_STRIDER), 3);
+        this.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, chest);
+        this.setItemSlot(net.minecraft.world.entity.EquipmentSlot.LEGS, legs);
+        this.setItemSlot(net.minecraft.world.entity.EquipmentSlot.FEET, boots);
+        for (net.minecraft.world.entity.EquipmentSlot s : net.minecraft.world.entity.EquipmentSlot.values()) {
+            this.setDropChance(s, 0.0F);
+        }
+    }
+
+    // ------------------------------------------------- РЕАКЦИЯ НА ОПАСНУЮ СРЕДУ
+
+    /** Стоит ли Макс в опасности прямо сейчас (в лаве, тонет, на вредном блоке). */
+    private boolean inDanger(ServerLevel sl) {
+        if (this.isInLava()) {
+            return true;
+        }
+        if (this.isInWater() && this.getAirSupply() < 40) {
+            return true; // начал захлёбываться
+        }
+        BlockPos feet = this.blockPosition();
+        return isHazardBlock(sl.getBlockState(feet)) || isHazardBlock(sl.getBlockState(feet.below()));
+    }
+
+    private boolean isHazardBlock(net.minecraft.world.level.block.state.BlockState s) {
+        return s.is(net.minecraft.world.level.block.Blocks.LAVA)
+            || s.is(net.minecraft.world.level.block.Blocks.FIRE)
+            || s.is(net.minecraft.world.level.block.Blocks.SOUL_FIRE)
+            || s.is(net.minecraft.world.level.block.Blocks.MAGMA_BLOCK)
+            || s.is(net.minecraft.world.level.block.Blocks.CACTUS)
+            || s.is(net.minecraft.world.level.block.Blocks.SWEET_BERRY_BUSH)
+            || s.is(net.minecraft.world.level.block.Blocks.WITHER_ROSE)
+            || s.is(net.minecraft.world.level.block.Blocks.CAMPFIRE)
+            || s.is(net.minecraft.world.level.block.Blocks.SOUL_CAMPFIRE)
+            || s.is(com.example.alieninvasion.registry.ModBlocks.TOXIC_WATER)
+            || s.is(com.example.alieninvasion.registry.ModBlocks.PURE_RADIATION_BLOCK);
+    }
+
+    /** Уходит на ближайшую безопасную сушу — не стоит столбом в огне/лаве/яде. */
+    private boolean escapeHazard(ServerLevel sl) {
+        for (int attempt = 0; attempt < 14; attempt++) {
+            double a = sl.random.nextDouble() * Math.PI * 2.0D;
+            double r = 3.0D + sl.random.nextDouble() * 5.0D;
+            int x = (int) Math.floor(this.getX() + Math.cos(a) * r);
+            int z = (int) Math.floor(this.getZ() + Math.sin(a) * r);
+            int y = sl.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, x, z);
+            BlockPos ground = new BlockPos(x, y - 1, z);
+            BlockPos feet = new BlockPos(x, y, z);
+            BlockPos head = feet.above();
+            var gs = sl.getBlockState(ground);
+            if (!gs.isSolidRender(sl, ground) || isHazardBlock(gs)) {
+                continue;
+            }
+            if (isHazardBlock(sl.getBlockState(feet)) || isHazardBlock(sl.getBlockState(head))) {
+                continue;
+            }
+            if (!sl.getBlockState(feet).isAir() || !sl.getBlockState(head).isAir()) {
+                continue;
+            }
+            this.clearFire();
+            this.setDeltaMovement(0.0D, 0.0D, 0.0D);
+            return safeBlink(sl, x + 0.5D, y, z + 0.5D);
+        }
+        // Сушу рядом не нашёл — хотя бы выпрыгнуть вверх из опасности.
+        this.setDeltaMovement(this.getDeltaMovement().x, 0.55D, this.getDeltaMovement().z);
+        this.hurtMarked = true;
+        this.clearFire();
+        return false;
+    }
+
+    // ------------------------------------------------------- ИНЖЕНЕРНЫЕ ПРИЁМЫ
+
+    private static net.minecraft.world.level.block.state.BlockState buildBlock() {
+        return com.example.alieninvasion.registry.ModBlocks.INFESTED_STONE_BRICKS.defaultBlockState();
+    }
+
+    private static net.minecraft.sounds.SoundEvent placeSound() {
+        return net.minecraft.world.level.block.SoundType.STONE.getPlaceSound();
+    }
+
+    /** Быстрая стена между Максом и целью: 3 в ширину, 3 в высоту. */
+    private void buildWall(ServerLevel sl, LivingEntity target) {
+        Vec3 dir = target.position().subtract(this.position());
+        Vec3 flat = new Vec3(dir.x, 0.0D, dir.z);
+        if (flat.lengthSqr() < 0.01D) {
+            return;
+        }
+        flat = flat.normalize();
+        Vec3 side = new Vec3(-flat.z, 0.0D, flat.x);
+        BlockPos front = BlockPos.containing(this.getX() + flat.x * 1.5D, this.getY(), this.getZ() + flat.z * 1.5D);
+        boolean placed = false;
+        for (int dy = 0; dy <= 2; dy++) {
+            for (int ds = -1; ds <= 1; ds++) {
+                BlockPos p = front.offset((int) Math.round(side.x * ds), dy, (int) Math.round(side.z * ds));
+                var st = sl.getBlockState(p);
+                if (st.isAir() || st.canBeReplaced()) {
+                    sl.setBlockAndUpdate(p, buildBlock());
+                    placed = true;
+                }
+            }
+        }
+        if (placed) {
+            sl.playSound(null, front, placeSound(), SoundSource.HOSTILE, 1.0F, 0.8F);
+        }
+    }
+
+    /** Столбится вверх: колонна под ногами + подъём наверх (классический клатч). */
+    private void pillarUp(ServerLevel sl, int height) {
+        int bx = this.blockPosition().getX();
+        int bz = this.blockPosition().getZ();
+        int baseY = this.blockPosition().getY();
+        int top = baseY + height;
+        for (int y = baseY; y < top; y++) {
+            BlockPos p = new BlockPos(bx, y, bz);
+            var st = sl.getBlockState(p);
+            if (st.isAir() || st.canBeReplaced()) {
+                sl.setBlockAndUpdate(p, buildBlock());
+            }
+        }
+        this.teleportTo(bx + 0.5D, top, bz + 0.5D);
+        this.setDeltaMovement(0.0D, 0.0D, 0.0D);
+        this.hurtMarked = true;
+        sl.sendParticles(ParticleTypes.PORTAL, bx + 0.5D, top, bz + 0.5D, 15, 0.3D, 0.8D, 0.3D, 0.2D);
+        sl.playSound(null, this.blockPosition(), placeSound(), SoundSource.HOSTILE, 1.0F, 1.0F);
+        if (sl.getGameTime() >= this.voiceUntil && sl.random.nextInt(2) == 0) {
+            say(sl, pick(sl.random, BUILD_LINES));
+        }
+    }
+
+    /** Окоп: стены вокруг + крыша — пара секунд под прикрытием, пока регенерация тикает. */
+    private void buildBunker(ServerLevel sl) {
+        BlockPos c = this.blockPosition();
+        int[][] ring = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        boolean placed = false;
+        for (int dy = 0; dy <= 1; dy++) {
+            for (int[] o : ring) {
+                BlockPos p = c.offset(o[0], dy, o[1]);
+                var st = sl.getBlockState(p);
+                if (st.isAir() || st.canBeReplaced()) {
+                    sl.setBlockAndUpdate(p, buildBlock());
+                    placed = true;
+                }
+            }
+        }
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dz = -1; dz <= 1; dz++) {
+                BlockPos p = c.offset(dx, 2, dz);
+                var st = sl.getBlockState(p);
+                if (st.isAir() || st.canBeReplaced()) {
+                    sl.setBlockAndUpdate(p, buildBlock());
+                }
+            }
+        }
+        if (placed) {
+            sl.playSound(null, c, placeSound(), SoundSource.HOSTILE, 1.2F, 0.7F);
+            if (sl.getGameTime() >= this.voiceUntil) {
+                say(sl, pick(sl.random, BUILD_LINES));
+            }
+        }
+    }
+
+    /** Тактический отход: рывок назад + стена прикрытия. Перекус — общий тик. */
+    private void tacticalRetreat(ServerLevel sl, LivingEntity target) {
+        blinkAway(sl, target, 12.0D);
+        if (buildCooldown <= 0) {
+            buildCooldown = 120;
+            buildWall(sl, target);
+        }
+        if (sl.getGameTime() >= this.voiceUntil && sl.random.nextInt(2) == 0) {
+            say(sl, pick(sl.random, RETREAT_LINES));
+        }
+    }
+
     private void eatEnchantedApple(ServerLevel sl) {
         applesLeft--;
         appleCooldown = 300;
@@ -747,6 +1003,17 @@ public class HunterEntity extends PathfinderMob {
     public boolean hurt(DamageSource source, float amount) {
         if (!(this.level() instanceof ServerLevel sl)) {
             return super.hurt(source, amount);
+        }
+        // Средовой урон (лава, огонь, магма, кактус, падение, удушье) — он НЕ
+        // игнорирует: тут же уходит на безопасную сушу. /kill и пустоту не убежать.
+        if (source.getEntity() == null && source.getDirectEntity() == null
+                && !source.is(net.minecraft.world.damagesource.DamageTypes.GENERIC_KILL)
+                && !source.is(net.minecraft.world.damagesource.DamageTypes.FELL_OUT_OF_WORLD)
+                && hazardCooldown <= 0) {
+            hazardCooldown = 20;
+            if (escapeHazard(sl) && this.random.nextInt(3) == 0) {
+                say(sl, pick(sl.random, HAZARD_LINES));
+            }
         }
         // Хитрый: почти от половины снарядов уходит телепортом — снайпера это бесит особенно.
         if (source.getDirectEntity() instanceof Projectile && this.random.nextFloat() < 0.45F) {
@@ -870,6 +1137,7 @@ public class HunterEntity extends PathfinderMob {
         tag.putBoolean("ReactorGiven", reactorGiven);
         tag.putBoolean("Hostile", hostile);
         tag.putInt("ApplesLeft", applesLeft);
+        tag.putBoolean("GearEnchanted", gearEnchanted);
     }
 
     @Override
@@ -879,5 +1147,6 @@ public class HunterEntity extends PathfinderMob {
         this.reactorGiven = tag.getBoolean("ReactorGiven");
         this.hostile = tag.getBoolean("Hostile");
         this.applesLeft = tag.contains("ApplesLeft") ? tag.getInt("ApplesLeft") : 4;
+        this.gearEnchanted = tag.getBoolean("GearEnchanted");
     }
 }
