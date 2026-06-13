@@ -424,6 +424,8 @@
   "item.alien-invasion.alien_raptor_spawn_egg": "Яйцо призыва раптора роя",
   "block.alien-invasion.bloody_planks": "Окровавленные доски",
   "block.alien-invasion.bloody_stone": "Окровавленный камень",
+  "block.alien-invasion.bloody_infested": "Окровавленная заражённая порода",
+  "block.alien-invasion.bloody_infested_dirt": "Окровавленная заражённая земля",
   "block.alien-invasion.bloody_dirt": "Окровавленная земля",
   "block.alien-invasion.bloody_stone_bricks": "Окровавленные каменные кирпичи",
   "block.alien-invasion.bloody_plank_stairs": "Окровавленные деревянные ступени",

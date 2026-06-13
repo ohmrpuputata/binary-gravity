@@ -66,6 +66,17 @@ public final class BloodyBlocks {
 
     /** Подбор кровавого куба под исходный блок по типу звука/категории. */
     private static net.minecraft.world.level.block.Block cubeFor(BlockState state) {
+        // Заражённые блоки Роя — отдельная кровавая текстура (заражёнка + кровь),
+        // чтобы не выглядело как чужеродный обычный камень.
+        net.minecraft.resources.ResourceLocation key =
+                net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(state.getBlock());
+        if (key.getNamespace().equals("alien-invasion") && key.getPath().startsWith("infested")) {
+            SoundType s = state.getSoundType();
+            boolean ground = s == SoundType.GRAVEL || s == SoundType.SAND || s == SoundType.SNOW
+                    || s == SoundType.ROOTED_DIRT || s == SoundType.MUD || s == SoundType.GRASS
+                    || s == SoundType.WET_GRASS || s == SoundType.CROP || s == SoundType.MOSS;
+            return ground ? ModBlocks.BLOODY_INFESTED_DIRT : ModBlocks.BLOODY_INFESTED;
+        }
         if (state.is(BlockTags.PLANKS)) return ModBlocks.BLOODY_PLANKS;
         if (state.is(Blocks.STONE_BRICKS) || state.is(Blocks.MOSSY_STONE_BRICKS)
                 || state.is(Blocks.CRACKED_STONE_BRICKS) || state.is(ModBlocks.INFESTED_STONE_BRICKS)) {

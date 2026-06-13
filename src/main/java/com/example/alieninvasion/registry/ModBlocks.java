@@ -214,6 +214,15 @@ public class ModBlocks {
             new com.example.alieninvasion.block.BloodyBlocks.Fence(bloodyProps(2.0F, SoundType.WOOD),
                     () -> net.minecraft.world.level.block.Blocks.OAK_FENCE.defaultBlockState()));
 
+    // Кровь на ЗАРАЖЁННЫХ блоках — отдельная текстура (заражённая основа + кровь),
+    // чтобы не выглядело как чужеродный обычный камень. Точный оригинал хранит BE.
+    public static final Block BLOODY_INFESTED = registerBlock("bloody_infested",
+            new com.example.alieninvasion.block.BloodyBlocks.Plain(bloodyProps(1.5F, SoundType.STONE),
+                    () -> INFESTED_STONE.defaultBlockState()));
+    public static final Block BLOODY_INFESTED_DIRT = registerBlock("bloody_infested_dirt",
+            new com.example.alieninvasion.block.BloodyBlocks.Plain(bloodyProps(0.6F, SoundType.GRAVEL),
+                    () -> INFESTED_DIRT.defaultBlockState()));
+
     public static final Block INFESTED_CRAFTING_TABLE = registerBlock("infested_crafting_table",
             new net.minecraft.world.level.block.CraftingTableBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_PURPLE).strength(2.5F).sound(SoundType.WOOD)) {});
@@ -308,7 +317,7 @@ public class ModBlocks {
             BlockEntityType.Builder.of(com.example.alieninvasion.block.BloodyBlockEntity::new,
                     BLOODY_PLANKS, BLOODY_STONE, BLOODY_DIRT, BLOODY_STONE_BRICKS,
                     BLOODY_PLANK_STAIRS, BLOODY_STONE_STAIRS, BLOODY_PLANK_SLAB, BLOODY_STONE_SLAB,
-                    BLOODY_PLANK_FENCE).build(null)
+                    BLOODY_PLANK_FENCE, BLOODY_INFESTED, BLOODY_INFESTED_DIRT).build(null)
     );
 
     public static final BlockEntityType<AlienBeaconBlockEntity> ALIEN_BEACON_BLOCK_ENTITY = Registry.register(
