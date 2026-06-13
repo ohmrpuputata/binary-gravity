@@ -39,6 +39,47 @@ def block_cube(name, texture=None):
 
 
 def block_loot(block):
+    if block == "dark_matter_ore":
+        return {
+            "type": "minecraft:block",
+            "pools": [
+                {
+                    "rolls": 1,
+                    "entries": [
+                        {
+                            "type": "minecraft:item",
+                            "name": f"{NS}:dark_matter_shard",
+                            "functions": [
+                                {
+                                    "function": "minecraft:set_count",
+                                    "count": { "type": "minecraft:uniform", "min": 1, "max": 2 }
+                                },
+                                {
+                                    "function": "minecraft:apply_bonus",
+                                    "enchantment": "minecraft:fortune",
+                                    "formula": "minecraft:ore_drops"
+                                }
+                            ]
+                        }
+                    ],
+                    "conditions": [
+                        {
+                            "condition": "minecraft:survives_explosion"
+                        },
+                        {
+                            "condition": "minecraft:match_tool",
+                            "predicate": {
+                                "predicates": {
+                                    "minecraft:items": [
+                                        f"{NS}:nibirium_pickaxe"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
     return {
         "type": "minecraft:block",
         "pools": [{
