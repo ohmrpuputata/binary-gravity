@@ -80,6 +80,9 @@ public class HunterEntity extends PathfinderMob {
     private int rangedPressure = 0;
     private int meleePressure = 0;
     private int auraTick = 0;        // фаза постоянной боевой ауры
+    private int webCooldown = 0;     // антиспам паутины-ловушки
+    private int tauntCrouch = 0;     // таймер троллинг-приседа над почти убитой целью
+    private int tauntCooldown = 0;   // антиспам троллинга
 
     // ------------------------------------------------------------- РЕПЛИКИ
     private static final String[] IDLE_QUIPS = {
@@ -242,6 +245,19 @@ public class HunterEntity extends PathfinderMob {
             "Ты за главного? Был.",
             "Лучшая броня на сервере? Снимем вместе с тобой."
     };
+    private static final String[] WEB_LINES = {
+            "Застрянь-ка, бомж.",
+            "Паутинка. Посиди, подумай о жизни.",
+            "Тебе ноги там, куда идёшь, не понадобятся.",
+            "Прилип? Вот и славно."
+    };
+    private static final String[] TAUNT_LINES = {
+            "Что, уже всё? Дай-ка насладиться моментом.",
+            "Присяду на твоей могилке. Традиция такая.",
+            "Не вставай, не вставай. Я быстро.",
+            "Это даже не спорт. Но до чего приятно.",
+            "Смотри внимательно — учись проигрывать с достоинством."
+    };
 
     private static String pick(net.minecraft.util.RandomSource random, String[] pool) {
         return pool[random.nextInt(pool.length)];
@@ -309,6 +325,8 @@ public class HunterEntity extends PathfinderMob {
         if (appleCooldown > 0) appleCooldown--;
         if (hazardCooldown > 0) hazardCooldown--;
         if (buildCooldown > 0) buildCooldown--;
+        if (webCooldown > 0) webCooldown--;
+        if (tauntCooldown > 0) tauntCooldown--;
 
         // Давление боя медленно затухает — адаптация реагирует на СВЕЖую тактику.
         if ((this.tickCount & 31) == 0) {
@@ -352,6 +370,9 @@ public class HunterEntity extends PathfinderMob {
         LivingEntity target = this.getTarget();
         if (target != null && target.isAlive()) {
             abilityTick(sl, target);
+        } else if (tauntCrouch > 0) {
+            tauntCrouch = 0;              // цель исчезла во время издёвки — встать
+            this.setShiftKeyDown(false);
         }
 
         if (hostile) {
@@ -527,6 +548,38 @@ public class HunterEntity extends PathfinderMob {
     }
 
     private void abilityTick(ServerLevel sl, LivingEntity target) {
+        // ТРОЛЛИНГ: над почти убитой целью пару секунд приседает (teabag), потом добивает.
+        if (tauntCrouch > 0) {
+            tauntCrouch--;
+            this.getNavigation().stop();
+            this.getLookControl().setLookAt(target, 30.0F, 30.0F);
+            this.setShiftKeyDown(((tauntCrouch / 3) & 1) == 0); // быстрый присед/встал
+            if (tauntCrouch % 6 == 0) {
+                sl.sendParticles(ParticleTypes.HAPPY_VILLAGER, this.getX(), this.getY() + 2.1D, this.getZ(),
+                        3, 0.3D, 0.2D, 0.3D, 0.0D);
+            }
+            if (tauntCrouch == 0) {
+                this.setShiftKeyDown(false);
+                say(sl, pick(sl.random, EXECUTE_LINES));
+                if (this.distanceTo(target) < 4.0D) {
+                    this.swing(net.minecraft.world.InteractionHand.MAIN_HAND);
+                    this.doHurtTarget(target);
+                } else {
+                    dashStrike(sl, target);
+                }
+            }
+            return; // во время издёвки больше ничего не делает
+        }
+        // Цель почти мертва — шанс поиздеваться перед добиванием (только над игроками).
+        if (hostile && target instanceof Player && target.getHealth() <= 6.0F
+                && this.distanceTo(target) < 7.0D && tauntCooldown <= 0 && sl.random.nextInt(100) < 35) {
+            tauntCrouch = 40;
+            tauntCooldown = 300;
+            say(sl, pick(sl.random, TAUNT_LINES));
+            sl.playSound(null, this.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.HOSTILE, 0.8F, 0.6F);
+            return;
+        }
+
         this.setSprinting(this.distanceTo(target) > 6.0D);
 
         // ВЕСЬ инопланетный арсенал: плазма, кислота, тяжёлая радиация.
@@ -659,6 +712,14 @@ public class HunterEntity extends PathfinderMob {
             } else {
                 shockNova(sl);
             }
+            return;
+        }
+        // Наседают — оплести цель паутиной и отскочить, расстреливать застрявшего.
+        if (dist >= 2.0D && dist <= 9.0D && webCooldown <= 0 && sl.random.nextInt(100) < 25) {
+            webCooldown = 160;
+            webTrap(sl, target);
+            blinkAway(sl, target, 7.0D);
+            burstFire(sl, target, 3);
             return;
         }
         // Зажали вплотную — иногда столбится вверх и поливает сверху (клатч в меру).
@@ -1178,6 +1239,11 @@ public class HunterEntity extends PathfinderMob {
 
     /** Тактический отход: рывок назад + стена прикрытия. Перекус — общий тик. */
     private void tacticalRetreat(ServerLevel sl, LivingEntity target) {
+        // Оплести преследователя паутиной, чтобы не догнал, и отскочить за стену.
+        if (webCooldown <= 0) {
+            webCooldown = 120;
+            webTrap(sl, target);
+        }
         blinkAway(sl, target, 12.0D);
         if (buildCooldown <= 0) {
             buildCooldown = 120;
@@ -1185,6 +1251,30 @@ public class HunterEntity extends PathfinderMob {
         }
         if (sl.getGameTime() >= this.voiceUntil && sl.random.nextInt(2) == 0) {
             say(sl, pick(sl.random, RETREAT_LINES));
+        }
+    }
+
+    /** Паутина-ловушка: оплетает цель — застревают и мобы, и игроки. */
+    private void webTrap(ServerLevel sl, LivingEntity target) {
+        BlockPos c = target.blockPosition();
+        int[][] spots = {{0, 0}, {1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        boolean placed = false;
+        for (int dy = 0; dy <= 1; dy++) {
+            for (int[] o : spots) {
+                BlockPos p = c.offset(o[0], dy, o[1]);
+                if (sl.getBlockState(p).isAir()) {
+                    sl.setBlockAndUpdate(p, net.minecraft.world.level.block.Blocks.COBWEB.defaultBlockState());
+                    placed = true;
+                }
+            }
+        }
+        if (placed) {
+            sl.playSound(null, c, SoundEvents.SPIDER_AMBIENT, SoundSource.HOSTILE, 1.0F, 0.7F);
+            sl.sendParticles(ParticleTypes.CLOUD, target.getX(), target.getY() + 1.0D, target.getZ(),
+                    10, 0.4D, 0.6D, 0.4D, 0.0D);
+            if (sl.getGameTime() >= this.voiceUntil && sl.random.nextInt(2) == 0) {
+                say(sl, pick(sl.random, WEB_LINES));
+            }
         }
     }
 
