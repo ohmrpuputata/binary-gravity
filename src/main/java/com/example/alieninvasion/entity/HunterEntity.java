@@ -1149,7 +1149,8 @@ public class HunterEntity extends PathfinderMob {
     // ------------------------------------------------------- ИНЖЕНЕРНЫЕ ПРИЁМЫ
 
     private static net.minecraft.world.level.block.state.BlockState buildBlock() {
-        return com.example.alieninvasion.registry.ModBlocks.INFESTED_STONE_BRICKS.defaultBlockState();
+        // Макс — человек-охотник, а не Рой: клатчит обычным булыжником, как игрок.
+        return net.minecraft.world.level.block.Blocks.COBBLESTONE.defaultBlockState();
     }
 
     private static net.minecraft.sounds.SoundEvent placeSound() {
