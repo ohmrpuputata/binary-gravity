@@ -297,16 +297,6 @@ def generate_recipes():
 
 
 def generate_worldgen():
-    ore_feature("uranium_ore_vein", "uranium_ore", 6, 0.25, "deepslate_uranium_ore")
-    placed_feature("uranium_ore_vein", 6, -32, 48)
-    ore_feature("xenocrystal_ore_vein", "xenocrystal_ore", 5, 0.2)
-    placed_feature("xenocrystal_ore_vein", 4, -48, 24)
-    ore_feature("bio_vein_ore_vein", "bio_vein_ore", 8, 0.1)
-    placed_feature("bio_vein_ore_vein", 5, -24, 56)
-    ore_feature("plasma_ore_vein", "plasma_ore", 4, 0.35)
-    placed_feature("plasma_ore_vein", 3, -48, 8)
-    ore_feature("iridium_ore_vein", "iridium_ore", 4, 0.45)
-    placed_feature("iridium_ore_vein", 2, -64, -8)
     ore_feature("dark_matter_ore_vein", "dark_matter_ore", 3, 0.6)
     placed_feature("dark_matter_ore_vein", 1, -64, -32)
 
