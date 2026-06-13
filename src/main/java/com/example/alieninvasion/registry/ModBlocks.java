@@ -300,6 +300,17 @@ public class ModBlocks {
             BlockEntityType.Builder.of(AlienStashBlockEntity::new, ALIEN_STASH).build(null)
     );
 
+    // Хранит точный исходный блок под кровью (любой ваниль/мод/заражённый блок),
+    // чтобы при смывании вернулся именно он. Один тип на все кровавые блоки.
+    public static final BlockEntityType<com.example.alieninvasion.block.BloodyBlockEntity> BLOODY_BLOCK_ENTITY = Registry.register(
+            BuiltInRegistries.BLOCK_ENTITY_TYPE,
+            ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "bloody_block"),
+            BlockEntityType.Builder.of(com.example.alieninvasion.block.BloodyBlockEntity::new,
+                    BLOODY_PLANKS, BLOODY_STONE, BLOODY_DIRT, BLOODY_STONE_BRICKS,
+                    BLOODY_PLANK_STAIRS, BLOODY_STONE_STAIRS, BLOODY_PLANK_SLAB, BLOODY_STONE_SLAB,
+                    BLOODY_PLANK_FENCE).build(null)
+    );
+
     public static final BlockEntityType<AlienBeaconBlockEntity> ALIEN_BEACON_BLOCK_ENTITY = Registry.register(
             BuiltInRegistries.BLOCK_ENTITY_TYPE,
             ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "alien_beacon"),

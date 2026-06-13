@@ -9,20 +9,36 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * BLOODSTAINED BLOCKS: heavy wounds splatter the floor — the block under the
- * victim CONVERTS to a bloody twin (stairs stay stairs, fences stay fences,
- * every property preserved). RIGHT-CLICK any bloody block to wipe it clean.
+ * BLOODSTAINED BLOCKS: heavy wounds splatter the floor. ЛЮБОЙ полнокубический
+ * блок (ваниль, мод, заражённый) превращается в обобщённый кровавый «двойник»
+ * (по типу звука: дерево→доски, земля/песок→земля, остальное→камень), а его
+ * ТОЧНЫЙ оригинал сохраняется в BloodyBlockEntity. RIGHT-CLICK протирает,
+ * вода смывает — и возвращается именно исходный блок. Лестницы/плиты/заборы
+ * сохраняют форму. Блоки с тайл-энтити (сундуки, машины, реактор), небьющиеся
+ * (бедрок, портал) и частичные блоки не пачкаются.
  */
 public final class BloodyBlocks {
     private BloodyBlocks() {}
 
+    private static boolean isBloody(BlockState s) {
+        return s.getBlock() instanceof Plain || s.getBlock() instanceof Stairs
+                || s.getBlock() instanceof Slab || s.getBlock() instanceof Fence;
+    }
+
     /** Bloody twin for a floor block, or null if this block doesn't stain. */
-    public static BlockState bloodyFor(BlockState state) {
+    public static BlockState bloodyFor(BlockGetter level, BlockPos pos, BlockState state) {
+        if (state.isAir() || !state.getFluidState().isEmpty() || isBloody(state)) {
+            return null;
+        }
+        // Сохраняем форму у лестниц/плит/заборов.
         if (state.is(BlockTags.WOODEN_STAIRS)) {
             return ContaminationRules.copyProperties(state, ModBlocks.BLOODY_PLANK_STAIRS.defaultBlockState());
         }
@@ -38,36 +54,62 @@ public final class BloodyBlocks {
         if (state.is(BlockTags.WOODEN_FENCES)) {
             return ContaminationRules.copyProperties(state, ModBlocks.BLOODY_PLANK_FENCE.defaultBlockState());
         }
-        if (state.is(BlockTags.PLANKS)) return ModBlocks.BLOODY_PLANKS.defaultBlockState();
-        if (state.is(Blocks.GRASS_BLOCK) || state.is(Blocks.DIRT) || state.is(Blocks.COARSE_DIRT)
-                || state.is(Blocks.PODZOL) || state.is(Blocks.DIRT_PATH)) {
-            return ModBlocks.BLOODY_DIRT.defaultBlockState();
+        // Полнокубические блоки — кровавый куб по типу звука. Тайл-энтити (сундуки,
+        // машины, реактор), небьющиеся и частичные блоки НЕ трогаем.
+        if (state.hasBlockEntity()
+                || state.getDestroySpeed(level, pos) < 0.0F
+                || !state.isCollisionShapeFullBlock(level, pos)) {
+            return null;
         }
-        if (state.is(Blocks.STONE_BRICKS) || state.is(Blocks.MOSSY_STONE_BRICKS)
-                || state.is(Blocks.CRACKED_STONE_BRICKS)) {
-            return ModBlocks.BLOODY_STONE_BRICKS.defaultBlockState();
-        }
-        if (state.is(Blocks.STONE) || state.is(Blocks.COBBLESTONE) || state.is(Blocks.ANDESITE)
-                || state.is(Blocks.DIORITE) || state.is(Blocks.GRANITE) || state.is(Blocks.DEEPSLATE)
-                || state.is(Blocks.SMOOTH_STONE) || state.is(Blocks.TUFF)) {
-            return ModBlocks.BLOODY_STONE.defaultBlockState();
-        }
-        return null;
+        return cubeFor(state).defaultBlockState();
     }
 
-    /** Stain the block under the given position if it has a bloody twin. */
+    /** Подбор кровавого куба под исходный блок по типу звука/категории. */
+    private static net.minecraft.world.level.block.Block cubeFor(BlockState state) {
+        if (state.is(BlockTags.PLANKS)) return ModBlocks.BLOODY_PLANKS;
+        if (state.is(Blocks.STONE_BRICKS) || state.is(Blocks.MOSSY_STONE_BRICKS)
+                || state.is(Blocks.CRACKED_STONE_BRICKS) || state.is(ModBlocks.INFESTED_STONE_BRICKS)) {
+            return ModBlocks.BLOODY_STONE_BRICKS;
+        }
+        SoundType snd = state.getSoundType();
+        if (snd == SoundType.WOOD || snd == SoundType.NETHER_WOOD || snd == SoundType.BAMBOO
+                || snd == SoundType.BAMBOO_WOOD || snd == SoundType.CHERRY_WOOD || snd == SoundType.WOOL) {
+            return ModBlocks.BLOODY_PLANKS;
+        }
+        if (snd == SoundType.GRAVEL || snd == SoundType.SAND || snd == SoundType.SNOW
+                || snd == SoundType.ROOTED_DIRT || snd == SoundType.MUD || snd == SoundType.CROP
+                || snd == SoundType.GRASS || snd == SoundType.MOSS || snd == SoundType.SOUL_SAND
+                || snd == SoundType.SOUL_SOIL || snd == SoundType.NYLIUM) {
+            return ModBlocks.BLOODY_DIRT;
+        }
+        return ModBlocks.BLOODY_STONE;
+    }
+
+    /** Stain the block under the given position, remembering the exact original. */
     public static void splatter(ServerLevel level, BlockPos under) {
         BlockState floor = level.getBlockState(under);
-        BlockState bloody = bloodyFor(floor);
+        BlockState bloody = bloodyFor(level, under, floor);
         if (bloody != null) {
             level.setBlock(under, bloody, 2 | 16);
+            if (level.getBlockEntity(under) instanceof BloodyBlockEntity be) {
+                be.setOriginal(floor);
+            }
         }
     }
 
-    /** Right-click wipe: bloody block reverts to its clean form. */
-    public static InteractionResult wipe(Level level, BlockPos pos, BlockState state, BlockState clean) {
+    /** Точный блок, к которому надо вернуться: сохранённый оригинал, иначе fallback. */
+    private static BlockState restoreState(BlockGetter level, BlockPos pos, BlockState state,
+                                           java.util.function.Supplier<BlockState> fallbackClean) {
+        if (level.getBlockEntity(pos) instanceof BloodyBlockEntity be && be.getOriginal() != null) {
+            return be.getOriginal();
+        }
+        return ContaminationRules.copyProperties(state, fallbackClean.get());
+    }
+
+    /** Right-click wipe / water wash: bloody block reverts to its stored original. */
+    public static InteractionResult wipe(Level level, BlockPos pos, BlockState restore) {
         if (!level.isClientSide) {
-            level.setBlockAndUpdate(pos, ContaminationRules.copyProperties(state, clean));
+            level.setBlockAndUpdate(pos, restore);
             if (level instanceof ServerLevel serverLevel) {
                 serverLevel.sendParticles(ParticleTypes.SPLASH,
                         pos.getX() + 0.5D, pos.getY() + 1.0D, pos.getZ() + 0.5D, 10, 0.3D, 0.1D, 0.3D, 0.0D);
@@ -77,20 +119,21 @@ public final class BloodyBlocks {
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
-    /** Water touching a bloody block washes it instantly. */
+    /** Water touching a bloody block washes it instantly to its stored original. */
     private static BlockState washedByWater(BlockState state, BlockState neighbor,
                                             net.minecraft.world.level.LevelAccessor level, BlockPos pos,
-                                            BlockState clean) {
+                                            java.util.function.Supplier<BlockState> fallbackClean) {
         if (neighbor.getFluidState().is(net.minecraft.tags.FluidTags.WATER)
                 || state.getFluidState().is(net.minecraft.tags.FluidTags.WATER)) {
             level.playSound(null, pos, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 0.5F, 1.3F);
-            return ContaminationRules.copyProperties(state, clean);
+            return restoreState(level, pos, state, fallbackClean);
         }
         return null;
     }
 
     /** Full-cube bloodstained block: wipe with right-click, washes off in water. */
-    public static class Plain extends net.minecraft.world.level.block.Block {
+    public static class Plain extends net.minecraft.world.level.block.Block
+            implements net.minecraft.world.level.block.EntityBlock {
         private final java.util.function.Supplier<BlockState> clean;
 
         public Plain(Properties props, java.util.function.Supplier<BlockState> clean) {
@@ -99,20 +142,26 @@ public final class BloodyBlocks {
         }
 
         @Override
+        public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+            return new BloodyBlockEntity(pos, state);
+        }
+
+        @Override
         protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos,
                 net.minecraft.world.entity.player.Player player, net.minecraft.world.phys.BlockHitResult hit) {
-            return wipe(level, pos, state, clean.get());
+            return wipe(level, pos, restoreState(level, pos, state, clean));
         }
 
         @Override
         protected BlockState updateShape(BlockState state, net.minecraft.core.Direction dir, BlockState neighbor,
                 net.minecraft.world.level.LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
-            BlockState washed = washedByWater(state, neighbor, level, pos, clean.get());
+            BlockState washed = washedByWater(state, neighbor, level, pos, clean);
             return washed != null ? washed : super.updateShape(state, dir, neighbor, level, pos, neighborPos);
         }
     }
 
-    public static class Stairs extends net.minecraft.world.level.block.StairBlock {
+    public static class Stairs extends net.minecraft.world.level.block.StairBlock
+            implements net.minecraft.world.level.block.EntityBlock {
         private final java.util.function.Supplier<BlockState> clean;
 
         public Stairs(BlockState base, Properties props, java.util.function.Supplier<BlockState> clean) {
@@ -121,20 +170,26 @@ public final class BloodyBlocks {
         }
 
         @Override
+        public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+            return new BloodyBlockEntity(pos, state);
+        }
+
+        @Override
         protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos,
                 net.minecraft.world.entity.player.Player player, net.minecraft.world.phys.BlockHitResult hit) {
-            return wipe(level, pos, state, clean.get());
+            return wipe(level, pos, restoreState(level, pos, state, clean));
         }
 
         @Override
         protected BlockState updateShape(BlockState state, net.minecraft.core.Direction dir, BlockState neighbor,
                 net.minecraft.world.level.LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
-            BlockState washed = washedByWater(state, neighbor, level, pos, clean.get());
+            BlockState washed = washedByWater(state, neighbor, level, pos, clean);
             return washed != null ? washed : super.updateShape(state, dir, neighbor, level, pos, neighborPos);
         }
     }
 
-    public static class Slab extends net.minecraft.world.level.block.SlabBlock {
+    public static class Slab extends net.minecraft.world.level.block.SlabBlock
+            implements net.minecraft.world.level.block.EntityBlock {
         private final java.util.function.Supplier<BlockState> clean;
 
         public Slab(Properties props, java.util.function.Supplier<BlockState> clean) {
@@ -143,20 +198,26 @@ public final class BloodyBlocks {
         }
 
         @Override
+        public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+            return new BloodyBlockEntity(pos, state);
+        }
+
+        @Override
         protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos,
                 net.minecraft.world.entity.player.Player player, net.minecraft.world.phys.BlockHitResult hit) {
-            return wipe(level, pos, state, clean.get());
+            return wipe(level, pos, restoreState(level, pos, state, clean));
         }
 
         @Override
         protected BlockState updateShape(BlockState state, net.minecraft.core.Direction dir, BlockState neighbor,
                 net.minecraft.world.level.LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
-            BlockState washed = washedByWater(state, neighbor, level, pos, clean.get());
+            BlockState washed = washedByWater(state, neighbor, level, pos, clean);
             return washed != null ? washed : super.updateShape(state, dir, neighbor, level, pos, neighborPos);
         }
     }
 
-    public static class Fence extends net.minecraft.world.level.block.FenceBlock {
+    public static class Fence extends net.minecraft.world.level.block.FenceBlock
+            implements net.minecraft.world.level.block.EntityBlock {
         private final java.util.function.Supplier<BlockState> clean;
 
         public Fence(Properties props, java.util.function.Supplier<BlockState> clean) {
@@ -165,15 +226,20 @@ public final class BloodyBlocks {
         }
 
         @Override
+        public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+            return new BloodyBlockEntity(pos, state);
+        }
+
+        @Override
         protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos,
                 net.minecraft.world.entity.player.Player player, net.minecraft.world.phys.BlockHitResult hit) {
-            return wipe(level, pos, state, clean.get());
+            return wipe(level, pos, restoreState(level, pos, state, clean));
         }
 
         @Override
         protected BlockState updateShape(BlockState state, net.minecraft.core.Direction dir, BlockState neighbor,
                 net.minecraft.world.level.LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
-            BlockState washed = washedByWater(state, neighbor, level, pos, clean.get());
+            BlockState washed = washedByWater(state, neighbor, level, pos, clean);
             return washed != null ? washed : super.updateShape(state, dir, neighbor, level, pos, neighborPos);
         }
     }
