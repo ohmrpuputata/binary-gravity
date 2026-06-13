@@ -75,6 +75,11 @@ public class HunterEntity extends PathfinderMob {
     private int flurryTicks = 0;     // вихрь клинка: длящийся AoE вокруг
     private int orbitalTimer = 0;    // телеграф орбитального удара (тикает до удара)
     private double orbitalX, orbitalZ; // отмеченная точка орбитального удара
+    // Адаптивный ИИ: давление дальнего/ближнего боя (затухает). По перекосу он
+    // подстраивает стиль — расстреливают, сокращает дистанцию; лезут в ближний, парирует.
+    private int rangedPressure = 0;
+    private int meleePressure = 0;
+    private int auraTick = 0;        // фаза постоянной боевой ауры
 
     // ------------------------------------------------------------- РЕПЛИКИ
     private static final String[] IDLE_QUIPS = {
@@ -225,6 +230,18 @@ public class HunterEntity extends PathfinderMob {
             "Подойдите ближе. ВСЕМ хватит.",
             "Это не танец. Хотя красиво, да."
     };
+    private static final String[] DEFLECT_LINES = {
+            "Вернул. С процентами.",
+            "Спасибо за патрон. Держи обратно.",
+            "Твоё? Забери.",
+            "Пинг-понг, бомж. Я подаю."
+    };
+    private static final String[] THREAT_LINES = {
+            "О, броня поблёскивает. Ты тут главный? Тобой и займусь.",
+            "Самый упакованный — самый интересный. Иди сюда.",
+            "Ты за главного? Был.",
+            "Лучшая броня на сервере? Снимем вместе с тобой."
+    };
 
     private static String pick(net.minecraft.util.RandomSource random, String[] pool) {
         return pool[random.nextInt(pool.length)];
@@ -292,6 +309,24 @@ public class HunterEntity extends PathfinderMob {
         if (appleCooldown > 0) appleCooldown--;
         if (hazardCooldown > 0) hazardCooldown--;
         if (buildCooldown > 0) buildCooldown--;
+
+        // Давление боя медленно затухает — адаптация реагирует на СВЕЖую тактику.
+        if ((this.tickCount & 31) == 0) {
+            if (rangedPressure > 0) rangedPressure--;
+            if (meleePressure > 0) meleePressure--;
+        }
+
+        // БОЕВАЯ АУРА: пока враждебен — крутящиеся искры и язычки пламени, заряжен.
+        if (hostile) {
+            double ang = (++auraTick) * 0.5D;
+            sl.sendParticles(ParticleTypes.ELECTRIC_SPARK,
+                    this.getX() + Math.cos(ang) * 0.85D, this.getY() + 0.4D + (auraTick % 5) * 0.35D,
+                    this.getZ() + Math.sin(ang) * 0.85D, 1, 0.0D, 0.0D, 0.0D, 0.0D);
+            if (this.tickCount % 6 == 0) {
+                sl.sendParticles(ParticleTypes.SOUL_FIRE_FLAME, this.getX(), this.getY() + 1.0D, this.getZ(),
+                        1, 0.3D, 0.5D, 0.3D, 0.01D);
+            }
+        }
 
         // Экипировка зачаровывается один раз — в конструкторе реестр чар недоступен.
         if (!gearEnchanted) {
@@ -448,6 +483,15 @@ public class HunterEntity extends PathfinderMob {
         say(sl, pick(sl.random, ANGRY_LINES));
         voice(sl, ModSounds.HUNTER_ANGRY);
         sl.playSound(null, this.blockPosition(), SoundEvents.WARDEN_ROAR, SoundSource.HOSTILE, 2.0F, 1.2F);
+        // Вход в бой — заметная вспышка: взрыв искр и визуальная молния.
+        sl.sendParticles(ParticleTypes.EXPLOSION, this.getX(), this.getY() + 1.0D, this.getZ(), 3, 0.4D, 0.6D, 0.4D, 0.0D);
+        sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, this.getX(), this.getY() + 1.0D, this.getZ(), 45, 0.6D, 1.0D, 0.6D, 0.6D);
+        net.minecraft.world.entity.LightningBolt flash = EntityType.LIGHTNING_BOLT.create(sl);
+        if (flash != null) {
+            flash.moveTo(this.getX(), this.getY(), this.getZ());
+            flash.setVisualOnly(true);
+            sl.addFreshEntity(flash);
+        }
         if (attacker instanceof Player p) {
             this.setTarget(p);
         }
@@ -455,13 +499,29 @@ public class HunterEntity extends PathfinderMob {
         // его теперь можно только с трупа.
     }
 
-    /** В режиме мести он не успокаивается: цель кончилась — ищет следующего игрока. */
+    /**
+     * В режиме мести он не успокаивается: цель кончилась — ищет следующую. Но не
+     * просто ближайшую, а САМУЮ ОПАСНУЮ — кто в лучшей броне (с поправкой на дистанцию).
+     */
     private void retargetPlayers(ServerLevel sl) {
         LivingEntity target = this.getTarget();
         if (target == null || !target.isAlive() || (target instanceof Player p && (p.isCreative() || p.isSpectator()))) {
-            Player next = sl.getNearestPlayer(this, 80.0D);
-            if (next != null && !next.isCreative() && !next.isSpectator()) {
-                this.setTarget(next);
+            Player best = null;
+            double bestThreat = -1.0D;
+            for (Player pl : sl.getEntitiesOfClass(Player.class, this.getBoundingBox().inflate(80.0D),
+                    pp -> !pp.isCreative() && !pp.isSpectator() && pp.isAlive())) {
+                double threat = pl.getArmorValue() * 2.0D - this.distanceTo(pl) * 0.1D;
+                if (threat > bestThreat) {
+                    bestThreat = threat;
+                    best = pl;
+                }
+            }
+            if (best != null) {
+                boolean armored = best.getArmorValue() >= 15;
+                this.setTarget(best);
+                if (armored && sl.getGameTime() >= this.voiceUntil && sl.random.nextInt(2) == 0) {
+                    say(sl, pick(sl.random, THREAT_LINES));
+                }
             }
         }
     }
@@ -580,6 +640,25 @@ public class HunterEntity extends PathfinderMob {
         // Мало HP — тактический отход с прикрытием стеной (перекус съест общий тик).
         if (this.getHealth() < this.getMaxHealth() * 0.35F) {
             tacticalRetreat(sl, target);
+            return;
+        }
+        // АДАПТАЦИЯ: его расстреливают сильнее, чем бьют в ближнем — рвётся в упор.
+        if (rangedPressure > meleePressure + 12 && dist > 5.0D && sl.random.nextInt(100) < 55) {
+            if (sl.random.nextBoolean()) {
+                dashStrike(sl, target);
+            } else {
+                yankTarget(sl, target);
+            }
+            return;
+        }
+        // Прессуют в ближнем сильнее, чем стреляют — разрывает дистанцию и бьёт издалека.
+        if (meleePressure > rangedPressure + 12 && dist < 6.0D && sl.random.nextInt(100) < 55) {
+            blinkAway(sl, target, 9.0D);
+            if (sl.random.nextBoolean()) {
+                homingVolley(sl, target);
+            } else {
+                shockNova(sl);
+            }
             return;
         }
         // Зажали вплотную — иногда столбится вверх и поливает сверху (клатч в меру).
@@ -782,6 +861,22 @@ public class HunterEntity extends PathfinderMob {
         for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class, box, en -> isSplashTarget(en, null))) {
             e.hurt(this.damageSources().indirectMagic(this, this), dmg);
             e.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1));
+        }
+    }
+
+    /** Отражает выстрел: гасит входящий и бьёт встречным болтом в самого стрелка. */
+    private void deflectAt(ServerLevel sl, LivingEntity shooter) {
+        sl.sendParticles(ParticleTypes.CRIT, this.getX(), this.getEyeY(), this.getZ(), 14, 0.3D, 0.3D, 0.3D, 0.4D);
+        sl.playSound(null, this.blockPosition(), SoundEvents.SHIELD_BLOCK, SoundSource.HOSTILE, 1.3F, 0.7F);
+        RadiationBoltEntity bolt = new RadiationBoltEntity(sl, this, true);
+        Vec3 aim = new Vec3(shooter.getX() - this.getX(),
+                shooter.getEyeY() - this.getEyeY(),
+                shooter.getZ() - this.getZ());
+        bolt.setPos(this.getX(), this.getEyeY() - 0.1D, this.getZ());
+        bolt.shoot(aim.x, aim.y, aim.z, 2.6F, 1.0F);
+        sl.addFreshEntity(bolt);
+        if (shooter instanceof Player && sl.getGameTime() >= this.voiceUntil && sl.random.nextInt(2) == 0) {
+            say(sl, pick(sl.random, DEFLECT_LINES));
         }
     }
 
@@ -1127,25 +1222,37 @@ public class HunterEntity extends PathfinderMob {
                 say(sl, pick(sl.random, HAZARD_LINES));
             }
         }
-        // Хитрый: почти от половины снарядов уходит телепортом — снайпера это бесит особенно.
-        if (source.getDirectEntity() instanceof Projectile && this.random.nextFloat() < 0.45F) {
-            double a = this.random.nextDouble() * Math.PI * 2.0D;
-            safeBlink(sl, this.getX() + Math.cos(a) * 4.0D, this.getY(), this.getZ() + Math.sin(a) * 4.0D);
-            // Подкалывает только игроков — на снаряды роя не отвлекается.
-            if (source.getEntity() instanceof Player && this.random.nextInt(3) != 0) {
-                say(sl, pick(sl.random, DODGE_LINES));
+        // АДАПТАЦИЯ к дальнему бою: чем больше его расстреливают, тем чаще уклоняется
+        // (до 65%), а иногда ОТРАЖАЕТ снаряд обратно в стрелка.
+        if (source.getDirectEntity() instanceof Projectile) {
+            rangedPressure = Math.min(60, rangedPressure + 4);
+            float dodgeChance = 0.45F + Math.min(0.20F, rangedPressure * 0.005F);
+            if (this.random.nextFloat() < dodgeChance) {
+                if (source.getEntity() instanceof LivingEntity shooter && this.random.nextFloat() < 0.4F) {
+                    deflectAt(sl, shooter);
+                } else {
+                    double a = this.random.nextDouble() * Math.PI * 2.0D;
+                    safeBlink(sl, this.getX() + Math.cos(a) * 4.0D, this.getY(), this.getZ() + Math.sin(a) * 4.0D);
+                    if (source.getEntity() instanceof Player && this.random.nextInt(3) != 0) {
+                        say(sl, pick(sl.random, DODGE_LINES));
+                    }
+                }
+                return false;
             }
-            return false;
         }
         boolean result = super.hurt(source, amount);
         // ПАРИРОВАНИЕ: пропустил удар в ближнем — мгновенно уходит за спину обидчику
         // и отвечает контратакой. Добить его непрерывной серией почти нереально.
         if (result && !(source.getDirectEntity() instanceof Projectile)
-                && source.getEntity() instanceof LivingEntity parryTarget && this.random.nextFloat() < 0.35F) {
-            blinkBehind(sl, parryTarget);
-            if (hostile && parryTarget == this.getTarget() && sl.getGameTime() >= this.voiceUntil
-                    && sl.random.nextInt(2) == 0) {
-                say(sl, pick(sl.random, PARRY_LINES));
+                && source.getEntity() instanceof LivingEntity parryTarget) {
+            meleePressure = Math.min(60, meleePressure + 4);
+            float parryChance = 0.35F + Math.min(0.20F, meleePressure * 0.005F); // до 0.55 под ближним прессингом
+            if (this.random.nextFloat() < parryChance) {
+                blinkBehind(sl, parryTarget);
+                if (hostile && parryTarget == this.getTarget() && sl.getGameTime() >= this.voiceUntil
+                        && sl.random.nextInt(2) == 0) {
+                    say(sl, pick(sl.random, PARRY_LINES));
+                }
             }
         }
         // Первый раз продавили ниже половины — он впервые воспринимает бой всерьёз.
