@@ -418,7 +418,7 @@ def generate_items():
 def main():
     generate_blocks()
     generate_items()
-    fluid_textures()
+    # fluid_textures()
     borer_entity()
     print("v1.14 textures generated.")
 
