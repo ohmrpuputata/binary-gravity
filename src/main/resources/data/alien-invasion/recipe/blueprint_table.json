@@ -13,10 +13,10 @@
       "item": "minecraft:book"
     },
     "A": {
-      "item": "alien-invasion:alien_alloy"
+      "item": "alien-invasion:platinum_ingot"
     },
     "C": {
-      "item": "alien-invasion:cosmic_credit"
+      "item": "alien-invasion:cosmic_shard"
     },
     "I": {
       "item": "minecraft:iron_ingot"

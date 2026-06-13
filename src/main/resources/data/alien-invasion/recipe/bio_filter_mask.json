@@ -7,7 +7,7 @@
   ],
   "key": {
     "C": {
-      "item": "alien-invasion:bio_fiber"
+      "item": "alien-invasion:alien_skin"
     },
     "F": {
       "item": "minecraft:charcoal"
@@ -16,7 +16,7 @@
       "item": "minecraft:black_wool"
     },
     "H": {
-      "item": "alien-invasion:hazmat_helmet"
+      "item": "alien-invasion:alien_hazmat_helmet"
     }
   },
   "result": {
