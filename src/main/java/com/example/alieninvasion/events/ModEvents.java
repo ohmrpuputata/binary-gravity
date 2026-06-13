@@ -133,6 +133,11 @@ public class ModEvents {
                                 net.minecraft.world.effect.MobEffects.MOVEMENT_SLOWDOWN, 100, 0));
                         entity.addEffect(new net.minecraft.world.effect.MobEffectInstance(
                                 net.minecraft.world.effect.MobEffects.WEAKNESS, 100, 0));
+                    } else if (weapon.is(ItemRegistry.NIBIRIUM_SWORD)) {
+                        // Irradiation — blocks healing for 6 seconds
+                        entity.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                                net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.IRRADIATION),
+                                120, 0));
                     }
                 }
             }

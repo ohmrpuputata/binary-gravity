@@ -22,6 +22,7 @@ import com.example.alieninvasion.item.GravityBootsItem;
 import com.example.alieninvasion.item.InvasionTrackerItem;
 import com.example.alieninvasion.item.PalladiumSwordItem;
 import com.example.alieninvasion.item.PlatinumSwordItem;
+import com.example.alieninvasion.item.NibiriumSwordItem;
 import com.example.alieninvasion.item.AlienHazmatArmorMaterial;
 import com.example.alieninvasion.item.AlienChemArmorMaterial;
 import com.example.alieninvasion.item.PlatinumArmorMaterial;
@@ -318,7 +319,7 @@ public class ItemRegistry {
 
     // Nibirium tools — netherite-grade. Pickaxe & shovel break 3x3 (ModEvents).
     public static final Item NIBIRIUM_SWORD = registerItem("nibirium_sword",
-            new SwordItem(ModToolTiers.NIBIRIUM,
+            new NibiriumSwordItem(ModToolTiers.NIBIRIUM,
                     new Item.Properties().attributes(SwordItem.createAttributes(ModToolTiers.NIBIRIUM, 5, -2.4F))));
     public static final Item NIBIRIUM_PICKAXE = registerItem("nibirium_pickaxe",
             new PickaxeItem(ModToolTiers.NIBIRIUM,
