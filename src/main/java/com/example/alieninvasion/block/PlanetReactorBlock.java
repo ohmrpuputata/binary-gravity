@@ -19,9 +19,10 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Реактор охотника: «НАСТОЯЩАЯ пушка» Макса. Ставится только в родном мире
- * Роя, рядом с ГЛАВНЫМ ульем. После установки — 1:40 до детонации всей
- * планеты; рой бросает всё, чтобы его сгрызть, реактор нужно отбивать.
+ * Реактор охотника: «НАСТОЯЩАЯ пушка» Макса — бомба для столицы Роя. Ставится
+ * только в родном мире Роя, в ГОРОДЕ (у центрального шпиля). После установки —
+ * 1:40 до детонации всей планеты; рой бросает всё, чтобы его сгрызть, бомбу
+ * нужно отбивать.
  */
 public class PlanetReactorBlock extends Block implements EntityBlock {
 
@@ -52,13 +53,13 @@ public class PlanetReactorBlock extends Block implements EntityBlock {
             return;
         }
         boolean inHomeworld = level.dimension().equals(HomeworldManager.HOMEWORLD);
-        double dx = pos.getX() - HomeworldManager.HIVE_CENTER.getX();
-        double dz = pos.getZ() - HomeworldManager.HIVE_CENTER.getZ();
-        boolean nearHive = dx * dx + dz * dz <= HomeworldManager.REACTOR_PLACEMENT_RADIUS * HomeworldManager.REACTOR_PLACEMENT_RADIUS;
-        if (!inHomeworld || !nearHive) {
+        double dx = pos.getX() - HomeworldManager.CITY_CENTER.getX();
+        double dz = pos.getZ() - HomeworldManager.CITY_CENTER.getZ();
+        boolean inCity = dx * dx + dz * dz <= HomeworldManager.BOMB_PLACEMENT_RADIUS * HomeworldManager.BOMB_PLACEMENT_RADIUS;
+        if (!inHomeworld || !inCity) {
             if (placer instanceof Player p) {
                 p.displayClientMessage(Component.literal(
-                        "§c[Реактор] Откалиброван под ядро улья. Ставь его у ГЛАВНОГО УЛЬЯ в мире Роя — портал вон стоит."), false);
+                        "§c[Бомба] Заряд настроен на столицу Роя. Тащи его в ГОРОД и ставь у центрального шпиля."), false);
             }
             level.destroyBlock(pos, true); // возвращаем предмет
             return;

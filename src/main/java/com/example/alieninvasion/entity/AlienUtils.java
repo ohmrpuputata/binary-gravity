@@ -45,7 +45,9 @@ public class AlienUtils {
 
     public static void spawnGoreParticles(LivingEntity entity, float damageAmount) {
         if (entity.level() instanceof ServerLevel serverLevel && damageAmount > 0) {
-            int particleCount = (int) Math.max(1, damageAmount);
+            // Ограничиваем число частиц: /kill и пустота наносят урон Float.MAX_VALUE,
+            // из-за чего (int)damageAmount давал ~2 млрд итераций и подвешивал сервер.
+            int particleCount = Math.min(12, (int) Math.max(1, Math.min(damageAmount, 12.0F)));
             for (int i = 0; i < particleCount; i++) {
                 serverLevel.sendParticles(
                         new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.BEEF)),

@@ -39,8 +39,13 @@ public class HomeworldManager extends SavedData {
     /** ГИГАНТСКИЙ ГОРОД РОЯ: неоновый мегаполис к востоку от главного улья. */
     public static final BlockPos CITY_CENTER = new BlockPos(272, 0, 0);
     public static final int CITY_RADIUS = 88;
+    /** Площадка прибытия портала: за южными воротами города, лицом на шпиль. */
+    public static final BlockPos CITY_ARRIVAL = new BlockPos(272, 0, CITY_RADIUS + 20);
+    /** Бомбу (реактор) можно ставить в этом радиусе от центра города (у шпиля). */
+    public static final double BOMB_PLACEMENT_RADIUS = CITY_RADIUS;
 
     private boolean arenaBuilt = false;
+    private boolean cityArenaBuilt = false;
     /** Чанки, уже получившие рельеф и декорации (см. decorateChunk). */
     private final it.unimi.dsi.fastutil.longs.LongOpenHashSet decoratedChunks =
             new it.unimi.dsi.fastutil.longs.LongOpenHashSet();
@@ -61,6 +66,7 @@ public class HomeworldManager extends SavedData {
     public static HomeworldManager load(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
         HomeworldManager data = new HomeworldManager();
         data.arenaBuilt = tag.getBoolean("ArenaBuilt");
+        data.cityArenaBuilt = tag.getBoolean("CityArenaBuilt");
         for (long l : tag.getLongArray("DecoratedChunks")) {
             data.decoratedChunks.add(l);
         }
@@ -70,6 +76,7 @@ public class HomeworldManager extends SavedData {
     @Override
     public CompoundTag save(CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
         tag.putBoolean("ArenaBuilt", arenaBuilt);
+        tag.putBoolean("CityArenaBuilt", cityArenaBuilt);
         tag.putLongArray("DecoratedChunks", decoratedChunks.toLongArray());
         return tag;
     }
@@ -786,6 +793,47 @@ public class HomeworldManager extends SavedData {
                 hw.addFreshEntity(guard);
             }
         }
+    }
+
+    /**
+     * Готовит прибытие у ГОРОДА: форсит чанк площадки, ровняет посадочную плиту
+     * и ставит обратный портал за южными воротами. Сам мегаполис застраивается
+     * декорацией чанков (centralSpire — на CITY_CENTER). Вызывать перед телепортом.
+     */
+    public static void ensureCityArena(ServerLevel hw) {
+        HomeworldManager data = get(hw);
+        if (data.cityArenaBuilt) {
+            return;
+        }
+        // Чанк площадки должен быть загружен, иначе getHeight/setBlock промахнутся.
+        hw.getChunk(CITY_ARRIVAL.getX() >> 4, CITY_ARRIVAL.getZ() >> 4);
+        data.cityArenaBuilt = true;
+        data.setDirty();
+
+        int y = hw.getHeight(Heightmap.Types.MOTION_BLOCKING, CITY_ARRIVAL.getX(), CITY_ARRIVAL.getZ());
+        // Ровная посадочная плита + расчищенное место над ней, чтобы не выпасть в дюну.
+        for (int dx = -3; dx <= 3; dx++) {
+            for (int dz = -3; dz <= 3; dz++) {
+                hw.setBlockAndUpdate(new BlockPos(CITY_ARRIVAL.getX() + dx, y - 1, CITY_ARRIVAL.getZ() + dz),
+                        ModBlocks.INFESTED_STONE_BRICKS.defaultBlockState());
+                hw.setBlockAndUpdate(new BlockPos(CITY_ARRIVAL.getX() + dx, y, CITY_ARRIVAL.getZ() + dz),
+                        Blocks.AIR.defaultBlockState());
+                hw.setBlockAndUpdate(new BlockPos(CITY_ARRIVAL.getX() + dx, y + 1, CITY_ARRIVAL.getZ() + dz),
+                        Blocks.AIR.defaultBlockState());
+            }
+        }
+        // Обратный портал у самой площадки (лицом на город).
+        buildPortalFrame(hw, new BlockPos(CITY_ARRIVAL.getX() - 2, y, CITY_ARRIVAL.getZ() + 2));
+        // Сигнальные лампы — ориентир «ты прибыл, город там».
+        hw.setBlockAndUpdate(new BlockPos(CITY_ARRIVAL.getX() - 4, y, CITY_ARRIVAL.getZ()),
+                ModBlocks.WARNING_LAMP.defaultBlockState());
+        hw.setBlockAndUpdate(new BlockPos(CITY_ARRIVAL.getX() + 4, y, CITY_ARRIVAL.getZ()),
+                ModBlocks.WARNING_LAMP.defaultBlockState());
+    }
+
+    /** Высота посадочной плиты у города (для телепорта игрока). */
+    public static int cityArrivalY(ServerLevel hw) {
+        return hw.getHeight(Heightmap.Types.MOTION_BLOCKING, CITY_ARRIVAL.getX(), CITY_ARRIVAL.getZ());
     }
 
     /**

@@ -38,10 +38,11 @@ import net.minecraft.world.phys.Vec3;
  * отступления роя, на пафосе раздаёт комплименты выжившим «бомжам» и вручает
  * свой реактор для уничтожения планеты Роя.
  *
- * НЕ ТРОГАТЬ ЕГО: 400 HP, топовая броня, мгновенно ломает стены 3x3, стреляет
- * всем инопланетным арсеналом, уворачивается от снарядов телепортом и жуёт
- * зачарованные яблоки. Если напасть — он вырежет весь сервер и спросит,
- * стоило ли оно того.
+ * НЕ ТРОГАТЬ ЕГО: живучесть у него не в мясе, а в МАСТЕРСТВЕ. HP немного, броня
+ * средняя — но он почти не стоит на месте: блинкает за спину, рвёт дистанцию
+ * рывком, веером кроет уклонение, парирует ближний бой контрударом, ловит
+ * снаряды телепортом и жуёт зачарованные яблоки. Если напасть — он вырежет весь
+ * сервер и спросит, стоило ли оно того. Убить можно. Попасть — вот это вряд ли.
  */
 public class HunterEntity extends PathfinderMob {
 
@@ -77,33 +78,49 @@ public class HunterEntity extends PathfinderMob {
             "В мои годы рой выносили без брони. В одних трениках.",
             "Если потеряете реактор — со дна океана достанете. Зубами.",
             "Не благодарите. Хотя нет — благодарите.",
-            "Главный улей. Реактор. Портал. Чё тут непонятного-то?",
+            "Город Роя. Реактор. Портал. Чё тут непонятного-то?",
             "Я однажды улей чихом завалил. Простуженный был.",
-            "Время — деньги, бомжи. А вы тратите МОЁ время."
+            "Время — деньги, бомжи. А вы тратите МОЁ время.",
+            "Стою тут, как памятник самому себе. Заслуженно, между прочим.",
+            "Видите этот город? Скоро это будет кратер. С моим автографом.",
+            "Профессионализм, бомжи, — это когда работаешь меньше, а делаешь больше.",
+            "Я не считаю убитых. Их считают ОНИ. Точнее, считали.",
+            "Запомните этот силуэт. Будете внукам рассказывать.",
+            "Реактор в центр города. Бомба. Бах. Это даже вы не испортите. Наверное."
     };
     private static final String[] IDLE_QUIPS_AFTER = {
             "Хорошая работа, бомжи. Не ожидал. Серьёзно.",
             "Тихо как... Даже скучно. Может, где ещё рой остался?",
             "Видали салют? То-то же. Школа Максбетова.",
             "Ну всё, живите. Только Землю больше не теряйте, второй раз спасать не приду.",
-            "Птички поют... Аж противно. Но красиво, да."
+            "Птички поют... Аж противно. Но красиво, да.",
+            "Целый город Роя — и тот в труху. А вы боялись.",
+            "Вот теперь можно и на пенсию. Лет на пять. Ну, на год.",
+            "Запишите в учебники: человечество спас один Макс. Вы так, массовка."
     };
     private static final String[] STARE_QUIPS = {
             "Чё уставился? Автограф не раздаю.",
             "Дыши в другую сторону, бомж.",
             "Ближе не подходи — от меня крутость не передаётся.",
-            "Чё надо? Реактор я уже отдал."
+            "Чё надо? Реактор я уже отдал.",
+            "Любуйся издалека, как все нормальные люди.",
+            "Ещё шаг — и будешь любоваться из реанимации."
     };
     private static final String[] ANGRY_LINES = {
             "Ты ЧЁ творишь, дебил?! НА МЕНЯ?! Я тебя сейчас обратно в каменный век отправлю!",
             "О-о-о, смелый нашёлся! Запомни этот момент — это была худшая идея в твоей жизни.",
-            "НА МЕНЯ?! Рой смотрел на меня так же. Где теперь рой?"
+            "НА МЕНЯ?! Рой смотрел на меня так же. Где теперь рой?",
+            "Серьёзно? Я спас твою планету, а ты мне в спину? Ну держись, неблагодарный.",
+            "Окей. ОКЕЙ. Ты сам напросился на мастер-класс."
     };
     private static final String[] DODGE_LINES = {
             "Промазал. Дальше что?",
             "Медленно. Очень медленно.",
             "Я такое ещё в детском саду уворачивал.",
-            "Ты целишься или приветствуешь?"
+            "Ты целишься или приветствуешь?",
+            "Мимо. Как и вся твоя жизнь.",
+            "Я тут, бомж. Нет, уже тут. И снова не угадал.",
+            "Это была твоя лучшая попытка? Запиши, переживать будешь."
     };
     private static final String[] COMBAT_TAUNTS = {
             "Ты ещё жив? Удивительно. Раздражающе, но удивительно.",
@@ -111,12 +128,16 @@ public class HunterEntity extends PathfinderMob {
             "Я даже не вспотел, бомжина.",
             "Может, сдашься? Шучу. Не может.",
             "Рой держался дольше. РОЙ, Карл!",
-            "Это всё, на что способно человечество? Печально."
+            "Это всё, на что способно человечество? Печально.",
+            "Я дерусь вполсилы. В четверть. Ладно, я просто разминаюсь.",
+            "Ты бьёшь туда, где я БЫЛ. Учись бить туда, где буду.",
+            "Каждый твой удар я вижу за три хода. Это даже неспортивно."
     };
     private static final String[] APPLE_LINES = {
             "*хрум* ...Вкусно. На чём мы остановились? А, точно — на твоих похоронах.",
             "*хрум* Витамины — основа крутости.",
-            "*хрум* Секунду. Перекус. Даже не думай, что это твоя заслуга."
+            "*хрум* Секунду. Перекус. Даже не думай, что это твоя заслуга.",
+            "*хрум* Перерыв на обед. Не стесняйся, бей. А, ты и так не можешь."
     };
     private static final String[] PLAYER_KILL_LINES = {
             "И стоило оно того, бомжина?",
@@ -124,7 +145,9 @@ public class HunterEntity extends PathfinderMob {
             "Я же говорил. Я ВСЕГДА говорю.",
             "Передавай привет респауну.",
             "Это был урок. Бесплатный, между прочим.",
-            "Лежи. Подумай о своём поведении."
+            "Лежи. Подумай о своём поведении.",
+            "Школа закрыта. Урок усвоен посмертно.",
+            "Я бы сказал «ничего личного», но нет. Личное."
     };
     private static final String[] ALIEN_KILL_LINES = {
             "Видали? ВОТ так это делается.",
@@ -132,7 +155,28 @@ public class HunterEntity extends PathfinderMob {
             "Даже не размялся, ёпт.",
             "Соскучился я по этому делу.",
             "Тыща первый. Или вторая тыща? Сбился.",
-            "Шёл бы ты домой, жук. А, точно — дома у тебя скоро не будет."
+            "Шёл бы ты домой, жук. А, точно — дома у тебя скоро не будет.",
+            "Один взмах — один жук. Математика уровня бог.",
+            "И передайте Матери Роя... а, ну да. Уже некому."
+    };
+    // Реплики под новые приёмы — он комментирует собственное мастерство.
+    private static final String[] DASH_LINES = {
+            "Дистанция? Не существует.",
+            "Моргнул — а я уже у тебя на лице.",
+            "Слишком далеко стоял. Исправил.",
+            "Рывок Максбетова. Патент мой."
+    };
+    private static final String[] PARRY_LINES = {
+            "Не-а. Так не пойдёт.",
+            "Парирование уровня «легенда».",
+            "Ударил? А теперь моя очередь, по правилам.",
+            "Спасибо за открытую спину, бомж."
+    };
+    private static final String[] EXECUTE_LINES = {
+            "Финальный аккорд.",
+            "Это было предсказуемо. Как и финал.",
+            "Конец сета. 6:0.",
+            "Запомни: профи не промахиваются дважды."
     };
 
     private static String pick(net.minecraft.util.RandomSource random, String[] pool) {
@@ -161,14 +205,16 @@ public class HunterEntity extends PathfinderMob {
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        // 200 HP: живучесть теперь не в толщине, а в манёвре — блинки, уклонения,
-        // стрейф и яблоки. Убить можно, но сначала попробуй в него попасть.
+        // 120 HP, средняя броня: он намеренно НЕ танк. Сила — в манёвре и тактике:
+        // блинки, рывки, парирование, веер снарядов, уклонения от выстрелов и
+        // яблоки на крайний случай. Урон высокий (мастерство), движется быстро.
+        // Хочешь его убить — сперва попади. А он не стоит на месте ни секунды.
         return PathfinderMob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 200.0D)
-                .add(Attributes.ARMOR, 20.0D)
-                .add(Attributes.ARMOR_TOUGHNESS, 12.0D)
-                .add(Attributes.ATTACK_DAMAGE, 14.0D)
-                .add(Attributes.MOVEMENT_SPEED, 0.38D)
+                .add(Attributes.MAX_HEALTH, 120.0D)
+                .add(Attributes.ARMOR, 10.0D)
+                .add(Attributes.ARMOR_TOUGHNESS, 6.0D)
+                .add(Attributes.ATTACK_DAMAGE, 16.0D)
+                .add(Attributes.MOVEMENT_SPEED, 0.42D)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1.0D)
                 .add(Attributes.FOLLOW_RANGE, 80.0D);
     }
@@ -280,7 +326,7 @@ public class HunterEntity extends PathfinderMob {
                     giveReactor(sl, nearest);
                 }
                 case 5 -> {
-                    say(sl, "Тащите его через портал, ставьте у ГЛАВНОГО улья и валите со всех ног. Минута сорок — и их поганый шарик станет салютом. Не обл*жайтесь.");
+                    say(sl, "Тащите его через портал, прямо в их СТОЛИЦУ, и ставьте в центре города — у главного шпиля. Потом валите со всех ног: минута сорок — и их поганый шарик станет салютом. Не обл*жайтесь.");
                     dialogueStage = 99;
                     return;
                 }
@@ -434,27 +480,34 @@ public class HunterEntity extends PathfinderMob {
             return;
         }
 
-        // Толпа вокруг — время для удара по площади.
-        if (countSplashTargets(sl, 4.5D) >= 2 && sl.random.nextInt(100) < 35) {
-            groundSlam(sl);
+        // Толпа вокруг — площадная атака: отбрасывающий слэм или замедляющая нова.
+        if (countSplashTargets(sl, 5.0D) >= 2 && sl.random.nextInt(100) < 50) {
+            if (sl.random.nextBoolean()) {
+                groundSlam(sl);
+            } else {
+                shockNova(sl);
+            }
             return;
         }
 
         int roll = sl.random.nextInt(100);
-        if (roll < 35) {
+        if (roll < 20) {
             blinkBehind(sl, target);
-        } else if (roll < 55 && dist < 8.0D) {
+        } else if (roll < 38 && dist > 6.0D) {
+            dashStrike(sl, target);                 // рывок вплотную сквозь дистанцию
+        } else if (roll < 55 && dist < 9.0D) {
             blinkAway(sl, target, 8.0D);
             burstFire(sl, target, 3);
-        } else if (roll < 80) {
+        } else if (roll < 72) {
+            homingVolley(sl, target);               // веер из пяти болтов
+        } else if (roll < 88) {
             // Зайти сбоку: 1.5-2.5 сек стрейфа по случайной дуге.
             strafeTicks = 30 + sl.random.nextInt(20);
             strafeDir = sl.random.nextBoolean() ? 0.9F : -0.9F;
         } else if (dist > 3.5D && dist < 13.0D) {
             leapAt(sl, target);
         } else {
-            strafeTicks = 20;
-            strafeDir = sl.random.nextBoolean() ? 0.9F : -0.9F;
+            dashStrike(sl, target);
         }
     }
 
@@ -503,6 +556,61 @@ public class HunterEntity extends PathfinderMob {
         this.setDeltaMovement(flat.x, 0.55D, flat.z);
         this.hurtMarked = true;
         sl.playSound(null, this.blockPosition(), SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.HOSTILE, 1.2F, 0.8F);
+    }
+
+    /** Рывок-сближение: телепорт вплотную к цели + немедленный удар. Профи не догоняют — они ПОЯВЛЯЮТСЯ. */
+    private void dashStrike(ServerLevel sl, LivingEntity target) {
+        Vec3 toMe = this.position().subtract(target.position());
+        Vec3 flat = new Vec3(toMe.x, 0.0D, toMe.z);
+        flat = flat.lengthSqr() < 0.01D ? new Vec3(1.0D, 0.0D, 0.0D) : flat.normalize();
+        Vec3 dest = target.position().add(flat.scale(1.7D));
+        if (safeBlink(sl, dest.x, target.getY(), dest.z)) {
+            this.getLookControl().setLookAt(target, 60.0F, 60.0F);
+            this.swing(net.minecraft.world.InteractionHand.MAIN_HAND);
+            this.doHurtTarget(target);
+            sl.playSound(null, this.blockPosition(), SoundEvents.PLAYER_ATTACK_STRONG, SoundSource.HOSTILE, 1.3F, 0.9F);
+            if (hostile && sl.getGameTime() >= this.voiceUntil && sl.random.nextInt(2) == 0) {
+                say(sl, pick(sl.random, DASH_LINES));
+            }
+        }
+    }
+
+    /** Веер из пяти болтов широким конусом — наказание за попытку «просто отойти вбок». */
+    private void homingVolley(ServerLevel sl, LivingEntity target) {
+        Vec3 aim = new Vec3(target.getX() - this.getX(),
+                target.getEyeY() - this.getEyeY(),
+                target.getZ() - this.getZ());
+        for (int i = -2; i <= 2; i++) {
+            Projectile bolt = (i % 2 == 0) ? new PlasmaBoltEntity(sl, this) : new RadiationBoltEntity(sl, this, false);
+            double ang = Math.toRadians(i * 10.0);
+            double cos = Math.cos(ang), sin = Math.sin(ang);
+            double nx = aim.x * cos - aim.z * sin;
+            double nz = aim.x * sin + aim.z * cos;
+            bolt.setPos(this.getX(), this.getEyeY() - 0.1D, this.getZ());
+            bolt.shoot(nx, aim.y, nz, 2.2F, 1.0F);
+            sl.addFreshEntity(bolt);
+        }
+        this.swing(net.minecraft.world.InteractionHand.MAIN_HAND);
+        sl.playSound(null, this.blockPosition(), SoundEvents.BLAZE_SHOOT, SoundSource.HOSTILE, 1.3F, 1.2F);
+    }
+
+    /** Шоковая нова: импульс на 6 блоков — урон средний, но всех вокруг замедляет и расшвыривает. */
+    private void shockNova(ServerLevel sl) {
+        this.swing(net.minecraft.world.InteractionHand.MAIN_HAND);
+        float dmg = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.5F;
+        for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class,
+                this.getBoundingBox().inflate(6.0D), en -> isSplashTarget(en, null))) {
+            e.hurt(this.damageSources().mobAttack(this), dmg);
+            e.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 80, 2));
+            e.knockback(0.5D, this.getX() - e.getX(), this.getZ() - e.getZ());
+        }
+        for (int i = 0; i < 32; i++) {
+            double a = i * Math.PI / 16.0D;
+            sl.sendParticles(ParticleTypes.SONIC_BOOM,
+                    this.getX() + Math.cos(a) * 1.5D, this.getY() + 0.8D, this.getZ() + Math.sin(a) * 1.5D,
+                    1, Math.cos(a) * 0.3D, 0.0D, Math.sin(a) * 0.3D, 0.0D);
+        }
+        sl.playSound(null, this.blockPosition(), SoundEvents.WARDEN_SONIC_BOOM, SoundSource.HOSTILE, 1.2F, 1.4F);
     }
 
     /**
@@ -640,8 +748,8 @@ public class HunterEntity extends PathfinderMob {
         if (!(this.level() instanceof ServerLevel sl)) {
             return super.hurt(source, amount);
         }
-        // Хитрый: от трети снарядов просто уходит телепортом.
-        if (source.getDirectEntity() instanceof Projectile && this.random.nextFloat() < 0.3F) {
+        // Хитрый: почти от половины снарядов уходит телепортом — снайпера это бесит особенно.
+        if (source.getDirectEntity() instanceof Projectile && this.random.nextFloat() < 0.45F) {
             double a = this.random.nextDouble() * Math.PI * 2.0D;
             safeBlink(sl, this.getX() + Math.cos(a) * 4.0D, this.getY(), this.getZ() + Math.sin(a) * 4.0D);
             // Подкалывает только игроков — на снаряды роя не отвлекается.
@@ -651,12 +759,15 @@ public class HunterEntity extends PathfinderMob {
             return false;
         }
         boolean result = super.hurt(source, amount);
-        // Получил по лицу в ближке — иногда тут же отскакивает вбок (урон прошёл,
-        // но добивающую серию по нему не прокрутишь).
+        // ПАРИРОВАНИЕ: пропустил удар в ближнем — мгновенно уходит за спину обидчику
+        // и отвечает контратакой. Добить его непрерывной серией почти нереально.
         if (result && !(source.getDirectEntity() instanceof Projectile)
-                && source.getEntity() instanceof LivingEntity && this.random.nextFloat() < 0.2F) {
-            double a = this.random.nextDouble() * Math.PI * 2.0D;
-            safeBlink(sl, this.getX() + Math.cos(a) * 5.0D, this.getY(), this.getZ() + Math.sin(a) * 5.0D);
+                && source.getEntity() instanceof LivingEntity parryTarget && this.random.nextFloat() < 0.35F) {
+            blinkBehind(sl, parryTarget);
+            if (hostile && parryTarget == this.getTarget() && sl.getGameTime() >= this.voiceUntil
+                    && sl.random.nextInt(2) == 0) {
+                say(sl, pick(sl.random, PARRY_LINES));
+            }
         }
         // Первый раз продавили ниже половины — он впервые воспринимает бой всерьёз.
         if (result && hostile && !saidLowHp && this.getHealth() < this.getMaxHealth() * 0.5F) {
@@ -677,7 +788,7 @@ public class HunterEntity extends PathfinderMob {
     public boolean killedEntity(ServerLevel sl, LivingEntity victim) {
         boolean r = super.killedEntity(sl, victim);
         if (victim instanceof Player) {
-            say(sl, pick(sl.random, PLAYER_KILL_LINES));
+            say(sl, pick(sl.random, sl.random.nextBoolean() ? PLAYER_KILL_LINES : EXECUTE_LINES));
             voice(sl, ModSounds.HUNTER_KILL);
         } else if (AlienUtils.isAlliedTo(null, victim) && sl.random.nextInt(4) == 0) {
             say(sl, pick(sl.random, ALIEN_KILL_LINES));

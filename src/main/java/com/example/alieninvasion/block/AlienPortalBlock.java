@@ -75,22 +75,24 @@ public class AlienPortalBlock extends Block {
                     player.getYRot(), player.getXRot());
             playWhoosh(overworld, player.blockPosition());
         } else {
-            // В родной мир Роя — арена строится при первом входе.
+            // В родной мир Роя — улей (лор) и площадка у ГОРОДА строятся при первом входе.
             ServerLevel homeworld = server.getLevel(HomeworldManager.HOMEWORLD);
             if (homeworld == null) {
                 player.displayClientMessage(Component.literal("§cРазрыв нестабилен... измерение недоступно."), true);
                 return;
             }
-            HomeworldManager.ensureArena(homeworld);
-            int y = homeworld.getHeight(Heightmap.Types.MOTION_BLOCKING, 0, 26);
+            HomeworldManager.ensureArena(homeworld);      // главный улей — теперь просто часть мира
+            HomeworldManager.ensureCityArena(homeworld);  // площадка прибытия + обратный портал у города
+            BlockPos arrival = HomeworldManager.CITY_ARRIVAL;
+            int y = HomeworldManager.cityArrivalY(homeworld);
             playWhoosh(level, pos);
-            player.teleportTo(homeworld, 0.5D, y, 26.5D, 180.0F, 0.0F);
+            player.teleportTo(homeworld, arrival.getX() + 0.5D, y, arrival.getZ() + 0.5D, 180.0F, 0.0F);
             playWhoosh(homeworld, player.blockPosition());
             AlienUtils.broadcastTitle(homeworld,
-                    Component.literal("§5РОДНОЙ МИР РОЯ"),
-                    Component.literal("§dЗдесь это началось. Здесь это и закончится."));
+                    Component.literal("§5СТОЛИЦА РОЯ"),
+                    Component.literal("§dЗдесь бьётся сердце вторжения. Здесь его и оборвём."));
             player.sendSystemMessage(Component.literal(
-                    "§dНа востоке горизонт светится — там огни ГИГАНТСКОГО города Роя..."));
+                    "§dПеред вами ГИГАНТСКИЙ город Роя. Несите бомбу к центральному шпилю — и поставьте её там."));
         }
     }
 
