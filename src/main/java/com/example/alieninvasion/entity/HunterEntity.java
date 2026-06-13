@@ -72,6 +72,9 @@ public class HunterEntity extends PathfinderMob {
     private boolean gearEnchanted = false;
     private int hazardCooldown = 0;  // антиспам реакции на опасную среду (лава/огонь/падение)
     private int buildCooldown = 0;   // антиспам инженерных приёмов (стена/укрытие/столб)
+    private int flurryTicks = 0;     // вихрь клинка: длящийся AoE вокруг
+    private int orbitalTimer = 0;    // телеграф орбитального удара (тикает до удара)
+    private double orbitalX, orbitalZ; // отмеченная точка орбитального удара
 
     // ------------------------------------------------------------- РЕПЛИКИ
     private static final String[] IDLE_QUIPS = {
@@ -204,6 +207,24 @@ public class HunterEntity extends PathfinderMob {
             "Я и строитель, и могильщик. Универсал.",
             "Минутку, окопаюсь. Тебе же хуже."
     };
+    private static final String[] YANK_LINES = {
+            "Куда собрался? Мы не закончили.",
+            "А ну иди сюда, бомж.",
+            "От меня не убегают. От меня падают.",
+            "Поводок короткий. Проверим?"
+    };
+    private static final String[] ORBITAL_LINES = {
+            "Отойди оттуда. Или нет — мне же проще.",
+            "Сейчас рванёт. Считай до... поздно.",
+            "Небесная кара. По предоплате.",
+            "Три... два... а, чё тянуть."
+    };
+    private static final String[] FLURRY_LINES = {
+            "ВИХРЬ! Школа Максбетова, мелкие!",
+            "Кручусь-верчусь, всех нашинковать хочу.",
+            "Подойдите ближе. ВСЕМ хватит.",
+            "Это не танец. Хотя красиво, да."
+    };
 
     private static String pick(net.minecraft.util.RandomSource random, String[] pool) {
         return pool[random.nextInt(pool.length)];
@@ -232,12 +253,12 @@ public class HunterEntity extends PathfinderMob {
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        // 120 HP, средняя броня: он намеренно НЕ танк. Сила — в манёвре и тактике:
-        // блинки, рывки, парирование, веер снарядов, уклонения от выстрелов и
-        // яблоки на крайний случай. Урон высокий (мастерство), движется быстро.
-        // Хочешь его убить — сперва попади. А он не стоит на месте ни секунды.
+        // 80 HP — он намеренно ХРУПКИЙ по «мясу». Живучесть держится на трёх китах:
+        // зачарованная броня (Защита IV сильно режет урон), манёвр (блинки, рывки,
+        // парирование, уклонения) и яблоки. Урон высокий (мастерство). Хочешь убить —
+        // сперва попади и пробей броню. А он не стоит на месте ни секунды.
         return PathfinderMob.createMobAttributes()
-                .add(Attributes.MAX_HEALTH, 120.0D)
+                .add(Attributes.MAX_HEALTH, 80.0D)
                 .add(Attributes.ARMOR, 10.0D)
                 .add(Attributes.ARMOR_TOUGHNESS, 6.0D)
                 .add(Attributes.ATTACK_DAMAGE, 16.0D)
@@ -486,6 +507,40 @@ public class HunterEntity extends PathfinderMob {
             this.getMoveControl().strafe(0.4F, strafeDir);
         }
 
+        // ВИХРЬ КЛИНКА: пока активен — стоит на месте и рубит всех в 3 блоках по дуге.
+        if (flurryTicks > 0) {
+            flurryTicks--;
+            this.getNavigation().stop();
+            this.getLookControl().setLookAt(target, 40.0F, 40.0F);
+            if (flurryTicks % 3 == 0) {
+                float dmg = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.45F;
+                for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class,
+                        this.getBoundingBox().inflate(3.2D), en -> isSplashTarget(en, null))) {
+                    e.hurt(this.damageSources().mobAttack(this), dmg);
+                    e.knockback(0.25D, this.getX() - e.getX(), this.getZ() - e.getZ());
+                }
+                for (int k = 0; k < 8; k++) {
+                    double a = (flurryTicks + k) * 0.8D;
+                    sl.sendParticles(ParticleTypes.SWEEP_ATTACK,
+                            this.getX() + Math.cos(a) * 2.0D, this.getY() + 1.0D, this.getZ() + Math.sin(a) * 2.0D,
+                            1, 0.0D, 0.0D, 0.0D, 0.0D);
+                }
+                sl.playSound(null, this.blockPosition(), SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.HOSTILE, 0.8F, 1.3F);
+            }
+        }
+
+        // ОРБИТАЛЬНЫЙ УДАР: телеграф столбом частиц, затем взрыв по отмеченной точке.
+        if (orbitalTimer > 0) {
+            orbitalTimer--;
+            for (int k = 1; k <= 6; k++) {
+                sl.sendParticles(ParticleTypes.SCULK_SOUL, orbitalX, this.getY() + k, orbitalZ,
+                        2, 0.25D, 0.25D, 0.25D, 0.0D);
+            }
+            if (orbitalTimer == 0) {
+                orbitalStrikeHit(sl);
+            }
+        }
+
         // ПвП-подскоки в ближнем бою — двигается как игрок, а не как зомби.
         if (this.onGround() && this.distanceTo(target) < 5.5D && sl.random.nextInt(18) == 0) {
             this.getJumpControl().jump();
@@ -540,27 +595,31 @@ public class HunterEntity extends PathfinderMob {
             return;
         }
 
-        // Толпа вокруг — площадная атака: отбрасывающий слэм или замедляющая нова.
-        if (countSplashTargets(sl, 5.0D) >= 2 && sl.random.nextInt(100) < 50) {
-            if (sl.random.nextBoolean()) {
-                groundSlam(sl);
-            } else {
-                shockNova(sl);
+        // Толпа вокруг — площадная атака: слэм, замедляющая нова или вихрь клинка.
+        if (countSplashTargets(sl, 5.0D) >= 2 && sl.random.nextInt(100) < 55) {
+            switch (sl.random.nextInt(3)) {
+                case 0 -> groundSlam(sl);
+                case 1 -> shockNova(sl);
+                default -> bladeFlurry(sl);
             }
             return;
         }
 
         int roll = sl.random.nextInt(100);
-        if (roll < 20) {
+        if (roll < 15) {
             blinkBehind(sl, target);
-        } else if (roll < 38 && dist > 6.0D) {
+        } else if (roll < 28 && dist > 6.0D) {
             dashStrike(sl, target);                 // рывок вплотную сквозь дистанцию
-        } else if (roll < 55 && dist < 9.0D) {
+        } else if (roll < 42 && dist > 7.0D) {
+            yankTarget(sl, target);                 // телекинез: притянуть к себе
+        } else if (roll < 54 && dist < 9.0D) {
             blinkAway(sl, target, 8.0D);
             burstFire(sl, target, 3);
-        } else if (roll < 72) {
+        } else if (roll < 66) {
             homingVolley(sl, target);               // веер из пяти болтов
-        } else if (roll < 88) {
+        } else if (roll < 78 && dist > 7.0D && orbitalTimer <= 0) {
+            startOrbital(sl, target);               // телеграф-столб по позиции цели
+        } else if (roll < 90) {
             // Зайти сбоку: 1.5-2.5 сек стрейфа по случайной дуге.
             strafeTicks = 30 + sl.random.nextInt(20);
             strafeDir = sl.random.nextBoolean() ? 0.9F : -0.9F;
@@ -671,6 +730,59 @@ public class HunterEntity extends PathfinderMob {
                     1, Math.cos(a) * 0.3D, 0.0D, Math.sin(a) * 0.3D, 0.0D);
         }
         sl.playSound(null, this.blockPosition(), SoundEvents.WARDEN_SONIC_BOOM, SoundSource.HOSTILE, 1.2F, 1.4F);
+    }
+
+    /** Телекинез: рывком ПРИТЯГИВАЕТ убегающую цель к себе — от Макса не уходят. */
+    private void yankTarget(ServerLevel sl, LivingEntity target) {
+        Vec3 pull = this.position().subtract(target.position());
+        if (pull.lengthSqr() < 0.01D) {
+            return;
+        }
+        pull = pull.normalize().scale(1.8D);
+        target.setDeltaMovement(pull.x, 0.3D, pull.z);
+        target.hurtMarked = true;
+        sl.sendParticles(ParticleTypes.PORTAL, target.getX(), target.getY() + 1.0D, target.getZ(),
+                25, 0.3D, 0.5D, 0.3D, 0.4D);
+        sl.playSound(null, this.blockPosition(), SoundEvents.WARDEN_SONIC_BOOM, SoundSource.HOSTILE, 0.8F, 1.5F);
+        if (sl.getGameTime() >= this.voiceUntil && sl.random.nextInt(2) == 0) {
+            say(sl, pick(sl.random, YANK_LINES));
+        }
+    }
+
+    /** Вихрь клинка: 1.5 секунды стоит и рубит всё вокруг (тикает в abilityTick). */
+    private void bladeFlurry(ServerLevel sl) {
+        flurryTicks = 30;
+        this.getNavigation().stop();
+        sl.playSound(null, this.blockPosition(), SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.HOSTILE, 1.5F, 0.7F);
+        if (sl.getGameTime() >= this.voiceUntil && sl.random.nextInt(2) == 0) {
+            say(sl, pick(sl.random, FLURRY_LINES));
+        }
+    }
+
+    /** Помечает точку под целью; через ~1.2 с туда бьёт радиационный столб (telegraph). */
+    private void startOrbital(ServerLevel sl, LivingEntity target) {
+        orbitalX = target.getX();
+        orbitalZ = target.getZ();
+        orbitalTimer = 25;
+        sl.playSound(null, this.blockPosition(), SoundEvents.BEACON_POWER_SELECT, SoundSource.HOSTILE, 1.5F, 0.6F);
+        if (sl.getGameTime() >= this.voiceUntil && sl.random.nextInt(2) == 0) {
+            say(sl, pick(sl.random, ORBITAL_LINES));
+        }
+    }
+
+    private void orbitalStrikeHit(ServerLevel sl) {
+        int gy = sl.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING,
+                (int) Math.floor(orbitalX), (int) Math.floor(orbitalZ));
+        sl.sendParticles(ParticleTypes.EXPLOSION_EMITTER, orbitalX, gy + 1.0D, orbitalZ, 3, 0.5D, 0.5D, 0.5D, 0.0D);
+        sl.playSound(null, BlockPos.containing(orbitalX, gy, orbitalZ),
+                SoundEvents.GENERIC_EXPLODE.value(), SoundSource.HOSTILE, 2.5F, 0.7F);
+        float dmg = (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 1.5F;
+        net.minecraft.world.phys.AABB box = new net.minecraft.world.phys.AABB(
+                orbitalX - 3.0D, gy - 2.0D, orbitalZ - 3.0D, orbitalX + 3.0D, gy + 6.0D, orbitalZ + 3.0D);
+        for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class, box, en -> isSplashTarget(en, null))) {
+            e.hurt(this.damageSources().indirectMagic(this, this), dmg);
+            e.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1));
+        }
     }
 
     /**
