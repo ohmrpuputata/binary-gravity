@@ -329,9 +329,8 @@ public final class WorldContaminationManager {
                         BlockState plant = chunk.getBlockState(cursor);
                         if (ContaminationRules.isSurfaceVegetation(plant)) {
                             long vb = (h >>> 50) & 3L;
-                            BlockState withered = vb == 0L ? ModBlocks.ALIEN_TENDRILS.defaultBlockState()
-                                    : (vb == 1L ? ModBlocks.DEAD_INFESTED_CROP.defaultBlockState()
-                                                : Blocks.AIR.defaultBlockState());
+                            BlockState withered = vb <= 1L ? ModBlocks.ALIEN_TENDRILS.defaultBlockState()
+                                    : Blocks.AIR.defaultBlockState();
                             place(level, new BlockPos(x, groundY + 1, z), withered);
                             // Upper half of a double plant: clear it so nothing floats.
                             if (groundY + 2 < maxY) {

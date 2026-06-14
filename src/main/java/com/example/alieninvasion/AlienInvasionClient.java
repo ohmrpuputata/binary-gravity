@@ -255,7 +255,7 @@ public class AlienInvasionClient implements ClientModInitializer {
                 BlockRenderLayerMap.INSTANCE.putFluids(RenderType.translucent(),
                                 ModFluids.INFECTED_WATER_STILL, ModFluids.INFECTED_WATER_FLOWING);
                 BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.cutout(),
-                                ModBlocks.INFESTED_LEAVES, ModBlocks.DEAD_INFESTED_CROP, ModBlocks.BLOOD_POOL,
+                                ModBlocks.INFESTED_LEAVES, ModBlocks.BLOOD_POOL,
                                 ModBlocks.BLOOD_LAYER,
                                 ModBlocks.ALIEN_TENDRILS, ModBlocks.INFESTED_DOOR, ModBlocks.INFESTED_TRAPDOOR,
                                 ModBlocks.INFESTED_GLASS);

@@ -64,7 +64,7 @@ public class ToxicWaterBlock extends LiquidBlock {
             BlockPos target = pos.relative(direction);
             BlockState targetState = level.getBlockState(target);
             if (targetState.is(BlockTags.CROPS) || targetState.is(BlockTags.SAPLINGS)) {
-                level.setBlockAndUpdate(target, ModBlocks.DEAD_INFESTED_CROP.defaultBlockState());
+                level.setBlockAndUpdate(target, ModBlocks.ALIEN_TENDRILS.defaultBlockState());
             } else if (random.nextInt(24) == 0 && ContaminationRules.canContaminate(level, target, targetState)) {
                 BlockState replacement = ContaminationRules.contaminatedStateFor(targetState);
                 if (replacement != null) {

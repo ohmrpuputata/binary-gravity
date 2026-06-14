@@ -128,7 +128,7 @@ public final class ContaminationRules {
         }
         if (state.is(Blocks.MUSHROOM_STEM)) return ModBlocks.INFESTED_LOG.defaultBlockState();
         if (state.is(Blocks.SUGAR_CANE) || state.is(Blocks.BAMBOO)) {
-            return ModBlocks.DEAD_INFESTED_CROP.defaultBlockState();
+            return ModBlocks.ALIEN_TENDRILS.defaultBlockState();
         }
         if (state.is(Blocks.DEEPSLATE) || state.is(Blocks.COBBLED_DEEPSLATE)
                 || state.is(Blocks.POLISHED_DEEPSLATE) || state.is(Blocks.DEEPSLATE_BRICKS)
@@ -187,10 +187,10 @@ public final class ContaminationRules {
         }
         if (state.is(BlockTags.CROPS) || state.is(Blocks.WHEAT) || state.is(Blocks.CARROTS)
                 || state.is(Blocks.POTATOES) || state.is(Blocks.BEETROOTS)) {
-            return ModBlocks.DEAD_INFESTED_CROP.defaultBlockState();
+            return ModBlocks.ALIEN_TENDRILS.defaultBlockState();
         }
         if (isSurfaceVegetation(state) || isAdditionalVegetation(state)) {
-            return ModBlocks.DEAD_INFESTED_CROP.defaultBlockState();
+            return ModBlocks.ALIEN_TENDRILS.defaultBlockState();
         }
         if (state.is(BlockTags.BUTTONS) || state.is(BlockTags.PRESSURE_PLATES)
                 || state.is(BlockTags.RAILS)) {
@@ -301,8 +301,7 @@ public final class ContaminationRules {
         if (state.is(ModBlocks.INFESTED_STONE_BRICKS)) return Blocks.STONE_BRICKS.defaultBlockState();
         if (state.is(ModBlocks.INFESTED_WOOL)) return Blocks.WHITE_WOOL.defaultBlockState();
         if (state.is(ModBlocks.INFESTED_GLASS)) return Blocks.GLASS.defaultBlockState();
-        if (state.is(ModBlocks.INFESTED_LEAVES) || state.is(ModBlocks.DEAD_INFESTED_CROP)
-                || state.is(ModBlocks.ALIEN_TENDRILS)) {
+        if (state.is(ModBlocks.INFESTED_LEAVES) || state.is(ModBlocks.ALIEN_TENDRILS)) {
             return Blocks.AIR.defaultBlockState();
         }
         if (state.is(ModBlocks.TOXIC_WATER) || state.is(ModBlocks.INFECTED_WATER)) {

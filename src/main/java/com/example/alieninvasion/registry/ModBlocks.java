@@ -271,10 +271,6 @@ public class ModBlocks {
                     .sound(SoundType.GRASS).lightLevel(state -> 5).noOcclusion()
                     .pushReaction(PushReaction.DESTROY)));
 
-    public static final Block DEAD_INFESTED_CROP = registerBlock("dead_infested_crop",
-            new DeadInfestedCropBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).noCollission()
-                    .strength(0.1F).sound(SoundType.CROP).noOcclusion()));
-
     public static final Block PURIFIER = registerBlock("purifier",
             new PurifierBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(3.5F)
                     .requiresCorrectToolForDrops().sound(SoundType.METAL).lightLevel(state -> 12)));
