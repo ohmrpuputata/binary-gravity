@@ -63,9 +63,9 @@ public class PlatinumAnvilMenu extends AbstractContainerMenu {
             for (int col = 0; col < 3; col++) {
                 int index = col + row * 3;
                 if (index == 4) {
-                    this.addSlot(new CatalystSlot(craftSlots, 4, 9 + col * 18, 18 + row * 18));
+                    this.addSlot(new CatalystSlot(craftSlots, 4, 31 + col * 18, 18 + row * 18));
                 } else {
-                    this.addSlot(new Slot(craftSlots, index, 9 + col * 18, 18 + row * 18));
+                    this.addSlot(new Slot(craftSlots, index, 31 + col * 18, 18 + row * 18));
                 }
             }
         }
@@ -198,7 +198,7 @@ public class PlatinumAnvilMenu extends AbstractContainerMenu {
     private static class AnvilResultSlot extends Slot {
         private final PlatinumAnvilMenu menu;
         AnvilResultSlot(PlatinumAnvilMenu menu) {
-            super(menu.resultSlots, 0, 98, 36);
+            super(menu.resultSlots, 0, 125, 36);
             this.menu = menu;
         }
         @Override public boolean mayPlace(ItemStack stack) { return false; }

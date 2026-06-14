@@ -25,9 +25,9 @@ public class PlatinumAnvilScreen extends AbstractContainerScreen<PlatinumAnvilMe
     private static final int LABEL_COLOR = 0x404040;
 
     /* ---- slot background positions (top-left of 18×18 area) ---- */
-    private static final int GRID_X0 = 8,  GRID_Y0 = 17;
-    private static final int CAT_X   = 26, CAT_Y   = 35; // Center of the 3x3 grid (8+18, 17+18)
-    private static final int RES_X   = 93, RES_Y  = 31; // result uses a 26×26 frame (item slot is at 98)
+    private static final int GRID_X0 = 30,  GRID_Y0 = 17;
+    private static final int CAT_X   = 48, CAT_Y   = 35; // Center of the 3x3 grid (30+18, 17+18)
+    private static final int RES_X   = 120, RES_Y  = 31; // result uses a 26×26 frame (item slot is at 125)
 
     private static final Component CATALYST_TIP = Component.literal("Поместите Осколок");
     private static final Component RESULT_TIP   = Component.literal("Результат");
@@ -81,7 +81,7 @@ public class PlatinumAnvilScreen extends AbstractContainerScreen<PlatinumAnvilMe
                 drawSlot(gfx, x + GRID_X0 + c * 18, y + GRID_Y0 + r * 18);
 
         /* ---- arrow between grid and result ---- */
-        gfx.drawString(font, "\u25B6", x + 74, y + 39, LABEL_COLOR, false); // ▶
+        gfx.drawString(font, "\u25B6", x + 99, y + 39, LABEL_COLOR, false); // ▶
 
         /* ---- result slot (26×26 frame) ---- */
         drawResultSlot(gfx, x + RES_X, y + RES_Y);
@@ -95,7 +95,7 @@ public class PlatinumAnvilScreen extends AbstractContainerScreen<PlatinumAnvilMe
 
         /* ---- ghost items ---- */
         if (menu.getSlot(4).getItem().isEmpty()) {
-            renderGhost(gfx, new ItemStack(Items.AMETHYST_SHARD), x + 27, y + 36);
+            renderGhost(gfx, new ItemStack(Items.AMETHYST_SHARD), x + 49, y + 36);
         }
         if (menu.getSlot(9).getItem().isEmpty()) {
             renderGhost(gfx, new ItemStack(Items.IRON_INGOT), x + RES_X + 5, y + 36);
