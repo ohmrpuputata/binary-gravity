@@ -1,0 +1,16 @@
+{
+  "type": "alien-invasion:palladium_anvil",
+  "catalyst": {
+    "item": "alien-invasion:cosmic_shard"
+  },
+  "base": {
+    "item": "alien-invasion:palladium_boots"
+  },
+  "addition": {
+    "item": "alien-invasion:astral_prism_ingot"
+  },
+  "result": {
+    "id": "alien-invasion:astral_prism_boots",
+    "count": 1
+  }
+}

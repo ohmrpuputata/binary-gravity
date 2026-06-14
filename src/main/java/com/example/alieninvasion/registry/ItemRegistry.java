@@ -97,6 +97,9 @@ public class ItemRegistry {
     public static final Item COSMIC_INGOT = registerItem("cosmic_ingot",
             new Item(new Item.Properties().rarity(Rarity.UNCOMMON)));
 
+    public static final Item ASTRAL_PRISM_INGOT = registerItem("astral_prism_ingot",
+            new Item(new Item.Properties().rarity(Rarity.EPIC).fireResistant()));
+
     public static final Item BIO_SERUM = registerItem("bio_serum",
             new com.example.alieninvasion.item.BioSerumItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16)));
 
@@ -207,6 +210,12 @@ public class ItemRegistry {
 
     public static final Item EMP_GRENADE = registerItem("emp_grenade",
             new com.example.alieninvasion.item.EmpGrenadeItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(16)));
+
+    public static final Item ASTRAL_PRISM_GUN = registerItem("astral_prism_gun",
+            new com.example.alieninvasion.item.AstralPrismGunItem(new Item.Properties().rarity(Rarity.EPIC).fireResistant().stacksTo(1)));
+
+    public static final Item ASTRAL_RESONANCE_GRENADE = registerItem("astral_resonance_grenade",
+            new com.example.alieninvasion.item.AstralResonanceGrenadeItem(new Item.Properties().rarity(Rarity.EPIC).fireResistant().stacksTo(16)));
 
     public static final Item HERBAL_SALVE = registerItem("herbal_salve",
             new com.example.alieninvasion.item.HerbalSalveItem(new Item.Properties().rarity(Rarity.COMMON).stacksTo(64)));
@@ -374,6 +383,24 @@ public class ItemRegistry {
             new net.minecraft.world.item.ArmorItem(PalladiumArmorMaterial.PALLADIUM,
                     net.minecraft.world.item.ArmorItem.Type.BOOTS,
                     new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.BOOTS.getDurability(PalladiumArmorMaterial.BASE_DURABILITY))));
+
+    // Astral Prism armor — upgraded palladium armor
+    public static final Item ASTRAL_PRISM_HELMET = registerItem("astral_prism_helmet",
+            new net.minecraft.world.item.ArmorItem(com.example.alieninvasion.item.AstralPrismArmorMaterial.ASTRAL_PRISM,
+                    net.minecraft.world.item.ArmorItem.Type.HELMET, new Item.Properties().rarity(Rarity.EPIC).fireResistant()
+                    .durability(net.minecraft.world.item.ArmorItem.Type.HELMET.getDurability(com.example.alieninvasion.item.AstralPrismArmorMaterial.BASE_DURABILITY))));
+    public static final Item ASTRAL_PRISM_CHESTPLATE = registerItem("astral_prism_chestplate",
+            new net.minecraft.world.item.ArmorItem(com.example.alieninvasion.item.AstralPrismArmorMaterial.ASTRAL_PRISM,
+                    net.minecraft.world.item.ArmorItem.Type.CHESTPLATE, new Item.Properties().rarity(Rarity.EPIC).fireResistant()
+                    .durability(net.minecraft.world.item.ArmorItem.Type.CHESTPLATE.getDurability(com.example.alieninvasion.item.AstralPrismArmorMaterial.BASE_DURABILITY))));
+    public static final Item ASTRAL_PRISM_LEGGINGS = registerItem("astral_prism_leggings",
+            new net.minecraft.world.item.ArmorItem(com.example.alieninvasion.item.AstralPrismArmorMaterial.ASTRAL_PRISM,
+                    net.minecraft.world.item.ArmorItem.Type.LEGGINGS, new Item.Properties().rarity(Rarity.EPIC).fireResistant()
+                    .durability(net.minecraft.world.item.ArmorItem.Type.LEGGINGS.getDurability(com.example.alieninvasion.item.AstralPrismArmorMaterial.BASE_DURABILITY))));
+    public static final Item ASTRAL_PRISM_BOOTS = registerItem("astral_prism_boots",
+            new net.minecraft.world.item.ArmorItem(com.example.alieninvasion.item.AstralPrismArmorMaterial.ASTRAL_PRISM,
+                    net.minecraft.world.item.ArmorItem.Type.BOOTS, new Item.Properties().rarity(Rarity.EPIC).fireResistant()
+                    .durability(net.minecraft.world.item.ArmorItem.Type.BOOTS.getDurability(com.example.alieninvasion.item.AstralPrismArmorMaterial.BASE_DURABILITY))));
 
     public static final Item TOXIC_WATER_BUCKET = registerItem("toxic_water_bucket",
             new BucketItem(com.example.alieninvasion.registry.ModFluids.TOXIC_WATER_STILL,

@@ -38,7 +38,12 @@ public class PalladiumAnvilScreen extends AbstractContainerScreen<PalladiumAnvil
         this.inventoryLabelY = 73;
     }
 
-
+    @Override
+    protected void init() {
+        super.init();
+        this.leftPos += 10;
+        this.topPos += 10;
+    }
 
     @Override
     public void render(GuiGraphics gfx, int mouseX, int mouseY, float pt) {

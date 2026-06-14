@@ -92,6 +92,8 @@ public class AlienInvasionClient implements ClientModInitializer {
                                 ctx -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(ctx));
                 EntityRendererRegistry.register(EntityRegistry.EMP_GRENADE,
                                 ctx -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(ctx));
+                EntityRendererRegistry.register(EntityRegistry.ASTRAL_RESONANCE_GRENADE,
+                                ctx -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(ctx));
                 EntityRendererRegistry.register(EntityRegistry.PLASMA_BOLT,
                                 ctx -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(ctx));
                 EntityRendererRegistry.register(EntityRegistry.MARK_BOLT,
@@ -212,6 +214,13 @@ public class AlienInvasionClient implements ClientModInitializer {
                                 com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_CHESTPLATE,
                                 com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_LEGGINGS,
                                 com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_BOOTS);
+                net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer.register(
+                                new com.example.alieninvasion.client.AdvancedArmorRenderer(
+                                                ModModelLayers.PLATINUM_ARMOR, "astral_prism"),
+                                com.example.alieninvasion.registry.ItemRegistry.ASTRAL_PRISM_HELMET,
+                                com.example.alieninvasion.registry.ItemRegistry.ASTRAL_PRISM_CHESTPLATE,
+                                com.example.alieninvasion.registry.ItemRegistry.ASTRAL_PRISM_LEGGINGS,
+                                com.example.alieninvasion.registry.ItemRegistry.ASTRAL_PRISM_BOOTS);
                 // HUD Overlay
                 com.example.alieninvasion.client.InvasionHUDOverlay.register();
 

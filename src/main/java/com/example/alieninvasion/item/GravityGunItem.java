@@ -30,13 +30,13 @@ public class GravityGunItem extends Item {
         super(properties);
     }
 
-    private static int getCharge(ItemStack stack) {
+    protected static int getCharge(ItemStack stack) {
         CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
         // A freshly crafted gun has no tag yet -> treat it as fully charged.
         return tag.contains(CHARGE_KEY) ? tag.getInt(CHARGE_KEY) : MAX_CHARGE;
     }
 
-    private static void setCharge(ItemStack stack, int value) {
+    protected static void setCharge(ItemStack stack, int value) {
         int clamped = Math.max(0, Math.min(MAX_CHARGE, value));
         CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
         tag.putInt(CHARGE_KEY, clamped);
