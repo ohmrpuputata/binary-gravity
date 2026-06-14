@@ -144,6 +144,13 @@ public class EntityRegistry {
                     .sized(0.25f, 0.25f).build("emp_grenade")
     );
 
+    public static final EntityType<com.example.alieninvasion.entity.AstralResonanceGrenadeEntity> ASTRAL_RESONANCE_GRENADE = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "astral_resonance_grenade"),
+            EntityType.Builder.<com.example.alieninvasion.entity.AstralResonanceGrenadeEntity>of(com.example.alieninvasion.entity.AstralResonanceGrenadeEntity::new, MobCategory.MISC)
+                    .sized(0.25f, 0.25f).build("astral_resonance_grenade")
+    );
+
     public static final EntityType<com.example.alieninvasion.entity.InfestedPlayerCloneEntity> INFESTED_PLAYER_CLONE = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
             ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "infested_player_clone"),

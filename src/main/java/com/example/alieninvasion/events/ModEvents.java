@@ -391,6 +391,21 @@ public class ModEvents {
                 }
             }
 
+            // Astral Prism Armor poison damage resistance/immunity
+            if (source.is(net.minecraft.world.damagesource.DamageTypes.MAGIC) && entity.hasEffect(net.minecraft.world.effect.MobEffects.POISON) && source.getEntity() == null) {
+                int prismPieces = 0;
+                if (entity.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.ASTRAL_PRISM_HELMET)) prismPieces++;
+                if (entity.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.ASTRAL_PRISM_CHESTPLATE)) prismPieces++;
+                if (entity.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.ASTRAL_PRISM_LEGGINGS)) prismPieces++;
+                if (entity.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.ASTRAL_PRISM_BOOTS)) prismPieces++;
+
+                if (prismPieces > 0) {
+                    if (prismPieces >= 4 || entity.level().getRandom().nextFloat() < (prismPieces * 0.25F)) {
+                        return false;
+                    }
+                }
+            }
+
             // 1. Phantom Creeper logic: vanish on touch or hit
             if (entity.getTags().contains("IsPhantom")) {
                 ServerLevel sl = (ServerLevel) level;
@@ -1117,6 +1132,10 @@ public class ModEvents {
                         && player.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.EMERADIUM_CHESTPLATE)
                         && player.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.EMERADIUM_LEGGINGS)
                         && player.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.EMERADIUM_BOOTS);
+                boolean fullAstralPrism = player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.ASTRAL_PRISM_HELMET)
+                        && player.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.ASTRAL_PRISM_CHESTPLATE)
+                        && player.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.ASTRAL_PRISM_LEGGINGS)
+                        && player.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.ASTRAL_PRISM_BOOTS);
 
                 // Dose multiplier: chem(×5 slower) > hazmat(×3 slower) > platinum/emeradium(×2 slower) > default
                 // ANY armor shields a little - even a shirt stops some fallout.
@@ -1138,6 +1157,22 @@ public class ModEvents {
                 }
                 if (fullPalladium) {
                     com.example.alieninvasion.logic.InfectionManager.capMeter(player, 70.0F);
+                }
+                if (fullAstralPrism) {
+                    com.example.alieninvasion.logic.InfectionManager.capMeter(player, 75.0F);
+                    float inf = com.example.alieninvasion.logic.InfectionManager.getMeter(player);
+                    if (player.tickCount % 20 == 0) {
+                        if (inf >= 75.0F) {
+                            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.ABSORPTION, 220, 0, true, false));
+                            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.DIG_SPEED, 220, 1, true, false));
+                            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.SATURATION, 220, 0, true, false));
+                        } else if (inf >= 50.0F) {
+                            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.ABSORPTION, 220, 0, true, false));
+                            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.DIG_SPEED, 220, 1, true, false));
+                        } else if (inf >= 25.0F) {
+                            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.ABSORPTION, 220, 0, true, false));
+                        }
+                    }
                 }
 
                 if (fullEmeradium) {

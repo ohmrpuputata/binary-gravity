@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "alien-invasion:item/astral_prism_gun"
+  }
+}
