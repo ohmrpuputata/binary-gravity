@@ -21,14 +21,29 @@ public class ItemMixin {
         if (!key.getNamespace().equals("alien-invasion")) return;
         String base = "tooltip.alien-invasion." + key.getPath();
         var lang = net.minecraft.locale.Language.getInstance();
-        // Multi-line: try base.1, base.2, base.3 ... first
-        boolean hasNumbered = lang.has(base + ".1");
-        if (hasNumbered) {
-            for (int i = 1; lang.has(base + "." + i); i++) {
-                tooltip.add(Component.translatable(base + "." + i).withStyle(net.minecraft.ChatFormatting.GRAY));
+
+        String funcKey = base + ".functional";
+        String loreKey = base + ".lore";
+
+        boolean hasNewFormat = lang.has(funcKey) || lang.has(loreKey);
+
+        if (hasNewFormat) {
+            if (lang.has(funcKey)) {
+                tooltip.add(Component.translatable(funcKey).withStyle(net.minecraft.ChatFormatting.YELLOW));
             }
-        } else if (lang.has(base)) {
-            tooltip.add(Component.translatable(base).withStyle(net.minecraft.ChatFormatting.GRAY));
+            if (lang.has(loreKey)) {
+                tooltip.add(Component.translatable(loreKey).withStyle(net.minecraft.ChatFormatting.GRAY, net.minecraft.ChatFormatting.ITALIC));
+            }
+        } else {
+            // Fallback for old format
+            boolean hasNumbered = lang.has(base + ".1");
+            if (hasNumbered) {
+                for (int i = 1; lang.has(base + "." + i); i++) {
+                    tooltip.add(Component.translatable(base + "." + i).withStyle(net.minecraft.ChatFormatting.GRAY));
+                }
+            } else if (lang.has(base)) {
+                tooltip.add(Component.translatable(base).withStyle(net.minecraft.ChatFormatting.GRAY));
+            }
         }
     }
 }
