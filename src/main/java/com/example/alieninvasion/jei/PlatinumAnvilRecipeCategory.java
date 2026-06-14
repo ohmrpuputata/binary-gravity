@@ -72,15 +72,15 @@ public class PlatinumAnvilRecipeCategory implements IRecipeCategory<PlatinumAnvi
 
     @Override
     public void draw(PlatinumAnvilRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
-        // Draw grid slot backgrounds
+        // Draw grid slot backgrounds (centered: 1px left and up relative to item slot)
         for (int r = 0; r < 3; r++) {
             for (int c = 0; c < 3; c++) {
-                slotDrawable.draw(guiGraphics, 3 + c * 18, 3 + r * 18);
+                slotDrawable.draw(guiGraphics, 2 + c * 18, 2 + r * 18);
             }
         }
 
-        // Draw result slot background
-        slotDrawable.draw(guiGraphics, 95, 21);
+        // Draw result slot background (centered: 1px left and up relative to item slot)
+        slotDrawable.draw(guiGraphics, 94, 20);
 
         // Draw the arrow in between
         Minecraft minecraft = Minecraft.getInstance();

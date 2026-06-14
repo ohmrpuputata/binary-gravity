@@ -74,11 +74,11 @@ public class PalladiumAnvilRecipeCategory implements IRecipeCategory<PalladiumAn
 
     @Override
     public void draw(PalladiumAnvilRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
-        // Draw slot backgrounds
-        slotDrawable.draw(guiGraphics, 1, 5);
-        slotDrawable.draw(guiGraphics, 19, 5);
-        slotDrawable.draw(guiGraphics, 37, 5);
-        slotDrawable.draw(guiGraphics, 95, 5);
+        // Draw slot backgrounds (centered: 1px left and up relative to item slot)
+        slotDrawable.draw(guiGraphics, 0, 4);
+        slotDrawable.draw(guiGraphics, 18, 4);
+        slotDrawable.draw(guiGraphics, 36, 4);
+        slotDrawable.draw(guiGraphics, 94, 4);
 
         // Draw the arrow in between
         Minecraft minecraft = Minecraft.getInstance();
