@@ -730,6 +730,105 @@ function makeGreenRay(charge) {
   return image;
 }
 
+function makeAstralPrismIngot() {
+  const image = { data: Buffer.alloc(16 * 16 * 4), width: 16, height: 16 };
+  const outline = rgba("#17112f");
+  const violetDark = rgba("#382277");
+  const violet = rgba("#7548d8");
+  const cyan = rgba("#44dbe8");
+  const cyanLight = rgba("#b9ffff");
+  const gold = rgba("#e6b84b");
+
+  // A faceted, asymmetric prism rather than another recoloured vanilla ingot.
+  addRect(image, 4, 4, 11, 11, outline, false);
+  addRect(image, 3, 6, 12, 9, outline, false);
+  addRect(image, 5, 3, 10, 12, outline, false);
+  addRect(image, 5, 4, 10, 11, violetDark, false);
+  addRect(image, 4, 6, 11, 9, violet, false);
+  addRect(image, 6, 4, 9, 10, cyan, false);
+  addRect(image, 7, 4, 8, 8, cyanLight, false);
+  setPixel(image, 5, 5, gold, false);
+  setPixel(image, 10, 10, gold, false);
+  setPixel(image, 4, 8, violetDark, false);
+  setPixel(image, 11, 7, cyan, false);
+  return image;
+}
+
+function makeAstralPrismGun() {
+  const image = { data: Buffer.alloc(16 * 16 * 4), width: 16, height: 16 };
+  const outline = rgba("#11151f");
+  const metalDark = rgba("#28303b");
+  const metal = rgba("#596474");
+  const violetDark = rgba("#392371");
+  const violet = rgba("#7948dc");
+  const cyan = rgba("#40dce8");
+  const cyanLight = rgba("#c4ffff");
+  const gold = rgba("#d6a844");
+
+  addRect(image, 1, 5, 12, 8, outline, false);
+  addRect(image, 2, 5, 11, 7, metalDark, false);
+  addRect(image, 3, 5, 8, 5, metal, false);
+  addRect(image, 8, 4, 13, 7, outline, false);
+  addRect(image, 9, 4, 13, 6, violetDark, false);
+  addRect(image, 10, 4, 12, 5, violet, false);
+  addRect(image, 13, 4, 15, 6, outline, false);
+  addRect(image, 13, 5, 15, 5, cyan, false);
+  setPixel(image, 15, 5, cyanLight, false);
+
+  addRect(image, 4, 8, 8, 12, outline, false);
+  addRect(image, 5, 8, 7, 11, metalDark, false);
+  setPixel(image, 5, 12, outline, false);
+  setPixel(image, 6, 12, outline, false);
+
+  addRect(image, 6, 5, 9, 8, violetDark, false);
+  addRect(image, 7, 5, 8, 7, cyan, false);
+  setPixel(image, 8, 5, cyanLight, false);
+  setPixel(image, 3, 6, gold, false);
+  setPixel(image, 9, 8, violet, false);
+  return image;
+}
+
+function makeAstralResonanceGrenade() {
+  const image = { data: Buffer.alloc(16 * 16 * 4), width: 16, height: 16 };
+  const outline = rgba("#17112d");
+  const violetDark = rgba("#352067");
+  const violet = rgba("#7544cf");
+  const cyan = rgba("#3fd7e3");
+  const cyanLight = rgba("#caffff");
+  const gold = rgba("#dfb34d");
+
+  // Compact crystal cage: clearly a grenade, but not the old round EMP sprite.
+  addRect(image, 6, 2, 9, 13, outline, false);
+  addRect(image, 3, 6, 12, 9, outline, false);
+  addRect(image, 5, 4, 10, 11, outline, false);
+  addRect(image, 6, 3, 9, 12, violetDark, false);
+  addRect(image, 4, 6, 11, 9, violet, false);
+  addRect(image, 6, 5, 9, 10, cyan, false);
+  addRect(image, 7, 5, 8, 8, cyanLight, false);
+  setPixel(image, 5, 5, gold, false);
+  setPixel(image, 10, 5, gold, false);
+  setPixel(image, 5, 10, gold, false);
+  setPixel(image, 10, 10, gold, false);
+  setPixel(image, 7, 2, outline, false);
+  setPixel(image, 8, 2, gold, false);
+  return image;
+}
+
+async function createAstralPrismItems() {
+  await writeTexture(
+    path.join(itemTextureDir, "astral_prism_ingot.png"),
+    makeAstralPrismIngot(),
+  );
+  await writeTexture(
+    path.join(itemTextureDir, "astral_prism_gun.png"),
+    makeAstralPrismGun(),
+  );
+  await writeTexture(
+    path.join(itemTextureDir, "astral_resonance_grenade.png"),
+    makeAstralResonanceGrenade(),
+  );
+}
+
 async function createEmeradiumItems() {
   const itemSources = [
     ["emeradium_helmet", "item/diamond_helmet.png"],
@@ -933,13 +1032,14 @@ async function main() {
 
   await createAnvils();
   await createEmeradiumItems();
+  await createAstralPrismItems();
   await createFleshItems();
   await createMaterialTools();
   await createDistinctHumanoids();
   removeUnusedDuplicateTextures();
   await makePreview(blocks);
   await makeDistinctFamiliesPreview();
-  console.log(`Generated ${blockEntries.length} vanilla-style block bases, variants, anvils, and Emeradium items.`);
+  console.log(`Generated ${blockEntries.length} vanilla-style block bases, variants, anvils, and mod items.`);
 }
 
 await main();
