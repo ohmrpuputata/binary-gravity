@@ -144,7 +144,7 @@ public class ItemRegistry {
     public static final Item GREEN_RAY_BLASTER = registerItem("green_ray_blaster",
             new GreenRayBlasterItem(new Item.Properties().rarity(Rarity.EPIC).stacksTo(1)));
     public static final Item EMERADIUM_SHIELD = registerItem("emeradium_shield",
-            new net.minecraft.world.item.ShieldItem(new Item.Properties().durability(500)));
+            new net.minecraft.world.item.ShieldItem(new Item.Properties().durability(1000)));
 
     public static final Item PLASMA_BOLT_ITEM = registerItem("plasma_bolt",
             new Item(new Item.Properties()));

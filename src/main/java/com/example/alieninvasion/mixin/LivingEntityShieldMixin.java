@@ -16,7 +16,14 @@ public class LivingEntityShieldMixin {
         LivingEntity self = (LivingEntity) (Object) this;
         ItemStack useItem = self.getUseItem();
         if (useItem.is(ItemRegistry.EMERADIUM_SHIELD)) {
-            self.heal(2.0F);
+            if (self instanceof net.minecraft.world.entity.player.Player player) {
+                if (!player.getCooldowns().isOnCooldown(useItem.getItem())) {
+                    self.heal(2.0F);
+                    player.getCooldowns().addCooldown(useItem.getItem(), 100);
+                }
+            } else {
+                self.heal(2.0F);
+            }
         }
     }
 }
