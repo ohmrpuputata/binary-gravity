@@ -49,6 +49,15 @@ public class AlienInvasionClient implements ClientModInitializer {
                                         int used = duration - entity.getUseItemRemainingTicks();
                                         return Math.min(1.0F, used / 20.0F);
                                 });
+                FabricModelPredicateProviderRegistry.register(
+                                com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_SHIELD,
+                                ResourceLocation.fromNamespaceAndPath("minecraft", "blocking"),
+                                (stack, level, entity, seed) ->
+                                                entity != null
+                                                                && entity.isUsingItem()
+                                                                && entity.getUseItem() == stack
+                                                                                ? 1.0F
+                                                                                : 0.0F);
 
                 // Renderers
                 EntityRendererRegistry.register(EntityRegistry.ALIEN_GRUNT, AlienGruntRenderer::new);
