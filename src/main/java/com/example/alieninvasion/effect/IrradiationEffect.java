@@ -20,7 +20,14 @@ public class IrradiationEffect extends MobEffect {
     public boolean applyEffectTick(LivingEntity entity, int amplifier) {
         if (!entity.level().isClientSide) {
             // Suppresses active regeneration so it cannot counteract irradiation.
-            if (entity.hasEffect(MobEffects.REGENERATION)) {
+            boolean hasFullEmeradium = false;
+            if (entity instanceof net.minecraft.world.entity.player.Player player) {
+                hasFullEmeradium = player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).is(com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_HELMET)
+                        && player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.CHEST).is(com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_CHESTPLATE)
+                        && player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.LEGS).is(com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_LEGGINGS)
+                        && player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.FEET).is(com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_BOOTS);
+            }
+            if (!hasFullEmeradium && entity.hasEffect(MobEffects.REGENERATION)) {
                 entity.removeEffect(MobEffects.REGENERATION);
             }
             if (entity.level() instanceof ServerLevel sl && entity.tickCount % 8 == 0) {

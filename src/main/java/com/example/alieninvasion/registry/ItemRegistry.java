@@ -23,6 +23,8 @@ import com.example.alieninvasion.item.InvasionTrackerItem;
 import com.example.alieninvasion.item.PalladiumSwordItem;
 import com.example.alieninvasion.item.PlatinumSwordItem;
 import com.example.alieninvasion.item.NibiriumSwordItem;
+import com.example.alieninvasion.item.EmeradiumArmorMaterial;
+import com.example.alieninvasion.item.GreenRayBlasterItem;
 import com.example.alieninvasion.item.AlienHazmatArmorMaterial;
 import com.example.alieninvasion.item.AlienChemArmorMaterial;
 import com.example.alieninvasion.item.PlatinumArmorMaterial;
@@ -139,6 +141,10 @@ public class ItemRegistry {
 
     public static final Item ALIEN_BLASTER = registerItem("alien_blaster",
             new AlienBlasterItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
+    public static final Item GREEN_RAY_BLASTER = registerItem("green_ray_blaster",
+            new GreenRayBlasterItem(new Item.Properties().rarity(Rarity.EPIC).stacksTo(1)));
+    public static final Item EMERADIUM_SHIELD = registerItem("emeradium_shield",
+            new net.minecraft.world.item.ShieldItem(new Item.Properties().durability(500)));
 
     public static final Item PLASMA_BOLT_ITEM = registerItem("plasma_bolt",
             new Item(new Item.Properties()));
@@ -221,6 +227,10 @@ public class ItemRegistry {
 
     public static final Item NIBIRIUM_INGOT = registerItem("nibirium_ingot",
             new Item(new Item.Properties().rarity(Rarity.RARE).fireResistant()));
+    public static final Item EMERADIUM_INGOT = registerItem("emeradium_ingot",
+            new Item(new Item.Properties().rarity(Rarity.RARE).fireResistant()));
+    public static final Item EMERADIUM_RESONATOR = registerItem("emeradium_resonator",
+            new Item(new Item.Properties().rarity(Rarity.RARE).fireResistant().stacksTo(1)));
     public static final Item ALIEN_SKIN = registerItem("alien_skin", new Item(new Item.Properties()));
 
     // Platinum tools — iron speed, diamond durability
@@ -271,6 +281,26 @@ public class ItemRegistry {
                             net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_axe"),
                             net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_shovel"),
                             net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_hoe"),
+                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_helmet"),
+                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_chestplate"),
+                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_leggings"),
+                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_boots")
+                    ),
+                    java.util.List.of(
+                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_ingot")
+                    )
+            ));
+
+    // Emeradium smithing upgrade template
+    public static final Item EMERADIUM_SMITHING_TEMPLATE = registerItem("emeradium_smithing_template",
+            new net.minecraft.world.item.SmithingTemplateItem(
+                    net.minecraft.network.chat.Component.translatable("upgrade.alien-invasion.emeradium.applies_to"),
+                    net.minecraft.network.chat.Component.translatable("upgrade.alien-invasion.emeradium.ingredients"),
+                    net.minecraft.network.chat.Component.translatable("upgrade.alien-invasion.emeradium"),
+                    net.minecraft.network.chat.Component.translatable("upgrade.alien-invasion.emeradium.base_slot_description"),
+                    net.minecraft.network.chat.Component.translatable("upgrade.alien-invasion.emeradium.additions_slot_description"),
+                    java.util.List.of(
+                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_sword"),
                             net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_helmet"),
                             net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_chestplate"),
                             net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_leggings"),
@@ -351,6 +381,24 @@ public class ItemRegistry {
             new net.minecraft.world.item.ArmorItem(PlatinumArmorMaterial.PLATINUM,
                     net.minecraft.world.item.ArmorItem.Type.BOOTS,
                     new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.BOOTS.getDurability(PlatinumArmorMaterial.BASE_DURABILITY))));
+
+    // Emeradium armor — upgraded platinum armor
+    public static final Item EMERADIUM_HELMET = registerItem("emeradium_helmet",
+            new net.minecraft.world.item.ArmorItem(EmeradiumArmorMaterial.EMERADIUM,
+                    net.minecraft.world.item.ArmorItem.Type.HELMET,
+                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.HELMET.getDurability(EmeradiumArmorMaterial.BASE_DURABILITY))));
+    public static final Item EMERADIUM_CHESTPLATE = registerItem("emeradium_chestplate",
+            new net.minecraft.world.item.ArmorItem(EmeradiumArmorMaterial.EMERADIUM,
+                    net.minecraft.world.item.ArmorItem.Type.CHESTPLATE,
+                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.CHESTPLATE.getDurability(EmeradiumArmorMaterial.BASE_DURABILITY))));
+    public static final Item EMERADIUM_LEGGINGS = registerItem("emeradium_leggings",
+            new net.minecraft.world.item.ArmorItem(EmeradiumArmorMaterial.EMERADIUM,
+                    net.minecraft.world.item.ArmorItem.Type.LEGGINGS,
+                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.LEGGINGS.getDurability(EmeradiumArmorMaterial.BASE_DURABILITY))));
+    public static final Item EMERADIUM_BOOTS = registerItem("emeradium_boots",
+            new net.minecraft.world.item.ArmorItem(EmeradiumArmorMaterial.EMERADIUM,
+                    net.minecraft.world.item.ArmorItem.Type.BOOTS,
+                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.BOOTS.getDurability(EmeradiumArmorMaterial.BASE_DURABILITY))));
 
     // Palladium armor — between iron and diamond, set bonus: cap radiation at 70%
     public static final Item PALLADIUM_HELMET = registerItem("palladium_helmet",

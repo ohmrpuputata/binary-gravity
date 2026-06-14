@@ -21,6 +21,14 @@ public class LivingEntityHealMixin {
     private void alien_weakenHealIfIrradiated(float healAmount, CallbackInfo ci) {
         LivingEntity entity = (LivingEntity) (Object) this;
         if (entity.hasEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.IRRADIATION))) {
+            if (entity instanceof net.minecraft.world.entity.player.Player player
+                    && player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).is(com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_HELMET)
+                    && player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.CHEST).is(com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_CHESTPLATE)
+                    && player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.LEGS).is(com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_LEGGINGS)
+                    && player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.FEET).is(com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_BOOTS)) {
+                // Ignore healing reduction completely for full Emeradium armor set
+                return;
+            }
             // Лучевая болезнь ослабляет регенерацию в 4 раза, а не отключает её:
             // полная блокировка делала зелья/еду бесполезными и превращала
             // облучение в гарантированную смерть без таблеток.

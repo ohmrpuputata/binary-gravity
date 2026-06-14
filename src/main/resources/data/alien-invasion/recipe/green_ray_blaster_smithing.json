@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": {"item": "alien-invasion:emeradium_smithing_template"},
+  "base": {"item": "alien-invasion:alien_blaster"},
+  "addition": {"item": "alien-invasion:emeradium_ingot"},
+  "result": {"id": "alien-invasion:green_ray_blaster"}
+}

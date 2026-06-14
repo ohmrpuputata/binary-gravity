@@ -783,12 +783,21 @@ public class ModEvents {
                 }
             }
 
-            // Acid Rain (magic damage + grass spread)
+            // Acid Rain (infection + grass spread)
             if (level.isRaining() && level.getGameTime() % 40 == 0) {
                 for (ServerPlayer player : level.players()) {
-                    if (level.canSeeSky(player.blockPosition())) {
-                        player.hurt(level.damageSources().magic(), 1.0F);
-                        player.displayClientMessage(Component.literal("§c[!] Кислотный дождь обжигает вас! Найдите укрытие."), true);
+                    if (level.canSeeSky(player.blockPosition())
+                            && !player.isCreative()
+                            && !player.isSpectator()
+                            && !player.getAbilities().invulnerable) {
+                        boolean fullCosmic = player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.COSMIC_HELMET)
+                                && player.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.COSMIC_CHESTPLATE)
+                                && player.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.COSMIC_LEGGINGS)
+                                && player.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.COSMIC_BOOTS);
+                        if (!fullCosmic) {
+                            InfectionManager.addMeter(player, 1.5F);
+                            player.displayClientMessage(Component.literal("§c[!] Кислотный дождь заражает вас! Найдите укрытие."), true);
+                        }
                     }
                 }
 
@@ -1104,8 +1113,12 @@ public class ModEvents {
                         && player.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.ALIEN_CHEM_CHESTPLATE)
                         && player.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.ALIEN_CHEM_LEGGINGS)
                         && player.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.ALIEN_CHEM_BOOTS);
+                boolean fullEmeradium = player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.EMERADIUM_HELMET)
+                        && player.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.EMERADIUM_CHESTPLATE)
+                        && player.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.EMERADIUM_LEGGINGS)
+                        && player.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.EMERADIUM_BOOTS);
 
-                // Dose multiplier: chem(×5 slower) > hazmat(×3 slower) > platinum(×2 slower) > default
+                // Dose multiplier: chem(×5 slower) > hazmat(×3 slower) > platinum/emeradium(×2 slower) > default
                 // ANY armor shields a little - even a shirt stops some fallout.
                 // Per piece: helmet 3%, chest 5%, legs 4%, boots 3% => a full set of
                 // ANY armor (even leather) blocks 15%. Dedicated suits still rule.
@@ -1114,7 +1127,7 @@ public class ModEvents {
                 if (!player.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) anyArmorShield += 0.05F;
                 if (!player.getItemBySlot(EquipmentSlot.LEGS).isEmpty())  anyArmorShield += 0.04F;
                 if (!player.getItemBySlot(EquipmentSlot.FEET).isEmpty())  anyArmorShield += 0.03F;
-                float doseMult = fullChem ? 0.2F : fullHazmat ? (1.0F / 3.0F) : fullPlatinum ? 0.5F
+                float doseMult = fullChem ? 0.2F : fullHazmat ? (1.0F / 3.0F) : (fullPlatinum || fullEmeradium) ? 0.5F
                         : (1.0F - anyArmorShield);
                 // Meter multiplier: chem(×5 slower) > hazmat(×3 slower) > palladium(×2 slower) > default
                 float meterMult = fullChem ? 0.2F : fullHazmat ? (1.0F / 3.0F) : fullPalladium ? 0.5F : 1.0F;
@@ -1125,6 +1138,26 @@ public class ModEvents {
                 }
                 if (fullPalladium) {
                     com.example.alieninvasion.logic.InfectionManager.capMeter(player, 70.0F);
+                }
+
+                if (fullEmeradium) {
+                    if (player.hasEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.IRRADIATION))) {
+                        player.removeEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.IRRADIATION));
+                    }
+                    float dose = com.example.alieninvasion.logic.RadiationManager.getDose(player);
+                    if (player.tickCount % 20 == 0) {
+                        if (dose >= 75.0F) {
+                            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.MOVEMENT_SPEED, 220, 1, true, false));
+                            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.DAMAGE_BOOST, 220, 1, true, false));
+                            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.REGENERATION, 220, 1, true, false));
+                            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.DAMAGE_RESISTANCE, 220, 0, true, false));
+                        } else if (dose >= 50.0F) {
+                            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.REGENERATION, 220, 0, true, false));
+                            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.DAMAGE_RESISTANCE, 220, 0, true, false));
+                        } else if (dose >= 25.0F) {
+                            player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.DAMAGE_RESISTANCE, 220, 0, true, false));
+                        }
+                    }
                 }
 
                 // Cosmic Armor set bonus + alien-block hazard.

@@ -448,5 +448,19 @@
   "effect.alien-invasion.platinum_health_boost": "Платиновое укрепление",
   "effect.alien-invasion.platinum_health_drain": "Осушение здоровья",
   "block.alien-invasion.platinum_anvil": "Платиновая наковальня",
-  "container.alien-invasion.platinum_anvil": "Платиновая наковальня"
+  "container.alien-invasion.platinum_anvil": "Платиновая наковальня",
+  "item.alien-invasion.emeradium_ingot": "Эмерадиевый слиток",
+  "item.alien-invasion.emeradium_resonator": "Эмерадиевый резонатор",
+  "item.alien-invasion.green_ray_blaster": "Био-пушка «Зеленый луч»",
+  "item.alien-invasion.emeradium_shield": "Эмерадиевый щит",
+  "item.alien-invasion.emeradium_helmet": "Эмерадиевый шлем",
+  "item.alien-invasion.emeradium_chestplate": "Эмерадиевый нагрудник",
+  "item.alien-invasion.emeradium_leggings": "Эмерадиевые поножи",
+  "item.alien-invasion.emeradium_boots": "Эмерадиевые ботинки",
+  "item.alien-invasion.emeradium_smithing_template": "Шаблон улучшения эмерадиумом",
+  "upgrade.alien-invasion.emeradium.applies_to": "Платиновое снаряжение",
+  "upgrade.alien-invasion.emeradium.ingredients": "Эмерадиевый слиток",
+  "upgrade.alien-invasion.emeradium": "Эмерадиевое улучшение",
+  "upgrade.alien-invasion.emeradium.base_slot_description": "Добавьте платиновую броню, оружие или щит",
+  "upgrade.alien-invasion.emeradium.additions_slot_description": "Добавьте эмерадиевый слиток"
 }

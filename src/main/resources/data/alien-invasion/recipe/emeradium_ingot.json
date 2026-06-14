@@ -1,0 +1,23 @@
+{
+  "type": "alien-invasion:platinum_anvil",
+  "pattern": [
+    "PEP",
+    "E E",
+    "PEP"
+  ],
+  "key": {
+    "P": {
+      "item": "alien-invasion:platinum_ingot"
+    },
+    "E": {
+      "item": "minecraft:emerald"
+    }
+  },
+  "catalyst": {
+    "item": "alien-invasion:radiation_crystal"
+  },
+  "result": {
+    "id": "alien-invasion:emeradium_ingot",
+    "count": 1
+  }
+}

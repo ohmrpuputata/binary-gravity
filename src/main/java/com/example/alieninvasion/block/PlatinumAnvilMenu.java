@@ -183,7 +183,8 @@ public class PlatinumAnvilMenu extends AbstractContainerMenu {
         return stack.is(Items.AMETHYST_SHARD)
                 || stack.is(ItemRegistry.RADIATION_CRYSTAL)
                 || stack.is(ItemRegistry.DARK_MATTER_SHARD)
-                || stack.is(ItemRegistry.COSMIC_SHARD);
+                || stack.is(ItemRegistry.COSMIC_SHARD)
+                || stack.is(Items.EMERALD);
     }
 
     /* ---------- inner slot classes ---------- */

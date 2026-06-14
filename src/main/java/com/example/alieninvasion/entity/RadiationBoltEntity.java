@@ -21,10 +21,18 @@ public class RadiationBoltEntity extends ThrowableItemProjectile {
     private static final EntityDataAccessor<Boolean> BIG =
             SynchedEntityData.defineId(RadiationBoltEntity.class, EntityDataSerializers.BOOLEAN);
 
+    private static final EntityDataAccessor<Boolean> GREEN_RAY =
+            SynchedEntityData.defineId(RadiationBoltEntity.class, EntityDataSerializers.BOOLEAN);
+
     private static final DustParticleOptions DUST_BIG   =
             new DustParticleOptions(new Vector3f(1.0F, 0.80F, 0.0F), 2.0F);
     private static final DustParticleOptions DUST_SMALL =
             new DustParticleOptions(new Vector3f(1.0F, 0.80F, 0.0F), 0.9F);
+
+    private static final DustParticleOptions DUST_GREEN_BIG   =
+            new DustParticleOptions(new Vector3f(0.0F, 1.0F, 0.0F), 2.0F);
+    private static final DustParticleOptions DUST_GREEN_SMALL =
+            new DustParticleOptions(new Vector3f(0.0F, 1.0F, 0.0F), 0.9F);
 
     public RadiationBoltEntity(EntityType<? extends RadiationBoltEntity> type, Level level) {
         super(type, level);
@@ -35,56 +43,81 @@ public class RadiationBoltEntity extends ThrowableItemProjectile {
         super(com.example.alieninvasion.registry.EntityRegistry.RADIATION_BOLT, shooter, level);
         this.setNoGravity(true);
         this.entityData.set(BIG, big);
+        this.entityData.set(GREEN_RAY, false);
     }
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(BIG, true);
+        builder.define(GREEN_RAY, false);
     }
 
     public boolean isBig() {
         return this.entityData.get(BIG);
     }
 
+    public boolean isGreenRay() {
+        return this.entityData.get(GREEN_RAY);
+    }
+
+    public void setGreenRay(boolean greenRay) {
+        this.entityData.set(GREEN_RAY, greenRay);
+    }
+
     @Override
     protected Item getDefaultItem() {
-        return com.example.alieninvasion.registry.ItemRegistry.RADIATION_CRYSTAL;
+        return isGreenRay() ? com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_INGOT : com.example.alieninvasion.registry.ItemRegistry.RADIATION_CRYSTAL;
     }
 
     @Override
     public void tick() {
         super.tick();
         if (!this.level().isClientSide && this.level() instanceof ServerLevel sl) {
-            DustParticleOptions dust = isBig() ? DUST_BIG : DUST_SMALL;
+            DustParticleOptions dust = isGreenRay()
+                    ? (isBig() ? DUST_GREEN_BIG : DUST_GREEN_SMALL)
+                    : (isBig() ? DUST_BIG : DUST_SMALL);
             int count = isBig() ? 5 : 2;
             sl.sendParticles(dust, this.getX(), this.getY(), this.getZ(), count, 0.04, 0.04, 0.04, 0);
+        }
+        if (!this.level().isClientSide && this.tickCount > 100) {
+            this.discard();
         }
     }
 
     @Override
     protected void onHitEntity(EntityHitResult result) {
-        super.onHitEntity(result);
         if (!this.level().isClientSide && result.getEntity() instanceof LivingEntity victim) {
             LivingEntity shooter = (LivingEntity) this.getOwner();
-            // Малый болт 4.0: при 6.0 burst-режим бластера (10 болтов / 1.25с) давал
-            // ~48 DPS и обесценивал всё остальное оружие мода.
             float damage = isBig() ? 20.0F : 4.0F;
+            if (isGreenRay()) {
+                damage = isBig() ? 30.0F : 7.0F;
+                victim.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                        net.minecraft.world.effect.MobEffects.GLOWING, 200, 0, false, false));
+            }
             victim.hurt(this.damageSources().thrown(this, shooter), damage);
         }
+        super.onHitEntity(result);
     }
 
     @Override
     protected void onHit(HitResult result) {
-        super.onHit(result);
-        if (!this.level().isClientSide && this.level() instanceof ServerLevel sl) {
-            DustParticleOptions dust = isBig() ? DUST_BIG : DUST_SMALL;
-            int burst = isBig() ? 25 : 10;
-            sl.sendParticles(dust, this.getX(), this.getY(), this.getZ(), burst, 0.25, 0.25, 0.25, 0.02);
-            sl.playSound(null, this.blockPosition(),
-                    SoundEvents.FIREWORK_ROCKET_BLAST, SoundSource.PLAYERS,
-                    isBig() ? 0.8F : 0.4F, isBig() ? 1.6F : 2.0F);
-            this.discard();
+        if (isGreenRay()) {
+            if (result.getType() == HitResult.Type.ENTITY) {
+                super.onHit(result);
+                this.discard();
+            }
+        } else {
+            super.onHit(result);
+            if (!this.level().isClientSide && this.level() instanceof ServerLevel sl) {
+                DustParticleOptions dust = isBig() ? DUST_BIG : DUST_SMALL;
+                int burst = isBig() ? 25 : 10;
+                sl.sendParticles(dust, this.getX(), this.getY(), this.getZ(), burst, 0.25, 0.25, 0.25, 0.02);
+                sl.playSound(null, this.blockPosition(),
+                        SoundEvents.FIREWORK_ROCKET_BLAST, SoundSource.PLAYERS,
+                        isBig() ? 0.8F : 0.4F, isBig() ? 1.6F : 2.0F);
+                this.discard();
+            }
         }
     }
 }
