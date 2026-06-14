@@ -19,6 +19,7 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
@@ -31,6 +32,24 @@ public class AlienInvasionClient implements ClientModInitializer {
 
         @Override
         public void onInitializeClient() {
+                net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry.getInstance().register(
+                                com.example.alieninvasion.registry.ModParticles.ACID_SMOKE,
+                                com.example.alieninvasion.client.particle.AcidSmokeParticle.Provider::new);
+                com.example.alieninvasion.client.AcidRainEffects.register();
+                com.example.alieninvasion.client.WorldAmbienceEffects.register();
+
+                FabricModelPredicateProviderRegistry.register(
+                                com.example.alieninvasion.registry.ItemRegistry.GREEN_RAY_BLASTER,
+                                ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "charge"),
+                                (stack, level, entity, seed) -> {
+                                        if (entity == null || !entity.isUsingItem() || entity.getUseItem() != stack) {
+                                                return 0.0F;
+                                        }
+                                        int duration = stack.getItem().getUseDuration(stack, entity);
+                                        int used = duration - entity.getUseItemRemainingTicks();
+                                        return Math.min(1.0F, used / 20.0F);
+                                });
+
                 // Renderers
                 EntityRendererRegistry.register(EntityRegistry.ALIEN_GRUNT, AlienGruntRenderer::new);
                 EntityRendererRegistry.register(EntityRegistry.ALIEN_BRUTE, AlienBruteRenderer::new);

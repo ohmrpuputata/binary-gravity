@@ -2,5 +2,25 @@
   "parent": "minecraft:item/handheld",
   "textures": {
     "layer0": "alien-invasion:item/green_ray_blaster"
-  }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "alien-invasion:charge": 0.05
+      },
+      "model": "alien-invasion:item/green_ray_blaster_charge_1"
+    },
+    {
+      "predicate": {
+        "alien-invasion:charge": 0.4
+      },
+      "model": "alien-invasion:item/green_ray_blaster_charge_2"
+    },
+    {
+      "predicate": {
+        "alien-invasion:charge": 0.75
+      },
+      "model": "alien-invasion:item/green_ray_blaster_charge_3"
+    }
+  ]
 }

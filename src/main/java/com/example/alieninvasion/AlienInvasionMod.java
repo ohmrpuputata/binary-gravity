@@ -30,6 +30,7 @@ public class AlienInvasionMod implements ModInitializer {
 		LOGGER.info("Alien Invasion Mod Initialized (Fabric)");
 
 		ModEffects.registerEffects();
+		com.example.alieninvasion.registry.ModParticles.registerParticles();
 		com.example.alieninvasion.registry.ModSounds.registerSounds();
 		ModFluids.registerFluids();
 		com.example.alieninvasion.registry.ModBlocks.registerBlocks(); // Register Blocks
