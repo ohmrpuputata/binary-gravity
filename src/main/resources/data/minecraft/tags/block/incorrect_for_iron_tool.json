@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "alien-invasion:cosmic_crystal_ore",
+    "alien-invasion:infested_cosmic_crystal_ore",
+    "alien-invasion:bloody_cosmic_crystal_ore",
+    "alien-invasion:bloody_infested_cosmic_crystal_ore"
+  ]
+}

@@ -9,6 +9,7 @@ import com.example.alieninvasion.block.AlienStashBlockEntity;
 import com.example.alieninvasion.block.BlackMarketTerminalBlock;
 import com.example.alieninvasion.block.BloodPoolBlock;
 import com.example.alieninvasion.block.DarkMatterOreBlock;
+import com.example.alieninvasion.block.CosmicCrystalOreBlock;
 import com.example.alieninvasion.block.PureRadiationBlock;
 import com.example.alieninvasion.block.DeadInfestedCropBlock;
 import com.example.alieninvasion.block.InfestedBlock;
@@ -64,7 +65,11 @@ public class ModBlocks {
 
     // --- New Day-3 ore blocks (converted from lapis/gold by contamination spread) ---
     public static final Block COSMIC_CRYSTAL_ORE = registerBlock("cosmic_crystal_ore",
-            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_YELLOW).strength(3.5F, 3.0F)
+            new CosmicCrystalOreBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_YELLOW).strength(3.5F, 3.0F)
+                    .requiresCorrectToolForDrops().sound(SoundType.AMETHYST).lightLevel(s -> 4)));
+
+    public static final Block INFESTED_COSMIC_CRYSTAL_ORE = registerBlock("infested_cosmic_crystal_ore",
+            new CosmicCrystalOreBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_YELLOW).strength(3.5F, 3.0F)
                     .requiresCorrectToolForDrops().sound(SoundType.AMETHYST).lightLevel(s -> 4)));
 
     // --- Day-infected ores ---

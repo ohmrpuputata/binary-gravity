@@ -109,13 +109,25 @@ public final class WorldAmbienceEffects {
     }
 
     private static boolean isAlienOre(BlockState state) {
-        return state.is(ModBlocks.COSMIC_CRYSTAL_ORE)
+        if (state.is(ModBlocks.COSMIC_CRYSTAL_ORE)
+                || state.is(ModBlocks.INFESTED_COSMIC_CRYSTAL_ORE)
                 || state.is(ModBlocks.PLATINUM_ORE)
                 || state.is(ModBlocks.PALLADIUM_ORE)
                 || state.is(ModBlocks.DARK_MATTER_ORE)
                 || state.is(ModBlocks.INFESTED_DIAMOND_ORE)
                 || state.is(ModBlocks.INFESTED_REDSTONE_ORE)
-                || state.is(ModBlocks.PURE_RADIATION_BLOCK);
+                || state.is(ModBlocks.PURE_RADIATION_BLOCK)) {
+            return true;
+        }
+        ResourceLocation id = BuiltInRegistries.BLOCK.getKey(state.getBlock());
+        if (id.getNamespace().equals(AlienInvasionMod.MODID)) {
+            String path = id.getPath();
+            return path.contains("cosmic_crystal_ore")
+                    || path.contains("platinum_ore")
+                    || path.contains("palladium_ore")
+                    || path.contains("dark_matter_ore");
+        }
+        return false;
     }
 
     private static void animateInfestation(ClientLevel level, BlockPos pos, RandomSource random) {

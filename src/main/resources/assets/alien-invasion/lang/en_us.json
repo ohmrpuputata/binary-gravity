@@ -1,4 +1,4 @@
-﻿{
+{
     "advancements.alien-invasion.city.description":  "Reach the giant city of the Swarm",
     "advancements.alien-invasion.city.title":  "Neon Hive",
     "advancements.alien-invasion.cosmic_dawn.description":  "Obtain a cosmic ingot",
@@ -655,7 +655,7 @@
     "tooltip.alien-invasion.cosmic_chestplate.functional":  "Cosmic defense. Full set grants complete immunity to Infection and Irradiation.",
     "tooltip.alien-invasion.cosmic_chestplate.lore":  "Fused with star metal. Nothing earthly can touch it. Full set: complete immunity to Infection and Irradiation.",
     "tooltip.alien-invasion.cosmic_credit":  "A shimmering token of extraterrestrial mint. Who built this black market is unknown. The important thing is that it works.",
-    "tooltip.alien-invasion.cosmic_crystal_ore.functional":  "Ore block. Yields cosmic shards when mined.",
+    "tooltip.alien-invasion.cosmic_crystal_ore.functional":  "Ore block. Requires nibirium pickaxe. Yields cosmic shards when mined.",
     "tooltip.alien-invasion.cosmic_crystal_ore.lore":  "Formed under intense cosmic energy from falling meteors.",
     "tooltip.alien-invasion.cosmic_helmet.functional":  "Cosmic defense. Full set grants complete immunity to Infection and Irradiation.",
     "tooltip.alien-invasion.cosmic_helmet.lore":  "Blocks the Swarm\u0027s psionic signals. The voices in your head go quiet. Full set: complete immunity to Infection and Irradiation.",

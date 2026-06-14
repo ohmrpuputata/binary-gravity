@@ -18,6 +18,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * BLOODSTAINED BLOCKS: heavy wounds splatter the floor. Кровь ложится на ВСЕ
@@ -434,6 +436,25 @@ public final class BloodyBlocks {
         @Override
         protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
             washTick(state, level, pos, random, clean);
+        }
+    }
+
+    public static class BloodyCosmicCrystalPlain extends Plain {
+        public BloodyCosmicCrystalPlain(Properties props, java.util.function.Supplier<BlockState> clean) {
+            super(props, clean);
+        }
+
+        @Override
+        public float getDestroyProgress(BlockState state, Player player, BlockGetter world, BlockPos pos) {
+            return CosmicCrystalOreBlock.checkMiningSpeed(state, player, world, pos, () -> super.getDestroyProgress(state, player, world, pos));
+        }
+
+        @Override
+        public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state,
+                                  @org.jetbrains.annotations.Nullable BlockEntity blockEntity, ItemStack tool) {
+            if (tool.is(com.example.alieninvasion.registry.ItemRegistry.NIBIRIUM_PICKAXE)) {
+                super.playerDestroy(level, player, pos, state, blockEntity, tool);
+            }
         }
     }
 }

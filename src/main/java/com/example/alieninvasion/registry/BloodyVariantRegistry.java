@@ -51,6 +51,11 @@ public final class BloodyVariantRegistry {
         pairPlain("diamond_ore", Blocks.DIAMOND_ORE, ModBlocks.INFESTED_DIAMOND_ORE,
                 stone(4.5F, SoundType.STONE), stone(4.5F, SoundType.DEEPSLATE));
         alias(Blocks.DEEPSLATE_DIAMOND_ORE, Blocks.DIAMOND_ORE);
+        registerPair("cosmic_crystal_ore", ModBlocks.COSMIC_CRYSTAL_ORE, ModBlocks.INFESTED_COSMIC_CRYSTAL_ORE,
+                () -> new BloodyBlocks.BloodyCosmicCrystalPlain(stone(3.5F, SoundType.AMETHYST).lightLevel(s -> 4),
+                        ModBlocks.COSMIC_CRYSTAL_ORE::defaultBlockState),
+                () -> new BloodyBlocks.BloodyCosmicCrystalPlain(stone(3.5F, SoundType.AMETHYST).lightLevel(s -> 4),
+                        ModBlocks.INFESTED_COSMIC_CRYSTAL_ORE::defaultBlockState));
         pairPlain("redstone_ore", Blocks.REDSTONE_ORE, ModBlocks.INFESTED_REDSTONE_ORE,
                 stone(4.5F, SoundType.STONE).lightLevel(s -> 7),
                 stone(4.5F, SoundType.DEEPSLATE).lightLevel(s -> 7));

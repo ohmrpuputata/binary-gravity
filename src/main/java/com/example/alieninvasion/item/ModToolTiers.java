@@ -1,5 +1,6 @@
 package com.example.alieninvasion.item;
 
+import com.example.alieninvasion.AlienInvasionMod;
 import com.example.alieninvasion.registry.ItemRegistry;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -27,7 +28,15 @@ public enum ModToolTiers implements Tier {
     @Override public int getUses() { return uses; }
     @Override public float getSpeed() { return speed; }
     @Override public float getAttackDamageBonus() { return attackDamageBonus; }
-    @Override public TagKey<Block> getIncorrectBlocksForDrops() { return BlockTags.INCORRECT_FOR_NETHERITE_TOOL; }
+    @Override
+    public TagKey<Block> getIncorrectBlocksForDrops() {
+        return switch (this) {
+            case NIBIRIUM -> TagKey.create(
+                    net.minecraft.core.registries.Registries.BLOCK,
+                    net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "incorrect_for_nibirium_tool"));
+            default -> BlockTags.INCORRECT_FOR_NETHERITE_TOOL;
+        };
+    }
     @Override public int getEnchantmentValue() { return enchantmentValue; }
 
     @Override
