@@ -55,6 +55,11 @@ public class AlienBlasterItem extends Item {
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
     }
 
+    public static float getModelHeat(ItemStack stack) {
+        int maxCooldown = getMaxCooldown(stack);
+        return Math.min(1.0F, (float) getCooldown(stack) / (float) maxCooldown);
+    }
+
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         if (!level.isClientSide) {

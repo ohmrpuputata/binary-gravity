@@ -50,6 +50,8 @@ public class AstralPrismGunItem extends GravityGunItem {
             return InteractionResultHolder.consume(stack);
         }
 
+        triggerShotAnimation(stack);
+
         // Normal attack: anti-gravity for 160 ticks (8 seconds) + slight knockback
         if (!level.isClientSide) {
             Vec3 eyePosition = player.getEyePosition(1.0F);
@@ -163,6 +165,7 @@ public class AstralPrismGunItem extends GravityGunItem {
 
         if (entity instanceof Player player) {
             boolean creative = player.getAbilities().instabuild;
+            triggerShotAnimation(stack);
 
             if (!level.isClientSide) {
                 Vec3 start = player.getEyePosition();

@@ -25,6 +25,8 @@ public class GravityGunItem extends Item {
     /** Ticks between automatic +1 charge regeneration (20 ticks = 1 second). */
     private static final int RECHARGE_TICKS = 30;
     private static final String CHARGE_KEY = "Charge";
+    private static final String SHOT_ANIMATION_KEY = "ShotAnimation";
+    private static final int SHOT_ANIMATION_TICKS = 8;
 
     public GravityGunItem(Properties properties) {
         super(properties);
@@ -43,8 +45,32 @@ public class GravityGunItem extends Item {
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
     }
 
+    private static int getShotAnimation(ItemStack stack) {
+        CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+        return tag.contains(SHOT_ANIMATION_KEY) ? tag.getInt(SHOT_ANIMATION_KEY) : 0;
+    }
+
+    private static void setShotAnimation(ItemStack stack, int value) {
+        CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+        tag.putInt(SHOT_ANIMATION_KEY, Math.max(0, value));
+        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+    }
+
+    protected static void triggerShotAnimation(ItemStack stack) {
+        setShotAnimation(stack, SHOT_ANIMATION_TICKS);
+    }
+
+    public static float getModelShot(ItemStack stack) {
+        return (float) getShotAnimation(stack) / (float) SHOT_ANIMATION_TICKS;
+    }
+
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+        int shotAnimation = getShotAnimation(stack);
+        if (shotAnimation > 0) {
+            setShotAnimation(stack, shotAnimation - 1);
+        }
+
         // Charges refill themselves over time, server-side only.
         if (!level.isClientSide) {
             int charge = getCharge(stack);
@@ -75,6 +101,8 @@ public class GravityGunItem extends Item {
             }
             return InteractionResultHolder.fail(stack);
         }
+
+        triggerShotAnimation(stack);
 
         if (!level.isClientSide) {
             Vec3 eyePosition = player.getEyePosition(1.0F);

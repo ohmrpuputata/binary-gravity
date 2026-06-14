@@ -30,6 +30,60 @@ public class AlienInvasionClient implements ClientModInitializer {
                                 () -> com.example.alieninvasion.client.model.AlienHumanoidModel.createBodyLayer(variant));
         }
 
+        private static float getUseProgress(
+                        net.minecraft.world.item.ItemStack stack,
+                        net.minecraft.world.entity.LivingEntity entity,
+                        float fullChargeTicks) {
+                if (entity == null || !entity.isUsingItem() || entity.getUseItem() != stack) {
+                        return 0.0F;
+                }
+                int duration = stack.getItem().getUseDuration(stack, entity);
+                int used = duration - entity.getUseItemRemainingTicks();
+                return Math.min(1.0F, used / fullChargeTicks);
+        }
+
+        private static void registerBlasterModelPredicates() {
+                ResourceLocation heat = ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "heat");
+                ResourceLocation shot = ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "shot");
+                ResourceLocation charge = ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "charge");
+
+                FabricModelPredicateProviderRegistry.register(
+                                com.example.alieninvasion.registry.ItemRegistry.ALIEN_BLASTER,
+                                heat,
+                                (stack, level, entity, seed) ->
+                                                com.example.alieninvasion.item.AlienBlasterItem.getModelHeat(stack));
+                FabricModelPredicateProviderRegistry.register(
+                                com.example.alieninvasion.registry.ItemRegistry.ALIEN_BLASTER,
+                                charge,
+                                (stack, level, entity, seed) -> getUseProgress(stack, entity, 20.0F));
+
+                FabricModelPredicateProviderRegistry.register(
+                                com.example.alieninvasion.registry.ItemRegistry.GREEN_RAY_BLASTER,
+                                heat,
+                                (stack, level, entity, seed) ->
+                                                com.example.alieninvasion.item.AlienBlasterItem.getModelHeat(stack));
+                FabricModelPredicateProviderRegistry.register(
+                                com.example.alieninvasion.registry.ItemRegistry.GREEN_RAY_BLASTER,
+                                charge,
+                                (stack, level, entity, seed) -> getUseProgress(stack, entity, 20.0F));
+
+                FabricModelPredicateProviderRegistry.register(
+                                com.example.alieninvasion.registry.ItemRegistry.GRAVITY_GUN,
+                                shot,
+                                (stack, level, entity, seed) ->
+                                                com.example.alieninvasion.item.GravityGunItem.getModelShot(stack));
+
+                FabricModelPredicateProviderRegistry.register(
+                                com.example.alieninvasion.registry.ItemRegistry.ASTRAL_PRISM_GUN,
+                                shot,
+                                (stack, level, entity, seed) ->
+                                                com.example.alieninvasion.item.GravityGunItem.getModelShot(stack));
+                FabricModelPredicateProviderRegistry.register(
+                                com.example.alieninvasion.registry.ItemRegistry.ASTRAL_PRISM_GUN,
+                                charge,
+                                (stack, level, entity, seed) -> getUseProgress(stack, entity, 60.0F));
+        }
+
         @Override
         public void onInitializeClient() {
                 net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry.getInstance().register(
@@ -37,18 +91,7 @@ public class AlienInvasionClient implements ClientModInitializer {
                                 com.example.alieninvasion.client.particle.AcidSmokeParticle.Provider::new);
                 com.example.alieninvasion.client.AcidRainEffects.register();
                 com.example.alieninvasion.client.WorldAmbienceEffects.register();
-
-                FabricModelPredicateProviderRegistry.register(
-                                com.example.alieninvasion.registry.ItemRegistry.GREEN_RAY_BLASTER,
-                                ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "charge"),
-                                (stack, level, entity, seed) -> {
-                                        if (entity == null || !entity.isUsingItem() || entity.getUseItem() != stack) {
-                                                return 0.0F;
-                                        }
-                                        int duration = stack.getItem().getUseDuration(stack, entity);
-                                        int used = duration - entity.getUseItemRemainingTicks();
-                                        return Math.min(1.0F, used / 20.0F);
-                                });
+                registerBlasterModelPredicates();
                 FabricModelPredicateProviderRegistry.register(
                                 com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_SHIELD,
                                 ResourceLocation.fromNamespaceAndPath("minecraft", "blocking"),
