@@ -44,8 +44,8 @@
   "tooltip.alien-invasion.purified_water_flask": "Чистая вода стала редкостью. Эта фляга — маленькое напоминание о мире до вторжения.",
   "tooltip.alien-invasion.plasma_bolt": "Стабилизированный сгусток плазмы. Пришельцы бросаются им как камнями.",
   "item.alien-invasion.plasma_bolt": "Плазменный заряд",
-  "tooltip.alien-invasion.pure_radiation_block": "Рудный кристалл радиации. При сближении стремительно заполняет полоску Облучения. Пришельцы невосприимчивы. Выпадает кристалл радиации.",
-  "tooltip.alien-invasion.radiation_crystal": "В теории один такой кристалл питал бы целый город. Здесь он просто медленно убивает.",
+  "tooltip.alien-invasion.pure_radiation_block": "Рудный кристалл радиации. При сближении стремительно заполняет полоску Облучения. Пришельцы невосприимчивы. Выпадает осколок чистой радиации.",
+  "tooltip.alien-invasion.radiation_crystal": "В теории один такой осколок питал бы целый город. Здесь он просто медленно убивает.",
   "tooltip.alien-invasion.platinum_chunk": "Угольная жила изменилась. Под чёрной пылью — что-то белое и плотное. Рой переписал геологию.",
   "tooltip.alien-invasion.palladium_chunk": "Медная руда переродилась. Что-то в биомассе Роя катализирует замещение металлов.",
   "tooltip.alien-invasion.raw_platinum": "Необработанный металл со следами инопланетной биомассы. Нужна плавильная печь — тогда станет чистым.",
@@ -167,7 +167,7 @@
   "tooltip.alien-invasion.alien_stash": "Рой собирает то, что считает ценным. Судя по содержимому — многое совпадает с вашим мнением.",
   "tooltip.alien-invasion.contaminated_bones": "Кости, пропитанные биомассой. Рой не оставляет своих мёртвых просто лежать.",
   "block.alien-invasion.pure_radiation_block": "Рудный кристалл радиации",
-  "item.alien-invasion.radiation_crystal": "Кристалл чистой радиации",
+  "item.alien-invasion.radiation_crystal": "Осколок чистой радиации",
   "effect.alien-invasion.strong_radiation": "Сильная радиация",
   "effect.alien-invasion.irradiation": "Облучение",
   "item.alien-invasion.platinum_chunk": "Кусочек платины",
@@ -446,5 +446,7 @@
   "effect.alien-invasion.infection_cleanse": "Очищение от заражения",
   "item.alien-invasion.infection_pills": "Таблетки от заражения",
   "effect.alien-invasion.platinum_health_boost": "Платиновое укрепление",
-  "effect.alien-invasion.platinum_health_drain": "Осушение здоровья"
+  "effect.alien-invasion.platinum_health_drain": "Осушение здоровья",
+  "block.alien-invasion.platinum_anvil": "Платиновая наковальня",
+  "container.alien-invasion.platinum_anvil": "Платиновая наковальня"
 }

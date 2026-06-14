@@ -220,5 +220,9 @@ public class AlienInvasionClient implements ClientModInitializer {
                                 ModBlocks.INFESTED_GLASS);
                 BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.translucent(), ModBlocks.INFESTED_ICE,
                                 ModBlocks.ALIEN_PORTAL);
+
+                net.minecraft.client.gui.screens.MenuScreens.register(
+                                com.example.alieninvasion.registry.ModBlocks.PLATINUM_ANVIL_MENU,
+                                com.example.alieninvasion.client.PlatinumAnvilScreen::new);
         }
 }

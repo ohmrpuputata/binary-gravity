@@ -44,8 +44,8 @@
   "tooltip.alien-invasion.purified_water_flask": "Clean water has become rare. This flask is a small reminder of the world before the invasion.",
   "tooltip.alien-invasion.plasma_bolt": "A stabilized plasma clot. The Swarm hurls them like stones.",
   "item.alien-invasion.plasma_bolt": "Plasma Bolt",
-  "tooltip.alien-invasion.pure_radiation_block": "Radiation Crystal Ore. Rapidly fills the Irradiation bar on approach. Aliens are immune. Drops a radiation crystal.",
-  "tooltip.alien-invasion.radiation_crystal": "In theory, a single crystal like this could power an entire city. Here, it simply kills slowly.",
+  "tooltip.alien-invasion.pure_radiation_block": "Radiation Crystal Ore. Rapidly fills the Irradiation bar on approach. Aliens are immune. Drops a pure radiation shard.",
+  "tooltip.alien-invasion.radiation_crystal": "In theory, a single shard like this could power an entire city. Here, it simply kills slowly.",
   "tooltip.alien-invasion.platinum_chunk": "The coal vein has changed. Beneath the black dust — something white and dense. The Swarm rewrote geology.",
   "tooltip.alien-invasion.palladium_chunk": "The copper ore has transformed. Something in the Swarm's biomass catalyzes metal substitution.",
   "tooltip.alien-invasion.raw_platinum": "Unrefined metal with traces of alien biomass. It needs a blast furnace — then it becomes clean.",
@@ -167,7 +167,7 @@
   "tooltip.alien-invasion.alien_stash": "The Swarm collects what it considers valuable. Judging by the contents — much of it matches your own opinion.",
   "tooltip.alien-invasion.contaminated_bones": "Bones saturated with biomass. The Swarm doesn't leave its dead simply lying around.",
   "block.alien-invasion.pure_radiation_block": "Radiation Crystal Ore",
-  "item.alien-invasion.radiation_crystal": "Radiation Crystal",
+  "item.alien-invasion.radiation_crystal": "Pure Radiation Shard",
   "effect.alien-invasion.strong_radiation": "Strong Radiation",
   "effect.alien-invasion.irradiation": "Irradiation",
   "item.alien-invasion.platinum_chunk": "Platinum Chunk",
@@ -446,5 +446,7 @@
   "effect.alien-invasion.infection_cleanse": "Infection Cleanse",
   "item.alien-invasion.infection_pills": "Infection Pills",
   "effect.alien-invasion.platinum_health_boost": "Platinum Fortification",
-  "effect.alien-invasion.platinum_health_drain": "Health Drain"
+  "effect.alien-invasion.platinum_health_drain": "Health Drain",
+  "block.alien-invasion.platinum_anvil": "Platinum Anvil",
+  "container.alien-invasion.platinum_anvil": "Platinum Anvil"
 }

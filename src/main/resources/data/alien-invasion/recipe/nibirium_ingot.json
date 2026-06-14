@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "alien-invasion:platinum_anvil",
   "pattern": [
     "PXP",
     "XPX",
@@ -13,8 +13,11 @@
       "item": "alien-invasion:palladium_ingot"
     }
   },
+  "catalyst": {
+    "item": "minecraft:amethyst_shard"
+  },
   "result": {
     "id": "alien-invasion:nibirium_ingot",
-    "count": 2
+    "count": 1
   }
 }

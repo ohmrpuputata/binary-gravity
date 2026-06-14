@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/anvil",
+  "textures": {
+    "top": "alien-invasion:block/damaged_platinum_anvil_top",
+    "body": "alien-invasion:block/platinum_anvil_side"
+  }
+}

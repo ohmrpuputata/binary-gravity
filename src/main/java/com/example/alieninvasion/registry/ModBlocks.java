@@ -376,6 +376,36 @@ public class ModBlocks {
             BlockEntityType.Builder.of(com.example.alieninvasion.block.PlanetReactorBlockEntity::new, PLANET_REACTOR).build(null)
     );
 
+    public static final Block PLATINUM_ANVIL = registerBlock("platinum_anvil",
+            new com.example.alieninvasion.block.PlatinumAnvilBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.METAL)
+                    .strength(5.0F, 1200.0F)
+                    .sound(SoundType.ANVIL)
+                    .requiresCorrectToolForDrops()));
+
+    public static final net.minecraft.world.inventory.MenuType<com.example.alieninvasion.block.PlatinumAnvilMenu> PLATINUM_ANVIL_MENU = Registry.register(
+            BuiltInRegistries.MENU,
+            ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "platinum_anvil"),
+            new net.minecraft.world.inventory.MenuType<>(com.example.alieninvasion.block.PlatinumAnvilMenu::new, net.minecraft.world.flag.FeatureFlags.DEFAULT_FLAGS)
+    );
+
+    public static final net.minecraft.world.item.crafting.RecipeType<com.example.alieninvasion.block.PlatinumAnvilRecipe> PLATINUM_ANVIL_RECIPE_TYPE = Registry.register(
+            BuiltInRegistries.RECIPE_TYPE,
+            ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "platinum_anvil"),
+            new net.minecraft.world.item.crafting.RecipeType<>() {
+                @Override
+                public String toString() {
+                    return "platinum_anvil";
+                }
+            }
+    );
+
+    public static final net.minecraft.world.item.crafting.RecipeSerializer<com.example.alieninvasion.block.PlatinumAnvilRecipe> PLATINUM_ANVIL_RECIPE_SERIALIZER = Registry.register(
+            BuiltInRegistries.RECIPE_SERIALIZER,
+            ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "platinum_anvil"),
+            new com.example.alieninvasion.block.PlatinumAnvilRecipe.Serializer()
+    );
+
     private static Block registerBlock(String name, Block block) {
         registerBlockItem(name, block);
         return Registry.register(BuiltInRegistries.BLOCK,
