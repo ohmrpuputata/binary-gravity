@@ -39,6 +39,13 @@ public class PalladiumAnvilScreen extends AbstractContainerScreen<PalladiumAnvil
     }
 
     @Override
+    protected void init() {
+        super.init();
+        this.leftPos -= 10;
+        this.topPos -= 10;
+    }
+
+    @Override
     public void render(GuiGraphics gfx, int mouseX, int mouseY, float pt) {
         super.render(gfx, mouseX, mouseY, pt);
         this.renderTooltip(gfx, mouseX, mouseY);
