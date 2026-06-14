@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "alien-invasion:bloody_infested_dark_matter_ore"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "alien-invasion:blocks/bloody_infested_dark_matter_ore"
+}

@@ -146,6 +146,8 @@ public class AlienInvasionClient implements ClientModInitializer {
                 EntityModelLayerRegistry.registerModelLayer(ModModelLayers.PLATINUM_ARMOR,
                                 () -> com.example.alieninvasion.client.model.AdvancedArmorModel.createBodyLayer(
                                                 com.example.alieninvasion.client.model.AdvancedArmorModel.Variant.PLATINUM));
+                EntityModelLayerRegistry.registerModelLayer(ModModelLayers.BIO_FILTER_MASK,
+                                com.example.alieninvasion.client.model.BioFilterMaskModel::createBodyLayer);
                 net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer.register(
                                 new com.example.alieninvasion.client.PalladiumArmorRenderer(),
                                 com.example.alieninvasion.registry.ItemRegistry.PALLADIUM_HELMET,
@@ -158,7 +160,8 @@ public class AlienInvasionClient implements ClientModInitializer {
                                 com.example.alieninvasion.registry.ItemRegistry.COSMIC_HELMET,
                                 com.example.alieninvasion.registry.ItemRegistry.COSMIC_CHESTPLATE,
                                 com.example.alieninvasion.registry.ItemRegistry.COSMIC_LEGGINGS,
-                                com.example.alieninvasion.registry.ItemRegistry.COSMIC_BOOTS);
+                                com.example.alieninvasion.registry.ItemRegistry.COSMIC_BOOTS,
+                                com.example.alieninvasion.registry.ItemRegistry.GRAVITY_BOOTS);
                 net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer.register(
                                 new com.example.alieninvasion.client.AdvancedArmorRenderer(
                                                 ModModelLayers.HAZMAT_ARMOR, "alien_hazmat"),
@@ -180,6 +183,9 @@ public class AlienInvasionClient implements ClientModInitializer {
                                 com.example.alieninvasion.registry.ItemRegistry.PLATINUM_CHESTPLATE,
                                 com.example.alieninvasion.registry.ItemRegistry.PLATINUM_LEGGINGS,
                                 com.example.alieninvasion.registry.ItemRegistry.PLATINUM_BOOTS);
+                net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer.register(
+                                new com.example.alieninvasion.client.BioFilterMaskRenderer(),
+                                com.example.alieninvasion.registry.ItemRegistry.BIO_FILTER_MASK);
                 // HUD Overlay
                 com.example.alieninvasion.client.InvasionHUDOverlay.register();
 
@@ -218,7 +224,11 @@ public class AlienInvasionClient implements ClientModInitializer {
                                 ModBlocks.BLOOD_LAYER,
                                 ModBlocks.ALIEN_TENDRILS, ModBlocks.INFESTED_DOOR, ModBlocks.INFESTED_TRAPDOOR,
                                 ModBlocks.INFESTED_GLASS);
+                BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.cutout(),
+                                com.example.alieninvasion.registry.BloodyVariantRegistry.cutoutBlocks());
                 BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.translucent(), ModBlocks.INFESTED_ICE,
                                 ModBlocks.ALIEN_PORTAL);
+                BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.translucent(),
+                                com.example.alieninvasion.registry.BloodyVariantRegistry.translucentBlocks());
         }
 }

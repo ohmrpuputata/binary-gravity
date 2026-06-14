@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:stone_bricks"
+          "name": "alien-invasion:bloody_stone_bricks"
         }
       ],
       "conditions": [

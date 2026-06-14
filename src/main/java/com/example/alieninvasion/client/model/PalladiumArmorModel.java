@@ -57,11 +57,11 @@ public class PalladiumArmorModel extends HumanoidModel<LivingEntity> {
                 PartPose.ZERO);
 
         root.getChild("right_arm").addOrReplaceChild("shoulder",
-                CubeListBuilder.create().texOffs(44, 32)
+                CubeListBuilder.create().texOffs(40, 32)
                         .addBox(-4.5F, -2.5F, -3.0F, 5.0F, 4.0F, 6.0F),
                 PartPose.ZERO);
         root.getChild("left_arm").addOrReplaceChild("shoulder",
-                CubeListBuilder.create().texOffs(44, 32).mirror()
+                CubeListBuilder.create().texOffs(40, 32).mirror()
                         .addBox(-0.5F, -2.5F, -3.0F, 5.0F, 4.0F, 6.0F),
                 PartPose.ZERO);
 

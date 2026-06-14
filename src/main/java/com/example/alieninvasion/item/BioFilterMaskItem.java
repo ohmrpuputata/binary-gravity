@@ -5,6 +5,6 @@ import net.minecraft.world.item.Item;
 
 public class BioFilterMaskItem extends ArmorItem {
     public BioFilterMaskItem(Item.Properties properties) {
-        super(AlienHazmatArmorMaterial.ALIEN_HAZMAT, Type.HELMET, properties);
+        super(BioFilterMaskArmorMaterial.MATERIAL, Type.HELMET, properties);
     }
 }

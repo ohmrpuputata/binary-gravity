@@ -121,7 +121,7 @@ public class AdvancedArmorModel extends HumanoidModel<LivingEntity> {
     }
 
     private static CubeListBuilder shoulder(Variant variant, boolean mirror) {
-        CubeListBuilder builder = CubeListBuilder.create().texOffs(48, 32);
+        CubeListBuilder builder = CubeListBuilder.create().texOffs(40, 32);
         if (mirror) builder.mirror();
         return switch (variant) {
             case COSMIC -> builder.addBox(mirror ? -0.5F : -5.5F, -3.0F, -3.0F, 6.0F, 3.0F, 6.0F);

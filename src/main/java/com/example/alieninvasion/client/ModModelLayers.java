@@ -59,4 +59,6 @@ public class ModModelLayers {
             ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "chem_armor"), "main");
     public static final ModelLayerLocation PLATINUM_ARMOR = new ModelLayerLocation(
             ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "platinum_armor"), "main");
+    public static final ModelLayerLocation BIO_FILTER_MASK = new ModelLayerLocation(
+            ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "bio_filter_mask"), "main");
 }

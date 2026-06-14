@@ -3,8 +3,11 @@ package com.example.alieninvasion.logic;
 import com.example.alieninvasion.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.level.EmptyBlockGetter;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public final class ContaminationRules {
@@ -56,11 +59,15 @@ public final class ContaminationRules {
                 || state.is(Blocks.COAL_BLOCK) || state.is(Blocks.COPPER_BLOCK) || state.is(Blocks.IRON_BLOCK)
                 || state.is(Blocks.GOLD_BLOCK) || state.is(Blocks.REDSTONE_BLOCK) || state.is(Blocks.LAPIS_BLOCK)
                 || state.is(Blocks.EMERALD_BLOCK) || state.is(Blocks.DIAMOND_BLOCK)
-                || state.is(Blocks.NETHERITE_BLOCK);
+                || state.is(Blocks.NETHERITE_BLOCK) || state.is(Blocks.NETHER_QUARTZ_ORE)
+                || state.is(Blocks.ANCIENT_DEBRIS);
     }
 
     public static boolean canContaminate(LevelAccessor level, BlockPos pos, BlockState state) {
-        if (state.isAir() || state.getDestroySpeed(level, pos) < 0.0F) return false;
+        if (state.isAir() || state.getBlock() instanceof LiquidBlock
+                || state.getDestroySpeed(level, pos) < 0.0F) {
+            return false;
+        }
         // Tile-entity blocks are normally left alone, but the barrel is a work station
         // we DO consume (its infested twin is decorative, contents are forfeited).
         if (level.getBlockEntity(pos) != null && !state.is(Blocks.BARREL)) return false;
@@ -74,11 +81,16 @@ public final class ContaminationRules {
     }
 
     public static BlockState contaminatedStateFor(BlockState state) {
-        if (state.is(Blocks.GRASS_BLOCK) || state.is(Blocks.MYCELIUM) || state.is(Blocks.MOSS_BLOCK)) {
+        if (state.isAir() || state.getBlock() instanceof LiquidBlock || isProtectedBlock(state)
+                || (state.hasBlockEntity() && !state.is(Blocks.BARREL))) {
+            return null;
+        }
+        if (state.is(Blocks.GRASS_BLOCK) || state.is(Blocks.MYCELIUM) || state.is(Blocks.MOSS_BLOCK)
+                || state.is(BlockTags.NYLIUM)) {
             return ModBlocks.INFESTED_GRASS.defaultBlockState();
         }
-        if (state.is(Blocks.DIRT) || state.is(Blocks.COARSE_DIRT)
-                || state.is(Blocks.PODZOL) || state.is(Blocks.ROOTED_DIRT) || state.is(Blocks.MUD)) {
+        if (state.is(BlockTags.DIRT) || state.is(Blocks.MUD) || state.is(Blocks.PACKED_MUD)
+                || state.is(Blocks.MUD_BRICKS)) {
             return ModBlocks.INFESTED_DIRT.defaultBlockState();
         }
         if (state.is(Blocks.SANDSTONE) || state.is(Blocks.SMOOTH_SANDSTONE) || state.is(Blocks.CUT_SANDSTONE)
@@ -86,22 +98,21 @@ public final class ContaminationRules {
                 || state.is(Blocks.SMOOTH_RED_SANDSTONE) || state.is(Blocks.CUT_RED_SANDSTONE)) {
             return ModBlocks.INFESTED_SANDSTONE.defaultBlockState();
         }
-        if (state.is(Blocks.TERRACOTTA) || state.is(Blocks.WHITE_TERRACOTTA) || state.is(Blocks.ORANGE_TERRACOTTA)
-                || state.is(Blocks.YELLOW_TERRACOTTA) || state.is(Blocks.BROWN_TERRACOTTA)
-                || state.is(Blocks.RED_TERRACOTTA) || state.is(Blocks.LIGHT_GRAY_TERRACOTTA)) {
+        if (state.is(BlockTags.TERRACOTTA)
+                || state.getBlock() instanceof net.minecraft.world.level.block.GlazedTerracottaBlock) {
             return ModBlocks.INFESTED_TERRACOTTA.defaultBlockState();
         }
-        if (state.is(Blocks.SNOW_BLOCK) || state.is(Blocks.POWDER_SNOW)) {
+        if (state.is(BlockTags.SNOW) || state.is(Blocks.POWDER_SNOW)) {
             return ModBlocks.INFESTED_SNOW.defaultBlockState();
         }
-        if (state.is(Blocks.ICE) || state.is(Blocks.PACKED_ICE) || state.is(Blocks.BLUE_ICE)
-                || state.is(Blocks.FROSTED_ICE)) {
+        if (state.is(BlockTags.ICE) || state.is(Blocks.FROSTED_ICE)) {
             return ModBlocks.INFESTED_ICE.defaultBlockState();
         }
         if (state.is(BlockTags.SAND)) return ModBlocks.INFESTED_SAND.defaultBlockState();
         if (state.is(Blocks.GRAVEL)) return ModBlocks.INFESTED_GRAVEL.defaultBlockState();
         if (state.is(Blocks.CLAY)) return ModBlocks.INFESTED_CLAY.defaultBlockState();
-        if (state.is(Blocks.STONE) || state.is(Blocks.COBBLESTONE) || state.is(Blocks.ANDESITE)
+        if (state.is(BlockTags.BASE_STONE_OVERWORLD)
+                || state.is(Blocks.COBBLESTONE) || state.is(Blocks.ANDESITE)
                 || state.is(Blocks.DIORITE) || state.is(Blocks.GRANITE) || state.is(Blocks.TUFF)
                 || state.is(Blocks.CALCITE) || state.is(Blocks.SMOOTH_STONE)
                 || state.is(Blocks.POLISHED_ANDESITE) || state.is(Blocks.POLISHED_DIORITE)
@@ -111,6 +122,7 @@ public final class ContaminationRules {
         if (CONCRETE.contains(state.getBlock())) return ModBlocks.INFESTED_TERRACOTTA.defaultBlockState();
         if (CONCRETE_POWDER.contains(state.getBlock())) return ModBlocks.INFESTED_SAND.defaultBlockState();
         if (state.is(Blocks.RED_MUSHROOM_BLOCK) || state.is(Blocks.BROWN_MUSHROOM_BLOCK)
+                || state.is(BlockTags.WART_BLOCKS)
                 || state.is(Blocks.CACTUS)) {
             return ModBlocks.ALIEN_FLESH.defaultBlockState();
         }
@@ -118,11 +130,15 @@ public final class ContaminationRules {
         if (state.is(Blocks.SUGAR_CANE) || state.is(Blocks.BAMBOO)) {
             return ModBlocks.DEAD_INFESTED_CROP.defaultBlockState();
         }
-        if (state.is(Blocks.DEEPSLATE) || state.is(Blocks.COBBLED_DEEPSLATE)) {
+        if (state.is(Blocks.DEEPSLATE) || state.is(Blocks.COBBLED_DEEPSLATE)
+                || state.is(Blocks.POLISHED_DEEPSLATE) || state.is(Blocks.DEEPSLATE_BRICKS)
+                || state.is(Blocks.CRACKED_DEEPSLATE_BRICKS) || state.is(Blocks.DEEPSLATE_TILES)
+                || state.is(Blocks.CRACKED_DEEPSLATE_TILES) || state.is(Blocks.CHISELED_DEEPSLATE)) {
             return ModBlocks.INFESTED_DEEPSLATE.defaultBlockState();
         }
         if (state.is(Blocks.NETHERRACK)) return ModBlocks.INFESTED_NETHERRACK.defaultBlockState();
-        if (state.is(BlockTags.OVERWORLD_NATURAL_LOGS) || state.is(BlockTags.LOGS_THAT_BURN)) {
+        if (state.is(BlockTags.BASE_STONE_NETHER)) return ModBlocks.INFESTED_STONE.defaultBlockState();
+        if (state.is(BlockTags.LOGS)) {
             return ModBlocks.INFESTED_LOG.defaultBlockState();
         }
         if (state.is(BlockTags.PLANKS)) return ModBlocks.INFESTED_PLANKS.defaultBlockState();
@@ -139,13 +155,14 @@ public final class ContaminationRules {
         if (state.is(Blocks.LOOM)) return ModBlocks.INFESTED_LOOM.defaultBlockState();
         if (state.is(Blocks.STONECUTTER)) return ModBlocks.INFESTED_STONECUTTER.defaultBlockState();
         if (state.is(Blocks.GRINDSTONE)) return ModBlocks.INFESTED_GRINDSTONE.defaultBlockState();
-        if (state.is(BlockTags.WOODEN_DOORS)) return ModBlocks.INFESTED_DOOR.defaultBlockState();
-        if (state.is(BlockTags.WOODEN_TRAPDOORS)) return ModBlocks.INFESTED_TRAPDOOR.defaultBlockState();
+        if (state.is(BlockTags.DOORS)) return ModBlocks.INFESTED_DOOR.defaultBlockState();
+        if (state.is(BlockTags.TRAPDOORS)) return ModBlocks.INFESTED_TRAPDOOR.defaultBlockState();
         if (state.is(BlockTags.WOODEN_STAIRS) || state.is(BlockTags.WOODEN_SLABS)
                 || state.is(BlockTags.WOODEN_FENCES) || state.is(BlockTags.FENCE_GATES)
                 || state.is(Blocks.BOOKSHELF)) {
             return ModBlocks.INFESTED_PLANKS.defaultBlockState();
         }
+        if (state.is(BlockTags.FENCES)) return materialFallback(state);
         if (state.is(Blocks.STONE_BRICKS) || state.is(Blocks.MOSSY_STONE_BRICKS)
                 || state.is(Blocks.CRACKED_STONE_BRICKS) || state.is(Blocks.CHISELED_STONE_BRICKS)
                 || state.is(Blocks.BRICKS) || state.is(Blocks.MOSSY_COBBLESTONE)) {
@@ -155,6 +172,7 @@ public final class ContaminationRules {
             return ModBlocks.INFESTED_STONE.defaultBlockState(); // stone shapes (wooden matched above)
         }
         if (state.is(BlockTags.WOOL)) return ModBlocks.INFESTED_WOOL.defaultBlockState();
+        if (state.is(BlockTags.WOOL_CARPETS)) return ModBlocks.INFESTED_WOOL.defaultBlockState();
         // IMPERMEABLE = glass + all 16 stained glasses; panes (incl. stained) by class.
         if (state.is(BlockTags.IMPERMEABLE) || state.is(Blocks.GLASS_PANE)
                 || state.getBlock() instanceof net.minecraft.world.level.block.StainedGlassPaneBlock) {
@@ -171,7 +189,62 @@ public final class ContaminationRules {
                 || state.is(Blocks.POTATOES) || state.is(Blocks.BEETROOTS)) {
             return ModBlocks.DEAD_INFESTED_CROP.defaultBlockState();
         }
+        if (isSurfaceVegetation(state) || isAdditionalVegetation(state)) {
+            return ModBlocks.DEAD_INFESTED_CROP.defaultBlockState();
+        }
+        if (state.is(BlockTags.BUTTONS) || state.is(BlockTags.PRESSURE_PLATES)
+                || state.is(BlockTags.RAILS)) {
+            return materialFallback(state);
+        }
+        // Final coverage rule: every remaining breakable vanilla block without a block
+        // entity is consumed too. Thin/mechanical shapes collapse into the closest of
+        // the existing infected material families instead of silently resisting spread.
+        if (state.getDestroySpeed(EmptyBlockGetter.INSTANCE, BlockPos.ZERO) >= 0.0F) {
+            return materialFallback(state);
+        }
         return null;
+    }
+
+    private static boolean isAdditionalVegetation(BlockState state) {
+        return state.is(Blocks.VINE) || state.is(Blocks.CAVE_VINES) || state.is(Blocks.CAVE_VINES_PLANT)
+                || state.is(Blocks.TWISTING_VINES) || state.is(Blocks.TWISTING_VINES_PLANT)
+                || state.is(Blocks.WEEPING_VINES) || state.is(Blocks.WEEPING_VINES_PLANT)
+                || state.is(Blocks.CRIMSON_ROOTS) || state.is(Blocks.WARPED_ROOTS)
+                || state.is(Blocks.NETHER_SPROUTS) || state.is(Blocks.HANGING_ROOTS)
+                || state.is(Blocks.SEAGRASS) || state.is(Blocks.TALL_SEAGRASS)
+                || state.is(Blocks.KELP) || state.is(Blocks.KELP_PLANT)
+                || state.is(Blocks.LILY_PAD) || state.is(Blocks.GLOW_LICHEN)
+                || state.is(Blocks.SPORE_BLOSSOM) || state.is(Blocks.SMALL_DRIPLEAF)
+                || state.is(Blocks.BIG_DRIPLEAF) || state.is(Blocks.BIG_DRIPLEAF_STEM)
+                || state.is(Blocks.PINK_PETALS) || state.is(Blocks.MOSS_CARPET);
+    }
+
+    private static BlockState materialFallback(BlockState state) {
+        SoundType sound = state.getSoundType();
+        if (sound == SoundType.WOOD || sound == SoundType.NETHER_WOOD
+                || sound == SoundType.BAMBOO || sound == SoundType.BAMBOO_WOOD
+                || sound == SoundType.CHERRY_WOOD) {
+            return ModBlocks.INFESTED_PLANKS.defaultBlockState();
+        }
+        if (sound == SoundType.WOOL) {
+            return ModBlocks.INFESTED_WOOL.defaultBlockState();
+        }
+        if (sound == SoundType.SAND) {
+            return ModBlocks.INFESTED_SAND.defaultBlockState();
+        }
+        if (sound == SoundType.GRAVEL || sound == SoundType.GRASS || sound == SoundType.ROOTED_DIRT
+                || sound == SoundType.MUD || sound == SoundType.MOSS
+                || sound == SoundType.WET_GRASS || sound == SoundType.SOUL_SAND
+                || sound == SoundType.SOUL_SOIL || sound == SoundType.CROP) {
+            return ModBlocks.INFESTED_DIRT.defaultBlockState();
+        }
+        if (sound == SoundType.SNOW || sound == SoundType.POWDER_SNOW) {
+            return ModBlocks.INFESTED_SNOW.defaultBlockState();
+        }
+        if (sound == SoundType.GLASS) {
+            return ModBlocks.INFESTED_GLASS.defaultBlockState();
+        }
+        return ModBlocks.INFESTED_STONE.defaultBlockState();
     }
 
     /**

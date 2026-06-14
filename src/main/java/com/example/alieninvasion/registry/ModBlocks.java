@@ -253,6 +253,8 @@ public class ModBlocks {
     public static final Block INFESTED_GRINDSTONE = registerBlock("infested_grindstone",
             new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(3.5F).sound(SoundType.STONE).noOcclusion()));
 
+    private static final boolean BLOODY_VARIANTS_REGISTERED = BloodyVariantRegistry.registerAll();
+
     public static final Block ALIEN_HEART = registerBlock("alien_heart",
             new com.example.alieninvasion.block.AlienHeartBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.COLOR_RED).strength(2.5F).randomTicks()
@@ -341,9 +343,7 @@ public class ModBlocks {
             BuiltInRegistries.BLOCK_ENTITY_TYPE,
             ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "bloody_block"),
             BlockEntityType.Builder.of(com.example.alieninvasion.block.BloodyBlockEntity::new,
-                    BLOODY_PLANKS, BLOODY_STONE, BLOODY_DIRT, BLOODY_STONE_BRICKS,
-                    BLOODY_PLANK_STAIRS, BLOODY_STONE_STAIRS, BLOODY_PLANK_SLAB, BLOODY_STONE_SLAB,
-                    BLOODY_PLANK_FENCE, BLOODY_INFESTED, BLOODY_INFESTED_DIRT).build(null)
+                    BloodyVariantRegistry.allBloodyBlocks()).build(null)
     );
 
     public static final BlockEntityType<AlienBeaconBlockEntity> ALIEN_BEACON_BLOCK_ENTITY = Registry.register(
@@ -376,10 +376,18 @@ public class ModBlocks {
             BlockEntityType.Builder.of(com.example.alieninvasion.block.PlanetReactorBlockEntity::new, PLANET_REACTOR).build(null)
     );
 
-    private static Block registerBlock(String name, Block block) {
+    static Block registerBlock(String name, Block block) {
         registerBlockItem(name, block);
         return Registry.register(BuiltInRegistries.BLOCK,
                 ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, name), block);
+    }
+
+    public static Block bloodyVariantFor(Block source) {
+        return BloodyVariantRegistry.forSource(source);
+    }
+
+    public static Block cleanBloodyVariantForInfested(Block infested) {
+        return BloodyVariantRegistry.cleanForInfested(infested);
     }
 
     private static Block registerBlockNoItem(String name, Block block) {

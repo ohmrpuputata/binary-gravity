@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "alien-invasion:block/bloody_infested_log",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "alien-invasion:block/bloody_infested_log"
+    },
+    "axis=z": {
+      "model": "alien-invasion:block/bloody_infested_log",
+      "x": 90
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "alien-invasion:block/bloody_infested_crafting_table_front",
+    "down": "alien-invasion:block/bloody_infested_planks",
+    "up": "alien-invasion:block/bloody_infested_crafting_table_top",
+    "north": "alien-invasion:block/bloody_infested_crafting_table_front",
+    "east": "alien-invasion:block/bloody_infested_crafting_table_side",
+    "south": "alien-invasion:block/bloody_infested_crafting_table_side",
+    "west": "alien-invasion:block/bloody_infested_crafting_table_front"
+  }
+}

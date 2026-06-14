@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_bottom_left_open",
+  "textures": {
+    "bottom": "alien-invasion:block/bloody_infested_door_bottom",
+    "top": "alien-invasion:block/bloody_infested_door_top"
+  }
+}
