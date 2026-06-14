@@ -528,7 +528,7 @@ public class SwarmMotherEntity extends Monster implements IAlienUnit {
             this.spawnAtLocation(new net.minecraft.world.item.ItemStack(
                     com.example.alieninvasion.registry.ItemRegistry.HIVE_CORE, 2));
             this.spawnAtLocation(new net.minecraft.world.item.ItemStack(
-                    com.example.alieninvasion.registry.ItemRegistry.NIBIRIUM_SMITHING_TEMPLATE, 1));
+                    com.example.alieninvasion.registry.ItemRegistry.RADIATION_CRYSTAL, 1));
         }
     }
 }

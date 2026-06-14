@@ -311,7 +311,7 @@
   "tooltip.alien-invasion.palladium_shovel": "Роет с такой скоростью, что земля не успевает слипнуться обратно.",
   "item.alien-invasion.palladium_hoe": "Палладиевая мотыга",
   "tooltip.alien-invasion.palladium_hoe": "Быстро, точно, без церемоний. Земля обрабатывается раньше, чем начинается следующая атака.",
-  "item.alien-invasion.nibirium_smithing_template": "Шаблон улучшения нибирием",
+  "block.alien-invasion.palladium_anvil": "Палладиевая наковальня",
   "item.alien-invasion.alien_hazmat_helmet": "Химзащита (шлем)",
   "item.alien-invasion.alien_hazmat_chestplate": "Химзащита (нагрудник)",
   "item.alien-invasion.alien_hazmat_leggings": "Химзащита (поножи)",
@@ -400,11 +400,7 @@
   "tooltip.alien-invasion.hunter_token": "На обороте выцарапано: «Самый крутой». Теперь это ты.",
   "item.alien-invasion.hunter_spawn_egg": "Яйцо призыва Макса Максбетова",
   "subtitles.alien-invasion.hunter": "Макс Максбетов что-то изрекает",
-  "upgrade.alien-invasion.nibirium": "Улучшение нибирием",
-  "upgrade.alien-invasion.nibirium.applies_to": "Алмазные инструменты/броня и Химзащита",
-  "upgrade.alien-invasion.nibirium.ingredients": "Слиток нибирия",
-  "upgrade.alien-invasion.nibirium.base_slot_description": "Добавьте алмазный инструмент, оружие или Химзащиту",
-  "upgrade.alien-invasion.nibirium.additions_slot_description": "Добавьте слиток нибирия",
+
   "block.alien-invasion.infested_sandstone": "Заражённый песчаник",
   "block.alien-invasion.infested_terracotta": "Заражённая терракота",
   "block.alien-invasion.infested_snow": "Заражённый снег",
@@ -449,6 +445,7 @@
   "effect.alien-invasion.platinum_health_drain": "Осушение здоровья",
   "block.alien-invasion.platinum_anvil": "Платиновая наковальня",
   "container.alien-invasion.platinum_anvil": "Платиновая наковальня",
+  "container.alien-invasion.palladium_anvil": "Палладиевая наковальня",
   "item.alien-invasion.emeradium_ingot": "Эмерадиевый слиток",
   "item.alien-invasion.emeradium_resonator": "Эмерадиевый резонатор",
   "item.alien-invasion.green_ray_blaster": "Био-пушка «Зеленый луч»",
@@ -456,11 +453,5 @@
   "item.alien-invasion.emeradium_helmet": "Эмерадиевый шлем",
   "item.alien-invasion.emeradium_chestplate": "Эмерадиевый нагрудник",
   "item.alien-invasion.emeradium_leggings": "Эмерадиевые поножи",
-  "item.alien-invasion.emeradium_boots": "Эмерадиевые ботинки",
-  "item.alien-invasion.emeradium_smithing_template": "Шаблон улучшения эмерадиумом",
-  "upgrade.alien-invasion.emeradium.applies_to": "Платиновое снаряжение",
-  "upgrade.alien-invasion.emeradium.ingredients": "Эмерадиевый слиток",
-  "upgrade.alien-invasion.emeradium": "Эмерадиевое улучшение",
-  "upgrade.alien-invasion.emeradium.base_slot_description": "Добавьте платиновую броню, оружие или щит",
-  "upgrade.alien-invasion.emeradium.additions_slot_description": "Добавьте эмерадиевый слиток"
+  "item.alien-invasion.emeradium_boots": "Эмерадиевые ботинки"
 }

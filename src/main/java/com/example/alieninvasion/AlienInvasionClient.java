@@ -231,5 +231,8 @@ public class AlienInvasionClient implements ClientModInitializer {
                 net.minecraft.client.gui.screens.MenuScreens.register(
                                 com.example.alieninvasion.registry.ModBlocks.PLATINUM_ANVIL_MENU,
                                 com.example.alieninvasion.client.PlatinumAnvilScreen::new);
+                net.minecraft.client.gui.screens.MenuScreens.register(
+                                com.example.alieninvasion.registry.ModBlocks.PALLADIUM_ANVIL_MENU,
+                                com.example.alieninvasion.client.PalladiumAnvilScreen::new);
         }
 }

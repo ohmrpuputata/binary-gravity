@@ -23,7 +23,7 @@
         { "type": "minecraft:item", "name": "alien-invasion:hive_core", "weight": 5 },
         { "type": "minecraft:item", "name": "alien-invasion:gravity_gun", "weight": 3 },
         { "type": "minecraft:item", "name": "alien-invasion:alien_blaster", "weight": 3 },
-        { "type": "minecraft:item", "name": "alien-invasion:nibirium_smithing_template", "weight": 4 },
+        { "type": "minecraft:item", "name": "alien-invasion:radiation_crystal", "weight": 4 },
         { "type": "minecraft:item", "name": "alien-invasion:cosmic_helmet", "weight": 2 },
         { "type": "minecraft:empty", "weight": 10 }
       ]

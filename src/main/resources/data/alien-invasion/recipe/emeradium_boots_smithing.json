@@ -1,7 +1,0 @@
-{
-  "type": "minecraft:smithing_transform",
-  "template": {"item": "alien-invasion:emeradium_smithing_template"},
-  "base": {"item": "alien-invasion:platinum_boots"},
-  "addition": {"item": "alien-invasion:emeradium_ingot"},
-  "result": {"id": "alien-invasion:emeradium_boots"}
-}

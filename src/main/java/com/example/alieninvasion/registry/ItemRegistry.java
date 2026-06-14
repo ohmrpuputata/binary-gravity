@@ -267,49 +267,6 @@ public class ItemRegistry {
             new HoeItem(ModToolTiers.PALLADIUM,
                     new Item.Properties().attributes(HoeItem.createAttributes(ModToolTiers.PALLADIUM, -3.0F, 0.0F))));
 
-    // Nibirium smithing upgrade template
-    public static final Item NIBIRIUM_SMITHING_TEMPLATE = registerItem("nibirium_smithing_template",
-            new net.minecraft.world.item.SmithingTemplateItem(
-                    net.minecraft.network.chat.Component.translatable("upgrade.alien-invasion.nibirium.applies_to"),
-                    net.minecraft.network.chat.Component.translatable("upgrade.alien-invasion.nibirium.ingredients"),
-                    net.minecraft.network.chat.Component.translatable("upgrade.alien-invasion.nibirium"),
-                    net.minecraft.network.chat.Component.translatable("upgrade.alien-invasion.nibirium.base_slot_description"),
-                    net.minecraft.network.chat.Component.translatable("upgrade.alien-invasion.nibirium.additions_slot_description"),
-                    java.util.List.of(
-                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_sword"),
-                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_pickaxe"),
-                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_axe"),
-                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_shovel"),
-                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_hoe"),
-                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_helmet"),
-                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_chestplate"),
-                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_leggings"),
-                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_boots")
-                    ),
-                    java.util.List.of(
-                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_ingot")
-                    )
-            ));
-
-    // Emeradium smithing upgrade template
-    public static final Item EMERADIUM_SMITHING_TEMPLATE = registerItem("emeradium_smithing_template",
-            new net.minecraft.world.item.SmithingTemplateItem(
-                    net.minecraft.network.chat.Component.translatable("upgrade.alien-invasion.emeradium.applies_to"),
-                    net.minecraft.network.chat.Component.translatable("upgrade.alien-invasion.emeradium.ingredients"),
-                    net.minecraft.network.chat.Component.translatable("upgrade.alien-invasion.emeradium"),
-                    net.minecraft.network.chat.Component.translatable("upgrade.alien-invasion.emeradium.base_slot_description"),
-                    net.minecraft.network.chat.Component.translatable("upgrade.alien-invasion.emeradium.additions_slot_description"),
-                    java.util.List.of(
-                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_sword"),
-                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_helmet"),
-                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_chestplate"),
-                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_leggings"),
-                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_boots")
-                    ),
-                    java.util.List.of(
-                            net.minecraft.resources.ResourceLocation.withDefaultNamespace("item/empty_slot_ingot")
-                    )
-            ));
 
     // Химзащита armor — early-game alien-skin suit (leather-level protection)
     public static final Item ALIEN_HAZMAT_HELMET = registerItem("alien_hazmat_helmet",
