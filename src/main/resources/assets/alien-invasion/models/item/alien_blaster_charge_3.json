@@ -1,0 +1,4 @@
+{
+  "parent": "alien-invasion:item/blaster_base",
+  "textures": {"layer0": "alien-invasion:item/alien_blaster_charge_3"}
+}

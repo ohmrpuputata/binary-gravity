@@ -3,6 +3,8 @@ package com.example.alieninvasion.item;
 import com.example.alieninvasion.entity.RadiationBoltEntity;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -16,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Alien Blaster: fires concentrated radiation bolts.
@@ -50,6 +53,11 @@ public class AlienBlasterItem extends Item {
         CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
         tag.putInt(MAX_COOLDOWN_KEY, Math.max(1, value));
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+    }
+
+    public static float getModelHeat(ItemStack stack) {
+        int maxCooldown = getMaxCooldown(stack);
+        return Math.min(1.0F, (float) getCooldown(stack) / (float) maxCooldown);
     }
 
     @Override
@@ -107,6 +115,38 @@ public class AlienBlasterItem extends Item {
                 bolt.shootFromRotation(livingEntity, livingEntity.getXRot(), livingEntity.getYRot(), 0.0F, 2.8F, 2.0F);
                 level.addFreshEntity(bolt);
             }
+        }
+        spawnOverheatEffects(level, livingEntity, ticksUsed, false);
+    }
+
+    protected void spawnOverheatEffects(
+            Level level,
+            LivingEntity livingEntity,
+            int ticksUsed,
+            boolean greenRay) {
+        if (!(level instanceof ServerLevel serverLevel) || ticksUsed < 12 || ticksUsed % 2 != 0) {
+            return;
+        }
+        Vec3 muzzle = livingEntity.getEyePosition()
+                .add(livingEntity.getViewVector(1.0F).scale(0.75D))
+                .add(0.0D, -0.18D, 0.0D);
+        serverLevel.sendParticles(
+                ticksUsed >= 16 ? ParticleTypes.SMOKE : ParticleTypes.ELECTRIC_SPARK,
+                muzzle.x, muzzle.y, muzzle.z,
+                greenRay ? 3 : 2,
+                0.045D, 0.035D, 0.045D,
+                0.01D);
+        if (greenRay) {
+            serverLevel.sendParticles(
+                    ParticleTypes.SNEEZE,
+                    muzzle.x, muzzle.y, muzzle.z,
+                    1,
+                    0.025D, 0.025D, 0.025D,
+                    0.005D);
+        }
+        if (ticksUsed == 18) {
+            level.playSound(null, livingEntity.blockPosition(), SoundEvents.FIRE_EXTINGUISH,
+                    SoundSource.PLAYERS, 0.35F, greenRay ? 1.65F : 1.35F);
         }
     }
 

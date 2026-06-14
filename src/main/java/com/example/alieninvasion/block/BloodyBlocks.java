@@ -8,6 +8,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -178,10 +180,29 @@ public final class BloodyBlocks {
                                             java.util.function.Supplier<BlockState> fallbackClean) {
         if (neighbor.getFluidState().is(net.minecraft.tags.FluidTags.WATER)
                 || state.getFluidState().is(net.minecraft.tags.FluidTags.WATER)) {
-            level.playSound(null, pos, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 0.5F, 1.3F);
-            return restoreState(level, pos, state, fallbackClean);
+            level.scheduleTick(pos, state.getBlock(), 20);
         }
         return null;
+    }
+
+    private static void washTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random,
+                                 java.util.function.Supplier<BlockState> fallbackClean) {
+        boolean touchingWater = state.getFluidState().is(FluidTags.WATER);
+        for (net.minecraft.core.Direction direction : net.minecraft.core.Direction.values()) {
+            touchingWater |= level.getFluidState(pos.relative(direction)).is(FluidTags.WATER);
+        }
+        if (!touchingWater) {
+            return;
+        }
+        level.sendParticles(ParticleTypes.SPLASH,
+                pos.getX() + 0.5D, pos.getY() + 0.8D, pos.getZ() + 0.5D,
+                4, 0.35D, 0.15D, 0.35D, 0.0D);
+        if (random.nextInt(3) == 0) {
+            level.setBlockAndUpdate(pos, restoreState(level, pos, state, fallbackClean));
+            level.playSound(null, pos, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 0.4F, 1.35F);
+        } else {
+            level.scheduleTick(pos, state.getBlock(), 20);
+        }
     }
 
     /** Full-cube bloodstained block: wipe with right-click, washes off in water. */
@@ -211,6 +232,11 @@ public final class BloodyBlocks {
             BlockState washed = washedByWater(state, neighbor, level, pos, clean);
             return washed != null ? washed : super.updateShape(state, dir, neighbor, level, pos, neighborPos);
         }
+
+        @Override
+        protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+            washTick(state, level, pos, random, clean);
+        }
     }
 
     public static class Stairs extends net.minecraft.world.level.block.StairBlock
@@ -238,6 +264,11 @@ public final class BloodyBlocks {
                 net.minecraft.world.level.LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
             BlockState washed = washedByWater(state, neighbor, level, pos, clean);
             return washed != null ? washed : super.updateShape(state, dir, neighbor, level, pos, neighborPos);
+        }
+
+        @Override
+        protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+            washTick(state, level, pos, random, clean);
         }
     }
 
@@ -267,6 +298,11 @@ public final class BloodyBlocks {
             BlockState washed = washedByWater(state, neighbor, level, pos, clean);
             return washed != null ? washed : super.updateShape(state, dir, neighbor, level, pos, neighborPos);
         }
+
+        @Override
+        protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+            washTick(state, level, pos, random, clean);
+        }
     }
 
     public static class Fence extends net.minecraft.world.level.block.FenceBlock
@@ -294,6 +330,11 @@ public final class BloodyBlocks {
                 net.minecraft.world.level.LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
             BlockState washed = washedByWater(state, neighbor, level, pos, clean);
             return washed != null ? washed : super.updateShape(state, dir, neighbor, level, pos, neighborPos);
+        }
+
+        @Override
+        protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+            washTick(state, level, pos, random, clean);
         }
     }
 
@@ -323,6 +364,11 @@ public final class BloodyBlocks {
             BlockState washed = washedByWater(state, neighbor, level, pos, clean);
             return washed != null ? washed : super.updateShape(state, dir, neighbor, level, pos, neighborPos);
         }
+
+        @Override
+        protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+            washTick(state, level, pos, random, clean);
+        }
     }
 
     public static class Door extends net.minecraft.world.level.block.DoorBlock
@@ -351,6 +397,11 @@ public final class BloodyBlocks {
             BlockState washed = washedByWater(state, neighbor, level, pos, clean);
             return washed != null ? washed : super.updateShape(state, dir, neighbor, level, pos, neighborPos);
         }
+
+        @Override
+        protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+            washTick(state, level, pos, random, clean);
+        }
     }
 
     public static class TrapDoor extends net.minecraft.world.level.block.TrapDoorBlock
@@ -378,6 +429,11 @@ public final class BloodyBlocks {
                 net.minecraft.world.level.LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
             BlockState washed = washedByWater(state, neighbor, level, pos, clean);
             return washed != null ? washed : super.updateShape(state, dir, neighbor, level, pos, neighborPos);
+        }
+
+        @Override
+        protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+            washTick(state, level, pos, random, clean);
         }
     }
 }

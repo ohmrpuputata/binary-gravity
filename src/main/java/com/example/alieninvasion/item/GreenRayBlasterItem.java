@@ -57,5 +57,6 @@ public class GreenRayBlasterItem extends AlienBlasterItem {
                 level.addFreshEntity(bolt);
             }
         }
+        spawnOverheatEffects(level, livingEntity, ticksUsed, true);
     }
 }

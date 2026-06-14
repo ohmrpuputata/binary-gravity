@@ -2,6 +2,7 @@ package com.example.alieninvasion.block;
 
 import com.example.alieninvasion.entity.AlienUtils;
 import com.example.alieninvasion.logic.ContaminationRules;
+import com.example.alieninvasion.logic.InfectionVisuals;
 import com.example.alieninvasion.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -42,11 +43,13 @@ public class InfestedGrassBlock extends Block {
                 BlockState targetState = level.getBlockState(targetPos);
                 if (targetState.is(net.minecraft.world.level.block.Blocks.WATER)) {
                     level.setBlockAndUpdate(targetPos, ModBlocks.TOXIC_WATER.defaultBlockState());
+                    InfectionVisuals.spread(level, pos, targetPos);
                     continue;
                 }
                 BlockState contaminated = ContaminationRules.contaminatedStateFor(targetState);
                 if (contaminated != null && ContaminationRules.canContaminate(level, targetPos, targetState)) {
                     level.setBlockAndUpdate(targetPos, contaminated);
+                    InfectionVisuals.spread(level, pos, targetPos);
                 }
             }
         }

@@ -1,4 +1,4 @@
-﻿{
+{
   "parent": "alien-invasion:root",
   "display": {
     "icon": { "id": "minecraft:iron_sword" },

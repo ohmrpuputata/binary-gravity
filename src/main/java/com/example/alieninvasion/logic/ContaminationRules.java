@@ -85,6 +85,12 @@ public final class ContaminationRules {
                 || (state.hasBlockEntity() && !state.is(Blocks.BARREL))) {
             return null;
         }
+        // Never classify an already contaminated block by its material again.
+        // In particular, infested ice uses glass sounds and used to degrade into
+        // infested glass when a later spread tick targeted it.
+        if (isContaminated(state)) {
+            return null;
+        }
         if (state.is(Blocks.GRASS_BLOCK) || state.is(Blocks.MYCELIUM) || state.is(Blocks.MOSS_BLOCK)
                 || state.is(BlockTags.NYLIUM)) {
             return ModBlocks.INFESTED_GRASS.defaultBlockState();
@@ -105,7 +111,8 @@ public final class ContaminationRules {
         if (state.is(BlockTags.SNOW) || state.is(Blocks.POWDER_SNOW)) {
             return ModBlocks.INFESTED_SNOW.defaultBlockState();
         }
-        if (state.is(BlockTags.ICE) || state.is(Blocks.FROSTED_ICE)) {
+        if (state.is(BlockTags.ICE) || state.is(Blocks.ICE) || state.is(Blocks.PACKED_ICE)
+                || state.is(Blocks.BLUE_ICE) || state.is(Blocks.FROSTED_ICE)) {
             return ModBlocks.INFESTED_ICE.defaultBlockState();
         }
         if (state.is(BlockTags.SAND)) return ModBlocks.INFESTED_SAND.defaultBlockState();

@@ -1,4 +1,28 @@
 {
-  "parent": "minecraft:item/handheld",
-  "textures": { "layer0": "alien-invasion:item/alien_blaster" }
+  "parent": "alien-invasion:item/blaster_base",
+  "textures": {
+    "layer0": "alien-invasion:item/alien_blaster"
+  },
+  "overrides": [
+    {
+      "predicate": {"alien-invasion:heat": 0.03},
+      "model": "alien-invasion:item/alien_blaster_cooling"
+    },
+    {
+      "predicate": {"alien-invasion:heat": 0.85},
+      "model": "alien-invasion:item/alien_blaster_firing"
+    },
+    {
+      "predicate": {"alien-invasion:charge": 0.05},
+      "model": "alien-invasion:item/alien_blaster_charge_1"
+    },
+    {
+      "predicate": {"alien-invasion:charge": 0.4},
+      "model": "alien-invasion:item/alien_blaster_charge_2"
+    },
+    {
+      "predicate": {"alien-invasion:charge": 0.75},
+      "model": "alien-invasion:item/alien_blaster_charge_3"
+    }
+  ]
 }

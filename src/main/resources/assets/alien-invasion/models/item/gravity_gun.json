@@ -1,4 +1,16 @@
 {
-  "parent": "minecraft:item/handheld",
-  "textures": { "layer0": "alien-invasion:item/gravity_gun" }
+  "parent": "alien-invasion:item/blaster_base",
+  "textures": {
+    "layer0": "alien-invasion:item/gravity_gun"
+  },
+  "overrides": [
+    {
+      "predicate": {"alien-invasion:shot": 0.05},
+      "model": "alien-invasion:item/gravity_gun_cooling"
+    },
+    {
+      "predicate": {"alien-invasion:shot": 0.55},
+      "model": "alien-invasion:item/gravity_gun_firing"
+    }
+  ]
 }
