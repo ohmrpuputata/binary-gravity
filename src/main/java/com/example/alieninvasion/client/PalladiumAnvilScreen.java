@@ -41,8 +41,8 @@ public class PalladiumAnvilScreen extends AbstractContainerScreen<PalladiumAnvil
     @Override
     protected void init() {
         super.init();
-        this.leftPos -= 10;
-        this.topPos -= 10;
+        this.leftPos -= 40;
+        this.topPos -= 40;
     }
 
     @Override
