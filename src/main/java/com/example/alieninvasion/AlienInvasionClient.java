@@ -180,6 +180,13 @@ public class AlienInvasionClient implements ClientModInitializer {
                                 com.example.alieninvasion.registry.ItemRegistry.PLATINUM_CHESTPLATE,
                                 com.example.alieninvasion.registry.ItemRegistry.PLATINUM_LEGGINGS,
                                 com.example.alieninvasion.registry.ItemRegistry.PLATINUM_BOOTS);
+                net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer.register(
+                                new com.example.alieninvasion.client.AdvancedArmorRenderer(
+                                                ModModelLayers.PLATINUM_ARMOR, "emeradium"),
+                                com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_HELMET,
+                                com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_CHESTPLATE,
+                                com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_LEGGINGS,
+                                com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_BOOTS);
                 // HUD Overlay
                 com.example.alieninvasion.client.InvasionHUDOverlay.register();
 
