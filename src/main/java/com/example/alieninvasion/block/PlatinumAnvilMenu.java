@@ -33,14 +33,14 @@ import java.util.Optional;
 public class PlatinumAnvilMenu extends AbstractContainerMenu {
 
     private static final int GRID_SIZE = 9;
-    private static final int CATALYST_INDEX = 9;
-    private static final int RESULT_INDEX = 10;
-    private static final int INV_START = 11;
-    private static final int INV_END = 47; // exclusive
+    private static final int CATALYST_INDEX = 4;
+    private static final int RESULT_INDEX = 9;
+    private static final int INV_START = 10;
+    private static final int INV_END = 46; // exclusive
 
     private final ContainerLevelAccess access;
     private final Player player;
-    final SimpleContainer craftSlots = new SimpleContainer(10); // 9 grid + 1 catalyst
+    final SimpleContainer craftSlots = new SimpleContainer(9); // 9 slots (0-8) where index 4 is catalyst
     final ResultContainer resultSlots = new ResultContainer();
 
     /* ---------- constructors ---------- */
@@ -58,23 +58,27 @@ public class PlatinumAnvilMenu extends AbstractContainerMenu {
 
         this.craftSlots.addListener(c -> this.slotsChanged(c));
 
-        // ---- grid 3×3 (slots 0-8) ----
-        for (int row = 0; row < 3; row++)
-            for (int col = 0; col < 3; col++)
-                this.addSlot(new Slot(craftSlots, col + row * 3, 9 + col * 18, 18 + row * 18));
+        // ---- grid 3×3 (slots 0-8) with catalyst at center (4) ----
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                int index = col + row * 3;
+                if (index == 4) {
+                    this.addSlot(new CatalystSlot(craftSlots, 4, 9 + col * 18, 18 + row * 18));
+                } else {
+                    this.addSlot(new Slot(craftSlots, index, 9 + col * 18, 18 + row * 18));
+                }
+            }
+        }
 
-        // ---- catalyst (slot 9) ----
-        this.addSlot(new CatalystSlot(craftSlots, 9, 79, 36));
-
-        // ---- result (slot 10) ----
+        // ---- result (slot 9) ----
         this.addSlot(new AnvilResultSlot(this));
 
-        // ---- player inventory (slots 11-37) ----
+        // ---- player inventory (slots 10-36) ----
         for (int row = 0; row < 3; row++)
             for (int col = 0; col < 9; col++)
                 this.addSlot(new Slot(playerInventory, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
 
-        // ---- hotbar (slots 38-46) ----
+        // ---- hotbar (slots 37-45) ----
         for (int col = 0; col < 9; col++)
             this.addSlot(new Slot(playerInventory, col, 8 + col * 18, 142));
     }
@@ -109,7 +113,7 @@ public class PlatinumAnvilMenu extends AbstractContainerMenu {
 
     /** Consume one of every non-empty ingredient and the catalyst; roll anvil damage. */
     void consumeIngredients() {
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 9; i++) {
             if (!craftSlots.getItem(i).isEmpty()) {
                 craftSlots.removeItem(i, 1);
             }
@@ -194,7 +198,7 @@ public class PlatinumAnvilMenu extends AbstractContainerMenu {
     private static class AnvilResultSlot extends Slot {
         private final PlatinumAnvilMenu menu;
         AnvilResultSlot(PlatinumAnvilMenu menu) {
-            super(menu.resultSlots, 0, 131, 36);
+            super(menu.resultSlots, 0, 98, 36);
             this.menu = menu;
         }
         @Override public boolean mayPlace(ItemStack stack) { return false; }

@@ -82,6 +82,10 @@ public class PlatinumAnvilRecipe implements Recipe<RecipeInput> {
     @Override
     public boolean matches(RecipeInput input, Level level) {
         for (int i = 0; i < 9; i++) {
+            if (i == 4) {
+                if (!catalyst.test(input.getItem(4))) return false;
+                continue;
+            }
             Ingredient ing = resolvedGrid.get(i);
             ItemStack stack = input.getItem(i);
             boolean empty = ing.isEmpty();
@@ -91,7 +95,7 @@ public class PlatinumAnvilRecipe implements Recipe<RecipeInput> {
                 if (!ing.test(stack)) return false;
             }
         }
-        return catalyst.test(input.getItem(9));
+        return true;
     }
 
     @Override
