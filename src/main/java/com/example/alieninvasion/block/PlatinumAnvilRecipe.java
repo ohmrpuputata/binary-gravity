@@ -61,6 +61,18 @@ public class PlatinumAnvilRecipe implements Recipe<RecipeInput> {
     public Ingredient getCatalyst()         { return catalyst; }
     public ItemStack getResult()            { return result; }
 
+    public NonNullList<Ingredient> getIngredientsForJei() {
+        NonNullList<Ingredient> ingredients = NonNullList.withSize(9, Ingredient.EMPTY);
+        for (int i = 0; i < 9; i++) {
+            if (i == 4) {
+                ingredients.set(4, catalyst);
+            } else {
+                ingredients.set(i, resolvedGrid.get(i));
+            }
+        }
+        return ingredients;
+    }
+
     /* ---- resolve pattern + key → flat 9-ingredient grid ---- */
     private static NonNullList<Ingredient> resolvePattern(List<String> pattern, Map<String, Ingredient> key) {
         NonNullList<Ingredient> grid = NonNullList.withSize(9, Ingredient.EMPTY);
