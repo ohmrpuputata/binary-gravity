@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "alien-invasion:item/nibirium_smithing_template"
+    "layer0": "alien-invasion:item/emeradium_ingot"
   }
 }

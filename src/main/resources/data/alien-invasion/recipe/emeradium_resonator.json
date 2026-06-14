@@ -1,0 +1,20 @@
+{
+  "type": "alien-invasion:platinum_anvil",
+  "pattern": [
+    " I ",
+    "I I",
+    " I "
+  ],
+  "key": {
+    "I": {
+      "item": "alien-invasion:emeradium_ingot"
+    }
+  },
+  "catalyst": {
+    "item": "minecraft:emerald"
+  },
+  "result": {
+    "id": "alien-invasion:emeradium_resonator",
+    "count": 1
+  }
+}

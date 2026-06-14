@@ -30,23 +30,23 @@ public class AlienBlasterItem extends Item {
         super(properties);
     }
 
-    private static int getCooldown(ItemStack stack) {
+    protected static int getCooldown(ItemStack stack) {
         CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
         return tag.contains(COOLDOWN_KEY) ? tag.getInt(COOLDOWN_KEY) : 0;
     }
 
-    private static void setCooldown(ItemStack stack, int value) {
+    protected static void setCooldown(ItemStack stack, int value) {
         CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
         tag.putInt(COOLDOWN_KEY, Math.max(0, value));
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
     }
 
-    private static int getMaxCooldown(ItemStack stack) {
+    protected static int getMaxCooldown(ItemStack stack) {
         CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
         return tag.contains(MAX_COOLDOWN_KEY) ? tag.getInt(MAX_COOLDOWN_KEY) : 1;
     }
 
-    private static void setMaxCooldown(ItemStack stack, int value) {
+    protected static void setMaxCooldown(ItemStack stack, int value) {
         CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
         tag.putInt(MAX_COOLDOWN_KEY, Math.max(1, value));
         stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));

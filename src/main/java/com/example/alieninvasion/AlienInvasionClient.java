@@ -186,6 +186,13 @@ public class AlienInvasionClient implements ClientModInitializer {
                 net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer.register(
                                 new com.example.alieninvasion.client.BioFilterMaskRenderer(),
                                 com.example.alieninvasion.registry.ItemRegistry.BIO_FILTER_MASK);
+                net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer.register(
+                                new com.example.alieninvasion.client.AdvancedArmorRenderer(
+                                                ModModelLayers.PLATINUM_ARMOR, "emeradium"),
+                                com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_HELMET,
+                                com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_CHESTPLATE,
+                                com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_LEGGINGS,
+                                com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_BOOTS);
                 // HUD Overlay
                 com.example.alieninvasion.client.InvasionHUDOverlay.register();
 
@@ -230,5 +237,12 @@ public class AlienInvasionClient implements ClientModInitializer {
                                 ModBlocks.ALIEN_PORTAL);
                 BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.translucent(),
                                 com.example.alieninvasion.registry.BloodyVariantRegistry.translucentBlocks());
+
+                net.minecraft.client.gui.screens.MenuScreens.register(
+                                com.example.alieninvasion.registry.ModBlocks.PLATINUM_ANVIL_MENU,
+                                com.example.alieninvasion.client.PlatinumAnvilScreen::new);
+                net.minecraft.client.gui.screens.MenuScreens.register(
+                                com.example.alieninvasion.registry.ModBlocks.PALLADIUM_ANVIL_MENU,
+                                com.example.alieninvasion.client.PalladiumAnvilScreen::new);
         }
 }

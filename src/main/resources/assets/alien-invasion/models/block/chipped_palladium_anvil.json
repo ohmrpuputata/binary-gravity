@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/anvil",
+  "textures": {
+    "top": "alien-invasion:block/chipped_palladium_anvil_top",
+    "body": "alien-invasion:block/palladium_anvil_side"
+  }
+}

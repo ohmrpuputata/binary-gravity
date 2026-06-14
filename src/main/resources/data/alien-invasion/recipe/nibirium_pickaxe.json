@@ -1,0 +1,16 @@
+{
+  "type": "alien-invasion:palladium_anvil",
+  "catalyst": {
+    "item": "minecraft:amethyst_shard"
+  },
+  "base": {
+    "item": "minecraft:diamond_pickaxe"
+  },
+  "addition": {
+    "item": "alien-invasion:nibirium_ingot"
+  },
+  "result": {
+    "id": "alien-invasion:nibirium_pickaxe",
+    "count": 1
+  }
+}
