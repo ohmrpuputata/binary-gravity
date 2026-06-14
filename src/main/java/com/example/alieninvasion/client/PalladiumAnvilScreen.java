@@ -38,12 +38,7 @@ public class PalladiumAnvilScreen extends AbstractContainerScreen<PalladiumAnvil
         this.inventoryLabelY = 73;
     }
 
-    @Override
-    protected void init() {
-        super.init();
-        this.leftPos -= 40;
-        this.topPos -= 40;
-    }
+
 
     @Override
     public void render(GuiGraphics gfx, int mouseX, int mouseY, float pt) {
@@ -52,11 +47,11 @@ public class PalladiumAnvilScreen extends AbstractContainerScreen<PalladiumAnvil
 
         // Ghost-slot tooltips (only when slot is empty)
         if (menu.getSlot(0).getItem().isEmpty()
-                && isHovering(8, 48, 18, 18, mouseX, mouseY)) {
+                && isHovering(26, 36, 18, 18, mouseX, mouseY)) {
             gfx.renderTooltip(font, CATALYST_TIP, mouseX, mouseY);
         }
         if (menu.getSlot(3).getItem().isEmpty()
-                && isHovering(93, 43, 26, 26, mouseX, mouseY)) {
+                && isHovering(115, 31, 26, 26, mouseX, mouseY)) {
             gfx.renderTooltip(font, RESULT_TIP, mouseX, mouseY);
         }
     }
@@ -75,15 +70,15 @@ public class PalladiumAnvilScreen extends AbstractContainerScreen<PalladiumAnvil
         drawPanel(gfx, x, y, imageWidth, imageHeight);
 
         /* ---- input slots ---- */
-        drawSlot(gfx, x + 8, y + 48);   // Slot 0 (Catalyst)
-        drawSlot(gfx, x + 26, y + 48);  // Slot 1 (Base)
-        drawSlot(gfx, x + 44, y + 48);  // Slot 2 (Addition)
+        drawSlot(gfx, x + 26, y + 36);   // Slot 0 (Catalyst)
+        drawSlot(gfx, x + 44, y + 36);  // Slot 1 (Base)
+        drawSlot(gfx, x + 62, y + 36);  // Slot 2 (Addition)
 
         /* ---- arrow between grid and result ---- */
-        gfx.drawString(font, "\u25B6", x + 71, y + 53, LABEL_COLOR, false); // ▶
+        gfx.drawString(font, "\u25B6", x + 89, y + 41, LABEL_COLOR, false); // ▶
 
         /* ---- result slot (26×26 frame) ---- */
-        drawResultSlot(gfx, x + 93, y + 43);
+        drawResultSlot(gfx, x + 115, y + 31);
 
         /* ---- player inventory (3 rows + hotbar) ---- */
         for (int r = 0; r < 3; r++)
@@ -94,7 +89,7 @@ public class PalladiumAnvilScreen extends AbstractContainerScreen<PalladiumAnvil
 
         /* ---- ghost items ---- */
         if (menu.getSlot(0).getItem().isEmpty()) {
-            renderGhost(gfx, new ItemStack(Items.AMETHYST_SHARD), x + 9, y + 49);
+            renderGhost(gfx, new ItemStack(Items.AMETHYST_SHARD), x + 27, y + 37);
         }
 
     }

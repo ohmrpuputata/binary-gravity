@@ -53,14 +53,14 @@ public class PalladiumAnvilMenu extends AbstractContainerMenu {
 
         this.inputSlots.addListener(c -> this.slotsChanged(c));
 
-        // Slot 0: Catalyst (x=8, y=48)
-        this.addSlot(new CatalystSlot(inputSlots, 0, 8, 48));
+        // Slot 0: Catalyst (x=26, y=36)
+        this.addSlot(new CatalystSlot(inputSlots, 0, 26, 36));
 
-        // Slot 1: Base (x=26, y=48)
-        this.addSlot(new Slot(inputSlots, 1, 26, 48));
+        // Slot 1: Base (x=44, y=36)
+        this.addSlot(new Slot(inputSlots, 1, 44, 36));
 
-        // Slot 2: Addition (x=44, y=48)
-        this.addSlot(new Slot(inputSlots, 2, 44, 48));
+        // Slot 2: Addition (x=62, y=36)
+        this.addSlot(new Slot(inputSlots, 2, 62, 36));
 
         // Slot 3: Result (x=98, y=48)
         this.addSlot(new AnvilResultSlot(this));
@@ -180,7 +180,7 @@ public class PalladiumAnvilMenu extends AbstractContainerMenu {
     private static class AnvilResultSlot extends Slot {
         private final PalladiumAnvilMenu menu;
         AnvilResultSlot(PalladiumAnvilMenu menu) {
-            super(menu.resultSlots, 0, 98, 48);
+            super(menu.resultSlots, 0, 120, 36);
             this.menu = menu;
         }
         @Override public boolean mayPlace(ItemStack stack) { return false; }
