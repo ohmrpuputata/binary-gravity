@@ -53,14 +53,14 @@ public class PalladiumAnvilMenu extends AbstractContainerMenu {
 
         this.inputSlots.addListener(c -> this.slotsChanged(c));
 
-        // Slot 0: Catalyst (x=26, y=36)
-        this.addSlot(new CatalystSlot(inputSlots, 0, 26, 36));
+        // Slot 0: Catalyst (x=27, y=37)
+        this.addSlot(new CatalystSlot(inputSlots, 0, 27, 37));
 
-        // Slot 1: Base (x=44, y=36)
-        this.addSlot(new Slot(inputSlots, 1, 44, 36));
+        // Slot 1: Base (x=45, y=37)
+        this.addSlot(new Slot(inputSlots, 1, 45, 37));
 
-        // Slot 2: Addition (x=62, y=36)
-        this.addSlot(new Slot(inputSlots, 2, 62, 36));
+        // Slot 2: Addition (x=63, y=37)
+        this.addSlot(new Slot(inputSlots, 2, 63, 37));
 
         // Slot 3: Result (x=98, y=48)
         this.addSlot(new AnvilResultSlot(this));
