@@ -76,7 +76,7 @@ public class ItemRegistry {
             new SpawnEggItem(EntityRegistry.INFESTED_ZOMBIE, 0x00A0A0, 0x5D8A00, new Item.Properties()));
 
     public static final Item SWARM_MOTHER_SPAWN_EGG = registerItem("swarm_mother_spawn_egg",
-            new SpawnEggItem(EntityRegistry.SWARM_MOTHER, 0x8A008A, 0x000000, new Item.Properties().rarity(Rarity.RARE)));
+            new SpawnEggItem(EntityRegistry.SWARM_MOTHER, 0x8A008A, 0x000000, new Item.Properties().rarity(Rarity.EPIC)));
 
     public static final Item HUNTER_SPAWN_EGG = registerItem("hunter_spawn_egg",
             new SpawnEggItem(EntityRegistry.HUNTER, 0x1A1A1A, 0xCC2222, new Item.Properties().rarity(Rarity.EPIC)));
@@ -147,7 +147,7 @@ public class ItemRegistry {
     public static final Item GREEN_RAY_BLASTER = registerItem("green_ray_blaster",
             new GreenRayBlasterItem(new Item.Properties().rarity(Rarity.EPIC).stacksTo(1)));
     public static final Item EMERADIUM_SHIELD = registerItem("emeradium_shield",
-            new net.minecraft.world.item.ShieldItem(new Item.Properties().durability(1000)));
+            new net.minecraft.world.item.ShieldItem(new Item.Properties().rarity(Rarity.RARE).durability(1000)));
 
     public static final Item PLASMA_BOLT_ITEM = registerItem("plasma_bolt",
             new Item(new Item.Properties()));
@@ -245,36 +245,36 @@ public class ItemRegistry {
     // Platinum tools — iron speed, diamond durability
     public static final Item PLATINUM_SWORD = registerItem("platinum_sword",
             new PlatinumSwordItem(ModToolTiers.PLATINUM,
-                    new Item.Properties().attributes(SwordItem.createAttributes(ModToolTiers.PLATINUM, 3, -2.4F))));
+                    new Item.Properties().rarity(Rarity.UNCOMMON).attributes(SwordItem.createAttributes(ModToolTiers.PLATINUM, 3, -2.4F))));
     public static final Item PLATINUM_PICKAXE = registerItem("platinum_pickaxe",
             new PickaxeItem(ModToolTiers.PLATINUM,
-                    new Item.Properties().attributes(PickaxeItem.createAttributes(ModToolTiers.PLATINUM, 1.0F, -2.8F))));
+                    new Item.Properties().rarity(Rarity.UNCOMMON).attributes(PickaxeItem.createAttributes(ModToolTiers.PLATINUM, 1.0F, -2.8F))));
     public static final Item PLATINUM_AXE = registerItem("platinum_axe",
             new AxeItem(ModToolTiers.PLATINUM,
-                    new Item.Properties().attributes(AxeItem.createAttributes(ModToolTiers.PLATINUM, 5.0F, -3.0F))));
+                    new Item.Properties().rarity(Rarity.UNCOMMON).attributes(AxeItem.createAttributes(ModToolTiers.PLATINUM, 5.0F, -3.0F))));
     public static final Item PLATINUM_SHOVEL = registerItem("platinum_shovel",
             new ShovelItem(ModToolTiers.PLATINUM,
-                    new Item.Properties().attributes(ShovelItem.createAttributes(ModToolTiers.PLATINUM, 1.5F, -3.0F))));
+                    new Item.Properties().rarity(Rarity.UNCOMMON).attributes(ShovelItem.createAttributes(ModToolTiers.PLATINUM, 1.5F, -3.0F))));
     public static final Item PLATINUM_HOE = registerItem("platinum_hoe",
             new HoeItem(ModToolTiers.PLATINUM,
-                    new Item.Properties().attributes(HoeItem.createAttributes(ModToolTiers.PLATINUM, -2.0F, 0.0F))));
+                    new Item.Properties().rarity(Rarity.UNCOMMON).attributes(HoeItem.createAttributes(ModToolTiers.PLATINUM, -2.0F, 0.0F))));
 
     // Palladium tools — diamond speed, iron durability
     public static final Item PALLADIUM_SWORD = registerItem("palladium_sword",
             new PalladiumSwordItem(ModToolTiers.PALLADIUM,
-                    new Item.Properties().attributes(SwordItem.createAttributes(ModToolTiers.PALLADIUM, 4, -2.35F))));
+                    new Item.Properties().rarity(Rarity.UNCOMMON).attributes(SwordItem.createAttributes(ModToolTiers.PALLADIUM, 4, -2.35F))));
     public static final Item PALLADIUM_PICKAXE = registerItem("palladium_pickaxe",
             new PickaxeItem(ModToolTiers.PALLADIUM,
-                    new Item.Properties().attributes(PickaxeItem.createAttributes(ModToolTiers.PALLADIUM, 1.5F, -2.7F))));
+                    new Item.Properties().rarity(Rarity.UNCOMMON).attributes(PickaxeItem.createAttributes(ModToolTiers.PALLADIUM, 1.5F, -2.7F))));
     public static final Item PALLADIUM_AXE = registerItem("palladium_axe",
             new AxeItem(ModToolTiers.PALLADIUM,
-                    new Item.Properties().attributes(AxeItem.createAttributes(ModToolTiers.PALLADIUM, 5.0F, -3.0F))));
+                    new Item.Properties().rarity(Rarity.UNCOMMON).attributes(AxeItem.createAttributes(ModToolTiers.PALLADIUM, 5.0F, -3.0F))));
     public static final Item PALLADIUM_SHOVEL = registerItem("palladium_shovel",
             new ShovelItem(ModToolTiers.PALLADIUM,
-                    new Item.Properties().attributes(ShovelItem.createAttributes(ModToolTiers.PALLADIUM, 1.5F, -3.0F))));
+                    new Item.Properties().rarity(Rarity.UNCOMMON).attributes(ShovelItem.createAttributes(ModToolTiers.PALLADIUM, 1.5F, -3.0F))));
     public static final Item PALLADIUM_HOE = registerItem("palladium_hoe",
             new HoeItem(ModToolTiers.PALLADIUM,
-                    new Item.Properties().attributes(HoeItem.createAttributes(ModToolTiers.PALLADIUM, -3.0F, 0.0F))));
+                    new Item.Properties().rarity(Rarity.UNCOMMON).attributes(HoeItem.createAttributes(ModToolTiers.PALLADIUM, -3.0F, 0.0F))));
 
 
     // Химзащита armor — early-game alien-skin suit (leather-level protection)
@@ -299,90 +299,90 @@ public class ItemRegistry {
     public static final Item ALIEN_CHEM_HELMET = registerItem("alien_chem_helmet",
             new net.minecraft.world.item.ArmorItem(AlienChemArmorMaterial.ALIEN_CHEM,
                     net.minecraft.world.item.ArmorItem.Type.HELMET,
-                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.HELMET.getDurability(AlienChemArmorMaterial.BASE_DURABILITY))));
+                    new Item.Properties().rarity(Rarity.UNCOMMON).durability(net.minecraft.world.item.ArmorItem.Type.HELMET.getDurability(AlienChemArmorMaterial.BASE_DURABILITY))));
     public static final Item ALIEN_CHEM_CHESTPLATE = registerItem("alien_chem_chestplate",
             new net.minecraft.world.item.ArmorItem(AlienChemArmorMaterial.ALIEN_CHEM,
                     net.minecraft.world.item.ArmorItem.Type.CHESTPLATE,
-                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.CHESTPLATE.getDurability(AlienChemArmorMaterial.BASE_DURABILITY))));
+                    new Item.Properties().rarity(Rarity.UNCOMMON).durability(net.minecraft.world.item.ArmorItem.Type.CHESTPLATE.getDurability(AlienChemArmorMaterial.BASE_DURABILITY))));
     public static final Item ALIEN_CHEM_LEGGINGS = registerItem("alien_chem_leggings",
             new net.minecraft.world.item.ArmorItem(AlienChemArmorMaterial.ALIEN_CHEM,
                     net.minecraft.world.item.ArmorItem.Type.LEGGINGS,
-                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.LEGGINGS.getDurability(AlienChemArmorMaterial.BASE_DURABILITY))));
+                    new Item.Properties().rarity(Rarity.UNCOMMON).durability(net.minecraft.world.item.ArmorItem.Type.LEGGINGS.getDurability(AlienChemArmorMaterial.BASE_DURABILITY))));
     public static final Item ALIEN_CHEM_BOOTS = registerItem("alien_chem_boots",
             new net.minecraft.world.item.ArmorItem(AlienChemArmorMaterial.ALIEN_CHEM,
                     net.minecraft.world.item.ArmorItem.Type.BOOTS,
-                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.BOOTS.getDurability(AlienChemArmorMaterial.BASE_DURABILITY))));
+                    new Item.Properties().rarity(Rarity.UNCOMMON).durability(net.minecraft.world.item.ArmorItem.Type.BOOTS.getDurability(AlienChemArmorMaterial.BASE_DURABILITY))));
 
     // Nibirium tools — netherite-grade. Pickaxe & shovel break 3x3 (ModEvents).
     public static final Item NIBIRIUM_SWORD = registerItem("nibirium_sword",
             new NibiriumSwordItem(ModToolTiers.NIBIRIUM,
-                    new Item.Properties().attributes(SwordItem.createAttributes(ModToolTiers.NIBIRIUM, 5, -2.4F))));
+                    new Item.Properties().rarity(Rarity.RARE).attributes(SwordItem.createAttributes(ModToolTiers.NIBIRIUM, 5, -2.4F))));
     public static final Item NIBIRIUM_PICKAXE = registerItem("nibirium_pickaxe",
             new PickaxeItem(ModToolTiers.NIBIRIUM,
-                    new Item.Properties().attributes(PickaxeItem.createAttributes(ModToolTiers.NIBIRIUM, 1.5F, -2.8F))));
+                    new Item.Properties().rarity(Rarity.RARE).attributes(PickaxeItem.createAttributes(ModToolTiers.NIBIRIUM, 1.5F, -2.8F))));
     public static final Item NIBIRIUM_AXE = registerItem("nibirium_axe",
             new AxeItem(ModToolTiers.NIBIRIUM,
-                    new Item.Properties().attributes(AxeItem.createAttributes(ModToolTiers.NIBIRIUM, 5.5F, -3.0F))));
+                    new Item.Properties().rarity(Rarity.RARE).attributes(AxeItem.createAttributes(ModToolTiers.NIBIRIUM, 5.5F, -3.0F))));
     public static final Item NIBIRIUM_SHOVEL = registerItem("nibirium_shovel",
             new ShovelItem(ModToolTiers.NIBIRIUM,
-                    new Item.Properties().attributes(ShovelItem.createAttributes(ModToolTiers.NIBIRIUM, 1.5F, -3.0F))));
+                    new Item.Properties().rarity(Rarity.RARE).attributes(ShovelItem.createAttributes(ModToolTiers.NIBIRIUM, 1.5F, -3.0F))));
     public static final Item NIBIRIUM_HOE = registerItem("nibirium_hoe",
             new HoeItem(ModToolTiers.NIBIRIUM,
-                    new Item.Properties().attributes(HoeItem.createAttributes(ModToolTiers.NIBIRIUM, -3.0F, 0.0F))));
+                    new Item.Properties().rarity(Rarity.RARE).attributes(HoeItem.createAttributes(ModToolTiers.NIBIRIUM, -3.0F, 0.0F))));
 
     // Platinum armor — diamond-level protection, set bonus: cap radiation at 70%
     public static final Item PLATINUM_HELMET = registerItem("platinum_helmet",
             new net.minecraft.world.item.ArmorItem(PlatinumArmorMaterial.PLATINUM,
                     net.minecraft.world.item.ArmorItem.Type.HELMET,
-                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.HELMET.getDurability(PlatinumArmorMaterial.BASE_DURABILITY))));
+                    new Item.Properties().rarity(Rarity.UNCOMMON).durability(net.minecraft.world.item.ArmorItem.Type.HELMET.getDurability(PlatinumArmorMaterial.BASE_DURABILITY))));
     public static final Item PLATINUM_CHESTPLATE = registerItem("platinum_chestplate",
             new net.minecraft.world.item.ArmorItem(PlatinumArmorMaterial.PLATINUM,
                     net.minecraft.world.item.ArmorItem.Type.CHESTPLATE,
-                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.CHESTPLATE.getDurability(PlatinumArmorMaterial.BASE_DURABILITY))));
+                    new Item.Properties().rarity(Rarity.UNCOMMON).durability(net.minecraft.world.item.ArmorItem.Type.CHESTPLATE.getDurability(PlatinumArmorMaterial.BASE_DURABILITY))));
     public static final Item PLATINUM_LEGGINGS = registerItem("platinum_leggings",
             new net.minecraft.world.item.ArmorItem(PlatinumArmorMaterial.PLATINUM,
                     net.minecraft.world.item.ArmorItem.Type.LEGGINGS,
-                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.LEGGINGS.getDurability(PlatinumArmorMaterial.BASE_DURABILITY))));
+                    new Item.Properties().rarity(Rarity.UNCOMMON).durability(net.minecraft.world.item.ArmorItem.Type.LEGGINGS.getDurability(PlatinumArmorMaterial.BASE_DURABILITY))));
     public static final Item PLATINUM_BOOTS = registerItem("platinum_boots",
             new net.minecraft.world.item.ArmorItem(PlatinumArmorMaterial.PLATINUM,
                     net.minecraft.world.item.ArmorItem.Type.BOOTS,
-                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.BOOTS.getDurability(PlatinumArmorMaterial.BASE_DURABILITY))));
+                    new Item.Properties().rarity(Rarity.UNCOMMON).durability(net.minecraft.world.item.ArmorItem.Type.BOOTS.getDurability(PlatinumArmorMaterial.BASE_DURABILITY))));
 
     // Emeradium armor — upgraded platinum armor
     public static final Item EMERADIUM_HELMET = registerItem("emeradium_helmet",
             new net.minecraft.world.item.ArmorItem(EmeradiumArmorMaterial.EMERADIUM,
                     net.minecraft.world.item.ArmorItem.Type.HELMET,
-                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.HELMET.getDurability(EmeradiumArmorMaterial.BASE_DURABILITY))));
+                    new Item.Properties().rarity(Rarity.RARE).durability(net.minecraft.world.item.ArmorItem.Type.HELMET.getDurability(EmeradiumArmorMaterial.BASE_DURABILITY))));
     public static final Item EMERADIUM_CHESTPLATE = registerItem("emeradium_chestplate",
             new net.minecraft.world.item.ArmorItem(EmeradiumArmorMaterial.EMERADIUM,
                     net.minecraft.world.item.ArmorItem.Type.CHESTPLATE,
-                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.CHESTPLATE.getDurability(EmeradiumArmorMaterial.BASE_DURABILITY))));
+                    new Item.Properties().rarity(Rarity.RARE).durability(net.minecraft.world.item.ArmorItem.Type.CHESTPLATE.getDurability(EmeradiumArmorMaterial.BASE_DURABILITY))));
     public static final Item EMERADIUM_LEGGINGS = registerItem("emeradium_leggings",
             new net.minecraft.world.item.ArmorItem(EmeradiumArmorMaterial.EMERADIUM,
                     net.minecraft.world.item.ArmorItem.Type.LEGGINGS,
-                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.LEGGINGS.getDurability(EmeradiumArmorMaterial.BASE_DURABILITY))));
+                    new Item.Properties().rarity(Rarity.RARE).durability(net.minecraft.world.item.ArmorItem.Type.LEGGINGS.getDurability(EmeradiumArmorMaterial.BASE_DURABILITY))));
     public static final Item EMERADIUM_BOOTS = registerItem("emeradium_boots",
             new net.minecraft.world.item.ArmorItem(EmeradiumArmorMaterial.EMERADIUM,
                     net.minecraft.world.item.ArmorItem.Type.BOOTS,
-                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.BOOTS.getDurability(EmeradiumArmorMaterial.BASE_DURABILITY))));
+                    new Item.Properties().rarity(Rarity.RARE).durability(net.minecraft.world.item.ArmorItem.Type.BOOTS.getDurability(EmeradiumArmorMaterial.BASE_DURABILITY))));
 
     // Palladium armor — between iron and diamond, set bonus: cap radiation at 70%
     public static final Item PALLADIUM_HELMET = registerItem("palladium_helmet",
             new net.minecraft.world.item.ArmorItem(PalladiumArmorMaterial.PALLADIUM,
                     net.minecraft.world.item.ArmorItem.Type.HELMET,
-                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.HELMET.getDurability(PalladiumArmorMaterial.BASE_DURABILITY))));
+                    new Item.Properties().rarity(Rarity.UNCOMMON).durability(net.minecraft.world.item.ArmorItem.Type.HELMET.getDurability(PalladiumArmorMaterial.BASE_DURABILITY))));
     public static final Item PALLADIUM_CHESTPLATE = registerItem("palladium_chestplate",
             new net.minecraft.world.item.ArmorItem(PalladiumArmorMaterial.PALLADIUM,
                     net.minecraft.world.item.ArmorItem.Type.CHESTPLATE,
-                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.CHESTPLATE.getDurability(PalladiumArmorMaterial.BASE_DURABILITY))));
+                    new Item.Properties().rarity(Rarity.UNCOMMON).durability(net.minecraft.world.item.ArmorItem.Type.CHESTPLATE.getDurability(PalladiumArmorMaterial.BASE_DURABILITY))));
     public static final Item PALLADIUM_LEGGINGS = registerItem("palladium_leggings",
             new net.minecraft.world.item.ArmorItem(PalladiumArmorMaterial.PALLADIUM,
                     net.minecraft.world.item.ArmorItem.Type.LEGGINGS,
-                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.LEGGINGS.getDurability(PalladiumArmorMaterial.BASE_DURABILITY))));
+                    new Item.Properties().rarity(Rarity.UNCOMMON).durability(net.minecraft.world.item.ArmorItem.Type.LEGGINGS.getDurability(PalladiumArmorMaterial.BASE_DURABILITY))));
     public static final Item PALLADIUM_BOOTS = registerItem("palladium_boots",
             new net.minecraft.world.item.ArmorItem(PalladiumArmorMaterial.PALLADIUM,
                     net.minecraft.world.item.ArmorItem.Type.BOOTS,
-                    new Item.Properties().durability(net.minecraft.world.item.ArmorItem.Type.BOOTS.getDurability(PalladiumArmorMaterial.BASE_DURABILITY))));
+                    new Item.Properties().rarity(Rarity.UNCOMMON).durability(net.minecraft.world.item.ArmorItem.Type.BOOTS.getDurability(PalladiumArmorMaterial.BASE_DURABILITY))));
 
     // Astral Prism armor — upgraded palladium armor
     public static final Item ASTRAL_PRISM_HELMET = registerItem("astral_prism_helmet",

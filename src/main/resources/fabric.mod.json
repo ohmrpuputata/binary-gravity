@@ -20,6 +20,9 @@
 		],
 		"client": [
 			"com.example.alieninvasion.AlienInvasionClient"
+		],
+		"jei_mod_plugin": [
+			"com.example.alieninvasion.jei.AlienInvasionJeiPlugin"
 		]
 	},
 	"mixins": [
