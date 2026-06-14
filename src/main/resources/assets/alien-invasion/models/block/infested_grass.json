@@ -1,10 +1,9 @@
 {
-  "parent": "minecraft:block/grass_block",
+  "parent": "minecraft:block/cube_bottom_top",
   "textures": {
     "particle": "alien-invasion:block/infested_dirt",
     "bottom": "alien-invasion:block/infested_dirt",
     "top": "alien-invasion:block/infested_grass_top",
-    "side": "alien-invasion:block/infested_grass_side",
-    "overlay": "alien-invasion:block/infested_grass_side_overlay"
+    "side": "alien-invasion:block/infested_grass_side"
   }
 }

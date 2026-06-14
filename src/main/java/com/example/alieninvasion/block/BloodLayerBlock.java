@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
@@ -59,10 +60,29 @@ public class BloodLayerBlock extends Block {
         }
         // Вода смывает кровь.
         if (neighbor.getFluidState().is(FluidTags.WATER) || state.getFluidState().is(FluidTags.WATER)) {
-            level.playSound(null, pos, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 0.5F, 1.3F);
-            return Blocks.AIR.defaultBlockState();
+            level.scheduleTick(pos, this, 20);
         }
         return super.updateShape(state, dir, neighbor, level, pos, neighborPos);
+    }
+
+    @Override
+    protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        boolean touchingWater = state.getFluidState().is(FluidTags.WATER);
+        for (Direction direction : Direction.values()) {
+            touchingWater |= level.getFluidState(pos.relative(direction)).is(FluidTags.WATER);
+        }
+        if (!touchingWater) {
+            return;
+        }
+        level.sendParticles(ParticleTypes.SPLASH,
+                pos.getX() + 0.5D, pos.getY() + 0.12D, pos.getZ() + 0.5D,
+                3, 0.28D, 0.04D, 0.28D, 0.0D);
+        if (random.nextInt(3) == 0) {
+            level.removeBlock(pos, false);
+            level.playSound(null, pos, SoundEvents.GENERIC_SPLASH, SoundSource.BLOCKS, 0.35F, 1.45F);
+        } else {
+            level.scheduleTick(pos, this, 20);
+        }
     }
 
     @Override

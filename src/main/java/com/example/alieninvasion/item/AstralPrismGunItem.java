@@ -142,6 +142,11 @@ public class AstralPrismGunItem extends GravityGunItem {
                 // Fully charged spark indicator
                 sl.sendParticles(ParticleTypes.GLOW, entity.getX(), entity.getEyeY() + 0.3D, entity.getZ(), 2, 0.2, 0.2, 0.2, 0.05);
             }
+            if (elapsed >= 45 && elapsed % 5 == 0) {
+                Vec3 muzzle = entity.getEyePosition().add(entity.getViewVector(1.0F).scale(0.7D));
+                sl.sendParticles(ParticleTypes.SMOKE, muzzle.x, muzzle.y, muzzle.z,
+                        2, 0.04D, 0.04D, 0.04D, 0.01D);
+            }
         }
     }
 

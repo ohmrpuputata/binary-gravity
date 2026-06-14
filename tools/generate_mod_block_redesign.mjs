@@ -72,18 +72,23 @@ const vanillaAssets = [
   "block/crimson_roots.png",
   "block/crying_obsidian.png",
   "block/damaged_anvil_top.png",
+  "block/dirt.png",
   "block/deepslate.png",
   "block/deepslate_diamond_ore.png",
   "block/diamond_ore.png",
+  "block/grass_block_side.png",
+  "block/grass_block_top.png",
   "block/glowstone.png",
   "block/gold_ore.png",
   "block/honeycomb_block.png",
+  "block/ice.png",
   "block/iron_block.png",
   "block/iron_ore.png",
   "block/lodestone_side.png",
   "block/lodestone_top.png",
   "block/nether_portal.png",
   "block/nether_wart_block.png",
+  "block/oak_leaves.png",
   "block/oak_planks.png",
   "block/observer_side.png",
   "block/oxidized_copper.png",
@@ -95,6 +100,7 @@ const vanillaAssets = [
   "block/sculk_catalyst_top.png",
   "block/smithing_table_side.png",
   "block/smithing_table_top.png",
+  "block/snow.png",
   "block/stone.png",
   "item/crossbow_standby.png",
   "item/diamond_boots.png",
@@ -329,19 +335,97 @@ function makeBloodPool() {
 }
 
 function infect(image, id) {
-  const output = tint(image, [102, 45, 128], 0.2);
+  const output = tint(image, [92, 38, 120], 0.24);
   const seed = hash(`${id}:infection`);
-  const dark = rgba("#4e1b68");
-  const mid = rgba("#7f35a2");
-  const light = rgba("#ae5ac9");
-  for (let index = 0; index < 7; index++) {
-    const x = (seed >>> ((index * 3) % 24)) & 15;
-    const y = (seed >>> ((index * 5 + 2) % 24)) & 15;
-    setPixel(output, x, y, index < 2 ? light : mid, true);
-    if (index < 3) setPixel(output, x + 1, y, dark, true);
-    if (index === 0) setPixel(output, x, y + 1, mid, true);
+  const dark = rgba("#42155e");
+  const mid = rgba("#8735b2");
+  const light = rgba("#c36be0");
+  const glow = rgba("#79e34b");
+  const pattern = (seed >>> 5) & 3;
+  let x = pattern === 3 ? 14 - (seed & 2) : 1 + (seed & 3);
+  let y = pattern === 1 ? 1 + ((seed >>> 3) & 3) : 14 - ((seed >>> 3) & 3);
+
+  for (let index = 0; index < 13; index++) {
+    setPixel(output, x, y, index % 4 === 0 ? light : mid, true);
+    if (index % 3 === 0) {
+      setPixel(output, x + (pattern === 3 ? 1 : -1), y, dark, true);
+    }
+    if (index === 4 || index === 9) {
+      const branchX = pattern === 3 ? -1 : 1;
+      const branchY = pattern === 1 ? 1 : -1;
+      setPixel(output, x + branchX, y + branchY, light, true);
+      setPixel(output, x + branchX * 2, y + branchY, mid, true);
+    }
+    const wobble = ((seed >>> ((index * 2 + 5) % 24)) & 1) === 0 ? 0 : 1;
+    if (pattern === 0) {
+      x++;
+      y -= wobble;
+    } else if (pattern === 1) {
+      x++;
+      y += wobble;
+    } else if (pattern === 2) {
+      y--;
+      x += wobble === 0 ? -1 : 1;
+    } else {
+      x--;
+      y -= wobble;
+    }
+    x = Math.max(1, Math.min(14, x));
+    y = Math.max(1, Math.min(14, y));
+  }
+
+  for (let index = 0; index < 4; index++) {
+    const gx = (seed >>> ((index * 5 + 2) % 24)) & 15;
+    const gy = (seed >>> ((index * 4 + 7) % 24)) & 15;
+    setPixel(output, gx, gy, glow, true);
   }
   return output;
+}
+
+async function createCoreInfestedTextures() {
+  const sources = {
+    stone: "block/stone.png",
+    deepslate: "block/deepslate.png",
+    dirt: "block/dirt.png",
+    grass_top: "block/grass_block_top.png",
+    grass_side: "block/grass_block_side.png",
+    snow: "block/snow.png",
+    ice: "block/ice.png",
+    leaves: "block/oak_leaves.png",
+  };
+
+  for (const [name, source] of Object.entries(sources)) {
+    const clean = await loadVanilla(source);
+    const infected = infect(clean, `core_${name}`);
+    await writeTexture(path.join(blockTextureDir, `infested_${name}.png`), infected);
+    await writeTexture(path.join(blockTextureDir, `bloody_infested_${name}.png`),
+      bloody(infected, `core_${name}`));
+
+    if (name === "dirt" || name.startsWith("grass_")) {
+      await writeTexture(path.join(blockTextureDir, `bloody_${name}.png`),
+        bloody(clean, `core_${name}`));
+    }
+  }
+}
+
+function writeGrassModels() {
+  const definitions = [
+    ["infested_grass", "infested_dirt", "infested_grass_top", "infested_grass_side"],
+    ["bloody_grass", "bloody_dirt", "bloody_grass_top", "bloody_grass_side"],
+    ["bloody_infested_grass", "bloody_infested_dirt",
+      "bloody_infested_grass_top", "bloody_infested_grass_side"],
+  ];
+  for (const [id, bottom, top, side] of definitions) {
+    writeJson(path.join(blockModelDir, `${id}.json`), {
+      parent: "minecraft:block/cube_bottom_top",
+      textures: {
+        particle: `alien-invasion:block/${bottom}`,
+        bottom: `alien-invasion:block/${bottom}`,
+        top: `alien-invasion:block/${top}`,
+        side: `alien-invasion:block/${side}`,
+      },
+    });
+  }
 }
 
 function bloody(image, id) {
@@ -1031,6 +1115,8 @@ async function main() {
   await writeTexture(path.join(blockTextureDir, "plasma_turret_head.png"), turretHead);
 
   await createAnvils();
+  await createCoreInfestedTextures();
+  writeGrassModels();
   await createEmeradiumItems();
   await createAstralPrismItems();
   await createFleshItems();

@@ -1,4 +1,4 @@
-﻿{
+{
   "parent": "alien-invasion:the_beacon",
   "display": {
     "icon": { "id": "alien-invasion:hive_core" },

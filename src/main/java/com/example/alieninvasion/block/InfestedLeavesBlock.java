@@ -2,6 +2,7 @@ package com.example.alieninvasion.block;
 
 import com.example.alieninvasion.entity.AlienUtils;
 import com.example.alieninvasion.logic.ContaminationRules;
+import com.example.alieninvasion.logic.InfectionVisuals;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
@@ -45,6 +46,7 @@ public class InfestedLeavesBlock extends Block {
         BlockState replacement = ContaminationRules.contaminatedStateFor(targetState);
         if (replacement != null && ContaminationRules.canContaminate(level, target, targetState)) {
             level.setBlockAndUpdate(target, replacement);
+            InfectionVisuals.spread(level, pos, target);
         }
     }
 }

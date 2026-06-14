@@ -5,6 +5,7 @@ import com.example.alieninvasion.entity.UfoEntity;
 import com.example.alieninvasion.logic.SurvivalManager;
 import com.example.alieninvasion.logic.ContaminationRules;
 import com.example.alieninvasion.logic.InfectionManager;
+import com.example.alieninvasion.logic.InfectionVisuals;
 import com.example.alieninvasion.registry.EntityRegistry;
 import com.example.alieninvasion.registry.ModEffects;
 import com.example.alieninvasion.registry.ModBlocks;
@@ -157,6 +158,9 @@ public class ModEvents {
         net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents.AFTER.register((world, player, pos, state, be) -> {
             if (world.isClientSide) {
                 return;
+            }
+            if (world instanceof ServerLevel serverLevel && (isInfested(state) || isAlienOre(state))) {
+                InfectionVisuals.breakBurst(serverLevel, pos, state);
             }
             net.minecraft.world.item.ItemStack tool = player.getMainHandItem();
             if (tool.isEmpty()) {
@@ -1589,5 +1593,15 @@ public class ModEvents {
         return path.contains("infested") || path.contains("infected") 
             || path.contains("bloody") || path.equals("blood_pool") 
             || path.startsWith("alien_");
+    }
+
+    private static boolean isAlienOre(BlockState state) {
+        return state.is(ModBlocks.COSMIC_CRYSTAL_ORE)
+                || state.is(ModBlocks.PLATINUM_ORE)
+                || state.is(ModBlocks.PALLADIUM_ORE)
+                || state.is(ModBlocks.DARK_MATTER_ORE)
+                || state.is(ModBlocks.INFESTED_DIAMOND_ORE)
+                || state.is(ModBlocks.INFESTED_REDSTONE_ORE)
+                || state.is(ModBlocks.PURE_RADIATION_BLOCK);
     }
 }

@@ -2,6 +2,7 @@ package com.example.alieninvasion.block;
 
 import com.example.alieninvasion.entity.AlienUtils;
 import com.example.alieninvasion.logic.ContaminationRules;
+import com.example.alieninvasion.logic.InfectionVisuals;
 import com.example.alieninvasion.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -50,6 +51,7 @@ public class InfestedBlock extends Block {
             BlockState ts = level.getBlockState(target);
             if (ts.is(net.minecraft.world.level.block.Blocks.WATER)) {
                 level.setBlockAndUpdate(target, ModBlocks.TOXIC_WATER.defaultBlockState());
+                InfectionVisuals.spread(level, pos, target);
                 continue;
             }
             // Day-gated ore corruption (coal->platinum, iron->flesh, gold->radiation...).
@@ -57,11 +59,13 @@ public class InfestedBlock extends Block {
                     com.example.alieninvasion.logic.SurvivalManager.getDay(level));
             if (ore != null && level.getBlockEntity(target) == null) {
                 level.setBlockAndUpdate(target, ore);
+                InfectionVisuals.spread(level, pos, target);
                 continue;
             }
             BlockState contaminated = ContaminationRules.contaminatedStateFor(ts);
             if (contaminated != null && ContaminationRules.canContaminate(level, target, ts)) {
                 level.setBlockAndUpdate(target, contaminated);
+                InfectionVisuals.spread(level, pos, target);
             }
         }
     }

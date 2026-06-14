@@ -1,4 +1,4 @@
-﻿{
+{
   "parent": "alien-invasion:metallurgist",
   "display": {
     "icon": { "id": "alien-invasion:dark_matter_shard" },
