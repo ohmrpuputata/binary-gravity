@@ -25,7 +25,7 @@ public class PalladiumAnvilScreen extends AbstractContainerScreen<PalladiumAnvil
     private static final int SLOT_BG     = 0xFF8B8B8B;
     private static final int LABEL_COLOR = 0x404040;
 
-    private static final Component CATALYST_TIP = Component.literal("Поместите катализатор (аметист / радиацию)");
+    private static final Component CATALYST_TIP = Component.literal("Поместите осколок");
     private static final Component RESULT_TIP   = Component.literal("Результат улучшения");
 
     public PalladiumAnvilScreen(PalladiumAnvilMenu menu, Inventory playerInv, Component title) {
@@ -89,9 +89,7 @@ public class PalladiumAnvilScreen extends AbstractContainerScreen<PalladiumAnvil
         if (menu.getSlot(0).getItem().isEmpty()) {
             renderGhost(gfx, new ItemStack(Items.AMETHYST_SHARD), x + 9, y + 49);
         }
-        if (menu.getSlot(2).getItem().isEmpty()) {
-            renderGhost(gfx, new ItemStack(ItemRegistry.EMERADIUM_INGOT), x + 45, y + 49);
-        }
+
     }
 
     /** Raised 3-D panel (standard MC container background). */

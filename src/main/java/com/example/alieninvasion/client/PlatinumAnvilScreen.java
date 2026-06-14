@@ -30,7 +30,7 @@ public class PlatinumAnvilScreen extends AbstractContainerScreen<PlatinumAnvilMe
     private static final int RES_X   = 120, RES_Y  = 31; // result uses a 26×26 frame (item slot is at 125)
 
     private static final Component CATALYST_TIP = Component.literal("Поместите Осколок");
-    private static final Component RESULT_TIP   = Component.literal("Результат");
+
 
     public PlatinumAnvilScreen(PlatinumAnvilMenu menu, Inventory playerInv, Component title) {
         super(menu, playerInv, title);
@@ -54,10 +54,7 @@ public class PlatinumAnvilScreen extends AbstractContainerScreen<PlatinumAnvilMe
                 && isHovering(CAT_X, CAT_Y, 18, 18, mouseX, mouseY)) {
             gfx.renderTooltip(font, CATALYST_TIP, mouseX, mouseY);
         }
-        if (menu.getSlot(9).getItem().isEmpty()
-                && isHovering(RES_X, RES_Y, 26, 26, mouseX, mouseY)) {
-            gfx.renderTooltip(font, RESULT_TIP, mouseX, mouseY);
-        }
+
     }
 
     @Override
@@ -97,9 +94,7 @@ public class PlatinumAnvilScreen extends AbstractContainerScreen<PlatinumAnvilMe
         if (menu.getSlot(4).getItem().isEmpty()) {
             renderGhost(gfx, new ItemStack(Items.AMETHYST_SHARD), x + 49, y + 36);
         }
-        if (menu.getSlot(9).getItem().isEmpty()) {
-            renderGhost(gfx, new ItemStack(Items.IRON_INGOT), x + RES_X + 5, y + 36);
-        }
+
     }
 
     /* ================================================================
