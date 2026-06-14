@@ -19,7 +19,6 @@ public class GreenRayBlasterItem extends AlienBlasterItem {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        
         if (getCooldown(stack) > 0) {
             return InteractionResultHolder.fail(stack);
         }
@@ -48,7 +47,6 @@ public class GreenRayBlasterItem extends AlienBlasterItem {
     @Override
     public void onUseTick(Level level, LivingEntity livingEntity, ItemStack stack, int remainingUseDuration) {
         int ticksUsed = getUseDuration(stack, livingEntity) - remainingUseDuration;
-        
         if (ticksUsed < 20 && ticksUsed % 2 == 0) {
             level.playSound(null, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(),
                     SoundEvents.BLAZE_SHOOT, SoundSource.PLAYERS, 0.7F, 1.7F + level.random.nextFloat() * 0.3F);
