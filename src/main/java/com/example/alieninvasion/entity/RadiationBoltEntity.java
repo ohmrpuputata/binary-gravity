@@ -54,19 +54,30 @@ public class RadiationBoltEntity extends ThrowableItemProjectile {
     }
 
     public boolean isBig() {
+        if (this.entityData == null) {
+            return false;
+        }
         return this.entityData.get(BIG);
     }
 
     public boolean isGreenRay() {
+        if (this.entityData == null) {
+            return false;
+        }
         return this.entityData.get(GREEN_RAY);
     }
 
     public void setGreenRay(boolean greenRay) {
-        this.entityData.set(GREEN_RAY, greenRay);
+        if (this.entityData != null) {
+            this.entityData.set(GREEN_RAY, greenRay);
+        }
     }
 
     @Override
     protected Item getDefaultItem() {
+        if (this.entityData == null) {
+            return com.example.alieninvasion.registry.ItemRegistry.RADIATION_CRYSTAL;
+        }
         return isGreenRay() ? com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_INGOT : com.example.alieninvasion.registry.ItemRegistry.RADIATION_CRYSTAL;
     }
 
