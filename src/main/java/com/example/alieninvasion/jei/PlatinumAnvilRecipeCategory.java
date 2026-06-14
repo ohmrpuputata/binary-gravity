@@ -25,12 +25,14 @@ public class PlatinumAnvilRecipeCategory implements IRecipeCategory<PlatinumAnvi
     private final IDrawable background;
     private final IDrawable icon;
     private final Component title;
+    private final IDrawable slotDrawable;
 
     public PlatinumAnvilRecipeCategory(IGuiHelper helper) {
         // Create a blank area: 120 wide, 60 high
         this.background = helper.createBlankDrawable(120, 60);
         this.icon = helper.createDrawableItemStack(new ItemStack(ModBlocks.PLATINUM_ANVIL));
         this.title = Component.translatable("block.alien-invasion.platinum_anvil");
+        this.slotDrawable = helper.getSlotDrawable();
     }
 
     @Override
@@ -70,6 +72,16 @@ public class PlatinumAnvilRecipeCategory implements IRecipeCategory<PlatinumAnvi
 
     @Override
     public void draw(PlatinumAnvilRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        // Draw grid slot backgrounds
+        for (int r = 0; r < 3; r++) {
+            for (int c = 0; c < 3; c++) {
+                slotDrawable.draw(guiGraphics, 3 + c * 18, 3 + r * 18);
+            }
+        }
+
+        // Draw result slot background
+        slotDrawable.draw(guiGraphics, 95, 21);
+
         // Draw the arrow in between
         Minecraft minecraft = Minecraft.getInstance();
         guiGraphics.drawString(minecraft.font, "\u25B6", 67, 26, 0x404040, false);

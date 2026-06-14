@@ -23,12 +23,14 @@ public class PalladiumAnvilRecipeCategory implements IRecipeCategory<PalladiumAn
     private final IDrawable background;
     private final IDrawable icon;
     private final Component title;
+    private final IDrawable slotDrawable;
 
     public PalladiumAnvilRecipeCategory(IGuiHelper helper) {
         // Create a blank area: 120 wide, 28 high
         this.background = helper.createBlankDrawable(120, 28);
         this.icon = helper.createDrawableItemStack(new ItemStack(ModBlocks.PALLADIUM_ANVIL));
         this.title = Component.translatable("block.alien-invasion.palladium_anvil");
+        this.slotDrawable = helper.getSlotDrawable();
     }
 
     @Override
@@ -72,6 +74,12 @@ public class PalladiumAnvilRecipeCategory implements IRecipeCategory<PalladiumAn
 
     @Override
     public void draw(PalladiumAnvilRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        // Draw slot backgrounds
+        slotDrawable.draw(guiGraphics, 1, 5);
+        slotDrawable.draw(guiGraphics, 19, 5);
+        slotDrawable.draw(guiGraphics, 37, 5);
+        slotDrawable.draw(guiGraphics, 95, 5);
+
         // Draw the arrow in between
         Minecraft minecraft = Minecraft.getInstance();
         guiGraphics.drawString(minecraft.font, "\u25B6", 67, 10, 0x404040, false);
