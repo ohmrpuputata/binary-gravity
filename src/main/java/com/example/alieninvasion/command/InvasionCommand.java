@@ -73,7 +73,7 @@ public class InvasionCommand {
         String difficultyStage = "Фаза разведки";
         if (days >= 5) {
             difficultyStage = "Тотальная война";
-        } else if (days >= 3) {
+        } else if (days >= 2) {
             difficultyStage = "Фаза штурма";
         }
         final String finalDifficulty = difficultyStage;

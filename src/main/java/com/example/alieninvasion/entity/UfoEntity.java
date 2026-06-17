@@ -60,10 +60,22 @@ public class UfoEntity extends Ghast {
     }
 
     public void setVariant(int variant) {
+        setVariant(variant, 0);
+    }
+
+    /**
+     * Set the hull variant and scale its health to the invasion day. The health used
+     * to be fixed (a day-20 scout was no tougher than a day-1 scout) because this
+     * overwrote {@link com.example.alieninvasion.logic.AlienEvolution}'s health bump;
+     * folding the day curve in here makes UFOs actually scale with the war.
+     */
+    public void setVariant(int variant, int day) {
         this.entityData.set(DATA_VARIANT, variant);
         var hp = this.getAttribute(Attributes.MAX_HEALTH);
         if (hp != null) {
-            double max = variant == DESTROYER ? 110.0D : variant == CARRIER ? 150.0D : 50.0D;
+            double base = variant == DESTROYER ? 130.0D : variant == CARRIER ? 160.0D : 70.0D;
+            double tier = Math.min(Math.max(day, 0), 20);
+            double max = base * (1.0D + tier * 0.03D); // mirrors AlienEvolution's HP curve
             hp.setBaseValue(max);
             this.setHealth((float) max);
         }
@@ -242,12 +254,13 @@ public class UfoEntity extends Ghast {
 
         // DRILL DROP: breach an underground player.
         net.minecraft.world.entity.LivingEntity tgt = this.getTarget();
-        if (tgt != null && tgt.isAlive() && this.tickCount % 300 == 0 && this.random.nextFloat() < 0.5f
+        if (tgt != null && tgt.isAlive() && this.tickCount % 700 == 0 && this.random.nextFloat() < 0.3f
                 && tgt.getY() < this.getY() - 8) {
             com.example.alieninvasion.entity.DrillEntity drill = com.example.alieninvasion.registry.EntityRegistry.DRILL
                     .create(this.level());
             if (drill != null) {
                 drill.setPos(this.getX(), this.getY() - 2, this.getZ());
+                drill.setDifficulty(com.example.alieninvasion.logic.SurvivalManager.getDay(this.level()));
                 drill.setTargetY(tgt.getBlockY());
                 this.level().addFreshEntity(drill);
             }

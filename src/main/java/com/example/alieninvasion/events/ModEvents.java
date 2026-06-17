@@ -448,20 +448,8 @@ public class ModEvents {
                     }
                 }
 
-                // Heavy Armor tracking
-                if (source.getEntity() instanceof Player player) {
-                    int heavyArmorCount = 0;
-                    for (ItemStack armor : player.getArmorSlots()) {
-                        if (armor.getItem() instanceof ArmorItem ai && 
-                            (ai.getMaterial() == net.minecraft.world.item.ArmorMaterials.DIAMOND || 
-                             ai.getMaterial() == net.minecraft.world.item.ArmorMaterials.NETHERITE)) {
-                            heavyArmorCount++;
-                        }
-                    }
-                    if (heavyArmorCount >= 3) {
-                        manager.incrementHeavyArmorTicks(1);
-                    }
-                }
+                // (Armor adaptation now scales with the invasion day instead of a
+                // combat-time counter - see the alien-melee block below.)
             }
 
             // 3. Alien Melee AP damage against heavy armor players + infection fill
@@ -483,12 +471,22 @@ public class ModEvents {
                     }
                 }
 
-                InvasionManager manager = InvasionManager.get((ServerLevel) level);
-                if (manager.getHeavyArmorTicks() > 100 && !isApplyingAPDamage) {
+                // Armor adaptation: as the invasion escalates the swarm learns to
+                // pierce a GROWING fraction of ordinary armor - but ONLY vanilla gear.
+                // Alien-grade mod armor resists the adaptation and stays fully
+                // effective, so vanilla armor always blocks something (strong early,
+                // partial late) and can never be fully ignored, while mod armor is the
+                // real progression goal. The pierce is delivered as an armor-bypassing
+                // chip ON TOP of the normal (armor-reduced) hit, so heavier armor still
+                // beats lighter armor - it just no longer makes you immune.
+                int apDay = SurvivalManager.getDay(level);
+                float pierce = Math.min(0.5F, apDay * 0.05F); // day1 5% .. day10+ 50% (capped)
+                int alienPieces = com.example.alieninvasion.logic.ArmorProtection.alienGradeArmorPieces(player);
+                pierce *= Math.max(0.0F, 1.0F - alienPieces / 4.0F); // each alien-grade piece shrugs off 25%
+                if (pierce > 0.0F && !isApplyingAPDamage) {
                     isApplyingAPDamage = true;
-                    player.hurt(level.damageSources().magic(), amount);
+                    player.hurt(level.damageSources().magic(), amount * pierce);
                     isApplyingAPDamage = false;
-                    return false;
                 }
             }
 

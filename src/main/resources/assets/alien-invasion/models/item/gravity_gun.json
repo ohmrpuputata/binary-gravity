@@ -1,15 +1,20 @@
 {
   "parent": "alien-invasion:item/blaster_base",
   "textures": {
-    "layer0": "alien-invasion:item/gravity_gun"
+    "tex": "alien-invasion:item/gravity_gun",
+    "particle": "alien-invasion:item/gravity_gun"
   },
   "overrides": [
     {
-      "predicate": {"alien-invasion:shot": 0.05},
+      "predicate": {
+        "alien-invasion:shot": 0.05
+      },
       "model": "alien-invasion:item/gravity_gun_cooling"
     },
     {
-      "predicate": {"alien-invasion:shot": 0.55},
+      "predicate": {
+        "alien-invasion:shot": 0.55
+      },
       "model": "alien-invasion:item/gravity_gun_firing"
     }
   ]

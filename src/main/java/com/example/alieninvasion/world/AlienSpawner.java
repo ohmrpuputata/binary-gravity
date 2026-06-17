@@ -268,7 +268,7 @@ public class AlienSpawner {
                     } else if (difficulty >= 4 && level.random.nextFloat() < 0.3f) {
                         v = com.example.alieninvasion.entity.UfoEntity.DESTROYER;
                     }
-                    ufo.setVariant(v);
+                    ufo.setVariant(v, difficulty);
                 }
                 level.addFreshEntity(mob);
             }
@@ -303,7 +303,8 @@ public class AlienSpawner {
                            player.getZ() + (level.random.nextDouble() - 0.5) * 20,
                            level.random.nextFloat() * 360F, 0);
                 ufo.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.EVENT, null);
-                ufo.setVariant(level.random.nextBoolean() ? UfoEntity.SCOUT : UfoEntity.DESTROYER);
+                AlienEvolution.evolve(ufo, difficulty);
+                ufo.setVariant(level.random.nextBoolean() ? UfoEntity.SCOUT : UfoEntity.DESTROYER, difficulty);
                 ufo.setTarget(player);
                 level.addFreshEntity(ufo);
             }

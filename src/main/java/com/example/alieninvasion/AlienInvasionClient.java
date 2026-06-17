@@ -186,6 +186,8 @@ public class AlienInvasionClient implements ClientModInitializer {
                                 com.example.alieninvasion.client.model.InfestedWormModel::createBodyLayer);
                 EntityModelLayerRegistry.registerModelLayer(ModModelLayers.ALIEN_RAPTOR,
                                 com.example.alieninvasion.client.model.AlienRaptorModel::createBodyLayer);
+                EntityModelLayerRegistry.registerModelLayer(ModModelLayers.CAVE_LURKER,
+                                com.example.alieninvasion.client.model.CaveLurkerModel::createBodyLayer);
                 // Shared swarm-humanoid skeleton: one parametric model, eight builds.
                 registerHumanoid(ModModelLayers.ALIEN_BRUTE,
                                 com.example.alieninvasion.client.model.AlienHumanoidModel.Variant.BRUTE);

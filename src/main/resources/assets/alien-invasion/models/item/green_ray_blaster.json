@@ -1,7 +1,8 @@
 {
   "parent": "alien-invasion:item/blaster_base",
   "textures": {
-    "layer0": "alien-invasion:item/green_ray_blaster"
+    "tex": "alien-invasion:item/green_ray_blaster",
+    "particle": "alien-invasion:item/green_ray_blaster"
   },
   "overrides": [
     {

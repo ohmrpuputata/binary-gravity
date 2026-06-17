@@ -25,6 +25,12 @@ public class DrillEntity extends Entity {
     private int lastCarveY = Integer.MAX_VALUE;
     private int empTicks;
 
+    // The drill is now a destructible machine: burst its casing (or freeze it with an
+    // EMP first and then break it) to stop the breach before the squad ever arrives.
+    private static final float MAX_HEALTH = 40.0F;
+    private float health = MAX_HEALTH;
+    private boolean breaching;
+
     public void setEmpTicks(int ticks) {
         this.empTicks = ticks;
     }
@@ -62,7 +68,50 @@ public class DrillEntity extends Entity {
 
     @Override
     public boolean isPickable() {
-        return false;
+        return !this.isRemoved();
+    }
+
+    @Override
+    public boolean isAttackable() {
+        return true;
+    }
+
+    @Override
+    public boolean hurt(net.minecraft.world.damagesource.DamageSource source, float amount) {
+        // Machines don't drown, suffocate or take fall damage - but real weapon fire
+        // (and its own breach blast is ignored via the breaching guard) chews the
+        // casing apart. Killing it in the air cancels the breach entirely.
+        if (this.level().isClientSide || this.isRemoved() || this.breaching || amount <= 0.0F
+                || source.is(net.minecraft.world.damagesource.DamageTypes.DROWN)
+                || source.is(net.minecraft.world.damagesource.DamageTypes.IN_WALL)
+                || source.is(net.minecraft.world.damagesource.DamageTypes.FALL)) {
+            return false;
+        }
+        this.health -= amount;
+        this.hurtMarked = true;
+        if (this.level() instanceof ServerLevel sl) {
+            sl.sendParticles(ParticleTypes.CRIT, this.getX(), this.getY() + 0.6, this.getZ(),
+                    6, 0.3, 0.3, 0.3, 0.1);
+            sl.playSound(null, this.blockPosition(), SoundEvents.IRON_GOLEM_ATTACK,
+                    this.getSoundSource(), 0.6F, 1.7F);
+        }
+        if (this.health <= 0.0F) {
+            destroyByDamage();
+        }
+        return true;
+    }
+
+    private void destroyByDamage() {
+        if (this.level() instanceof ServerLevel sl) {
+            sl.sendParticles(ParticleTypes.EXPLOSION, this.getX(), this.getY(), this.getZ(),
+                    8, 0.5, 0.5, 0.5, 0.1);
+            sl.sendParticles(ParticleTypes.LARGE_SMOKE, this.getX(), this.getY(), this.getZ(),
+                    24, 0.6, 0.6, 0.6, 0.05);
+            sl.playSound(null, this.blockPosition(), SoundEvents.GENERIC_EXPLODE.value(),
+                    this.getSoundSource(), 1.0F, 0.8F);
+        }
+        // Destroyed in the air: the breach never fires, so the squad never lands.
+        this.discard();
     }
 
     @Override
@@ -88,14 +137,19 @@ public class DrillEntity extends Entity {
             return;
         }
 
-        // Manually descend (phasing through terrain it carves).
-        this.setPos(this.getX(), this.getY() - 0.18, this.getZ());
+        // Manually descend (phasing through terrain it carves). Much faster than
+        // before: the drill is a sudden, rare strike with a short counter window, not
+        // a slow inevitability you can casually outrun.
+        this.setPos(this.getX(), this.getY() - 0.7, this.getZ());
         int by = Mth.floor(this.getY());
         if (by != this.lastCarveY) {
             carve(by);
             this.lastCarveY = by;
-            this.level().playSound(null, this.blockPosition(), SoundEvents.IRON_GOLEM_ATTACK,
-                    this.getSoundSource(), 0.6F, 0.5F);
+            // Throttle the grind SFX so the faster descent doesn't machine-gun it.
+            if (by % 3 == 0) {
+                this.level().playSound(null, this.blockPosition(), SoundEvents.IRON_GOLEM_ATTACK,
+                        this.getSoundSource(), 0.7F, 0.5F);
+            }
         }
         if (this.level() instanceof ServerLevel sl) {
             sl.sendParticles(ParticleTypes.CRIT, this.getX(), this.getY(), this.getZ(), 6, 0.3, 0.2, 0.3, 0.1);
@@ -127,6 +181,7 @@ public class DrillEntity extends Entity {
             this.discard();
             return;
         }
+        this.breaching = true; // ignore our own breach blast so we don't "die" mid-breach
         sl.explode(this, this.getX(), this.getY(), this.getZ(), 1.5F, false, Level.ExplosionInteraction.BLOCK);
 
         net.minecraft.world.entity.player.Player nearestPlayer = null;

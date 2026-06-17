@@ -7,15 +7,12 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.player.Player;
@@ -55,77 +52,20 @@ public final class BloodyBlocks {
             return ContaminationRules.copyProperties(state, exactVariant.defaultBlockState());
         }
         // Сохраняем форму у лестниц/плит/заборов.
-        if (state.is(BlockTags.WOODEN_STAIRS)) {
-            return ContaminationRules.copyProperties(state, ModBlocks.BLOODY_PLANK_STAIRS.defaultBlockState());
-        }
-        if (state.is(BlockTags.STAIRS)) {
-            return ContaminationRules.copyProperties(state, ModBlocks.BLOODY_STONE_STAIRS.defaultBlockState());
-        }
-        if (state.is(BlockTags.WOODEN_SLABS)) {
-            return ContaminationRules.copyProperties(state, ModBlocks.BLOODY_PLANK_SLAB.defaultBlockState());
-        }
-        if (state.is(BlockTags.SLABS)) {
-            return ContaminationRules.copyProperties(state, ModBlocks.BLOODY_STONE_SLAB.defaultBlockState());
-        }
-        if (state.is(BlockTags.WOODEN_FENCES)) {
-            return ContaminationRules.copyProperties(state, ModBlocks.BLOODY_PLANK_FENCE.defaultBlockState());
-        }
         // Unsupported partial shapes and mechanisms keep their original state and
         // receive BLOOD_LAYER in splatter(). Replacing a lever, rail or redstone
         // component with a full bloody material cube would break the mechanism.
-        if (state.getDestroySpeed(level, pos) < 0.0F
-                || !state.isCollisionShapeFullBlock(level, pos)
-                || !state.isSolidRender(level, pos)) {
-            return null;
-        }
-        BlockState contaminated = ContaminationRules.contaminatedStateFor(state);
-        if (contaminated != null) {
-            Block categoryVariant = ModBlocks.cleanBloodyVariantForInfested(contaminated.getBlock());
-            if (categoryVariant != null) {
-                return ContaminationRules.copyProperties(state, categoryVariant.defaultBlockState());
-            }
-        }
+        // No guessing: unsupported blocks must not turn into another material.
+        // Add a real registered bloody variant when a block needs blood.
+        return null;
+    }
         // Полнокубические НЕПРОЗРАЧНЫЕ блоки — кровавый куб по типу звука. НЕ трогаем:
         // тайл-энтити (сундуки/машины/реактор), небьющиеся, частичные И прозрачные
         // (листва/стекло/лёд) — иначе заражённая листва превращалась в земляной куб.
-        if (state.hasBlockEntity()) {
-            return null;
-        }
-        return cubeFor(state).defaultBlockState();
-    }
 
     /** Подбор кровавого куба под исходный блок по типу звука/категории. */
-    private static net.minecraft.world.level.block.Block cubeFor(BlockState state) {
         // Заражённые блоки Роя — отдельная кровавая текстура (заражёнка + кровь),
         // чтобы не выглядело как чужеродный обычный камень.
-        net.minecraft.resources.ResourceLocation key =
-                net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(state.getBlock());
-        if (key.getNamespace().equals("alien-invasion") && key.getPath().startsWith("infested")) {
-            SoundType s = state.getSoundType();
-            boolean ground = s == SoundType.GRAVEL || s == SoundType.SAND || s == SoundType.SNOW
-                    || s == SoundType.ROOTED_DIRT || s == SoundType.MUD || s == SoundType.GRASS
-                    || s == SoundType.WET_GRASS || s == SoundType.CROP || s == SoundType.MOSS;
-            return ground ? ModBlocks.BLOODY_INFESTED_DIRT : ModBlocks.BLOODY_INFESTED;
-        }
-        if (state.is(BlockTags.PLANKS)) return ModBlocks.BLOODY_PLANKS;
-        if (state.is(Blocks.STONE_BRICKS) || state.is(Blocks.MOSSY_STONE_BRICKS)
-                || state.is(Blocks.CRACKED_STONE_BRICKS) || state.is(ModBlocks.INFESTED_STONE_BRICKS)) {
-            return ModBlocks.BLOODY_STONE_BRICKS;
-        }
-        SoundType snd = state.getSoundType();
-        if (snd == SoundType.WOOD || snd == SoundType.NETHER_WOOD || snd == SoundType.BAMBOO
-                || snd == SoundType.BAMBOO_WOOD || snd == SoundType.CHERRY_WOOD || snd == SoundType.WOOL) {
-            return ModBlocks.BLOODY_PLANKS;
-        }
-        if (snd == SoundType.GRAVEL || snd == SoundType.SAND || snd == SoundType.SNOW
-                || snd == SoundType.ROOTED_DIRT || snd == SoundType.MUD || snd == SoundType.CROP
-                || snd == SoundType.GRASS || snd == SoundType.MOSS || snd == SoundType.SOUL_SAND
-                || snd == SoundType.SOUL_SOIL || snd == SoundType.NYLIUM) {
-            return ModBlocks.BLOODY_DIRT;
-        }
-        return ModBlocks.BLOODY_STONE;
-    }
-
     /** Stain the block under the given position, remembering the exact original. */
     public static void splatter(ServerLevel level, BlockPos under) {
         BlockState floor = level.getBlockState(under);
@@ -145,13 +85,7 @@ public final class BloodyBlocks {
         // модовые машины и т.п.) нельзя превратить, не потеряв его вид — поэтому
         // кладём стойкую кровавую ДЕКАЛЬ ПОВЕРХ него, сам блок не трогаем. Так кровь
         // оказывается вообще на всех существующих блоках, и ванильных, и модовых.
-        BlockPos top = under.above();
-        BlockState above = level.getBlockState(top);
-        if ((above.isAir() || above.canBeReplaced())
-                && above.getFluidState().isEmpty()
-                && !above.is(ModBlocks.BLOOD_LAYER)) {
-            level.setBlock(top, ModBlocks.BLOOD_LAYER.defaultBlockState(), 2 | 16);
-        }
+        // No blood_layer puddle for unsupported blocks.
     }
 
     /** Точный блок, к которому надо вернуться: сохранённый оригинал, иначе fallback. */

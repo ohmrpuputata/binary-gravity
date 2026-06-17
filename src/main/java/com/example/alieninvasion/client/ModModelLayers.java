@@ -49,6 +49,8 @@ public class ModModelLayers {
             ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "hive_tyrant"), "main");
     public static final ModelLayerLocation ACID_SPITTER = new ModelLayerLocation(
             ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "acid_spitter"), "main");
+    public static final ModelLayerLocation CAVE_LURKER = new ModelLayerLocation(
+            ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "cave_lurker"), "main");
     public static final ModelLayerLocation PALLADIUM_ARMOR = new ModelLayerLocation(
             ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "palladium_armor"), "main");
     public static final ModelLayerLocation COSMIC_ARMOR = new ModelLayerLocation(

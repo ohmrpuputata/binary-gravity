@@ -1,4 +1,7 @@
 {
   "parent": "alien-invasion:item/blaster_base",
-  "textures": {"layer0": "alien-invasion:item/astral_prism_gun_charge_3"}
+  "textures": {
+    "tex": "alien-invasion:item/astral_prism_gun_charge_3",
+    "particle": "alien-invasion:item/astral_prism_gun_charge_3"
+  }
 }

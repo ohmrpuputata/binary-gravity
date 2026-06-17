@@ -184,6 +184,12 @@ public class InvasionManager extends SavedData {
                     player.getBlockX(), player.getBlockZ());
             boolean deep = player.getBlockY() < surfaceY - 8;
             if (deep) {
+                // Drills are now a RARE strike, not a constant underground tax: only a
+                // fraction of orbital procs actually commit a drill (it descends fast
+                // and can be destroyed, so it doesn't need to spawn often to matter).
+                if (level.random.nextFloat() >= 0.35f) {
+                    continue;
+                }
                 com.example.alieninvasion.entity.DrillEntity drill = com.example.alieninvasion.registry.EntityRegistry.DRILL
                         .create(level);
                 if (drill != null) {

@@ -1,4 +1,7 @@
 {
   "parent": "alien-invasion:item/blaster_base",
-  "textures": {"layer0": "alien-invasion:item/astral_prism_gun_cooling"}
+  "textures": {
+    "tex": "alien-invasion:item/astral_prism_gun_cooling",
+    "particle": "alien-invasion:item/astral_prism_gun_cooling"
+  }
 }

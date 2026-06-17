@@ -1,4 +1,7 @@
 {
   "parent": "alien-invasion:item/blaster_recoil",
-  "textures": {"layer0": "alien-invasion:item/alien_blaster_firing"}
+  "textures": {
+    "tex": "alien-invasion:item/alien_blaster_firing",
+    "particle": "alien-invasion:item/alien_blaster_firing"
+  }
 }

@@ -228,7 +228,7 @@ public class InvasionHUDOverlay implements HudRenderCallback {
         if (day >= 5) {
             threatText += "ТОТАЛЬНАЯ ВОЙНА";
             threatColor = 0xFF5555;
-        } else if (day >= 3) {
+        } else if (day >= 2) {
             threatText += "ШТУРМ";
             threatColor = 0xFFAA00;
         } else {
