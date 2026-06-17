@@ -19,15 +19,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * BLOODSTAINED BLOCKS: heavy wounds splatter the floor. Кровь ложится на ВСЕ
- * блоки — и ванильные, и модовые. Полнокубический непрозрачный блок (камень,
- * земля, дерево, заражёнка) превращается в кровавый «двойник» по типу звука
- * (дерево→доски, земля/песок→земля, остальное→камень), а его ТОЧНЫЙ оригинал
- * сохраняется в BloodyBlockEntity — RIGHT-CLICK протирает, вода смывает, и
- * возвращается именно исходный блок. Лестницы/плиты/заборы сохраняют форму.
- * Любой блок, который нельзя превратить без потери вида (листва, стекло,
- * нестандартная форма, тайл-энтити, машины), получает стойкую кровавую ДЕКАЛЬ
- * ({@link BloodLayerBlock}) сверху — сам блок при этом не меняется.
+ * Bloodstained block handling.
+ *
+ * Only blocks with an exact registered bloody variant are replaced. Unsupported
+ * blocks are left untouched: no material-category fallback and no separate
+ * blood-layer puddle is spawned from splatter().
  */
 public final class BloodyBlocks {
     private BloodyBlocks() {}
@@ -51,21 +47,11 @@ public final class BloodyBlocks {
         if (exactVariant != null) {
             return ContaminationRules.copyProperties(state, exactVariant.defaultBlockState());
         }
-        // Сохраняем форму у лестниц/плит/заборов.
-        // Unsupported partial shapes and mechanisms keep their original state and
-        // receive BLOOD_LAYER in splatter(). Replacing a lever, rail or redstone
-        // component with a full bloody material cube would break the mechanism.
         // No guessing: unsupported blocks must not turn into another material.
         // Add a real registered bloody variant when a block needs blood.
         return null;
     }
-        // Полнокубические НЕПРОЗРАЧНЫЕ блоки — кровавый куб по типу звука. НЕ трогаем:
-        // тайл-энтити (сундуки/машины/реактор), небьющиеся, частичные И прозрачные
-        // (листва/стекло/лёд) — иначе заражённая листва превращалась в земляной куб.
 
-    /** Подбор кровавого куба под исходный блок по типу звука/категории. */
-        // Заражённые блоки Роя — отдельная кровавая текстура (заражёнка + кровь),
-        // чтобы не выглядело как чужеродный обычный камень.
     /** Stain the block under the given position, remembering the exact original. */
     public static void splatter(ServerLevel level, BlockPos under) {
         BlockState floor = level.getBlockState(under);
@@ -81,10 +67,6 @@ public final class BloodyBlocks {
             }
             return;
         }
-        // Любой ДРУГОЙ блок (листва, стекло, нестандартная форма, тайл-энтити,
-        // модовые машины и т.п.) нельзя превратить, не потеряв его вид — поэтому
-        // кладём стойкую кровавую ДЕКАЛЬ ПОВЕРХ него, сам блок не трогаем. Так кровь
-        // оказывается вообще на всех существующих блоках, и ванильных, и модовых.
         // No blood_layer puddle for unsupported blocks.
     }
 
