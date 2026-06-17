@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="400" viewBox="0 0 1200 400" role="img" aria-labelledby="t d" font-family="'Consolas','SFMono-Regular','Roboto Mono',monospace">
-  <title id="t">Alien Apocalypse — Minecraft Fabric 1.21.1 survival mod</title>
-  <desc id="d">An orbital field-report banner: a signal-green eight-day invasion trajectory descending to an amber day-8 boss marker over a contaminated planet limb, beside the Alien Apocalypse wordmark.</desc>
+  <title id="t">Alien Apocalypse — мод выживания для Minecraft Fabric 1.21.1</title>
+  <desc id="d">Баннер в стиле орбитального отчёта: сигнально-зелёная траектория восьмидневного вторжения спускается к янтарной метке босса 8-го дня над заражённой планетой, рядом — логотип Alien Apocalypse.</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="0.65" y2="1">
       <stop offset="0" stop-color="#05070C"/>
@@ -44,11 +44,11 @@
     <mask id="gridmask"><rect width="1200" height="400" fill="url(#gridfade)"/></mask>
   </defs>
 
-  <!-- field -->
+  <!-- поле -->
   <rect width="1200" height="400" fill="url(#bg)"/>
   <rect width="1200" height="400" fill="url(#grid)" mask="url(#gridmask)"/>
 
-  <!-- starfield -->
+  <!-- звёзды -->
   <g fill="#E9F5EC">
     <circle cx="250" cy="60" r="1" opacity="0.5"/><circle cx="470" cy="40" r="1.2" opacity="0.4"/>
     <circle cx="560" cy="150" r="1" opacity="0.3"/><circle cx="640" cy="300" r="1" opacity="0.35"/>
@@ -57,7 +57,7 @@
     <circle cx="120" cy="180" r="1" opacity="0.3"/><circle cx="820" cy="330" r="1" opacity="0.3"/>
   </g>
 
-  <!-- planet limb, contaminated -->
+  <!-- лимб заражённой планеты -->
   <g>
     <circle cx="1240" cy="232" r="250" fill="url(#planet)"/>
     <circle cx="1240" cy="232" r="250" fill="none" stroke="url(#atmo)" stroke-width="26"/>
@@ -67,7 +67,7 @@
     <circle cx="1090" cy="232" r="34" fill="#6BFF93" opacity="0.05"/>
   </g>
 
-  <!-- mothership + strike beam -->
+  <!-- корабль-носитель и луч удара -->
   <g>
     <path d="M642 110 L726 110 L772 300 L596 300 Z" fill="url(#beam)"/>
     <ellipse cx="684" cy="96" rx="44" ry="13" fill="#0A1119" stroke="#6BFF93" stroke-opacity="0.8" stroke-width="1.5"/>
@@ -76,7 +76,7 @@
     <circle cx="668" cy="100" r="1.4" fill="#6BFF93"/><circle cx="700" cy="100" r="1.4" fill="#6BFF93"/>
   </g>
 
-  <!-- 8-day descent trajectory -->
+  <!-- траектория восьмидневного вторжения -->
   <g>
     <path d="M704 100 C 776 90 842 100 892 126 C 944 154 978 196 996 230"
           fill="none" stroke="#2E5C44" stroke-width="1.6" stroke-dasharray="2 6" stroke-linecap="round" opacity="0.85"/>
@@ -89,9 +89,9 @@
       <circle cx="938" cy="158" r="3.8" opacity="0.88"/>
       <circle cx="972" cy="194" r="4" opacity="0.95"/>
     </g>
-    <text x="700" y="84" fill="#8AA596" font-size="11" letter-spacing="1.5">DAY 1</text>
-    <text x="980" y="206" fill="#FFB020" font-size="12" font-weight="700" letter-spacing="1.5" text-anchor="end">DAY 8 · SWARM MOTHER</text>
-    <!-- day-8 boss marker -->
+    <text x="700" y="84" fill="#8AA596" font-size="11" letter-spacing="1.5">ДЕНЬ 1</text>
+    <text x="980" y="206" fill="#FFB020" font-size="12" font-weight="700" letter-spacing="1.5" text-anchor="end">ДЕНЬ 8 · МАТЬ РОЯ</text>
+    <!-- метка босса 8-го дня -->
     <circle cx="996" cy="230" r="14" fill="none" stroke="#FFB020" stroke-opacity="0.5" stroke-width="1.5">
       <animate attributeName="r" values="11;17;11" dur="3.2s" repeatCount="indefinite"/>
       <animate attributeName="stroke-opacity" values="0.6;0.1;0.6" dur="3.2s" repeatCount="indefinite"/>
@@ -100,7 +100,7 @@
     <circle cx="996" cy="230" r="2.6" fill="#FFF1D6"/>
   </g>
 
-  <!-- corner registration marks + ruler ticks -->
+  <!-- угловые метки + риски шкалы -->
   <g stroke="#2E5C44" stroke-width="2" fill="none">
     <path d="M24 40 V24 H40"/><path d="M1176 40 V24 H1160"/>
     <path d="M24 360 V376 H40"/><path d="M1176 360 V376 H1160"/>
@@ -108,10 +108,10 @@
   <g stroke="#2E5C44" stroke-width="1" opacity="0.5">
     <path d="M360 26 v6 M420 26 v6 M480 26 v6 M540 26 v6 M600 26 v6 M660 26 v6 M720 26 v6 M780 26 v6 M840 26 v6 M900 26 v6"/>
   </g>
-  <text x="52" y="33" fill="#2E5C44" font-size="12" letter-spacing="2.5">// INCURSION FIELD REPORT</text>
+  <text x="52" y="33" fill="#2E5C44" font-size="12" letter-spacing="2.5">// ПОЛЕВОЙ ОТЧЁТ О ВТОРЖЕНИИ</text>
   <text x="1148" y="33" fill="#2E5C44" font-size="12" letter-spacing="2.5" text-anchor="end">MC 1.21.1 / FABRIC / JAVA 21</text>
 
-  <!-- sigil: reticle + swarm lobes + strike chevron -->
+  <!-- сигил: прицел + доли роя + шеврон удара -->
   <g transform="translate(70,96)">
     <circle r="30" fill="none" stroke="#2E5C44" stroke-width="1.5"/>
     <g stroke="#6BFF93" stroke-width="2" stroke-linecap="round">
@@ -126,32 +126,32 @@
     <path d="M-7 9 L0 17 L7 9" fill="none" stroke="#FFB020" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
 
-  <!-- eyebrow -->
+  <!-- надстрочник -->
   <text x="122" y="84" fill="#6BFF93" font-size="14" letter-spacing="4">MINECRAFT · FABRIC · 1.21.1</text>
-  <text x="122" y="104" fill="#8AA596" font-size="12.5" letter-spacing="2">STAGED INVASION · DAY 1 → DAY 8</text>
+  <text x="122" y="104" fill="#8AA596" font-size="12.5" letter-spacing="2">ПОЭТАПНОЕ ВТОРЖЕНИЕ · ДЕНЬ 1 → ДЕНЬ 8</text>
 
-  <!-- wordmark -->
+  <!-- логотип -->
   <g font-family="'Arial Black','Arial Narrow',Impact,sans-serif" font-weight="900" letter-spacing="-1">
     <text x="118" y="194" fill="#E9F5EC" font-size="82">ALIEN</text>
     <text x="118" y="268" fill="#6BFF93" font-size="82" filter="url(#glow)">APOCALYPSE</text>
   </g>
 
-  <!-- subtitle -->
-  <text x="122" y="304" fill="#C8D8CD" font-size="16" letter-spacing="0.4">Staged-invasion survival — contamination, radiation, tactical swarms, a day-8 boss.</text>
+  <!-- подзаголовок -->
+  <text x="122" y="304" fill="#C8D8CD" font-size="16" letter-spacing="0.4">Выживание в поэтапном вторжении: заражение, радиация, рой и босс на 8-й день.</text>
 
-  <!-- stat chips -->
+  <!-- чипы статистики -->
   <g font-size="13" font-weight="700" letter-spacing="1">
-    <rect x="122" y="330" width="120" height="30" rx="6" fill="#0B121C" stroke="#2E5C44"/>
-    <text x="182" y="350" fill="#6BFF93" text-anchor="middle">103 RECIPES</text>
-    <rect x="252" y="330" width="150" height="30" rx="6" fill="#0B121C" stroke="#2E5C44"/>
-    <text x="327" y="350" fill="#6BFF93" text-anchor="middle">219 LOOT TABLES</text>
-    <rect x="412" y="330" width="132" height="30" rx="6" fill="#0B121C" stroke="#2E5C44"/>
-    <text x="478" y="350" fill="#6BFF93" text-anchor="middle">493 TEXTURES</text>
+    <rect x="122" y="330" width="126" height="30" rx="6" fill="#0B121C" stroke="#2E5C44"/>
+    <text x="185" y="350" fill="#6BFF93" text-anchor="middle">103 РЕЦЕПТА</text>
+    <rect x="258" y="330" width="156" height="30" rx="6" fill="#0B121C" stroke="#2E5C44"/>
+    <text x="336" y="350" fill="#6BFF93" text-anchor="middle">219 ТАБЛИЦ ЛУТА</text>
+    <rect x="424" y="330" width="138" height="30" rx="6" fill="#0B121C" stroke="#2E5C44"/>
+    <text x="493" y="350" fill="#6BFF93" text-anchor="middle">493 ТЕКСТУРЫ</text>
   </g>
 
-  <!-- threat readout -->
-  <text x="1148" y="352" fill="#2E5C44" font-size="12" letter-spacing="2" text-anchor="end">THREAT  RECON › ASSAULT › <tspan fill="#FFB020">TOTAL WAR</tspan></text>
+  <!-- индикатор угрозы -->
+  <text x="1148" y="352" fill="#2E5C44" font-size="12" letter-spacing="2" text-anchor="end">УГРОЗА  РАЗВЕДКА › ШТУРМ › <tspan fill="#FFB020">ТОТАЛЬНАЯ ВОЙНА</tspan></text>
 
-  <!-- texture -->
+  <!-- текстура -->
   <rect width="1200" height="400" fill="url(#scan)" opacity="0.35"/>
 </svg>
