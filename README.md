@@ -3,9 +3,9 @@
 <img src="docs/assets/repo-banner.svg" alt="Alien Apocalypse — a Minecraft Fabric 1.21.1 survival mod about a staged alien invasion" width="100%">
 
 <p>
-  <b>🇬🇧 English</b>
+  <b>English</b>
   &nbsp;·&nbsp;
-  <a href="README.ru.md">🇷🇺 Русский</a>
+  <a href="README.ru.md">Русский</a>
 </p>
 
 <p>
@@ -49,22 +49,22 @@ Pressure escalates on a schedule. The in‑game HUD and `/invasion` command read
 
 | Day | Phase | What lands on you | What you should be doing |
 | :--: | :-- | :-- | :-- |
-| **1** | 🛰️ **Recon** | Scouts probe the perimeter — grunts, trolls, alien chickens | Dig in, fortify, secure first food and tools |
-| **2–4** | ⚔️ **Assault** | Brutes and casters push in; orbital strikes drop meteors and laser drills | Build hazmat / chitin gear, set up counters |
-| **5+** | ☢️ **Total war** | Radioactive storms roll across the surface | Go deep, mine cosmic ore, chase top‑tier gear |
-| **8** | 💀 **Swarm Mother** | Craft the **Swarm Beacon**, summon her, and finish it | Bring apex weapons — this is the campaign's end |
+| **1** | <img src="docs/assets/icons/radar.svg" width="18" align="absmiddle" alt=""> **Recon** | Scouts probe the perimeter — grunts, trolls, alien chickens | Dig in, fortify, secure first food and tools |
+| **2–4** | <img src="docs/assets/icons/swords.svg" width="18" align="absmiddle" alt=""> **Assault** | Brutes and casters push in; orbital strikes drop meteors and laser drills | Build hazmat / chitin gear, set up counters |
+| **5+** | <img src="docs/assets/icons/radiation.svg" width="18" align="absmiddle" alt=""> **Total war** | Radioactive storms roll across the surface | Go deep, mine cosmic ore, chase top‑tier gear |
+| **8** | <img src="docs/assets/icons/skull.svg" width="18" align="absmiddle" alt=""> **Swarm Mother** | Craft the **Swarm Beacon**, summon her, and finish it | Bring apex weapons — this is the campaign's end |
 
 ---
 
 ## Features
 
-- 🌐 **Staged invasion pacing** — world events, swarm escalation, infection spread, radiation, and acid rain tied to a day‑by‑day timeline.
-- 🧠 **Tactical alien AI** — flanking, retreating, tunnelling, bombing runs, bridge building, squad aggro, scavenging, teleport pressure, and hive behaviour.
-- ☣️ **Contamination as progression** — radiation needs protection, infection needs cleansing, machines need EMP. Counters, not raw power, carry you forward.
-- 🛡️ **Adaptive swarm** — as the days climb, the swarm learns to pierce ordinary armor (vanilla gear always blocks *something*, but never makes you immune). Alien‑grade mod armor shrugs the adaptation off — so it stays the real goal.
-- 🏚️ **World content** — alien cities, hives, crashed UFOs, labs, bunkers, vaults, residue veins, and a hostile homeworld dimension.
-- 🔫 **An arsenal with intent** — blasters, gravity weapons, EMP grenades, plasma and cosmic gear, Nibirium tools, palladium/platinum anvils, and boss‑gated apex weapons.
-- ✨ **Client polish** — custom entity models and renderers, armor models, a HUD overlay, particles, ambience, full `en_us` + `ru_ru` localization, and **JEI** recipe integration.
+- <img src="docs/assets/icons/pulse.svg" width="18" align="absmiddle" alt=""> **Staged invasion pacing** — world events, swarm escalation, infection spread, radiation, and acid rain tied to a day‑by‑day timeline.
+- <img src="docs/assets/icons/network.svg" width="18" align="absmiddle" alt=""> **Tactical alien AI** — flanking, retreating, tunnelling, bombing runs, bridge building, squad aggro, scavenging, teleport pressure, and hive behaviour.
+- <img src="docs/assets/icons/biohazard.svg" width="18" align="absmiddle" alt=""> **Contamination as progression** — radiation needs protection, infection needs cleansing, machines need EMP. Counters, not raw power, carry you forward.
+- <img src="docs/assets/icons/shield.svg" width="18" align="absmiddle" alt=""> **Adaptive swarm** — as the days climb, the swarm learns to pierce ordinary armor (vanilla gear always blocks *something*, but never makes you immune). Alien‑grade mod armor shrugs the adaptation off — so it stays the real goal.
+- <img src="docs/assets/icons/hive.svg" width="18" align="absmiddle" alt=""> **World content** — alien cities, hives, crashed UFOs, labs, bunkers, vaults, residue veins, and a hostile homeworld dimension.
+- <img src="docs/assets/icons/blaster.svg" width="18" align="absmiddle" alt=""> **An arsenal with intent** — blasters, gravity weapons, EMP grenades, plasma and cosmic gear, Nibirium tools, palladium/platinum anvils, and boss‑gated apex weapons.
+- <img src="docs/assets/icons/spark.svg" width="18" align="absmiddle" alt=""> **Client polish** — custom entity models and renderers, armor models, a HUD overlay, particles, ambience, full `en_us` + `ru_ru` localization, and **JEI** recipe integration.
 
 ---
 
@@ -105,12 +105,12 @@ The mod's design backbone: **every threat has a deliberate counter.** Power scal
 
 | Threat | Your answer |
 | :-- | :-- |
-| ☢️ Radiation fields & storms | Hazmat suit (full set = immune), bio‑filter mask, rad pills, portable purifier |
-| 🦠 Infection & contaminated ground | Chitin gear (clears infection), cosmic armor (immune + walks alien blocks), bio‑shovel |
-| 🐝 Swarms & crowds | Cosmic Warhammer (slam CC), Star Cleaver (cleave), plasma / iridium weapons |
-| 🛡️ Armor‑piercing adaptation | Alien‑grade mod armor (hazmat, chitin, cosmic) keeps blocking when vanilla gear is learned around |
-| 🤖 Machines (drills, gravity guns) | EMP grenade |
-| 💎 Apex crafting | Deep radioactive mining + dark‑matter cores + structure/boss drops feed `bio_blade`, the strongest weapon |
+| <img src="docs/assets/icons/radiation.svg" width="18" align="absmiddle" alt=""> Radiation fields & storms | Hazmat suit (full set = immune), bio‑filter mask, rad pills, portable purifier |
+| <img src="docs/assets/icons/biohazard.svg" width="18" align="absmiddle" alt=""> Infection & contaminated ground | Chitin gear (clears infection), cosmic armor (immune + walks alien blocks), bio‑shovel |
+| <img src="docs/assets/icons/swarm.svg" width="18" align="absmiddle" alt=""> Swarms & crowds | Cosmic Warhammer (slam CC), Star Cleaver (cleave), plasma / iridium weapons |
+| <img src="docs/assets/icons/shield.svg" width="18" align="absmiddle" alt=""> Armor‑piercing adaptation | Alien‑grade mod armor (hazmat, chitin, cosmic) keeps blocking when vanilla gear is learned around |
+| <img src="docs/assets/icons/cog.svg" width="18" align="absmiddle" alt=""> Machines (drills, gravity guns) | EMP grenade |
+| <img src="docs/assets/icons/gem.svg" width="18" align="absmiddle" alt=""> Apex crafting | Deep radioactive mining + dark‑matter cores + structure/boss drops feed `bio_blade`, the strongest weapon |
 
 ---
 
@@ -127,25 +127,6 @@ The mod's design backbone: **every threat has a deliberate counter.** Power scal
 | Languages | `en_us`, `ru_ru` |
 | Target Minecraft | `1.21.1` |
 | Java target | `21` |
-
----
-
-## Gallery
-
-<table>
-  <tr>
-    <td width="34%" align="center">
-      <img src="src/main/resources/assets/alien-invasion/icon.png" alt="Alien Apocalypse mod icon" width="150"><br>
-      <sub><b>Mod icon</b><br>Readable identity for launchers and mod lists.</sub>
-    </td>
-    <td width="66%" align="center">
-      <img src="art/mod_blocks_redesign_reference.png" alt="Reference sheet of contaminated blocks, machinery, and sci-fi survival surfaces" width="100%"><br>
-      <sub><b>Block art direction</b><br>Contaminated machinery, organic residue, warning lights, and sci‑fi survival surfaces.</sub>
-    </td>
-  </tr>
-</table>
-
-> Art direction follows the project's [visual identity](docs/BRAND.md) — “Incursion Report”: signal‑green readings against the void, hazard amber for real danger.
 
 ---
 
