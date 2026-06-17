@@ -1,0 +1,41 @@
+name: Content or balance feedback
+description: Report progression friction, loot problems, unfair encounters, dead-end materials, or tuning issues.
+title: "[Balance]: "
+labels:
+  - balance
+  - content
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Early invasion
+        - Midgame progression
+        - Endgame/apex progression
+        - Radiation
+        - Infection/contamination
+        - Alien AI/combat
+        - Loot tables
+        - Recipes
+        - Worldgen/structures
+        - Armor/tools/weapons
+    validations:
+      required: true
+  - type: textarea
+    id: issue
+    attributes:
+      label: What feels wrong?
+      placeholder: "Example: hive loot gives apex material too early, or radiation has no readable counter here."
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Add day count, gear level, structure, screenshots, logs, or reproduction notes.
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested adjustment
+      description: Optional, but useful if you have a concrete tuning idea.

@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
+  <title id="title">Alien Apocalypse repository banner</title>
+  <desc id="desc">Dark sci-fi banner for a Minecraft Fabric mod about an alien invasion, contamination, tactical swarms, and survival progression.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#05070c"/>
+      <stop offset="0.42" stop-color="#101b27"/>
+      <stop offset="1" stop-color="#1b0b26"/>
+    </linearGradient>
+    <linearGradient id="beam" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#65ff8f" stop-opacity="0"/>
+      <stop offset="0.45" stop-color="#65ff8f" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#4dd8ff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="core" cx="50%" cy="50%" r="55%">
+      <stop offset="0" stop-color="#d8ff7a"/>
+      <stop offset="0.45" stop-color="#57ff87"/>
+      <stop offset="1" stop-color="#143e2d"/>
+    </radialGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#7af0ff" stroke-opacity="0.08" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="360" fill="url(#bg)"/>
+  <rect width="1200" height="360" fill="url(#grid)"/>
+  <path d="M0 278 C180 218 260 318 430 260 C610 198 730 252 870 206 C1010 160 1110 190 1200 146 L1200 360 L0 360 Z" fill="#07140f" opacity="0.92"/>
+  <path d="M0 302 C210 250 345 330 510 284 C680 238 770 288 940 230 C1060 190 1142 204 1200 180" fill="none" stroke="#64ff88" stroke-opacity="0.36" stroke-width="3"/>
+
+  <circle cx="952" cy="112" r="68" fill="url(#core)" opacity="0.94"/>
+  <circle cx="952" cy="112" r="96" fill="none" stroke="#65ff8f" stroke-opacity="0.22" stroke-width="18"/>
+  <path d="M881 122 C900 97 924 88 950 92 C980 97 1004 114 1023 145 C991 132 956 138 930 160 C913 145 895 134 881 122Z" fill="#06120f" opacity="0.84"/>
+  <path d="M850 96 L706 41 L1030 140 Z" fill="url(#beam)" opacity="0.28"/>
+  <path d="M945 0 L1005 0 L968 112 Z" fill="#7af0ff" opacity="0.18"/>
+
+  <g opacity="0.95">
+    <rect x="74" y="74" width="82" height="82" rx="14" fill="#111a22" stroke="#64ff88" stroke-width="3"/>
+    <rect x="96" y="96" width="38" height="38" rx="8" fill="#64ff88"/>
+    <path d="M88 154 L115 126 L152 164" fill="none" stroke="#ff4fa3" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="134" cy="89" r="8" fill="#7af0ff"/>
+  </g>
+
+  <text x="184" y="126" fill="#f4fff7" font-family="Segoe UI, Arial, sans-serif" font-size="58" font-weight="800" letter-spacing="0">Alien Apocalypse</text>
+  <text x="188" y="170" fill="#b9ffcb" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="600" letter-spacing="0">Minecraft Fabric 1.21.1 survival mod</text>
+  <text x="188" y="211" fill="#e4e8f0" font-family="Segoe UI, Arial, sans-serif" font-size="22" letter-spacing="0">Contamination, radiation, tactical swarms, alien structures, advanced gear, and a day-8 boss.</text>
+
+  <g font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="700">
+    <rect x="188" y="246" width="142" height="38" rx="8" fill="#11251c" stroke="#64ff88" stroke-opacity="0.7"/>
+    <text x="214" y="271" fill="#d8ff7a">103 recipes</text>
+    <rect x="344" y="246" width="160" height="38" rx="8" fill="#13202b" stroke="#7af0ff" stroke-opacity="0.7"/>
+    <text x="370" y="271" fill="#c7f8ff">219 loot tables</text>
+    <rect x="518" y="246" width="142" height="38" rx="8" fill="#271525" stroke="#ff4fa3" stroke-opacity="0.7"/>
+    <text x="543" y="271" fill="#ffd5e8">494 textures</text>
+  </g>
+
+  <path d="M775 280 L820 236 L865 280 L910 236 L955 280" fill="none" stroke="#ffb35c" stroke-width="5" stroke-linecap="round" opacity="0.65"/>
+</svg>

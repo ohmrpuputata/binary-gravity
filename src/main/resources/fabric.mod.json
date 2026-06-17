@@ -3,13 +3,14 @@
 	"id": "alien-invasion",
 	"version": "${version}",
 	"name": "Alien Apocalypse",
-	"description": "Survive an evolving alien invasion with spreading contamination, hostile swarms, advanced gear, weapons and world events.",
+	"description": "Survive a staged alien apocalypse with spreading contamination, radiation, tactical swarms, alien structures, advanced gear, and a day-8 boss.",
 	"authors": [
-		"Me"
+		"physicaldazezzz"
 	],
 	"contact": {
 		"homepage": "https://github.com/physicaldazezzz/binary-gravity",
-		"sources": "https://github.com/physicaldazezzz/binary-gravity"
+		"sources": "https://github.com/physicaldazezzz/binary-gravity",
+		"issues": "https://github.com/physicaldazezzz/binary-gravity/issues"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/alien-invasion/icon.png",
@@ -39,6 +40,6 @@
 		"fabric-api": "*"
 	},
 	"suggests": {
-		"another-mod": "*"
+		"jei": "*"
 	}
 }

@@ -1,0 +1,81 @@
+name: Bug report
+description: Report a crash, broken mechanic, bad recipe, missing texture, or gameplay bug.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting this. Clear reproduction steps are more useful than a long story.
+  - type: input
+    id: mod-version
+    attributes:
+      label: Mod version or commit
+      placeholder: "1.14.0 or commit hash"
+    validations:
+      required: true
+  - type: input
+    id: minecraft-version
+    attributes:
+      label: Minecraft version
+      placeholder: "1.21.1"
+    validations:
+      required: true
+  - type: input
+    id: fabric-loader
+    attributes:
+      label: Fabric Loader version
+      placeholder: "0.17.2"
+    validations:
+      required: true
+  - type: input
+    id: fabric-api
+    attributes:
+      label: Fabric API version
+      placeholder: "0.116.8+1.21.1"
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      options:
+        - Singleplayer
+        - Dedicated server
+        - LAN
+        - Modpack
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Use a numbered list if possible.
+      placeholder: |
+        1. Start a new world...
+        2. Craft/use/spawn...
+        3. Observe...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or crash report
+      description: Paste the relevant part or attach the file.
+      render: text
+  - type: textarea
+    id: extra-mods
+    attributes:
+      label: Other mods
+      description: List other mods if this happens in a modpack or with JEI/compat mods.

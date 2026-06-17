@@ -1,0 +1,51 @@
+name: Feature request
+description: Suggest a mechanic, item, mob, structure, machine, or quality-of-life improvement.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Player problem
+      description: What gap does this solve in the current progression or experience?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the feature and how the player obtains/uses it.
+    validations:
+      required: true
+  - type: textarea
+    id: progression
+    attributes:
+      label: Progression fit
+      description: What input, output, and purpose does this add?
+      placeholder: |
+        Input:
+        Output:
+        Purpose:
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Items and gear
+        - Mobs and AI
+        - Blocks and machines
+        - Worldgen and structures
+        - Infection/radiation/survival systems
+        - Client UI/rendering/audio
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: references
+    attributes:
+      label: References or mockups
+      description: Add screenshots, sketches, videos, or links if useful.

@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Build instructions
+    url: https://github.com/physicaldazezzz/binary-gravity#build-from-source
+    about: Check this before reporting local build problems.
+  - name: Design notes
+    url: https://github.com/physicaldazezzz/binary-gravity/blob/main/docs/DESIGN.md
+    about: Read the progression rules before proposing large content changes.
