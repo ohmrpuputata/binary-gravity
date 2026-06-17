@@ -238,7 +238,7 @@ public class HomeworldManager extends SavedData {
         set(level, new BlockPos(x, base.getY() + height, z), ModBlocks.ALIEN_HIVE);
     }
 
-    /** Мясной курган с лужей крови на макушке. */
+    /** Мясной курган со щупальцами на макушке. */
     private static void fleshMound(ServerLevel level, RandomSource r, BlockPos base, int radius) {
         for (int dx = -radius; dx <= radius; dx++) {
             for (int dz = -radius; dz <= radius; dz++) {
@@ -252,7 +252,7 @@ public class HomeworldManager extends SavedData {
                 }
             }
         }
-        set(level, base.above((int) (radius * 0.8D)), ModBlocks.BLOOD_POOL);
+        set(level, base.above((int) (radius * 0.8D)), ModBlocks.ALIEN_TENDRILS);
     }
 
     /** Заросли щупалец. */
@@ -262,7 +262,7 @@ public class HomeworldManager extends SavedData {
             int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING, p.getX(), p.getZ());
             BlockPos at = new BlockPos(p.getX(), y, p.getZ());
             if (level.getBlockState(at).isAir()) {
-                set(level, at, r.nextInt(5) == 0 ? ModBlocks.BLOOD_POOL : ModBlocks.ALIEN_TENDRILS);
+                set(level, at, ModBlocks.ALIEN_TENDRILS);
             }
         }
     }
@@ -763,15 +763,13 @@ public class HomeworldManager extends SavedData {
             hw.setBlockAndUpdate(new BlockPos(0, surface + y, 0), ModBlocks.ALIEN_FLESH.defaultBlockState());
         }
         hw.setBlockAndUpdate(new BlockPos(0, surface + height - 4, 0), ModBlocks.ALIEN_HEART.defaultBlockState());
-        // Щупальца и лужи вокруг улья.
+        // Щупальца вокруг улья.
         for (int i = 0; i < 60; i++) {
             BlockPos p = new BlockPos(r.nextInt(61) - 30, 0, r.nextInt(61) - 30);
             int y = hw.getHeight(Heightmap.Types.MOTION_BLOCKING, p.getX(), p.getZ());
             BlockPos ground = new BlockPos(p.getX(), y, p.getZ());
             if (hw.getBlockState(ground).isAir()) {
-                hw.setBlockAndUpdate(ground, r.nextBoolean()
-                        ? ModBlocks.ALIEN_TENDRILS.defaultBlockState()
-                        : ModBlocks.BLOOD_POOL.defaultBlockState());
+                hw.setBlockAndUpdate(ground, ModBlocks.ALIEN_TENDRILS.defaultBlockState());
             }
         }
 
