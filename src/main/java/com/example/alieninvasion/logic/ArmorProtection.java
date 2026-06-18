@@ -41,13 +41,13 @@ public final class ArmorProtection {
     }
 
     public static boolean hasSealedSuit(LivingEntity entity) {
-        return hasSet(entity,
+        return hasCompatibleSet(entity,
                 ItemRegistry.ALIEN_HAZMAT_HELMET, ItemRegistry.ALIEN_HAZMAT_CHESTPLATE,
                 ItemRegistry.ALIEN_HAZMAT_LEGGINGS, ItemRegistry.ALIEN_HAZMAT_BOOTS)
-                || hasSet(entity,
+                || hasCompatibleSet(entity,
                 ItemRegistry.ALIEN_CHEM_HELMET, ItemRegistry.ALIEN_CHEM_CHESTPLATE,
                 ItemRegistry.ALIEN_CHEM_LEGGINGS, ItemRegistry.ALIEN_CHEM_BOOTS)
-                || hasSet(entity,
+                || hasCompatibleSet(entity,
                 ItemRegistry.COSMIC_HELMET, ItemRegistry.COSMIC_CHESTPLATE,
                 ItemRegistry.COSMIC_LEGGINGS, ItemRegistry.COSMIC_BOOTS);
     }
@@ -58,10 +58,22 @@ public final class ArmorProtection {
                 || hasSealedSuit(entity);
     }
 
-    private static boolean hasSet(LivingEntity entity, Item helmet, Item chestplate, Item leggings, Item boots) {
-        return entity.getItemBySlot(EquipmentSlot.HEAD).is(helmet)
-                && entity.getItemBySlot(EquipmentSlot.CHEST).is(chestplate)
-                && entity.getItemBySlot(EquipmentSlot.LEGS).is(leggings)
-                && entity.getItemBySlot(EquipmentSlot.FEET).is(boots);
+    public static boolean hasCompatibleSet(LivingEntity entity, Item helmet, Item chestplate, Item leggings, Item boots) {
+        return hasCompatibleArmorPiece(entity, EquipmentSlot.HEAD, helmet)
+                && hasCompatibleArmorPiece(entity, EquipmentSlot.CHEST, chestplate)
+                && hasCompatibleArmorPiece(entity, EquipmentSlot.LEGS, leggings)
+                && hasCompatibleArmorPiece(entity, EquipmentSlot.FEET, boots);
+    }
+
+    public static boolean hasCompatibleArmorPiece(LivingEntity entity, EquipmentSlot slot, Item expected) {
+        ItemStack stack = entity.getItemBySlot(slot);
+        if (stack.is(expected)) {
+            return true;
+        }
+        return switch (slot) {
+            case HEAD -> stack.is(ItemRegistry.BIO_FILTER_MASK);
+            case FEET -> stack.is(ItemRegistry.GRAVITY_BOOTS);
+            default -> false;
+        };
     }
 }

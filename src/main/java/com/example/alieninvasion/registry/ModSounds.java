@@ -15,6 +15,9 @@ public class ModSounds {
     public static final SoundEvent HUNTER_DEATH = register("hunter.death");
     public static final SoundEvent HUNTER_IDLE  = register("hunter.idle");
 
+    /** Щелчок счётчика Гейгера (3 варианта в пуле, рейт зависит от радиации). */
+    public static final SoundEvent GEIGER_CLICK = register("geiger.click");
+
     private static SoundEvent register(String name) {
         ResourceLocation id = ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, name);
         return Registry.register(BuiltInRegistries.SOUND_EVENT, id, SoundEvent.createVariableRangeEvent(id));

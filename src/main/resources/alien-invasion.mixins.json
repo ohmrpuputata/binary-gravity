@@ -9,6 +9,7 @@
     "ItemMixin",
     "LivingEntityAccessor",
     "LivingEntityHealMixin",
+    "LivingEntityBleedMixin",
     "MobMixin",
     "EntityNameMixin",
     "ItemStackMixin",

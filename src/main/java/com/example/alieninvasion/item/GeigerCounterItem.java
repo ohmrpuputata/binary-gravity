@@ -31,8 +31,8 @@ public class GeigerCounterItem extends Item {
         float dose = com.example.alieninvasion.logic.RadiationManager.getDose(p);
         float intensity = Math.max(field, dose * 0.4F);
         if (intensity > 0.0F && level.random.nextFloat() < Math.min(0.9F, 0.15F + intensity * 0.03F)) {
-            level.playSound(null, p.blockPosition(), net.minecraft.sounds.SoundEvents.STONE_BUTTON_CLICK_ON,
-                    net.minecraft.sounds.SoundSource.PLAYERS, 0.35F, 1.6F + level.random.nextFloat() * 0.8F);
+            level.playSound(null, p.blockPosition(), com.example.alieninvasion.registry.ModSounds.GEIGER_CLICK,
+                    net.minecraft.sounds.SoundSource.PLAYERS, 0.7F, 0.9F + level.random.nextFloat() * 0.3F);
         }
     }
 

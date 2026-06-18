@@ -8,36 +8,53 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
- * СТОЙКАЯ кровавая декаль поверх ЛЮБОГО блока. В отличие от {@link BloodPoolBlock}
- * (след, который сам высыхает) — эта лужа держится, пока её не сотрут ПКМ или не
- * смоет вода. Кладётся в воздух НАД полом, поэтому сам блок-пол не меняется:
- * так кровь ложится на что угодно (листва, стекло, модовые блоки), не теряя их.
+ * Кровавая декаль поверх ЛЮБОЙ грани блока (пол / стены / потолок).
+ *
+ * FACING — направление к опорной поверхности (DOWN = лежит на полу, NORTH/… = на
+ * стене, UP = на потолке). AMOUNT (0..3) — стадия накопления: капли → пятно →
+ * лужа → большая лужа; брызги в одном месте растят её.
+ *
+ * Форма выделения ПУСТАЯ: курсор проходит сквозь декаль к блоку под ней, поэтому
+ * она НЕ мешает ставить/ломать блоки. Снимается водой или когда ломают/заменяют
+ * блок-носитель. Чисто визуальный слой (нет коллизии, replaceable).
  */
 public class BloodLayerBlock extends Block {
-    private static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 1.0D, 16.0D);
+    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+    public static final IntegerProperty AMOUNT = IntegerProperty.create("amount", 0, 3);
+    /** Заражённая/чужая кровь — фиолетовый ихор вместо красного. */
+    public static final BooleanProperty INFECTED = BooleanProperty.create("infected");
+    public static final int MAX_AMOUNT = 3;
 
     public BloodLayerBlock(Properties properties) {
         super(properties);
+        registerDefaultState(stateDefinition.any()
+                .setValue(FACING, Direction.DOWN).setValue(AMOUNT, 0).setValue(INFECTED, false));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FACING, AMOUNT, INFECTED);
     }
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext ctx) {
-        return SHAPE;
+        return Shapes.empty();
     }
 
     @Override
@@ -47,9 +64,10 @@ public class BloodLayerBlock extends Block {
 
     @Override
     protected boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
-        // Лежит на ЛЮБОМ непустом блоке (не только sturdy) — чтобы кровь была и на
-        // листве/стекле/модовых блоках, а не только на полных кубах.
-        return !level.getBlockState(pos.below()).isAir();
+        Direction facing = state.getValue(FACING);
+        BlockPos support = pos.relative(facing);
+        // Грань опоры, обращённая к декали — это противоположная направлению к опоре.
+        return level.getBlockState(support).isFaceSturdy(level, support, facing.getOpposite());
     }
 
     @Override
@@ -58,7 +76,6 @@ public class BloodLayerBlock extends Block {
         if (!state.canSurvive(level, pos)) {
             return Blocks.AIR.defaultBlockState();
         }
-        // Вода смывает кровь.
         if (neighbor.getFluidState().is(FluidTags.WATER) || state.getFluidState().is(FluidTags.WATER)) {
             level.scheduleTick(pos, this, 20);
         }
@@ -83,19 +100,5 @@ public class BloodLayerBlock extends Block {
         } else {
             level.scheduleTick(pos, this, 20);
         }
-    }
-
-    @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
-                                               BlockHitResult hit) {
-        if (!level.isClientSide) {
-            level.removeBlock(pos, false);
-            if (level instanceof ServerLevel sl) {
-                sl.sendParticles(ParticleTypes.SPLASH, pos.getX() + 0.5D, pos.getY() + 0.2D, pos.getZ() + 0.5D,
-                        8, 0.3D, 0.05D, 0.3D, 0.0D);
-            }
-            level.playSound(null, pos, SoundEvents.SLIME_BLOCK_BREAK, SoundSource.BLOCKS, 0.7F, 1.4F);
-        }
-        return InteractionResult.sidedSuccess(level.isClientSide);
     }
 }

@@ -65,10 +65,9 @@ public abstract class AlienEntity extends Monster implements IAlienUnit {
                         0.1 // speed
                 );
 
-                // Add some "Blood" (Redstone Block particles) for variety
+                // Брызги крови (реалистичная капля вместо обломков редстоуна)
                 serverLevel.sendParticles(
-                        new net.minecraft.core.particles.BlockParticleOption(ParticleTypes.BLOCK,
-                                net.minecraft.world.level.block.Blocks.REDSTONE_BLOCK.defaultBlockState()),
+                        com.example.alieninvasion.registry.ModParticles.BLOOD,
                         this.getX(), this.getY() + this.getEyeHeight() * 0.5, this.getZ(),
                         2,
                         0.1, 0.1, 0.1,

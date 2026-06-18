@@ -421,9 +421,7 @@ public class ItemRegistry {
 
     public static final Item BIO_FILTER_MASK = registerItem("bio_filter_mask",
             new com.example.alieninvasion.item.BioFilterMaskItem(
-                    new Item.Properties().rarity(Rarity.UNCOMMON)
-                            .durability(net.minecraft.world.item.ArmorItem.Type.HELMET
-                                    .getDurability(com.example.alieninvasion.item.BioFilterMaskArmorMaterial.BASE_DURABILITY))));
+                    new Item.Properties().rarity(Rarity.UNCOMMON).durability(256)));
 
     public static final Item CONTAMINATED_FOOD = registerItem("contaminated_food",
             new com.example.alieninvasion.item.ContaminatedFoodItem(new Item.Properties().stacksTo(16)

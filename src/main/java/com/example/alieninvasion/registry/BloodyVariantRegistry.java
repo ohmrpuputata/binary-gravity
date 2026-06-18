@@ -19,6 +19,8 @@ import java.util.function.Supplier;
 public final class BloodyVariantRegistry {
     private static final Map<Block, Block> BY_SOURCE = new IdentityHashMap<>();
     private static final Map<Block, Block> CLEAN_BY_INFESTED = new IdentityHashMap<>();
+    private static final Map<Block, Block> INFESTED_BY_BLOODY = new IdentityHashMap<>();
+    private static final Map<Block, Block> BLOODY_BY_COMBINED = new IdentityHashMap<>();
     private static final List<Block> ALL = new ArrayList<>();
     private static final List<Block> CUTOUT = new ArrayList<>();
     private static final List<Block> TRANSLUCENT = new ArrayList<>();
@@ -41,6 +43,10 @@ public final class BloodyVariantRegistry {
         addExisting(ModBlocks.INFESTED_DIRT, ModBlocks.BLOODY_INFESTED_DIRT);
         CLEAN_BY_INFESTED.put(ModBlocks.INFESTED_STONE, ModBlocks.BLOODY_STONE);
         CLEAN_BY_INFESTED.put(ModBlocks.INFESTED_DIRT, ModBlocks.BLOODY_DIRT);
+        INFESTED_BY_BLOODY.put(ModBlocks.BLOODY_STONE, ModBlocks.BLOODY_INFESTED);
+        INFESTED_BY_BLOODY.put(ModBlocks.BLOODY_DIRT, ModBlocks.BLOODY_INFESTED_DIRT);
+        BLOODY_BY_COMBINED.put(ModBlocks.BLOODY_INFESTED, ModBlocks.BLOODY_STONE);
+        BLOODY_BY_COMBINED.put(ModBlocks.BLOODY_INFESTED_DIRT, ModBlocks.BLOODY_DIRT);
         addCombined("planks", ModBlocks.INFESTED_PLANKS, wood(1.8F));
         addCombined("stone_bricks", ModBlocks.INFESTED_STONE_BRICKS, stone(1.6F, SoundType.STONE));
         Collections.addAll(ALL,
@@ -125,6 +131,14 @@ public final class BloodyVariantRegistry {
         return CLEAN_BY_INFESTED.get(infested);
     }
 
+    public static Block infestedForBloody(Block bloody) {
+        return INFESTED_BY_BLOODY.get(bloody);
+    }
+
+    public static Block cleanForBloodyInfested(Block combined) {
+        return BLOODY_BY_COMBINED.get(combined);
+    }
+
     public static Block[] allBloodyBlocks() {
         return ALL.toArray(Block[]::new);
     }
@@ -172,6 +186,8 @@ public final class BloodyVariantRegistry {
         BY_SOURCE.put(clean, bloody);
         BY_SOURCE.put(infested, combined);
         CLEAN_BY_INFESTED.put(infested, bloody);
+        INFESTED_BY_BLOODY.put(bloody, combined);
+        BLOODY_BY_COMBINED.put(combined, bloody);
         ALL.add(bloody);
         ALL.add(combined);
     }
@@ -180,8 +196,10 @@ public final class BloodyVariantRegistry {
         Block combined = ModBlocks.registerBlock("bloody_infested_" + suffix,
                 new BloodyBlocks.Plain(properties, infested::defaultBlockState));
         BY_SOURCE.put(infested, combined);
-        CLEAN_BY_INFESTED.put(infested, BY_SOURCE.get(
-                suffix.equals("planks") ? Blocks.OAK_PLANKS : Blocks.STONE_BRICKS));
+        Block bloody = BY_SOURCE.get(suffix.equals("planks") ? Blocks.OAK_PLANKS : Blocks.STONE_BRICKS);
+        CLEAN_BY_INFESTED.put(infested, bloody);
+        INFESTED_BY_BLOODY.put(bloody, combined);
+        BLOODY_BY_COMBINED.put(combined, bloody);
         ALL.add(combined);
     }
 

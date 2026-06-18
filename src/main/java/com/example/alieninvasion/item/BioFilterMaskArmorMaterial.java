@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Map;
 
 public final class BioFilterMaskArmorMaterial {
-    public static final int BASE_DURABILITY = 22;
+    public static final int BASE_DURABILITY = 28;
 
     public static final Holder<ArmorMaterial> MATERIAL = Holder.direct(new ArmorMaterial(
             Map.of(
-                    ArmorItem.Type.HELMET, 2,
+                    ArmorItem.Type.HELMET, 3,
                     ArmorItem.Type.CHESTPLATE, 0,
                     ArmorItem.Type.LEGGINGS, 0,
                     ArmorItem.Type.BOOTS, 0
@@ -28,7 +28,7 @@ public final class BioFilterMaskArmorMaterial {
             List.of(new ArmorMaterial.Layer(
                     ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "bio_filter_mask")
             )),
-            0.0F,
+            1.0F,
             0.0F
     ));
 

@@ -52,22 +52,93 @@ public final class BloodyBlocks {
         return null;
     }
 
-    /** Stain the block under the given position, remembering the exact original. */
-    public static void splatter(ServerLevel level, BlockPos under) {
+    /** Ядро: положить кровавую декаль в {@code pos} к опоре со стороны {@code facing},
+     *  либо НАРАСТИТЬ существующую (капли → пятно → лужа). Чисто визуально, других
+     *  блоков не трогает. */
+    public static void stain(ServerLevel level, BlockPos pos, net.minecraft.core.Direction facing, boolean purple) {
+        BlockState cur = level.getBlockState(pos);
+        if (cur.is(ModBlocks.BLOOD_LAYER) && cur.getValue(BloodLayerBlock.FACING) == facing) {
+            int amt = cur.getValue(BloodLayerBlock.AMOUNT);
+            if (amt < BloodLayerBlock.MAX_AMOUNT) {
+                // Лужа растёт МЕДЛЕННО: повышаем стадию не каждый раз, а с шансом.
+                if (level.random.nextFloat() < 0.2F) {
+                    level.setBlock(pos, cur.setValue(BloodLayerBlock.AMOUNT, amt + 1), 2 | 16);
+                }
+            } else if (facing == net.minecraft.core.Direction.DOWN && level.random.nextFloat() < 0.15F) {
+                // Полная напольная лужа изредка РАСПОЛЗАЕТСЯ на соседнюю плитку.
+                spreadToNeighbor(level, pos);
+            }
+            return;
+        }
+        if (!(cur.isAir() || cur.canBeReplaced()) || !cur.getFluidState().isEmpty()) {
+            return;
+        }
+        BlockState layer = ModBlocks.BLOOD_LAYER.defaultBlockState()
+                .setValue(BloodLayerBlock.FACING, facing)
+                .setValue(BloodLayerBlock.INFECTED, purple);
+        if (layer.canSurvive(level, pos)) {
+            level.setBlock(pos, layer, 2 | 16);
+        }
+    }
+
+    /** Растекание: полная напольная лужа сеет маленькое пятно на соседнюю плитку с
+     *  ровным верхом — так кровь «размазывается» на другие блоки. */
+    private static void spreadToNeighbor(ServerLevel level, BlockPos pos) {
+        boolean purple = level.getBlockState(pos).getValue(BloodLayerBlock.INFECTED);
+        net.minecraft.core.Direction d =
+                net.minecraft.core.Direction.Plane.HORIZONTAL.getRandomDirection(level.random);
+        BlockPos np = pos.relative(d);
+        BlockState ns = level.getBlockState(np);
+        if (!(ns.isAir() || ns.canBeReplaced()) || !ns.getFluidState().isEmpty()) {
+            return;
+        }
+        BlockPos support = np.below();
+        if (level.getBlockState(support).isFaceSturdy(level, support, net.minecraft.core.Direction.UP)) {
+            stain(level, np, net.minecraft.core.Direction.DOWN, purple);
+        }
+    }
+
+    /** Пятно под позицией: на ровном верхе — декаль ПОВЕРХ (растёт при повторе),
+     *  для фигурных блоков (лестницы/слэбы/заборы) — кровавый двойник по форме. */
+    public static void splatter(ServerLevel level, BlockPos under, boolean purple) {
         BlockState floor = level.getBlockState(under);
         if (floor.isAir() || !floor.getFluidState().isEmpty() || isBloody(floor)) {
             return;
         }
+        // Снег: тонкий снежный слой заменяем декалью на месте; снежный/порошковый блок
+        // и любой ровный верх — декаль сверху. Так кровь остаётся и на снегу.
+        if (floor.is(net.minecraft.world.level.block.Blocks.SNOW)) {
+            stain(level, under, net.minecraft.core.Direction.DOWN, purple);
+            return;
+        }
+        if (floor.isFaceSturdy(level, under, net.minecraft.core.Direction.UP)
+                || floor.is(net.minecraft.world.level.block.Blocks.SNOW_BLOCK)
+                || floor.is(net.minecraft.world.level.block.Blocks.POWDER_SNOW)) {
+            stain(level, under.above(), net.minecraft.core.Direction.DOWN, purple);
+            return;
+        }
         BlockState bloody = bloodyFor(level, under, floor);
         if (bloody != null) {
-            // Камень/земля/дерево/заражёнка — превращаем весь блок в кровавый двойник.
             level.setBlock(under, bloody, 2 | 16);
             if (level.getBlockEntity(under) instanceof BloodyBlockEntity be) {
                 be.setOriginal(floor);
             }
-            return;
         }
-        // No blood_layer puddle for unsupported blocks.
+    }
+
+    /** Брызги от удара: лужа на полу под жертвой + пятно на одной ближайшей стене на
+     *  уровне корпуса (кровь летит на поверхности, когда ранят существо). */
+    public static void splatterImpact(ServerLevel level, net.minecraft.world.entity.LivingEntity victim, boolean purple) {
+        BlockPos feet = victim.blockPosition();
+        splatter(level, feet.below(), purple);
+        BlockPos body = feet.above();
+        for (net.minecraft.core.Direction d : net.minecraft.core.Direction.Plane.HORIZONTAL) {
+            BlockPos wall = body.relative(d);
+            if (level.getBlockState(wall).isFaceSturdy(level, wall, d.getOpposite())) {
+                stain(level, body, d, purple);
+                break;
+            }
+        }
     }
 
     /** Точный блок, к которому надо вернуться: сохранённый оригинал, иначе fallback. */

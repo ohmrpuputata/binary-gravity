@@ -32,7 +32,9 @@ public class LocalPlayerMixin {
         boolean isJumping = player.input.jumping;
         if (isJumping && !alien_wasJumping && alien_canDoubleJump) {
             ItemStack feet = player.getItemBySlot(EquipmentSlot.FEET);
-            if (feet.is(ItemRegistry.GRAVITY_BOOTS) && !player.getTags().contains("EmpActive")) {
+            if (feet.is(ItemRegistry.GRAVITY_BOOTS)
+                    && com.example.alieninvasion.item.GravityBootsItem.isLevitationEnabled(feet)
+                    && !player.getTags().contains("EmpActive")) {
                 alien_canDoubleJump = false;
                 player.setDeltaMovement(player.getDeltaMovement().x, 0.62D, player.getDeltaMovement().z);
                 player.hasImpulse = true;

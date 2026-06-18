@@ -222,7 +222,7 @@ public final class RadiationManager {
 
         boolean masked = player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.BIO_FILTER_MASK);
         float exposure = scanExposure(level, player.blockPosition());
-        if (masked) exposure *= 0.5F;
+        if (masked) exposure *= 0.35F;
 
         float dose = getDose(player);
         float doseBefore = dose;

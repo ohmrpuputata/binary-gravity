@@ -51,16 +51,8 @@ public class ModModelLayers {
             ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "acid_spitter"), "main");
     public static final ModelLayerLocation CAVE_LURKER = new ModelLayerLocation(
             ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "cave_lurker"), "main");
-    public static final ModelLayerLocation PALLADIUM_ARMOR = new ModelLayerLocation(
-            ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "palladium_armor"), "main");
-    public static final ModelLayerLocation COSMIC_ARMOR = new ModelLayerLocation(
-            ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "cosmic_armor"), "main");
-    public static final ModelLayerLocation HAZMAT_ARMOR = new ModelLayerLocation(
-            ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "hazmat_armor"), "main");
-    public static final ModelLayerLocation CHEM_ARMOR = new ModelLayerLocation(
-            ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "chem_armor"), "main");
-    public static final ModelLayerLocation PLATINUM_ARMOR = new ModelLayerLocation(
-            ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "platinum_armor"), "main");
+    // Сеты брони перешли на ванильную модель humanoid_armor (перекрашенные текстуры),
+    // поэтому собственные слои брони (palladium/cosmic/hazmat/chem/platinum) удалены.
     public static final ModelLayerLocation BIO_FILTER_MASK = new ModelLayerLocation(
             ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "bio_filter_mask"), "main");
 }

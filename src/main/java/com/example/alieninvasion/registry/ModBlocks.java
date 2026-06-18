@@ -46,8 +46,8 @@ public class ModBlocks {
     // (листва, стекло, модовые/нестандартные блоки) — чтобы кровь была на ВСём.
     public static final Block BLOOD_LAYER = registerBlockNoItem("blood_layer",
             new com.example.alieninvasion.block.BloodLayerBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED)
-                    .noCollission().instabreak().noLootTable().noOcclusion()
-                    .sound(SoundType.SLIME_BLOCK).pushReaction(PushReaction.DESTROY)));
+                    .noCollission().instabreak().noLootTable().noOcclusion().replaceable()
+                    .sound(SoundType.WET_GRASS).pushReaction(PushReaction.DESTROY)));
 
     public static final Block INFECTED_WATER = registerBlockNoItem("infected_water",
             new com.example.alieninvasion.block.InfectedWaterBlock(ModFluids.INFECTED_WATER_STILL,

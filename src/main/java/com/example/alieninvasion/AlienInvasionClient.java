@@ -24,6 +24,8 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
 public class AlienInvasionClient implements ClientModInitializer {
+        private static net.minecraft.client.KeyMapping toggleGravityBootsKey;
+
         private static void registerHumanoid(net.minecraft.client.model.geom.ModelLayerLocation layer,
                         com.example.alieninvasion.client.model.AlienHumanoidModel.Variant variant) {
                 EntityModelLayerRegistry.registerModelLayer(layer,
@@ -89,9 +91,29 @@ public class AlienInvasionClient implements ClientModInitializer {
                 net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry.getInstance().register(
                                 com.example.alieninvasion.registry.ModParticles.ACID_SMOKE,
                                 com.example.alieninvasion.client.particle.AcidSmokeParticle.Provider::new);
+                net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry.getInstance().register(
+                                com.example.alieninvasion.registry.ModParticles.BLOOD,
+                                com.example.alieninvasion.client.particle.BloodDropParticle.Provider::new);
+                net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry.getInstance().register(
+                                com.example.alieninvasion.registry.ModParticles.BLOOD_PURPLE,
+                                com.example.alieninvasion.client.particle.BloodDropParticle.Provider::new);
                 com.example.alieninvasion.client.AcidRainEffects.register();
                 com.example.alieninvasion.client.WorldAmbienceEffects.register();
                 registerBlasterModelPredicates();
+                toggleGravityBootsKey = net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper.registerKeyBinding(
+                                new net.minecraft.client.KeyMapping(
+                                                "key.alien-invasion.toggle_gravity_boots",
+                                                com.mojang.blaze3d.platform.InputConstants.Type.KEYSYM,
+                                                org.lwjgl.glfw.GLFW.GLFW_KEY_G,
+                                                "key.categories.alien-invasion"));
+                net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.END_CLIENT_TICK.register(client -> {
+                        while (toggleGravityBootsKey.consumeClick()) {
+                                if (client.player != null) {
+                                        net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.send(
+                                                        new com.example.alieninvasion.network.GravityBootsTogglePayload(true));
+                                }
+                        }
+                });
                 FabricModelPredicateProviderRegistry.register(
                                 com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_SHIELD,
                                 ResourceLocation.fromNamespaceAndPath("minecraft", "blocking"),
@@ -207,76 +229,43 @@ public class AlienInvasionClient implements ClientModInitializer {
                                 com.example.alieninvasion.client.model.AlienHumanoidModel.Variant.BREACHER);
                 registerHumanoid(ModModelLayers.ACID_SPITTER,
                                 com.example.alieninvasion.client.model.AlienHumanoidModel.Variant.SPITTER);
-                EntityModelLayerRegistry.registerModelLayer(ModModelLayers.PALLADIUM_ARMOR,
-                                com.example.alieninvasion.client.model.PalladiumArmorModel::createBodyLayer);
-                EntityModelLayerRegistry.registerModelLayer(ModModelLayers.COSMIC_ARMOR,
-                                () -> com.example.alieninvasion.client.model.AdvancedArmorModel.createBodyLayer(
-                                                com.example.alieninvasion.client.model.AdvancedArmorModel.Variant.COSMIC));
-                EntityModelLayerRegistry.registerModelLayer(ModModelLayers.HAZMAT_ARMOR,
-                                () -> com.example.alieninvasion.client.model.AdvancedArmorModel.createBodyLayer(
-                                                com.example.alieninvasion.client.model.AdvancedArmorModel.Variant.HAZMAT));
-                EntityModelLayerRegistry.registerModelLayer(ModModelLayers.CHEM_ARMOR,
-                                () -> com.example.alieninvasion.client.model.AdvancedArmorModel.createBodyLayer(
-                                                com.example.alieninvasion.client.model.AdvancedArmorModel.Variant.CHEM));
-                EntityModelLayerRegistry.registerModelLayer(ModModelLayers.PLATINUM_ARMOR,
-                                () -> com.example.alieninvasion.client.model.AdvancedArmorModel.createBodyLayer(
-                                                com.example.alieninvasion.client.model.AdvancedArmorModel.Variant.PLATINUM));
                 EntityModelLayerRegistry.registerModelLayer(ModModelLayers.BIO_FILTER_MASK,
                                 com.example.alieninvasion.client.model.BioFilterMaskModel::createBodyLayer);
-                net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer.register(
-                                new com.example.alieninvasion.client.PalladiumArmorRenderer(),
-                                com.example.alieninvasion.registry.ItemRegistry.PALLADIUM_HELMET,
-                                com.example.alieninvasion.registry.ItemRegistry.PALLADIUM_CHESTPLATE,
-                                com.example.alieninvasion.registry.ItemRegistry.PALLADIUM_LEGGINGS,
-                                com.example.alieninvasion.registry.ItemRegistry.PALLADIUM_BOOTS);
-                net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer.register(
-                                new com.example.alieninvasion.client.AdvancedArmorRenderer(
-                                                ModModelLayers.COSMIC_ARMOR, "cosmic"),
-                                com.example.alieninvasion.registry.ItemRegistry.COSMIC_HELMET,
-                                com.example.alieninvasion.registry.ItemRegistry.COSMIC_CHESTPLATE,
-                                com.example.alieninvasion.registry.ItemRegistry.COSMIC_LEGGINGS,
-                                com.example.alieninvasion.registry.ItemRegistry.COSMIC_BOOTS,
-                                com.example.alieninvasion.registry.ItemRegistry.GRAVITY_BOOTS);
-                net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer.register(
-                                new com.example.alieninvasion.client.AdvancedArmorRenderer(
-                                                ModModelLayers.HAZMAT_ARMOR, "alien_hazmat"),
-                                com.example.alieninvasion.registry.ItemRegistry.ALIEN_HAZMAT_HELMET,
-                                com.example.alieninvasion.registry.ItemRegistry.ALIEN_HAZMAT_CHESTPLATE,
-                                com.example.alieninvasion.registry.ItemRegistry.ALIEN_HAZMAT_LEGGINGS,
-                                com.example.alieninvasion.registry.ItemRegistry.ALIEN_HAZMAT_BOOTS);
-                net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer.register(
-                                new com.example.alieninvasion.client.AdvancedArmorRenderer(
-                                                ModModelLayers.CHEM_ARMOR, "alien_chem"),
-                                com.example.alieninvasion.registry.ItemRegistry.ALIEN_CHEM_HELMET,
-                                com.example.alieninvasion.registry.ItemRegistry.ALIEN_CHEM_CHESTPLATE,
-                                com.example.alieninvasion.registry.ItemRegistry.ALIEN_CHEM_LEGGINGS,
-                                com.example.alieninvasion.registry.ItemRegistry.ALIEN_CHEM_BOOTS);
-                net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer.register(
-                                new com.example.alieninvasion.client.AdvancedArmorRenderer(
-                                                ModModelLayers.PLATINUM_ARMOR, "platinum"),
-                                com.example.alieninvasion.registry.ItemRegistry.PLATINUM_HELMET,
-                                com.example.alieninvasion.registry.ItemRegistry.PLATINUM_CHESTPLATE,
-                                com.example.alieninvasion.registry.ItemRegistry.PLATINUM_LEGGINGS,
-                                com.example.alieninvasion.registry.ItemRegistry.PLATINUM_BOOTS);
-                net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer.register(
-                                new com.example.alieninvasion.client.BioFilterMaskRenderer(),
-                                com.example.alieninvasion.registry.ItemRegistry.BIO_FILTER_MASK);
-                net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer.register(
-                                new com.example.alieninvasion.client.AdvancedArmorRenderer(
-                                                ModModelLayers.PLATINUM_ARMOR, "emeradium"),
-                                com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_HELMET,
-                                com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_CHESTPLATE,
-                                com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_LEGGINGS,
-                                com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_BOOTS);
-                net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderer.register(
-                                new com.example.alieninvasion.client.AdvancedArmorRenderer(
-                                                ModModelLayers.PLATINUM_ARMOR, "astral_prism"),
-                                com.example.alieninvasion.registry.ItemRegistry.ASTRAL_PRISM_HELMET,
-                                com.example.alieninvasion.registry.ItemRegistry.ASTRAL_PRISM_CHESTPLATE,
-                                com.example.alieninvasion.registry.ItemRegistry.ASTRAL_PRISM_LEGGINGS,
-                                com.example.alieninvasion.registry.ItemRegistry.ASTRAL_PRISM_BOOTS);
+                // Брони сетов теперь рендерятся ванильной моделью humanoid_armor по
+                // перекрашенным текстурам материала (textures/models/armor/<set>_layer_1/2.png):
+                // настоящие рукава, открытый шлем (видно лицо), без z-fighting и клиппинга.
+                // Кастомные AdvancedArmorRenderer/PalladiumArmorRenderer больше не регистрируются.
+                // Маска больше НЕ броня шлема: рендер маски — через слот-фичу на лице
+                // (MaskFeatureRenderer), а не через ArmorRenderer слота головы.
                 // HUD Overlay
                 com.example.alieninvasion.client.InvasionHUDOverlay.register();
+                // Треск счётчика Гейгера (частота ∝ радиации)
+                com.example.alieninvasion.client.GeigerAudio.register();
+
+                // --- Слот маски: клавиша-тоггл (надеть/снять) + рендер маски на лице ---
+                net.minecraft.client.KeyMapping maskKey =
+                        net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper.registerKeyBinding(
+                                new net.minecraft.client.KeyMapping("key.alien-invasion.mask",
+                                        com.mojang.blaze3d.platform.InputConstants.Type.KEYSYM,
+                                        org.lwjgl.glfw.GLFW.GLFW_KEY_M, "key.categories.alien-invasion"));
+                net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.END_CLIENT_TICK.register(client -> {
+                        while (maskKey.consumeClick()) {
+                                if (client.player != null) {
+                                        net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.send(
+                                                new com.example.alieninvasion.network.ToggleMaskPayload());
+                                }
+                        }
+                });
+                net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback.EVENT.register(
+                        (entityType, entityRenderer, registrationHelper, ctx) -> {
+                                if (entityRenderer instanceof net.minecraft.client.renderer.entity.player.PlayerRenderer playerRenderer) {
+                                        registrationHelper.register(
+                                                new com.example.alieninvasion.client.MaskFeatureRenderer(playerRenderer));
+                                }
+                        });
+
+                // TEMP (dev preview): screenshot harness, inert unless run/ai_preview.flag exists.
+                com.example.alieninvasion.client.PreviewHarness.register();
 
                 // Победа: сервер шлёт пакет — клиент прячет HUD вторжения.
                 net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.registerGlobalReceiver(
@@ -310,13 +299,12 @@ public class AlienInvasionClient implements ClientModInitializer {
                                 ModFluids.INFECTED_WATER_STILL, ModFluids.INFECTED_WATER_FLOWING);
                 BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.cutout(),
                                 ModBlocks.INFESTED_LEAVES, ModBlocks.BLOOD_POOL,
-                                ModBlocks.BLOOD_LAYER,
                                 ModBlocks.ALIEN_TENDRILS, ModBlocks.INFESTED_DOOR, ModBlocks.INFESTED_TRAPDOOR,
                                 ModBlocks.INFESTED_GLASS);
                 BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.cutout(),
                                 com.example.alieninvasion.registry.BloodyVariantRegistry.cutoutBlocks());
                 BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.translucent(), ModBlocks.INFESTED_ICE,
-                                ModBlocks.ALIEN_PORTAL);
+                                ModBlocks.ALIEN_PORTAL, ModBlocks.BLOOD_LAYER);
                 BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.translucent(),
                                 com.example.alieninvasion.registry.BloodyVariantRegistry.translucentBlocks());
 

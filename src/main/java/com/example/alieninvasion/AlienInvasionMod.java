@@ -32,6 +32,15 @@ public class AlienInvasionMod implements ModInitializer {
 		ModEffects.registerEffects();
 		com.example.alieninvasion.registry.ModParticles.registerParticles();
 		com.example.alieninvasion.registry.ModSounds.registerSounds();
+		com.example.alieninvasion.registry.ModAttachments.init();
+		// Сеть слота маски: клиент шлёт тоггл-пакет, сервер надевает/снимает маску.
+		net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry.playC2S().register(
+				com.example.alieninvasion.network.ToggleMaskPayload.TYPE,
+				com.example.alieninvasion.network.ToggleMaskPayload.CODEC);
+		net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.registerGlobalReceiver(
+				com.example.alieninvasion.network.ToggleMaskPayload.TYPE,
+				(payload, context) -> context.player().server.execute(
+						() -> com.example.alieninvasion.logic.MaskSlot.toggle(context.player())));
 		ModFluids.registerFluids();
 		com.example.alieninvasion.registry.ModBlocks.registerBlocks(); // Register Blocks
 		EntityRegistry.registerEntities();
@@ -42,6 +51,13 @@ public class AlienInvasionMod implements ModInitializer {
 		net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry.playS2C().register(
 				com.example.alieninvasion.network.VictoryPayload.TYPE,
 				com.example.alieninvasion.network.VictoryPayload.CODEC);
+		net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry.playC2S().register(
+				com.example.alieninvasion.network.GravityBootsTogglePayload.TYPE,
+				com.example.alieninvasion.network.GravityBootsTogglePayload.CODEC);
+		net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.registerGlobalReceiver(
+				com.example.alieninvasion.network.GravityBootsTogglePayload.TYPE,
+				(payload, context) -> context.server().execute(() ->
+						com.example.alieninvasion.item.GravityBootsItem.toggleLevitation(context.player())));
 
 		// EventHandler.registerEvents(); // Old
 		com.example.alieninvasion.events.ModEvents.registerEvents();

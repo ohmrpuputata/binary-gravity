@@ -84,7 +84,9 @@ public class ParasiteEntity extends Silverfish implements IAlienUnit {
             if (target instanceof Player player) {
                 ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
                 // Only a Cosmic helmet or the FULL hazmat set keeps it out.
-                boolean protectedHead = helmet.is(ItemRegistry.COSMIC_HELMET) || hasFullHazmat(player);
+                boolean protectedHead = helmet.is(ItemRegistry.COSMIC_HELMET)
+                        || helmet.is(ItemRegistry.BIO_FILTER_MASK)
+                        || hasFullHazmat(player);
                 if (!protectedHead && !helmet.is(ItemRegistry.PARASITE_ITEM)) {
                     if (!helmet.isEmpty()) {
                         player.getInventory().placeItemBackInInventory(helmet.copy());

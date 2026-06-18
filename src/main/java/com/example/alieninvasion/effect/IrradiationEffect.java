@@ -22,10 +22,11 @@ public class IrradiationEffect extends MobEffect {
             // Suppresses active regeneration so it cannot counteract irradiation.
             boolean hasFullEmeradium = false;
             if (entity instanceof net.minecraft.world.entity.player.Player player) {
-                hasFullEmeradium = player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).is(com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_HELMET)
-                        && player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.CHEST).is(com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_CHESTPLATE)
-                        && player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.LEGS).is(com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_LEGGINGS)
-                        && player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.FEET).is(com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_BOOTS);
+                hasFullEmeradium = com.example.alieninvasion.logic.ArmorProtection.hasCompatibleSet(player,
+                        com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_HELMET,
+                        com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_CHESTPLATE,
+                        com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_LEGGINGS,
+                        com.example.alieninvasion.registry.ItemRegistry.EMERADIUM_BOOTS);
             }
             if (!hasFullEmeradium && entity.hasEffect(MobEffects.REGENERATION)) {
                 entity.removeEffect(MobEffects.REGENERATION);

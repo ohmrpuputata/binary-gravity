@@ -33,7 +33,8 @@ dependencies {
 
 	// JEI integration
 	compileOnly "mezz.jei:jei-1.21.1-fabric-api:19.8.5.118"
-	localRuntime "mezz.jei:jei-1.21.1-fabric:19.8.5.118"
+	// TEMP (dev preview): disabled — JEI accessWidener crashes named dev runtime. Restore before release.
+	// localRuntime "mezz.jei:jei-1.21.1-fabric:19.8.5.118"
 }
 
 processResources {
@@ -61,5 +62,16 @@ java {
 jar {
 	from("LICENSE") {
 		rename { "${it}_${project.base.archivesName.get()}" }
+	}
+}
+
+// TEMP (dev preview): auto-connect client to local dev server as "Dev". Remove before release.
+loom {
+	runs {
+		previewClient {
+			client()
+			configName = "Preview Client"
+			programArgs "--quickPlayMultiplayer", "127.0.0.1:25565", "--username", "Dev"
+		}
 	}
 }

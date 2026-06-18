@@ -57,14 +57,16 @@ CORE_REGION = (0, 16, 12, 19)          # the whole core-cube island
 MUZZLE_REGIONS = [(10, 10, 12, 13),    # barrel east face (the emitter tip)
                   (12, 10, 17, 13)]    # barrel north face (front glow)
 
+# Gun is modelled with the barrel along +X. A +90 deg yaw maps +X -> -Z, i.e. points
+# the barrel forward (into the screen / down-range) when held; GUI shows a 3/4 view.
 DISPLAY = {
-    "gui": {"rotation": [8, -28, 0], "translation": [0, 0, 0], "scale": [1.0, 1.0, 1.0]},
-    "ground": {"rotation": [0, 0, 0], "translation": [0, 3, 0], "scale": [0.45, 0.45, 0.45]},
-    "fixed": {"rotation": [0, -90, 0], "translation": [0, 0, 0], "scale": [0.9, 0.9, 0.9]},
-    "thirdperson_righthand": {"rotation": [-90, 0, -60], "translation": [2, 0.1, -3], "scale": [0.85, 0.85, 0.85]},
-    "thirdperson_lefthand": {"rotation": [-90, 0, 30], "translation": [2, 0.1, -3], "scale": [0.85, 0.85, 0.85]},
-    "firstperson_righthand": {"rotation": [-90, 0, -55], "translation": [1.13, 3.2, 1.13], "scale": [0.7, 0.7, 0.7]},
-    "firstperson_lefthand": {"rotation": [-90, 0, 35], "translation": [1.13, 3.2, 1.13], "scale": [0.7, 0.7, 0.7]},
+    "gui": {"rotation": [22, 40, 0], "translation": [-1, 1, 0], "scale": [1.0, 1.0, 1.0]},
+    "ground": {"rotation": [0, 0, 0], "translation": [0, 3, 0], "scale": [0.5, 0.5, 0.5]},
+    "fixed": {"rotation": [0, 90, 0], "translation": [-2, 0, 0], "scale": [1.0, 1.0, 1.0]},
+    "thirdperson_righthand": {"rotation": [5, 90, 0], "translation": [0, 2.5, -1.0], "scale": [0.6, 0.6, 0.6]},
+    "thirdperson_lefthand": {"rotation": [5, -90, 0], "translation": [0, 2.5, 1.0], "scale": [0.6, 0.6, 0.6]},
+    "firstperson_righthand": {"rotation": [8, 90, 0], "translation": [1.0, 2.0, 1.5], "scale": [0.62, 0.62, 0.62]},
+    "firstperson_lefthand": {"rotation": [8, -90, 0], "translation": [1.0, 2.0, 1.5], "scale": [0.62, 0.62, 0.62]},
 }
 
 
@@ -228,8 +230,8 @@ def main():
     write_json(os.path.join(ITEM_MODEL, "blaster_base.json"), build_geometry_model())
     recoil = {"parent": f"{MODID}:item/blaster_base",
               "display": dict(DISPLAY)}
-    recoil["display"]["thirdperson_righthand"] = {"rotation": [-90, 0, -70], "translation": [1.2, 0.6, -2.4], "scale": [0.85, 0.85, 0.85]}
-    recoil["display"]["firstperson_righthand"] = {"rotation": [-90, 0, -65], "translation": [0.5, 3.5, 1.5], "scale": [0.7, 0.7, 0.7]}
+    recoil["display"]["thirdperson_righthand"] = {"rotation": [18, 90, 0], "translation": [0, 2.6, -2.2], "scale": [0.6, 0.6, 0.6]}
+    recoil["display"]["firstperson_righthand"] = {"rotation": [20, 90, 0], "translation": [1.0, 2.1, 2.6], "scale": [0.62, 0.62, 0.62]}
     write_json(os.path.join(ITEM_MODEL, "blaster_recoil.json"), recoil)
 
     previews = []

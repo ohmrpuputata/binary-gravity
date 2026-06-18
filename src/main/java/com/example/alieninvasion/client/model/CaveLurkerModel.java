@@ -23,10 +23,10 @@ public class CaveLurkerModel<T extends Mob> extends EntityModel<T> {
     private final ModelPart jawRight;
     private final ModelPart[] legs = new ModelPart[8];
 
-    // Front legs fan forward, rear legs fan back; the middle pairs sit near-square.
-    private static final float[] LEG_Z = {-3.0F, -1.0F, 1.0F, 3.0F};
-    private static final float[] LEG_FAN = {0.55F, 0.20F, -0.20F, -0.55F};
-    private static final float FEMUR_LIFT = -0.55F; // raise the knee up-and-out
+    // Front legs fan well forward, rear legs sweep back; a wide, splayed stance.
+    private static final float[] LEG_Z = {-3.5F, -1.2F, 1.2F, 3.5F};
+    private static final float[] LEG_FAN = {0.95F, 0.4F, -0.4F, -0.95F};
+    private static final float FEMUR_LIFT = -0.4F; // femur reaches OUT then slightly up
 
     public CaveLurkerModel(ModelPart root) {
         this.thorax = root.getChild("thorax");
@@ -77,11 +77,11 @@ public class CaveLurkerModel<T extends Mob> extends EntityModel<T> {
             tibia.addBox(0.0F, -1.0F, -1.0F, 7.0F, 2.0F, 2.0F);
             float baseYaw = left ? LEG_FAN[idx] : (float) Math.PI - LEG_FAN[idx];
             PartDefinition leg = root.addOrReplaceChild("leg" + i, femur,
-                    PartPose.offsetAndRotation((left ? 3.5F : -3.5F), 14.0F, LEG_Z[idx],
+                    PartPose.offsetAndRotation((left ? 4.0F : -4.0F), 14.0F, LEG_Z[idx],
                             0.0F, baseYaw, FEMUR_LIFT));
-            // Knee folds the tibia back down toward the ground.
+            // Knee folds the tibia sharply down to plant the foot on the ground.
             leg.addOrReplaceChild("leg" + i + "_lower", tibia,
-                    PartPose.offsetAndRotation(6.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.25F));
+                    PartPose.offsetAndRotation(6.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.6F));
         }
 
         return LayerDefinition.create(mesh, 64, 64);

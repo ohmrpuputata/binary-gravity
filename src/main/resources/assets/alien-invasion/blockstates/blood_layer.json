@@ -1,10 +1,884 @@
 {
   "variants": {
-    "": [
-      { "model": "alien-invasion:block/blood_pool" },
-      { "model": "alien-invasion:block/blood_pool", "y": 90 },
-      { "model": "alien-invasion:block/blood_pool", "y": 180 },
-      { "model": "alien-invasion:block/blood_pool", "y": 270 }
+    "amount=0,facing=down,infected=false": [
+      {
+        "model": "alien-invasion:block/blood_layer/floor_0_0"
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_0_0",
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_0_0",
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_0_0",
+        "y": 270
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_0_1"
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_0_1",
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_0_1",
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_0_1",
+        "y": 270
+      }
+    ],
+    "amount=0,facing=up,infected=false": [
+      {
+        "model": "alien-invasion:block/blood_layer/floor_0_0",
+        "x": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_0_0",
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_0_0",
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_0_0",
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_0_1",
+        "x": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_0_1",
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_0_1",
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_0_1",
+        "x": 180,
+        "y": 270
+      }
+    ],
+    "amount=0,facing=north,infected=false": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_0_0"
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_0_1"
+      }
+    ],
+    "amount=0,facing=south,infected=false": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_0_0",
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_0_1",
+        "y": 180
+      }
+    ],
+    "amount=0,facing=east,infected=false": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_0_0",
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_0_1",
+        "y": 90
+      }
+    ],
+    "amount=0,facing=west,infected=false": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_0_0",
+        "y": 270
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_0_1",
+        "y": 270
+      }
+    ],
+    "amount=1,facing=down,infected=false": [
+      {
+        "model": "alien-invasion:block/blood_layer/floor_1_0"
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_1_0",
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_1_0",
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_1_0",
+        "y": 270
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_1_1"
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_1_1",
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_1_1",
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_1_1",
+        "y": 270
+      }
+    ],
+    "amount=1,facing=up,infected=false": [
+      {
+        "model": "alien-invasion:block/blood_layer/floor_1_0",
+        "x": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_1_0",
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_1_0",
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_1_0",
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_1_1",
+        "x": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_1_1",
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_1_1",
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_1_1",
+        "x": 180,
+        "y": 270
+      }
+    ],
+    "amount=1,facing=north,infected=false": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_1_0"
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_1_1"
+      }
+    ],
+    "amount=1,facing=south,infected=false": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_1_0",
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_1_1",
+        "y": 180
+      }
+    ],
+    "amount=1,facing=east,infected=false": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_1_0",
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_1_1",
+        "y": 90
+      }
+    ],
+    "amount=1,facing=west,infected=false": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_1_0",
+        "y": 270
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_1_1",
+        "y": 270
+      }
+    ],
+    "amount=2,facing=down,infected=false": [
+      {
+        "model": "alien-invasion:block/blood_layer/floor_2_0"
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_2_0",
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_2_0",
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_2_0",
+        "y": 270
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_2_1"
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_2_1",
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_2_1",
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_2_1",
+        "y": 270
+      }
+    ],
+    "amount=2,facing=up,infected=false": [
+      {
+        "model": "alien-invasion:block/blood_layer/floor_2_0",
+        "x": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_2_0",
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_2_0",
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_2_0",
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_2_1",
+        "x": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_2_1",
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_2_1",
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_2_1",
+        "x": 180,
+        "y": 270
+      }
+    ],
+    "amount=2,facing=north,infected=false": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_2_0"
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_2_1"
+      }
+    ],
+    "amount=2,facing=south,infected=false": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_2_0",
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_2_1",
+        "y": 180
+      }
+    ],
+    "amount=2,facing=east,infected=false": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_2_0",
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_2_1",
+        "y": 90
+      }
+    ],
+    "amount=2,facing=west,infected=false": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_2_0",
+        "y": 270
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_2_1",
+        "y": 270
+      }
+    ],
+    "amount=3,facing=down,infected=false": [
+      {
+        "model": "alien-invasion:block/blood_layer/floor_3_0"
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_3_0",
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_3_0",
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_3_0",
+        "y": 270
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_3_1"
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_3_1",
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_3_1",
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_3_1",
+        "y": 270
+      }
+    ],
+    "amount=3,facing=up,infected=false": [
+      {
+        "model": "alien-invasion:block/blood_layer/floor_3_0",
+        "x": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_3_0",
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_3_0",
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_3_0",
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_3_1",
+        "x": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_3_1",
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_3_1",
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_3_1",
+        "x": 180,
+        "y": 270
+      }
+    ],
+    "amount=3,facing=north,infected=false": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_3_0"
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_3_1"
+      }
+    ],
+    "amount=3,facing=south,infected=false": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_3_0",
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_3_1",
+        "y": 180
+      }
+    ],
+    "amount=3,facing=east,infected=false": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_3_0",
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_3_1",
+        "y": 90
+      }
+    ],
+    "amount=3,facing=west,infected=false": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_3_0",
+        "y": 270
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_3_1",
+        "y": 270
+      }
+    ],
+    "amount=0,facing=down,infected=true": [
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_0_0"
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_0_0",
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_0_0",
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_0_0",
+        "y": 270
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_0_1"
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_0_1",
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_0_1",
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_0_1",
+        "y": 270
+      }
+    ],
+    "amount=0,facing=up,infected=true": [
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_0_0",
+        "x": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_0_0",
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_0_0",
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_0_0",
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_0_1",
+        "x": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_0_1",
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_0_1",
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_0_1",
+        "x": 180,
+        "y": 270
+      }
+    ],
+    "amount=0,facing=north,infected=true": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_0_0"
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_0_1"
+      }
+    ],
+    "amount=0,facing=south,infected=true": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_0_0",
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_0_1",
+        "y": 180
+      }
+    ],
+    "amount=0,facing=east,infected=true": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_0_0",
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_0_1",
+        "y": 90
+      }
+    ],
+    "amount=0,facing=west,infected=true": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_0_0",
+        "y": 270
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_0_1",
+        "y": 270
+      }
+    ],
+    "amount=1,facing=down,infected=true": [
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_1_0"
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_1_0",
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_1_0",
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_1_0",
+        "y": 270
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_1_1"
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_1_1",
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_1_1",
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_1_1",
+        "y": 270
+      }
+    ],
+    "amount=1,facing=up,infected=true": [
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_1_0",
+        "x": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_1_0",
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_1_0",
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_1_0",
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_1_1",
+        "x": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_1_1",
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_1_1",
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_1_1",
+        "x": 180,
+        "y": 270
+      }
+    ],
+    "amount=1,facing=north,infected=true": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_1_0"
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_1_1"
+      }
+    ],
+    "amount=1,facing=south,infected=true": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_1_0",
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_1_1",
+        "y": 180
+      }
+    ],
+    "amount=1,facing=east,infected=true": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_1_0",
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_1_1",
+        "y": 90
+      }
+    ],
+    "amount=1,facing=west,infected=true": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_1_0",
+        "y": 270
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_1_1",
+        "y": 270
+      }
+    ],
+    "amount=2,facing=down,infected=true": [
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_2_0"
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_2_0",
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_2_0",
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_2_0",
+        "y": 270
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_2_1"
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_2_1",
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_2_1",
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_2_1",
+        "y": 270
+      }
+    ],
+    "amount=2,facing=up,infected=true": [
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_2_0",
+        "x": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_2_0",
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_2_0",
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_2_0",
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_2_1",
+        "x": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_2_1",
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_2_1",
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_2_1",
+        "x": 180,
+        "y": 270
+      }
+    ],
+    "amount=2,facing=north,infected=true": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_2_0"
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_2_1"
+      }
+    ],
+    "amount=2,facing=south,infected=true": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_2_0",
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_2_1",
+        "y": 180
+      }
+    ],
+    "amount=2,facing=east,infected=true": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_2_0",
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_2_1",
+        "y": 90
+      }
+    ],
+    "amount=2,facing=west,infected=true": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_2_0",
+        "y": 270
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_2_1",
+        "y": 270
+      }
+    ],
+    "amount=3,facing=down,infected=true": [
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_3_0"
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_3_0",
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_3_0",
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_3_0",
+        "y": 270
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_3_1"
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_3_1",
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_3_1",
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_3_1",
+        "y": 270
+      }
+    ],
+    "amount=3,facing=up,infected=true": [
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_3_0",
+        "x": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_3_0",
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_3_0",
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_3_0",
+        "x": 180,
+        "y": 270
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_3_1",
+        "x": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_3_1",
+        "x": 180,
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_3_1",
+        "x": 180,
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/floor_p_3_1",
+        "x": 180,
+        "y": 270
+      }
+    ],
+    "amount=3,facing=north,infected=true": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_3_0"
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_3_1"
+      }
+    ],
+    "amount=3,facing=south,infected=true": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_3_0",
+        "y": 180
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_3_1",
+        "y": 180
+      }
+    ],
+    "amount=3,facing=east,infected=true": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_3_0",
+        "y": 90
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_3_1",
+        "y": 90
+      }
+    ],
+    "amount=3,facing=west,infected=true": [
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_3_0",
+        "y": 270
+      },
+      {
+        "model": "alien-invasion:block/blood_layer/wall_p_3_1",
+        "y": 270
+      }
     ]
   }
 }

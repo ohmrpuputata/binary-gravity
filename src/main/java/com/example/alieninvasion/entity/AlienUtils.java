@@ -54,8 +54,7 @@ public class AlienUtils {
                         entity.getX(), entity.getY() + entity.getEyeHeight() * 0.5, entity.getZ(),
                         1, 0.2, 0.2, 0.2, 0.1);
                 serverLevel.sendParticles(
-                        new net.minecraft.core.particles.BlockParticleOption(ParticleTypes.BLOCK,
-                                net.minecraft.world.level.block.Blocks.REDSTONE_BLOCK.defaultBlockState()),
+                        com.example.alieninvasion.registry.ModParticles.BLOOD,
                         entity.getX(), entity.getY() + entity.getEyeHeight() * 0.5, entity.getZ(),
                         2, 0.1, 0.1, 0.1, 0.05);
             }

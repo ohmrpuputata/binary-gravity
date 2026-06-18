@@ -328,7 +328,7 @@ public final class WorldAmbienceEffects {
 
         if (level.isRaining() && level.canSeeSky(pos.above()) && random.nextBoolean()) {
             level.addParticle(
-                    new BlockParticleOption(ParticleTypes.BLOCK, Blocks.REDSTONE_BLOCK.defaultBlockState()),
+                    com.example.alieninvasion.registry.ModParticles.BLOOD,
                     pos.getX() + random.nextDouble(),
                     pos.getY() + 1.03D,
                     pos.getZ() + random.nextDouble(),
@@ -366,7 +366,7 @@ public final class WorldAmbienceEffects {
         }
 
         level.addParticle(
-                new BlockParticleOption(ParticleTypes.BLOCK, Blocks.REDSTONE_BLOCK.defaultBlockState()),
+                com.example.alieninvasion.registry.ModParticles.BLOOD,
                 client.player.getX() - client.player.getDeltaMovement().x * 1.4D,
                 client.player.getY() + 0.035D,
                 client.player.getZ() - client.player.getDeltaMovement().z * 1.4D,

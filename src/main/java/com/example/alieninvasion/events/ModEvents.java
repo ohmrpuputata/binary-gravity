@@ -398,10 +398,10 @@ public class ModEvents {
             // Astral Prism Armor poison damage resistance/immunity
             if (source.is(net.minecraft.world.damagesource.DamageTypes.MAGIC) && entity.hasEffect(net.minecraft.world.effect.MobEffects.POISON) && source.getEntity() == null) {
                 int prismPieces = 0;
-                if (entity.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.ASTRAL_PRISM_HELMET)) prismPieces++;
+                if (com.example.alieninvasion.logic.ArmorProtection.hasCompatibleArmorPiece(entity, EquipmentSlot.HEAD, ItemRegistry.ASTRAL_PRISM_HELMET)) prismPieces++;
                 if (entity.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.ASTRAL_PRISM_CHESTPLATE)) prismPieces++;
                 if (entity.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.ASTRAL_PRISM_LEGGINGS)) prismPieces++;
-                if (entity.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.ASTRAL_PRISM_BOOTS)) prismPieces++;
+                if (com.example.alieninvasion.logic.ArmorProtection.hasCompatibleArmorPiece(entity, EquipmentSlot.FEET, ItemRegistry.ASTRAL_PRISM_BOOTS)) prismPieces++;
 
                 if (prismPieces > 0) {
                     if (prismPieces >= 4 || entity.level().getRandom().nextFloat() < (prismPieces * 0.25F)) {
@@ -490,18 +490,22 @@ public class ModEvents {
                 }
             }
 
-            // Spawn blood particles
-            if (amount > 0) {
-                ((ServerLevel) level).sendParticles(
-                        new BlockParticleOption(ParticleTypes.BLOCK, Blocks.REDSTONE_BLOCK.defaultBlockState()),
-                        entity.getX(), entity.getY() + entity.getEyeHeight() * 0.7, entity.getZ(),
-                        15, 0.2, 0.2, 0.2, 0.1);
-            }
-            // Heavy hits STAIN the floor: the block under the victim converts to
-            // its bloody twin (stairs/fences keep shape). Wipe with right-click
-            // or wash it off with water.
-            if (amount >= 4.0F && level.random.nextFloat() < 0.5F && level instanceof ServerLevel splatLevel) {
-                com.example.alieninvasion.block.BloodyBlocks.splatter(splatLevel, entity.blockPosition().below());
+            // Кровь от РАНЫ: режущий урон открывает кровотечение (BleedManager) — существо
+            // кровит несколько секунд и оставляет след, а не «всегда при низком HP». Цвет:
+            // красный, у заражённых/пришельцев — фиолетовый. Скелеты не кровят. Только визуал.
+            if (amount > 0 && level instanceof ServerLevel bloodLevel
+                    && com.example.alieninvasion.logic.BleedManager.canBleed(entity)
+                    && com.example.alieninvasion.logic.BleedManager.isBleedingDamage(source)) {
+                boolean purple = com.example.alieninvasion.logic.BleedManager.isInfectedBlood(entity);
+                com.example.alieninvasion.logic.BleedManager.wound(entity, source, amount);
+                var bloodParticle = purple ? com.example.alieninvasion.registry.ModParticles.BLOOD_PURPLE
+                        : com.example.alieninvasion.registry.ModParticles.BLOOD;
+                bloodLevel.sendParticles(bloodParticle,
+                        entity.getX(), entity.getY() + entity.getEyeHeight() * 0.6, entity.getZ(),
+                        Math.min(30, 10 + (int) amount * 3), 0.25, 0.25, 0.25, 0.2);
+                if (amount >= 2.0F && bloodLevel.random.nextFloat() < Math.min(0.9F, 0.35F + amount * 0.08F)) {
+                    com.example.alieninvasion.block.BloodyBlocks.splatterImpact(bloodLevel, entity, purple);
+                }
             }
             return true; // Allow damage
         });
@@ -807,10 +811,9 @@ public class ModEvents {
                             && !player.isCreative()
                             && !player.isSpectator()
                             && !player.getAbilities().invulnerable) {
-                        boolean fullCosmic = player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.COSMIC_HELMET)
-                                && player.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.COSMIC_CHESTPLATE)
-                                && player.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.COSMIC_LEGGINGS)
-                                && player.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.COSMIC_BOOTS);
+                        boolean fullCosmic = com.example.alieninvasion.logic.ArmorProtection.hasCompatibleSet(player,
+                                ItemRegistry.COSMIC_HELMET, ItemRegistry.COSMIC_CHESTPLATE,
+                                ItemRegistry.COSMIC_LEGGINGS, ItemRegistry.COSMIC_BOOTS);
                         if (!fullCosmic) {
                             InfectionManager.addMeter(player, 1.5F);
                             player.displayClientMessage(Component.literal("§c[!] Кислотный дождь заражает вас! Найдите укрытие."), true);
@@ -960,6 +963,8 @@ public class ModEvents {
                  // Gravity Boots: low-gravity float + high jumps while worn (server-side,
                  // so they actually work in survival). Fall immunity is in ALLOW_DAMAGE.
                  if (player.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.GRAVITY_BOOTS)
+                         && com.example.alieninvasion.item.GravityBootsItem.isLevitationEnabled(
+                                 player.getItemBySlot(EquipmentSlot.FEET))
                          && !player.getTags().contains("EmpActive")) {
                      player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOW_FALLING, 30, 0, true, false));
                      player.addEffect(new MobEffectInstance(net.minecraft.world.effect.MobEffects.JUMP, 30, 1, true, false));
@@ -974,23 +979,12 @@ public class ModEvents {
 
                 // --- Bleeding: a low-HP player bleeds, dripping a fading blood trail,
                 // and the scent draws monsters AND aliens to them from afar. ---
-                if (player.getHealth() < player.getMaxHealth() * 0.5f && !player.getAbilities().invulnerable) {
-                    boolean heavy = player.getHealth() < player.getMaxHealth() * 0.25f;
-
-                    if (player.tickCount % 5 == 0) {
-                        level.sendParticles(
-                                new BlockParticleOption(ParticleTypes.BLOCK, Blocks.REDSTONE_BLOCK.defaultBlockState()),
-                                player.getX(), player.getY() + 0.1D, player.getZ(),
-                                heavy ? 6 : 3, 0.12, 0.02, 0.12, 0.0);
-                    }
-
-                    // Drop a fading blood pool at the feet (trail when moving, a puddle
-                    // when standing in heavy bleed). Throttled so it never spams blocks.
-                    boolean moving = player.getDeltaMovement().horizontalDistanceSqr() > 0.002D;
-                    int cadence = heavy ? 8 : 18;
-                    if (player.tickCount % cadence == 0 && (moving || heavy)) {
-                        com.example.alieninvasion.block.BloodyBlocks.splatter(level, player.blockPosition().below());
-                    }
+                // Кровь игрока теперь РАНЕВАЯ (BleedManager + LivingEntity-миксин рисуют
+                // капли/лужи). Здесь оставляем только «запах крови»: пока рана открыта,
+                // монстры и рой идут на игрока по запаху.
+                if (com.example.alieninvasion.logic.BleedManager.isBleeding(player)
+                        && !player.getAbilities().invulnerable) {
+                    boolean heavy = player.getHealth() < player.getMaxHealth() * 0.35f;
 
                     // BLOOD SCENT: nearby hostiles + aliens with no target lock onto the
                     // bleeding player (they smell it, even through walls). Wider when heavy.
@@ -1114,30 +1108,24 @@ public class ModEvents {
                 }
 
                 // Armor set bonuses: radiation/infection fill rate multipliers.
-                boolean fullPlatinum = player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.PLATINUM_HELMET)
-                        && player.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.PLATINUM_CHESTPLATE)
-                        && player.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.PLATINUM_LEGGINGS)
-                        && player.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.PLATINUM_BOOTS);
-                boolean fullPalladium = player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.PALLADIUM_HELMET)
-                        && player.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.PALLADIUM_CHESTPLATE)
-                        && player.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.PALLADIUM_LEGGINGS)
-                        && player.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.PALLADIUM_BOOTS);
-                boolean fullHazmat = player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.ALIEN_HAZMAT_HELMET)
-                        && player.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.ALIEN_HAZMAT_CHESTPLATE)
-                        && player.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.ALIEN_HAZMAT_LEGGINGS)
-                        && player.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.ALIEN_HAZMAT_BOOTS);
-                boolean fullChem = player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.ALIEN_CHEM_HELMET)
-                        && player.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.ALIEN_CHEM_CHESTPLATE)
-                        && player.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.ALIEN_CHEM_LEGGINGS)
-                        && player.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.ALIEN_CHEM_BOOTS);
-                boolean fullEmeradium = player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.EMERADIUM_HELMET)
-                        && player.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.EMERADIUM_CHESTPLATE)
-                        && player.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.EMERADIUM_LEGGINGS)
-                        && player.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.EMERADIUM_BOOTS);
-                boolean fullAstralPrism = player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.ASTRAL_PRISM_HELMET)
-                        && player.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.ASTRAL_PRISM_CHESTPLATE)
-                        && player.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.ASTRAL_PRISM_LEGGINGS)
-                        && player.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.ASTRAL_PRISM_BOOTS);
+                boolean fullPlatinum = com.example.alieninvasion.logic.ArmorProtection.hasCompatibleSet(player,
+                        ItemRegistry.PLATINUM_HELMET, ItemRegistry.PLATINUM_CHESTPLATE,
+                        ItemRegistry.PLATINUM_LEGGINGS, ItemRegistry.PLATINUM_BOOTS);
+                boolean fullPalladium = com.example.alieninvasion.logic.ArmorProtection.hasCompatibleSet(player,
+                        ItemRegistry.PALLADIUM_HELMET, ItemRegistry.PALLADIUM_CHESTPLATE,
+                        ItemRegistry.PALLADIUM_LEGGINGS, ItemRegistry.PALLADIUM_BOOTS);
+                boolean fullHazmat = com.example.alieninvasion.logic.ArmorProtection.hasCompatibleSet(player,
+                        ItemRegistry.ALIEN_HAZMAT_HELMET, ItemRegistry.ALIEN_HAZMAT_CHESTPLATE,
+                        ItemRegistry.ALIEN_HAZMAT_LEGGINGS, ItemRegistry.ALIEN_HAZMAT_BOOTS);
+                boolean fullChem = com.example.alieninvasion.logic.ArmorProtection.hasCompatibleSet(player,
+                        ItemRegistry.ALIEN_CHEM_HELMET, ItemRegistry.ALIEN_CHEM_CHESTPLATE,
+                        ItemRegistry.ALIEN_CHEM_LEGGINGS, ItemRegistry.ALIEN_CHEM_BOOTS);
+                boolean fullEmeradium = com.example.alieninvasion.logic.ArmorProtection.hasCompatibleSet(player,
+                        ItemRegistry.EMERADIUM_HELMET, ItemRegistry.EMERADIUM_CHESTPLATE,
+                        ItemRegistry.EMERADIUM_LEGGINGS, ItemRegistry.EMERADIUM_BOOTS);
+                boolean fullAstralPrism = com.example.alieninvasion.logic.ArmorProtection.hasCompatibleSet(player,
+                        ItemRegistry.ASTRAL_PRISM_HELMET, ItemRegistry.ASTRAL_PRISM_CHESTPLATE,
+                        ItemRegistry.ASTRAL_PRISM_LEGGINGS, ItemRegistry.ASTRAL_PRISM_BOOTS);
 
                 // Dose multiplier: chem(×5 slower) > hazmat(×3 slower) > platinum/emeradium(×2 slower) > default
                 // ANY armor shields a little - even a shirt stops some fallout.
@@ -1198,12 +1186,10 @@ public class ModEvents {
                 }
 
                 // Cosmic Armor set bonus + alien-block hazard.
-                boolean fullCosmic = player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.COSMIC_HELMET)
-                        && player.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.COSMIC_CHESTPLATE)
-                        && player.getItemBySlot(EquipmentSlot.LEGS).is(ItemRegistry.COSMIC_LEGGINGS)
-                        && player.getItemBySlot(EquipmentSlot.FEET).is(ItemRegistry.COSMIC_BOOTS);
-                boolean onAlienGround = isAlienGround(level.getBlockState(player.blockPosition().below()))
-                        || isAlienGround(level.getBlockState(player.blockPosition()));
+                boolean fullCosmic = com.example.alieninvasion.logic.ArmorProtection.hasCompatibleSet(player,
+                        ItemRegistry.COSMIC_HELMET, ItemRegistry.COSMIC_CHESTPLATE,
+                        ItemRegistry.COSMIC_LEGGINGS, ItemRegistry.COSMIC_BOOTS);
+                boolean onAlienGround = exposedToAlienGround(level, player);
                 if (fullCosmic) {
                     // Full immunity to infection and radiation
                     player.removeEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.INFECTION));
@@ -1237,6 +1223,14 @@ public class ModEvents {
                     boolean infImmune = fullCosmic;
                     com.example.alieninvasion.logic.InfectionManager.tickPlayer(
                             level, player, onAlienGround, infImmune);
+                }
+
+                // МАСКА (слот маски, поверх брони) ФИЛЬТРУЕТ воздух: пока надета — каждую
+                // секунду снижает заражение и накопленную дозу. Это первая, базовая защита;
+                // разные маски/тиры будут давать разную силу фильтра.
+                if (player.tickCount % 20 == 0 && com.example.alieninvasion.logic.MaskSlot.hasMask(player)) {
+                    com.example.alieninvasion.logic.InfectionManager.addMeter(player, -2.0F);
+                    com.example.alieninvasion.logic.RadiationManager.addDose(player, -1.5F);
                 }
 
                 // BUNKER SANCTUARY: while the survivor-trader lives, his chunk stays
@@ -1452,6 +1446,34 @@ public class ModEvents {
                 || state.is(ModBlocks.ALIEN_RESIDUE)
                 || state.is(ModBlocks.ALIEN_HIVE)
                 || state.is(ModBlocks.ALIEN_STASH);
+    }
+
+    /**
+     * Заражение «от земли» с учётом прыжков. Раньше проверялся только блок под
+     * ногами/на их уровне, а опрос идёт раз в секунду — в прыжке игрок выше этого
+     * окна, и попрыгунчик уходил от заражения. Теперь сверх ног сканируем вниз до
+     * опорной поверхности (до 3 блоков): прыжки и пробежки по заражённой земле всё
+     * равно облучают. Первая ЧИСТАЯ твёрдая поверхность под ногами экранирует — стоя
+     * на чистой площадке над заразой не цепляет.
+     */
+    private static boolean exposedToAlienGround(net.minecraft.world.level.Level level,
+            net.minecraft.world.entity.LivingEntity entity) {
+        net.minecraft.core.BlockPos feet = entity.blockPosition();
+        if (isAlienGround(level.getBlockState(feet))) {
+            return true;
+        }
+        net.minecraft.core.BlockPos.MutableBlockPos p = new net.minecraft.core.BlockPos.MutableBlockPos();
+        for (int dy = 1; dy <= 3; dy++) {
+            p.set(feet.getX(), feet.getY() - dy, feet.getZ());
+            net.minecraft.world.level.block.state.BlockState s = level.getBlockState(p);
+            if (isAlienGround(s)) {
+                return true;
+            }
+            if (!s.isAir() && s.isSolidRender(level, p)) {
+                break; // чистая твёрдая опора экранирует заразу ниже
+            }
+        }
+        return false;
     }
 
     private static boolean hasFullHazmat(LivingEntity entity) {

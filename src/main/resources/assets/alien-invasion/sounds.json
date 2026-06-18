@@ -22,5 +22,13 @@
   "hunter.idle": {
     "sounds": [{ "name": "alien-invasion:hunter/idle", "stream": false }],
     "subtitle": "subtitles.alien-invasion.hunter"
+  },
+  "geiger.click": {
+    "sounds": [
+      { "name": "alien-invasion:geiger/click1" },
+      { "name": "alien-invasion:geiger/click2" },
+      { "name": "alien-invasion:geiger/click3" }
+    ],
+    "subtitle": "subtitles.alien-invasion.geiger"
   }
 }

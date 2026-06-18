@@ -1,6 +1,7 @@
 package com.example.alieninvasion.logic;
 
 import com.example.alieninvasion.registry.ModBlocks;
+import com.example.alieninvasion.registry.BloodyVariantRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.EmptyBlockGetter;
@@ -70,7 +71,10 @@ public final class ContaminationRules {
         }
         // Tile-entity blocks are normally left alone, but the barrel is a work station
         // we DO consume (its infested twin is decorative, contents are forfeited).
-        if (level.getBlockEntity(pos) != null && !state.is(Blocks.BARREL)) return false;
+        // Bloody variants have a tiny BE only to remember their original state, and
+        // must still be allowed to become bloody+infested.
+        if (level.getBlockEntity(pos) != null && !state.is(Blocks.BARREL)
+                && BloodyVariantRegistry.infestedForBloody(state.getBlock()) == null) return false;
         if (isProtectedBlock(state)) return false;
         // Purifier-claimed chunks are reclaimed territory: no spread of any kind.
         if (level instanceof net.minecraft.server.level.ServerLevel serverLevel
@@ -81,14 +85,20 @@ public final class ContaminationRules {
     }
 
     public static BlockState contaminatedStateFor(BlockState state) {
-        if (state.isAir() || state.getBlock() instanceof LiquidBlock || isProtectedBlock(state)
-                || (state.hasBlockEntity() && !state.is(Blocks.BARREL))) {
+        if (state.isAir() || state.getBlock() instanceof LiquidBlock || isProtectedBlock(state)) {
             return null;
         }
         // Never classify an already contaminated block by its material again.
         // In particular, infested ice uses glass sounds and used to degrade into
         // infested glass when a later spread tick targeted it.
         if (isContaminated(state)) {
+            return null;
+        }
+        BlockState bloodyInfested = bloodyInfestedStateFor(state);
+        if (bloodyInfested != null) {
+            return bloodyInfested;
+        }
+        if (state.hasBlockEntity() && !state.is(Blocks.BARREL)) {
             return null;
         }
         if (state.is(Blocks.GRASS_BLOCK) || state.is(Blocks.MYCELIUM) || state.is(Blocks.MOSS_BLOCK)
@@ -279,6 +289,10 @@ public final class ContaminationRules {
     }
 
     public static BlockState cleanStateFor(BlockState state) {
+        BlockState bloodyClean = cleanBloodyInfestedStateFor(state);
+        if (bloodyClean != null) {
+            return bloodyClean;
+        }
         if (state.is(ModBlocks.ALIEN_RESIDUE) || state.is(ModBlocks.INFESTED_DIRT)
                 || state.is(ModBlocks.INFESTED_GRASS)) {
             return Blocks.DIRT.defaultBlockState();
@@ -319,6 +333,16 @@ public final class ContaminationRules {
 
     public static boolean isContaminated(BlockState state) {
         return cleanStateFor(state) != null || state.is(ModBlocks.ALIEN_HIVE) || state.is(ModBlocks.ALIEN_STASH);
+    }
+
+    private static BlockState bloodyInfestedStateFor(BlockState state) {
+        net.minecraft.world.level.block.Block combined = BloodyVariantRegistry.infestedForBloody(state.getBlock());
+        return combined != null ? copyProperties(state, combined.defaultBlockState()) : null;
+    }
+
+    private static BlockState cleanBloodyInfestedStateFor(BlockState state) {
+        net.minecraft.world.level.block.Block bloodOnly = BloodyVariantRegistry.cleanForBloodyInfested(state.getBlock());
+        return bloodOnly != null ? copyProperties(state, bloodOnly.defaultBlockState()) : null;
     }
 
     /**
