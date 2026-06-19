@@ -193,6 +193,15 @@ public class InvasionHUDOverlay implements HudRenderCallback {
             drawGauge(g, font, colX, by, COLUMN_W, label, infCol,
                     inf / com.example.alieninvasion.logic.InfectionManager.MAX);
         }
+        // Воздух ГЕРМЕТИЧНОЙ маски: остаток кислорода (в секундах) + полоса. Тратится
+        // в ядовитом газе/кислотном дожде, пополняется баллоном. Видно, пока маска надета.
+        if (com.example.alieninvasion.logic.MaskSlot.hasSealedMask(mc.player)) {
+            int air = com.example.alieninvasion.logic.MaskSlot.getAir(mc.player);
+            float airFrac = (float) air / (float) com.example.alieninvasion.logic.MaskSlot.MAX_AIR;
+            int airCol = airFrac > 0.5F ? 0xFF5AC8FF : airFrac > 0.2F ? 0xFFFFC247 : 0xFFFF5A3A;
+            by -= BLOCK_GAP + GAUGE_H;
+            drawGauge(g, font, colX, by, COLUMN_W, "ВОЗДУХ МАСКИ " + (air / 20) + "с", airCol, airFrac);
+        }
         // Чип костюма (верх стека).
         by -= BLOCK_GAP;
         drawSuitChip(g, font, mc, colX, by);

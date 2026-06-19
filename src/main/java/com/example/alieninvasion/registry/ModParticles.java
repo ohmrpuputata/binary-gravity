@@ -9,6 +9,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public final class ModParticles {
     public static final SimpleParticleType ACID_SMOKE = FabricParticleTypes.simple();
+    /** Зелёная капля кислотного дождя (гравитация) — кислотный дождь видно зелёным, обычный — нет. */
+    public static final SimpleParticleType ACID_DROP = FabricParticleTypes.simple();
     /** Капля крови (гравитация + физика) — реалистичные брызги вместо обломков редстоуна. */
     public static final SimpleParticleType BLOOD = FabricParticleTypes.simple();
     /** Заражённая/чужая кровь — фиолетовый ихор (пришельцы, заражённые существа). */
@@ -22,6 +24,10 @@ public final class ModParticles {
                 BuiltInRegistries.PARTICLE_TYPE,
                 ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "acid_smoke"),
                 ACID_SMOKE);
+        Registry.register(
+                BuiltInRegistries.PARTICLE_TYPE,
+                ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "acid_drop"),
+                ACID_DROP);
         Registry.register(
                 BuiltInRegistries.PARTICLE_TYPE,
                 ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "blood"),

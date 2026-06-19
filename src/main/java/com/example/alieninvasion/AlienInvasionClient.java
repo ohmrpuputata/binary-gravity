@@ -91,6 +91,10 @@ public class AlienInvasionClient implements ClientModInitializer {
                 net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry.getInstance().register(
                                 com.example.alieninvasion.registry.ModParticles.ACID_SMOKE,
                                 com.example.alieninvasion.client.particle.AcidSmokeParticle.Provider::new);
+                // Зелёная капля кислотного дождя — переиспользуем гравитационный дроп (спрайт зелёный).
+                net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry.getInstance().register(
+                                com.example.alieninvasion.registry.ModParticles.ACID_DROP,
+                                com.example.alieninvasion.client.particle.BloodDropParticle.Provider::new);
                 net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry.getInstance().register(
                                 com.example.alieninvasion.registry.ModParticles.BLOOD,
                                 com.example.alieninvasion.client.particle.BloodDropParticle.Provider::new);

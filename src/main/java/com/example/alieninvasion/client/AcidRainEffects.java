@@ -47,6 +47,10 @@ public final class AcidRainEffects {
         if (level.getGameTime() % 4L == 0L) {
             spawnMobTrails(level, client.player, random);
         }
+        // ЗЕЛЁНАЯ ПЕЛЕНА: падающие кислотные капли вокруг игрока под открытым небом —
+        // именно это отличает кислотный дождь (зелёный) от обычного (синяя ваниль).
+        spawnAcidCurtain(level, client.player.getX(), client.player.getY(), client.player.getZ(),
+                random, rainStrength);
 
         if (level.canSeeSky(client.player.blockPosition())
                 && level.getGameTime() % 90L == 0L
@@ -138,6 +142,26 @@ public final class AcidRainEffects {
                         (random.nextDouble() - 0.5D) * 0.05D);
             }
             return;
+        }
+    }
+
+    /** Падающие зелёные капли кислоты — видимая «зелёная завеса» только в кислотный дождь. */
+    private static void spawnAcidCurtain(ClientLevel level, double px, double py, double pz,
+            RandomSource random, float strength) {
+        int drops = strength > 0.65F ? 14 : 8;
+        for (int i = 0; i < drops; i++) {
+            double dx = px + (random.nextDouble() - 0.5D) * 22.0D;
+            double dz = pz + (random.nextDouble() - 0.5D) * 22.0D;
+            double dy = py + 4.0D + random.nextDouble() * 5.0D;
+            if (!level.canSeeSky(BlockPos.containing(dx, dy, dz))) {
+                continue; // под крышей капель нет
+            }
+            level.addParticle(
+                    ModParticles.ACID_DROP,
+                    dx, dy, dz,
+                    (random.nextDouble() - 0.5D) * 0.02D,
+                    -0.35D - random.nextDouble() * 0.2D,
+                    (random.nextDouble() - 0.5D) * 0.02D);
         }
     }
 
