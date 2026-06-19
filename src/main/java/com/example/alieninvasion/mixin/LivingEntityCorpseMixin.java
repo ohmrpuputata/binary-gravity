@@ -56,6 +56,15 @@ public abstract class LivingEntityCorpseMixin {
         }
         self.setDeltaMovement(0.0D, self.getDeltaMovement().y, 0.0D);
         self.setJumping(false);
+        // ПОЛНАЯ заморозка: нулевая скорость и ФИКСИРОВАННЫЙ поворот тела и головы (+ их
+        // «прошлые» значения, чтобы не было интерполяции) — труп не дёргается, не крутит
+        // головой и не поворачивается. setNoAi выше уже снял ввод движения/навигацию.
+        self.setSpeed(0.0F);
+        float corpseYaw = self.getYRot();
+        self.setYBodyRot(corpseYaw);
+        self.setYHeadRot(corpseYaw);
+        self.yBodyRotO = corpseYaw;
+        self.yHeadRotO = corpseYaw;
         if (!(self.level() instanceof ServerLevel sl)) {
             ci.cancel(); // клиент: только крутим deathTime для анимации, не удаляем
             return;
