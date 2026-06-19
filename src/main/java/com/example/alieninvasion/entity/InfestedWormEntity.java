@@ -51,6 +51,9 @@ public class InfestedWormEntity extends Silverfish implements IAlienUnit {
         this.targetSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal(this).setAlertOthers());
         this.targetSelector.addGoal(2, new net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal<>(
                 this, Player.class, true));
+        // Черви ОХОТЯТСЯ на мирных животных, чтобы залезть в них и вынашиваться (см. doHurtTarget).
+        this.targetSelector.addGoal(3, new net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal<>(
+                this, net.minecraft.world.entity.animal.Animal.class, true));
     }
 
     public int getStage() {
@@ -87,6 +90,15 @@ public class InfestedWormEntity extends Silverfish implements IAlienUnit {
     /** Every bite pushes the infection meter — worms are the disease's teeth. */
     @Override
     public boolean doHurtTarget(net.minecraft.world.entity.Entity target) {
+        // Мирный моб — червь ЗАЛЕЗАЕТ внутрь (вынашивание), а не просто бьёт. Сам червь
+        // при этом исчезает (забрался в носителя); позже из носителя вылезет крупнее.
+        if (target instanceof net.minecraft.world.entity.animal.Animal animal && !this.level().isClientSide
+                && !animal.getTags().contains(com.example.alieninvasion.logic.WormInfestation.HOST_TAG)
+                && !AlienUtils.isAlliedTo(this, animal)) {
+            com.example.alieninvasion.logic.WormInfestation.infest(animal);
+            this.discard();
+            return true;
+        }
         boolean hit = super.doHurtTarget(target);
         if (hit && target instanceof Player player && !this.level().isClientSide) {
             // Через addMeterFromBite: пачка червей больше не разгоняет шкалу до

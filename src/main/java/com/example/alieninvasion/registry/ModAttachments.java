@@ -34,6 +34,12 @@ public final class ModAttachments {
             .syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all())
             .buildAndRegister(ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "radiation_field"));
 
+    /** Срок вынашивания червя внутри заражённого мирного моба (тики). Растёт, пока
+     *  существо-носитель живо; чем дольше — тем крупнее вылезет червь. Серверное. */
+    public static final AttachmentType<Integer> WORM_GESTATION = AttachmentRegistry.<Integer>builder()
+            .persistent(Codec.INT)
+            .buildAndRegister(ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "worm_gestation"));
+
     private ModAttachments() {
     }
 

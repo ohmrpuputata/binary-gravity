@@ -1419,9 +1419,10 @@ public class ModEvents {
                 }
             }
 
-            // Day Mimic Spawning - only once the swarm starts infiltrating (day 3+).
+            // Day Mimic Spawning — рой инфильтрирует с ПЕРВОГО дня: безобидная на вид
+            // «живность» оказывается мимиком и превращается в солдата-пришельца.
             if (level.isDay() && level.getGameTime() % 600 == 0 && level.random.nextFloat() < 0.15F
-                    && SurvivalManager.getDay(level) >= 3) {
+                    && SurvivalManager.getDay(level) >= 1) {
                 for (ServerPlayer player : level.players()) {
                     double mx = player.getX() + (level.random.nextDouble() - 0.5D) * 40.0D;
                     double mz = player.getZ() + (level.random.nextDouble() - 0.5D) * 40.0D;

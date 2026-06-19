@@ -21,6 +21,7 @@ public class LivingEntityBleedMixin {
         LivingEntity self = (LivingEntity) (Object) this;
         if (self.level() instanceof ServerLevel level) {
             BleedManager.tick(level, self);
+            com.example.alieninvasion.logic.WormInfestation.tickHost(level, self);
         }
     }
 }
