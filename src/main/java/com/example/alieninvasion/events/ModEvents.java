@@ -804,45 +804,6 @@ public class ModEvents {
                 }
             }
 
-            // Лужи от дождя: на открытых ровных поверхностях у игроков появляются лужи,
-            // которые потом высыхают (RainPuddleBlock). Под кислотным дождём — кислотные.
-            if (level.isRaining() && level.getGameTime() % 8 == 0) {
-                boolean puddleAcid = com.example.alieninvasion.logic.SurvivalManager.isAcidRain(level);
-                for (ServerPlayer player : level.players()) {
-                    if (player.isSpectator()) {
-                        continue;
-                    }
-                    net.minecraft.core.BlockPos center = player.blockPosition();
-                    for (int i = 0; i < 4; i++) {
-                        net.minecraft.core.BlockPos pos = center.offset(
-                                level.random.nextInt(17) - 8,
-                                level.random.nextInt(5) - 2,
-                                level.random.nextInt(17) - 8);
-                        net.minecraft.world.level.block.state.BlockState here = level.getBlockState(pos);
-                        if (here.is(com.example.alieninvasion.registry.ModBlocks.RAIN_PUDDLE)) {
-                            // подливаем существующую лужу до полной + обновляем тип (вода/кислота)
-                            level.setBlock(pos, here
-                                    .setValue(com.example.alieninvasion.block.RainPuddleBlock.AMOUNT,
-                                            com.example.alieninvasion.block.RainPuddleBlock.MAX_AMOUNT)
-                                    .setValue(com.example.alieninvasion.block.RainPuddleBlock.ACID, puddleAcid), 2);
-                            continue;
-                        }
-                        if (!here.isAir() || !level.canSeeSky(pos)) {
-                            continue;
-                        }
-                        net.minecraft.core.BlockPos below = pos.below();
-                        net.minecraft.world.level.block.state.BlockState belowState = level.getBlockState(below);
-                        if (!belowState.isFaceSturdy(level, below, net.minecraft.core.Direction.UP)) {
-                            continue;
-                        }
-                        level.setBlock(pos, com.example.alieninvasion.registry.ModBlocks.RAIN_PUDDLE.defaultBlockState()
-                                .setValue(com.example.alieninvasion.block.RainPuddleBlock.ACID, puddleAcid)
-                                .setValue(com.example.alieninvasion.block.RainPuddleBlock.AMOUNT,
-                                        com.example.alieninvasion.block.RainPuddleBlock.MAX_AMOUNT), 2);
-                    }
-                }
-            }
-
             // Acid Rain (infection + grass spread) — только когда дождь КИСЛОТНЫЙ (День 2+/буря),
             // обычный ранний дождь безвреден.
             if (com.example.alieninvasion.logic.SurvivalManager.isAcidRain(level) && level.getGameTime() % 40 == 0) {

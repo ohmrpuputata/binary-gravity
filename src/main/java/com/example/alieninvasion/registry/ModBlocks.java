@@ -49,13 +49,6 @@ public class ModBlocks {
                     .noCollission().instabreak().noLootTable().noOcclusion().replaceable().randomTicks()
                     .sound(SoundType.WET_GRASS).pushReaction(PushReaction.DESTROY)));
 
-    // Тонкая лужа-декаль от дождя: вода (синяя) или кислота (зелёная). Лежит на полу,
-    // не мешает шагам/постройке, со временем высыхает (см. RainPuddleBlock).
-    public static final Block RAIN_PUDDLE = registerBlockNoItem("rain_puddle",
-            new com.example.alieninvasion.block.RainPuddleBlock(BlockBehaviour.Properties.of().mapColor(MapColor.WATER)
-                    .noCollission().instabreak().noLootTable().noOcclusion().replaceable().randomTicks()
-                    .sound(SoundType.WET_GRASS).pushReaction(PushReaction.DESTROY)));
-
     // Ядовитое облако: проходимый полупрозрачный газ-блок. Голова в нём = «ядовитый
     // воздух» — без герметичной маски травит, в маске тратит запас воздуха. Им
     // заполняют заражённые данжи/зоны.
