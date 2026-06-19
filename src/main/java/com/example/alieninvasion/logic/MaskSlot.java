@@ -22,6 +22,11 @@ import net.minecraft.world.item.ItemStack;
 public final class MaskSlot {
     public static final TagKey<Item> MASKS = TagKey.create(Registries.ITEM,
             ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "masks"));
+    /** Герметичные маски: позволяют дышать в ядовитом газе, но тратят запас воздуха. */
+    public static final TagKey<Item> SEALED_MASKS = TagKey.create(Registries.ITEM,
+            ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "sealed_masks"));
+    /** Полный запас воздуха герметичной маски в тиках (~60 секунд). */
+    public static final int MAX_AIR = 1200;
 
     private MaskSlot() {
     }
@@ -36,6 +41,19 @@ public final class MaskSlot {
 
     public static boolean hasMask(LivingEntity entity) {
         return !get(entity).isEmpty();
+    }
+
+    /** Надета ли ГЕРМЕТИЧНАЯ маска (даёт дышать в ядовитом газе, пока есть воздух). */
+    public static boolean hasSealedMask(LivingEntity entity) {
+        return get(entity).is(SEALED_MASKS);
+    }
+
+    public static int getAir(LivingEntity entity) {
+        return entity.getAttachedOrElse(ModAttachments.MASK_AIR, 0);
+    }
+
+    public static void setAir(LivingEntity entity, int air) {
+        entity.setAttached(ModAttachments.MASK_AIR, Math.max(0, Math.min(MAX_AIR, air)));
     }
 
     /** Клавиша-тоггл: снять надетую маску, либо надеть маску из руки. */

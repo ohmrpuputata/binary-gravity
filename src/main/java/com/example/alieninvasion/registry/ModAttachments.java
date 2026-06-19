@@ -1,9 +1,11 @@
 package com.example.alieninvasion.registry;
 
 import com.example.alieninvasion.AlienInvasionMod;
+import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentRegistry;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentSyncPredicate;
 import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -17,6 +19,13 @@ public final class ModAttachments {
             .persistent(ItemStack.CODEC)
             .syncWith(ItemStack.STREAM_CODEC, AttachmentSyncPredicate.all())
             .buildAndRegister(ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "mask"));
+
+    /** Запас воздуха в герметичной маске (тики). Тратится в ядовитом газе, пополняется
+     *  баллоном. Synced — рисуем шкалу в HUD. */
+    public static final AttachmentType<Integer> MASK_AIR = AttachmentRegistry.<Integer>builder()
+            .persistent(Codec.INT)
+            .syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all())
+            .buildAndRegister(ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "mask_air"));
 
     private ModAttachments() {
     }

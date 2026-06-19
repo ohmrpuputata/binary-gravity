@@ -423,6 +423,10 @@ public class ItemRegistry {
             new com.example.alieninvasion.item.BioFilterMaskItem(
                     new Item.Properties().rarity(Rarity.UNCOMMON).durability(256)));
 
+    // Баллон воздуха: ПКМ заправляет запас воздуха герметичной маски (для ядовитых зон).
+    public static final Item AIR_CANISTER = registerItem("air_canister",
+            new com.example.alieninvasion.item.AirCanisterItem(new Item.Properties().stacksTo(16)));
+
     public static final Item CONTAMINATED_FOOD = registerItem("contaminated_food",
             new com.example.alieninvasion.item.ContaminatedFoodItem(new Item.Properties().stacksTo(16)
                     .food(new FoodProperties.Builder().nutrition(3).saturationModifier(0.1F).alwaysEdible().build())));

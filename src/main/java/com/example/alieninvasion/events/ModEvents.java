@@ -1229,6 +1229,34 @@ public class ModEvents {
                     com.example.alieninvasion.logic.RadiationManager.addDose(player, -1.5F);
                 }
 
+                // ЯДОВИТЫЙ ВОЗДУХ: голова в облаке TOXIC_GAS. Без ГЕРМЕТИЧНОЙ маски — травит
+                // (урон + яд). В герметичной маске — тратится запас воздуха; кончился — душит
+                // даже в маске (нужен баллон). Вне газа воздух медленно восстанавливается.
+                if (player.tickCount % 10 == 0 && !player.isCreative() && !player.isSpectator()
+                        && !player.getAbilities().invulnerable) {
+                    net.minecraft.core.BlockPos headPos =
+                            net.minecraft.core.BlockPos.containing(player.getEyePosition());
+                    boolean inToxicAir = level.getBlockState(headPos).is(ModBlocks.TOXIC_GAS);
+                    if (inToxicAir) {
+                        if (com.example.alieninvasion.logic.MaskSlot.hasSealedMask(player)) {
+                            int air = com.example.alieninvasion.logic.MaskSlot.getAir(player) - 10;
+                            com.example.alieninvasion.logic.MaskSlot.setAir(player, air);
+                            if (air <= 0) {
+                                player.hurt(level.damageSources().drown(), 2.0F);
+                            }
+                        } else {
+                            player.hurt(level.damageSources().magic(), 2.0F);
+                            player.addEffect(new MobEffectInstance(
+                                    net.minecraft.world.effect.MobEffects.POISON, 80, 0, false, true));
+                        }
+                    } else {
+                        int air = com.example.alieninvasion.logic.MaskSlot.getAir(player);
+                        if (air < com.example.alieninvasion.logic.MaskSlot.MAX_AIR) {
+                            com.example.alieninvasion.logic.MaskSlot.setAir(player, air + 5);
+                        }
+                    }
+                }
+
                 // BUNKER SANCTUARY: while the survivor-trader lives, his chunk stays
                 // inert - the one place the corruption cannot take.
                 if (player.tickCount % 100 == 0) {

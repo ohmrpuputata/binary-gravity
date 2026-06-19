@@ -49,6 +49,14 @@ public class ModBlocks {
                     .noCollission().instabreak().noLootTable().noOcclusion().replaceable().randomTicks()
                     .sound(SoundType.WET_GRASS).pushReaction(PushReaction.DESTROY)));
 
+    // Ядовитое облако: проходимый полупрозрачный газ-блок. Голова в нём = «ядовитый
+    // воздух» — без герметичной маски травит, в маске тратит запас воздуха. Им
+    // заполняют заражённые данжи/зоны.
+    public static final Block TOXIC_GAS = registerBlock("toxic_gas",
+            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN)
+                    .noCollission().instabreak().noOcclusion().replaceable().noLootTable()
+                    .sound(SoundType.WOOL).pushReaction(PushReaction.DESTROY)));
+
     public static final Block INFECTED_WATER = registerBlockNoItem("infected_water",
             new com.example.alieninvasion.block.InfectedWaterBlock(ModFluids.INFECTED_WATER_STILL,
                     BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).replaceable().noCollission()
