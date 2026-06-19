@@ -126,13 +126,16 @@ public class InvasionHUDOverlay implements HudRenderCallback {
             g.fill(0, 0, screenW, screenH, (darkAlpha << 24));
         }
 
-        float hpFrac = mc.player.getHealth() / Math.max(1.0F, mc.player.getMaxHealth());
-        if (hpFrac < 0.25F) {
+        // КРОВОТЕЧЕНИЕ: красная пульсирующая виньетка по краям, когда у игрока открыта рана
+        // (интенсивность синкается из BleedManager). Иначе свою кровь от 1-го лица не видно.
+        int bleed = mc.player.getAttachedOrElse(com.example.alieninvasion.registry.ModAttachments.BLEEDING, 0);
+        if (bleed > 0) {
             long bt = level.getGameTime();
             float pulse = (float) (Math.sin(bt / 6.0D) * 0.5D + 0.5D);
-            int bleedAlpha = (int) (pulse * 60);
+            float intensity = Math.min(1.0F, bleed / 70.0F);
+            int bleedAlpha = (int) ((0.4F + 0.6F * pulse) * intensity * 95.0F);
             int bleedCol = (bleedAlpha << 24) | 0x6E0000;
-            int bth = 14;
+            int bth = 16;
             g.fill(0, 0, screenW, bth, bleedCol);
             g.fill(0, screenH - bth, screenW, screenH, bleedCol);
             g.fill(0, bth, bth, screenH - bth, bleedCol);

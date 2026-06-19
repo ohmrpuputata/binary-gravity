@@ -40,6 +40,12 @@ public final class ModAttachments {
             .persistent(Codec.INT)
             .buildAndRegister(ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "worm_gestation"));
 
+    /** Интенсивность кровотечения игрока (0..100) для КРАСНОЙ виньетки в HUD — иначе
+     *  собственную кровь в виде-от-первого-лица не видно. Synced, не persistent. */
+    public static final AttachmentType<Integer> BLEEDING = AttachmentRegistry.<Integer>builder()
+            .syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all())
+            .buildAndRegister(ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "bleeding"));
+
     private ModAttachments() {
     }
 

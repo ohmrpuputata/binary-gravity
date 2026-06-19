@@ -66,7 +66,11 @@ public abstract class LivingEntityCorpseMixin {
             com.example.alieninvasion.logic.WormInfestation.emergeFromCorpse(sl, self);
         }
         if (this.deathTime >= SINK_START) {
-            self.setPos(self.getX(), self.getY() - 0.045D, self.getZ()); // медленно тонет под землю
+            // Отключаем коллизию, иначе тело упирается в землю и не тонет, а просто
+            // исчезает. С noPhysics оно проваливается СКВОЗЬ блоки под землю.
+            self.noPhysics = true;
+            self.setDeltaMovement(0.0D, 0.0D, 0.0D);
+            self.setPos(self.getX(), self.getY() - 0.08D, self.getZ());
         }
         if (this.deathTime >= GONE && !self.isRemoved()) {
             sl.broadcastEntityEvent(self, (byte) 60); // ванильный «пуф» частиц при исчезновении

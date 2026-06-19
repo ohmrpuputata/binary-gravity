@@ -68,10 +68,16 @@ public final class BleedManager {
         }
         if (!e.isAlive() || w[0] <= 0) {
             WOUNDS.remove(e);
+            clearBleedHud(e);
             return;
         }
         // Свёртывание: обычный спад; быстрее, если существо регенерирует (лечится).
         w[0] -= e.hasEffect(MobEffects.REGENERATION) ? 4 : 1;
+        // Игроку синкаем интенсивность — клиент рисует красную виньетку (свою кровь
+        // в виде-от-первого-лица иначе не видно).
+        if (e instanceof net.minecraft.server.level.ServerPlayer sp) {
+            sp.setAttached(com.example.alieninvasion.registry.ModAttachments.BLEEDING, w[1]);
+        }
 
         boolean purple = w[2] == 1;
         boolean heavy = w[1] >= 60;
@@ -86,6 +92,13 @@ public final class BleedManager {
         }
         if (w[0] <= 0) {
             WOUNDS.remove(e);
+            clearBleedHud(e);
+        }
+    }
+
+    private static void clearBleedHud(LivingEntity e) {
+        if (e instanceof net.minecraft.server.level.ServerPlayer sp) {
+            sp.setAttached(com.example.alieninvasion.registry.ModAttachments.BLEEDING, 0);
         }
     }
 

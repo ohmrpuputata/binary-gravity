@@ -1285,12 +1285,9 @@ public class ModEvents {
                         if (com.example.alieninvasion.logic.MaskSlot.hasSealedMask(player) && air > 0) {
                             com.example.alieninvasion.logic.MaskSlot.setAir(player, air - 4);
                         }
-                    } else {
-                        int air = com.example.alieninvasion.logic.MaskSlot.getAir(player);
-                        if (air < com.example.alieninvasion.logic.MaskSlot.MAX_AIR) {
-                            com.example.alieninvasion.logic.MaskSlot.setAir(player, air + 5);
-                        }
                     }
+                    // (Воздух маски сам НЕ восстанавливается — только баллоном. Иначе
+                    //  баллоны были бы не нужны.)
                 }
 
                 // BUNKER SANCTUARY: while the survivor-trader lives, his chunk stays
