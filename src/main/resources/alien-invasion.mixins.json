@@ -10,6 +10,8 @@
     "LivingEntityAccessor",
     "LivingEntityHealMixin",
     "LivingEntityBleedMixin",
+    "AbstractContainerMenuInvoker",
+    "InventoryMenuMixin",
     "MobMixin",
     "EntityNameMixin",
     "ItemStackMixin",

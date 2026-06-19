@@ -242,20 +242,8 @@ public class AlienInvasionClient implements ClientModInitializer {
                 // Треск счётчика Гейгера (частота ∝ радиации)
                 com.example.alieninvasion.client.GeigerAudio.register();
 
-                // --- Слот маски: клавиша-тоггл (надеть/снять) + рендер маски на лице ---
-                net.minecraft.client.KeyMapping maskKey =
-                        net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper.registerKeyBinding(
-                                new net.minecraft.client.KeyMapping("key.alien-invasion.mask",
-                                        com.mojang.blaze3d.platform.InputConstants.Type.KEYSYM,
-                                        org.lwjgl.glfw.GLFW.GLFW_KEY_M, "key.categories.alien-invasion"));
-                net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.END_CLIENT_TICK.register(client -> {
-                        while (maskKey.consumeClick()) {
-                                if (client.player != null) {
-                                        net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.send(
-                                                new com.example.alieninvasion.network.ToggleMaskPayload());
-                                }
-                        }
-                });
+                // Маску надевают через ЯЧЕЙКУ В ИНВЕНТАРЕ (без клавиш) — см. InventoryMenuMixin.
+                // Здесь — только рендер маски на лице игрока:
                 net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback.EVENT.register(
                         (entityType, entityRenderer, registrationHelper, ctx) -> {
                                 if (entityRenderer instanceof net.minecraft.client.renderer.entity.player.PlayerRenderer playerRenderer) {
@@ -318,13 +306,11 @@ public class AlienInvasionClient implements ClientModInitializer {
                                 com.example.alieninvasion.registry.ModBlocks.MASK_MENU,
                                 com.example.alieninvasion.client.MaskScreen::new);
 
-                // Кнопка доступа к слоту маски прямо из инвентаря (и в выживании, и в
-                // КРЕАТИВЕ) — открывает окно слота маски. Реальную ячейку встроить в оба
-                // ванильных экрана можно только хрупкими миксинами по каждому экрану;
-                // кнопка надёжна и работает в обоих.
+                // В ВЫЖИВАНИИ маска кладётся во встроенную ячейку инвентаря (InventoryMenuMixin).
+                // У КРЕАТИВА инвентарь — отдельный экран без этой ячейки, поэтому только там
+                // даём кнопку, открывающую окно слота маски. Везде без клавиш.
                 net.fabricmc.fabric.api.client.screen.v1.ScreenEvents.AFTER_INIT.register((mc2, screen, sw, sh) -> {
-                        if (!(screen instanceof net.minecraft.client.gui.screens.inventory.InventoryScreen)
-                                        && !(screen instanceof net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen)) {
+                        if (!(screen instanceof net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen)) {
                                 return;
                         }
                         net.minecraft.client.gui.screens.inventory.AbstractContainerScreen<?> acs =
