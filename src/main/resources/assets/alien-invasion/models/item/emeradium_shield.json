@@ -2,24 +2,24 @@
   "parent": "alien-invasion:item/emeradium_shield_base",
   "display": {
     "thirdperson_righthand": {
-      "rotation": [0, 0, 0],
+      "rotation": [0, 90, 0],
       "translation": [10, 6, -4],
       "scale": [1, 1, 1]
     },
     "thirdperson_lefthand": {
-      "rotation": [0, 0, 0],
+      "rotation": [0, 90, 0],
       "translation": [10, 6, 12],
       "scale": [1, 1, 1]
     },
     "firstperson_righthand": {
-      "rotation": [0, 180, 5],
+      "rotation": [0, 90, 0],
       "translation": [-10, 2, -10],
-      "scale": [1.25, 1.25, 1.25]
+      "scale": [1, 1, 1]
     },
     "firstperson_lefthand": {
-      "rotation": [0, 180, 5],
+      "rotation": [0, 90, 0],
       "translation": [10, 0, -10],
-      "scale": [1.25, 1.25, 1.25]
+      "scale": [1, 1, 1]
     },
     "gui": {
       "rotation": [15, -25, -5],
@@ -28,11 +28,12 @@
     },
     "fixed": {
       "rotation": [0, 180, 0],
-      "translation": [-4.5, 4.5, -5],
-      "scale": [0.55, 0.55, 0.55]
+      "translation": [-2, 4, -5],
+      "scale": [0.5, 0.5, 0.5]
     },
     "ground": {
-      "translation": [2, 4, 2],
+      "rotation": [0, 0, 0],
+      "translation": [4, 4, 2],
       "scale": [0.25, 0.25, 0.25]
     }
   },
