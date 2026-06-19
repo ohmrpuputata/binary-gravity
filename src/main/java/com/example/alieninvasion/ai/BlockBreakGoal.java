@@ -37,6 +37,11 @@ public class BlockBreakGoal extends Goal {
     private int unstickTicks;
     private int stallTicks;
 
+    // Совместная ломка: прогресс по позиции блока ОБЩИЙ, чтобы несколько мобов на одном
+    // блоке складывали усилия и ломали его БЫСТРЕЕ. Чистится при ломке/забрасывании.
+    private static final class Shared { float progress; long lastTick; }
+    private static final java.util.Map<Long, Shared> SHARED_BREAK = new java.util.concurrent.ConcurrentHashMap<>();
+
     public BlockBreakGoal(PathfinderMob mob, Predicate<BlockState> validBlockPredicate, int breakSpeed) {
         this.mob = mob;
         this.validBlockPredicate = validBlockPredicate;
@@ -214,20 +219,30 @@ public class BlockBreakGoal extends Goal {
                     this.blockPos.getZ() + 0.5D, 1.0D);
         }
 
-        this.breakTime++;
-        int i = (int) ((float) this.breakTime / (float) this.breakSpeed * 10.0F);
+        // Вклад ЭТОГО моба идёт в ОБЩИЙ прогресс блока — двое и более ломают вдвое-втрое быстрее.
+        long key = this.blockPos.asLong();
+        long now = this.mob.level().getGameTime();
+        Shared sh = SHARED_BREAK.computeIfAbsent(key, k -> new Shared());
+        if (now - sh.lastTick > 4L) {
+            sh.progress = 0.0F; // блок забросили — прогресс начинается заново
+        }
+        sh.lastTick = now;
+        sh.progress += 1.0F / (float) this.breakSpeed;
+        int i = Math.min(9, (int) (sh.progress * 10.0F));
         if (i != this.lastBreakProgress) {
             this.mob.level().destroyBlockProgress(this.mob.getId(), this.blockPos, i);
             this.lastBreakProgress = i;
         }
 
-        if (this.breakTime >= this.breakSpeed) {
-            // Capture the block id BEFORE destroying it so the break particles match.
-            // Event 2001 plays the block's OWN break sound + particles - no screeching
-            // "zombie breaks door" (1021) on every block.
+        if (sh.progress >= 1.0F) {
+            // Event 2001 = собственный звук/частицы блока (без визга «зомби ломает дверь»).
             int blockId = Block.getId(this.mob.level().getBlockState(this.blockPos));
             this.mob.level().destroyBlock(this.blockPos, true);
             this.mob.level().levelEvent(2001, this.blockPos, blockId);
+            SHARED_BREAK.remove(key);
+            if (SHARED_BREAK.size() > 256) {
+                SHARED_BREAK.values().removeIf(s -> now - s.lastTick > 40L); // чистим заброшенные
+            }
             this.breakTime = 0;
             this.lastBreakProgress = -1;
             this.stallTicks = 0; // progress! it broke something — not stuck.

@@ -658,7 +658,7 @@ public class HomeworldManager extends SavedData {
             }
         }
         set(level, base.offset(0, height + 1, 0), ModBlocks.ALIEN_FLESH);
-        set(level, base.offset(0, height + 2, 0), ModBlocks.ALIEN_HEART);
+        set(level, base.offset(0, height + 2, 0), ModBlocks.ALIEN_FLESH);
         set(level, base.offset(2, height + 1, 2), ModBlocks.ALIEN_STASH);
         set(level, base.offset(-2, height + 1, -2), ModBlocks.ALIEN_STASH);
         // Хозяин города.
@@ -704,7 +704,7 @@ public class HomeworldManager extends SavedData {
                 }
             }
         }
-        set(level, new BlockPos(x, base.getY() + height, z), ModBlocks.ALIEN_HEART);
+        set(level, new BlockPos(x, base.getY() + height, z), ModBlocks.ALIEN_FLESH);
         for (int i = 0; i < 2; i++) {
             Mob guard = EntityRegistry.ALIEN_GRUNT.create(level);
             if (guard != null) {
@@ -762,7 +762,7 @@ public class HomeworldManager extends SavedData {
         for (int y = 0; y < height - 4; y++) {
             hw.setBlockAndUpdate(new BlockPos(0, surface + y, 0), ModBlocks.ALIEN_FLESH.defaultBlockState());
         }
-        hw.setBlockAndUpdate(new BlockPos(0, surface + height - 4, 0), ModBlocks.ALIEN_HEART.defaultBlockState());
+        hw.setBlockAndUpdate(new BlockPos(0, surface + height - 4, 0), ModBlocks.ALIEN_FLESH.defaultBlockState());
         // Щупальца вокруг улья.
         for (int i = 0; i < 60; i++) {
             BlockPos p = new BlockPos(r.nextInt(61) - 30, 0, r.nextInt(61) - 30);

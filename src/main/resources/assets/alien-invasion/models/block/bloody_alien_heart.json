@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "alien-invasion:block/bloody_alien_heart"
-  }
-}

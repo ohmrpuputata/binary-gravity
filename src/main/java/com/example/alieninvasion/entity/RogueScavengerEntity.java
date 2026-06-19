@@ -17,6 +17,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -88,12 +89,21 @@ public class RogueScavengerEntity extends Zombie {
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty,
             MobSpawnType reason, SpawnGroupData data) {
         SpawnGroupData result = super.finalizeSpawn(level, difficulty, reason, data);
-        // ОДЕТ И ВООРУЖЁН (не голый): меч в руке, лёгкая броня выживальщика, инструменты — носит.
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
-        this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(this.random.nextBoolean() ? Items.IRON_HELMET : Items.LEATHER_HELMET));
-        this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.LEATHER_CHESTPLATE));
-        this.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.LEATHER_LEGGINGS));
-        this.setItemSlot(EquipmentSlot.FEET, new ItemStack(Items.LEATHER_BOOTS));
+        // ОДЕТ И ВООРУЖЁН (не голый), причём в СЛУЧАЙНЫЙ нормальный комплект — выжившие
+        // выглядят по-разному (кожа/кольчуга/железо/золото/алмаз) + меч под тир. Инструменты носит.
+        Item[][] kits = {
+                {Items.LEATHER_HELMET, Items.LEATHER_CHESTPLATE, Items.LEATHER_LEGGINGS, Items.LEATHER_BOOTS, Items.STONE_SWORD},
+                {Items.CHAINMAIL_HELMET, Items.CHAINMAIL_CHESTPLATE, Items.CHAINMAIL_LEGGINGS, Items.CHAINMAIL_BOOTS, Items.IRON_SWORD},
+                {Items.IRON_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS, Items.IRON_SWORD},
+                {Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS, Items.GOLDEN_SWORD},
+                {Items.DIAMOND_HELMET, Items.DIAMOND_CHESTPLATE, Items.DIAMOND_LEGGINGS, Items.DIAMOND_BOOTS, Items.DIAMOND_SWORD},
+        };
+        Item[] kit = kits[this.random.nextInt(kits.length)];
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(kit[4]));
+        this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(kit[0]));
+        this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(kit[1]));
+        this.setItemSlot(EquipmentSlot.LEGS, new ItemStack(kit[2]));
+        this.setItemSlot(EquipmentSlot.FEET, new ItemStack(kit[3]));
         for (EquipmentSlot slot : EquipmentSlot.values()) {
             this.setDropChance(slot, 0.10F); // редко роняет — не ферма лута
         }

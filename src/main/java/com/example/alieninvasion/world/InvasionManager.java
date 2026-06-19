@@ -736,7 +736,6 @@ public class InvasionManager extends SavedData {
             return net.minecraft.world.level.block.Blocks.GRASS_BLOCK.defaultBlockState();
         }
         if (s.is(com.example.alieninvasion.registry.ModBlocks.ALIEN_HIVE)
-                || s.is(com.example.alieninvasion.registry.ModBlocks.ALIEN_HEART)
                 || s.is(com.example.alieninvasion.registry.ModBlocks.ALIEN_TENDRILS)
                 || s.is(com.example.alieninvasion.registry.ModBlocks.BLOOD_POOL)) {
             return net.minecraft.world.level.block.Blocks.AIR.defaultBlockState();

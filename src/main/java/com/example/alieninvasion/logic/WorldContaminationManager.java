@@ -370,18 +370,7 @@ public final class WorldContaminationManager {
         // stays, growth stops). It spawns exactly once: a broken heart flags the
         // chunk inert, and inert chunks never run this pass again.
         if (day >= 4 && prevDay < 4) {
-            long hh = mix(chunkSeed ^ 0xD1B54A32D192ED03L);
-            if (((hh >>> 8) & 0xFFL) < 90L) { // ~35% of chunks
-                int hx = cpos.getMinBlockX() + 2 + (int) ((hh >>> 16) % 12L);
-                int hz = cpos.getMinBlockZ() + 2 + (int) ((hh >>> 24) % 12L);
-                int hy = chunk.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, hx & 15, hz & 15) + 1;
-                if (hy > minY && hy < maxY
-                        && chunk.getBlockState(cursor.set(hx, hy, hz)).isAir()
-                        && chunk.getBlockState(cursor.set(hx, hy - 1, hz)).getFluidState().isEmpty()
-                        && !chunk.getBlockState(cursor.set(hx, hy - 1, hz)).isAir()) {
-                    place(level, new BlockPos(hx, hy, hz), ModBlocks.ALIEN_HEART.defaultBlockState());
-                }
-            }
+            // (Разброс «Сердец заражения» по заражённым чанкам убран — блок удалён.)
         }
 
         data.setSurfaceDay(cpos, day);

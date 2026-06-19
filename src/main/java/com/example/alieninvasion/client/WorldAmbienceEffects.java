@@ -480,10 +480,7 @@ public final class WorldAmbienceEffects {
                     random.nextInt(17) - 8,
                     random.nextInt(41) - 20);
             BlockState state = level.getBlockState(pos);
-            if (state.is(ModBlocks.ALIEN_HEART)) {
-                heart = pos;
-                break;
-            }
+            // (Поиск «Сердца заражения» убран — блок удалён.)
             if (state.is(ModBlocks.RADIO_TRANSMITTER) || state.is(ModBlocks.BLACK_MARKET_TERMINAL)) {
                 radio = pos;
             }

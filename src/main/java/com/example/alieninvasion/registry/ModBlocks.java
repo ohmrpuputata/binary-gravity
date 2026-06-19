@@ -268,10 +268,7 @@ public class ModBlocks {
 
     private static final boolean BLOODY_VARIANTS_REGISTERED = BloodyVariantRegistry.registerAll();
 
-    public static final Block ALIEN_HEART = registerBlock("alien_heart",
-            new com.example.alieninvasion.block.AlienHeartBlock(BlockBehaviour.Properties.of()
-                    .mapColor(MapColor.COLOR_RED).strength(2.5F).randomTicks()
-                    .sound(SoundType.SLIME_BLOCK).lightLevel(state -> 7)));
+    // (Блок «Сердце заражения» удалён по просьбе — был чисто декоративным.)
 
     public static final Block RADIO_TRANSMITTER = registerBlock("radio_transmitter",
             new com.example.alieninvasion.block.RadioTransmitterBlock(BlockBehaviour.Properties.of()
