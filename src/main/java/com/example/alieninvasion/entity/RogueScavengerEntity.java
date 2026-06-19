@@ -4,22 +4,31 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * РЕДКИЙ выживший — игрок-NPC, не из роя. Бродит по пещерам, добывает руду «сквозь
- * стены» (x-ray), подбирает и НАДЕВАЕТ лучшее снаряжение (как ваниль-зомби с
- * подбором), отдыхает/«ест» (реген, когда нет боя). НЕЙТРАЛЕН, пока игрок не подойдёт
- * близко в зоне видимости — тогда «оценивает» и нападает; теряя бой — тактически
- * отступает (как реальный игрок). Слабее клона: обычные HP/урон, не весь арсенал.
- * В чат ничего не пишет — только случайный ник над головой и случайный скин.
+ * РЕДКИЙ выживший — человек-NPC, НЕ из роя. Появляется ОДЕТЫМ (меч + инструменты +
+ * лёгкая броня), бродит по пещерам и ДОБЫВАЕТ руду и дерево, переключаясь на нужный
+ * ИНСТРУМЕНТ (кирка/топор), а не голыми руками; подбирает и надевает лучшее снаряжение.
+ * ПРОТИВ ВСЕХ: бьёт игроков и пришельцев/монстров (но не своих). Теряя бой —
+ * тактически отступает, вне боя «ест»/отдыхает. Случайный ник + скин, в чат молчит.
  */
 public class RogueScavengerEntity extends Zombie {
     private static final String[] NICKS = {
@@ -30,11 +39,14 @@ public class RogueScavengerEntity extends Zombie {
     private static final EntityDataAccessor<Integer> SKIN =
             SynchedEntityData.defineId(RogueScavengerEntity.class, EntityDataSerializers.INT);
 
+    // Носимые инструменты — выживший достаёт нужный при добыче, а в бою держит меч.
+    private final ItemStack pickaxe = new ItemStack(Items.IRON_PICKAXE);
+    private final ItemStack axe = new ItemStack(Items.IRON_AXE);
     private int restCooldown;
 
     public RogueScavengerEntity(EntityType<? extends Zombie> type, Level level) {
         super(type, level);
-        this.setCanPickUpLoot(true); // подбирает и надевает лучшее снаряжение, как зомби
+        this.setCanPickUpLoot(true); // подбирает и надевает лучшее снаряжение
     }
 
     @Override
@@ -47,28 +59,49 @@ public class RogueScavengerEntity extends Zombie {
         return this.entityData.get(SKIN);
     }
 
+    /** Кирка для руды/камня, топор для дерева — выживший НЕ ломает блоки голыми руками. */
+    public ItemStack toolFor(BlockState state) {
+        return state.is(BlockTags.MINEABLE_WITH_AXE) ? this.axe : this.pickaxe;
+    }
+
     @Override
     protected void registerGoals() {
         this.goalSelector.addGoal(0, new net.minecraft.world.entity.ai.goal.FloatGoal(this));
-        // Теряя бой — отступает (как живой игрок), а не лезет на верную смерть.
         this.goalSelector.addGoal(1, new com.example.alieninvasion.ai.TacticalRetreatGoal(this, 1.3D));
         this.goalSelector.addGoal(2, new com.example.alieninvasion.ai.AlienLeapGoal(this, 0.5F));
         this.goalSelector.addGoal(3, new net.minecraft.world.entity.ai.goal.MeleeAttackGoal(this, 1.1D, false));
-        // Без боя — копает ближайшую руду «сквозь стены» (x-ray).
-        this.goalSelector.addGoal(4, new com.example.alieninvasion.ai.MineOreGoal(this, 8, 16));
+        // Вне боя — добывает руду И дерево нужным инструментом (x-ray скан).
+        this.goalSelector.addGoal(4, new com.example.alieninvasion.ai.GatherResourcesGoal(this, 10, 14));
         this.goalSelector.addGoal(6, new net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal(this, 0.9D));
         this.goalSelector.addGoal(7, new net.minecraft.world.entity.ai.goal.LookAtPlayerGoal(this, Player.class, 10.0F));
         this.goalSelector.addGoal(8, new net.minecraft.world.entity.ai.goal.RandomLookAroundGoal(this));
 
         this.targetSelector.addGoal(0, new net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal(this));
-        // НЕЙТРАЛЕН издалека: «замечает» игрока и нападает только вблизи (≈9 блоков) и
-        // по линии взгляда — словно сначала оценил обстановку, потом решил атаковать.
+        // ПРОТИВ ВСЕХ: игроки + пришельцы/монстры (кроме себе подобных).
         this.targetSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal<>(
-                this, Player.class, 10, true, false, this::noticesPlayer));
+                this, Player.class, true));
+        this.targetSelector.addGoal(2, new net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal<>(
+                this, Monster.class, 10, true, false, e -> !(e instanceof RogueScavengerEntity)));
     }
 
-    private boolean noticesPlayer(net.minecraft.world.entity.LivingEntity e) {
-        return this.distanceToSqr(e) < 81.0D && this.hasLineOfSight(e); // ~9 блоков + видит
+    @Override
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty,
+            MobSpawnType reason, SpawnGroupData data) {
+        SpawnGroupData result = super.finalizeSpawn(level, difficulty, reason, data);
+        // ОДЕТ И ВООРУЖЁН (не голый): меч в руке, лёгкая броня выживальщика, инструменты — носит.
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(Items.IRON_SWORD));
+        this.setItemSlot(EquipmentSlot.HEAD, new ItemStack(this.random.nextBoolean() ? Items.IRON_HELMET : Items.LEATHER_HELMET));
+        this.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.LEATHER_CHESTPLATE));
+        this.setItemSlot(EquipmentSlot.LEGS, new ItemStack(Items.LEATHER_LEGGINGS));
+        this.setItemSlot(EquipmentSlot.FEET, new ItemStack(Items.LEATHER_BOOTS));
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            this.setDropChance(slot, 0.10F); // редко роняет — не ферма лута
+        }
+        this.setCustomName(net.minecraft.network.chat.Component.literal(NICKS[this.random.nextInt(NICKS.length)]));
+        this.setCustomNameVisible(true);
+        this.entityData.set(SKIN, this.random.nextInt(4));
+        this.setPersistenceRequired();
+        return result;
     }
 
     @Override
@@ -76,12 +109,6 @@ public class RogueScavengerEntity extends Zombie {
         super.tick();
         if (this.level().isClientSide) {
             return;
-        }
-        if (this.getCustomName() == null) {
-            this.setCustomName(net.minecraft.network.chat.Component.literal(NICKS[this.random.nextInt(NICKS.length)]));
-            this.setCustomNameVisible(true);
-            this.entityData.set(SKIN, this.random.nextInt(4));
-            this.setPersistenceRequired(); // редкая сущность — не деспавнить
         }
         if (restCooldown > 0) {
             restCooldown--;
@@ -120,7 +147,6 @@ public class RogueScavengerEntity extends Zombie {
         return false;
     }
 
-    // Тихий: никаких зомби-стонов; человеческие звуки боли/смерти.
     @Override
     protected net.minecraft.sounds.SoundEvent getAmbientSound() {
         return null;
@@ -138,9 +164,9 @@ public class RogueScavengerEntity extends Zombie {
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes()
-                .add(Attributes.MAX_HEALTH, 20.0D)        // как у игрока
+                .add(Attributes.MAX_HEALTH, 20.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.29D)
-                .add(Attributes.ATTACK_DAMAGE, 3.0D)      // слабый без оружия (с мечом — сильнее)
+                .add(Attributes.ATTACK_DAMAGE, 2.0D)        // меч добавит ещё — как у игрока
                 .add(Attributes.FOLLOW_RANGE, 24.0D)
                 .add(Attributes.SPAWN_REINFORCEMENTS_CHANCE, 0.0D);
     }

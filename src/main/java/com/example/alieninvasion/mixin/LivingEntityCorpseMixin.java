@@ -37,6 +37,15 @@ public abstract class LivingEntityCorpseMixin {
             return; // игроки умирают по-ванильному (экран смерти/респаун)
         }
         this.deathTime++;
+        // Труп НЕ живёт: глушим ИИ/навигацию/прыжки и гасим горизонтальную скорость —
+        // иначе «мертвец» все эти секунды бегает, прыгает и таранит игрока.
+        if (self instanceof net.minecraft.world.entity.Mob mob) {
+            mob.setNoAi(true);
+            mob.getNavigation().stop();
+            mob.setTarget(null);
+        }
+        self.setDeltaMovement(0.0D, self.getDeltaMovement().y, 0.0D);
+        self.setJumping(false);
         if (!(self.level() instanceof ServerLevel sl)) {
             ci.cancel(); // клиент: только крутим deathTime для анимации, не удаляем
             return;

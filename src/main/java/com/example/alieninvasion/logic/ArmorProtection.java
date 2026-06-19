@@ -71,7 +71,8 @@ public final class ArmorProtection {
             return true;
         }
         return switch (slot) {
-            case HEAD -> stack.is(ItemRegistry.BIO_FILTER_MASK);
+            // Маска носится в ОТДЕЛЬНОМ слоте, а НЕ вместо шлема, и больше НЕ засчитывается
+            // как часть брони/сета — иначе обычный шлем≈маска по защите (баг).
             case FEET -> stack.is(ItemRegistry.GRAVITY_BOOTS);
             default -> false;
         };

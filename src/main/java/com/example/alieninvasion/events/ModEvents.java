@@ -1221,7 +1221,9 @@ public class ModEvents {
                 // Infection is now a DOSE-style meter (see InfectionManager): you only
                 // start accruing it after standing on contaminated ground for ~2s, and
                 // it builds a visible scale instead of infecting the instant you touch it.
-                if (player.tickCount % 20 == 0) {
+                // Заражение НАЧИНАЕТСЯ только с первой НОЧИ (как и спавн пришельцев):
+                // первая половина Дня 0 — чисто, шкала заражения не растёт.
+                if (player.tickCount % 20 == 0 && SurvivalManager.isAlienInvasionActive(level)) {
                     boolean infImmune = fullCosmic;
                     com.example.alieninvasion.logic.InfectionManager.tickPlayer(
                             level, player, onAlienGround, infImmune);

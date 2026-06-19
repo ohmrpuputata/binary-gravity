@@ -221,7 +221,9 @@ public final class RadiationManager {
             return;
         }
 
-        boolean masked = player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.BIO_FILTER_MASK);
+        // Снижение облучения даёт МАСКА в своём слоте — НЕ шлем брони (раньше тут стоял
+        // шлемный слот, из-за чего казалось, что шлем защищает как маска).
+        boolean masked = com.example.alieninvasion.logic.MaskSlot.hasMask(player);
         float exposure = scanExposure(level, player.blockPosition());
         // Фон дозиметра (синкается на клиент) — из РЕАЛЬНОЙ экспозиции (та же, что копит
         // дозу), до ослабления маской. exposure(0..12) → шкала 0..99. Так дозиметр
