@@ -2,12 +2,12 @@
   "parent": "alien-invasion:item/emeradium_shield_base",
   "display": {
     "thirdperson_righthand": {
-      "rotation": [45, 155, 0],
+      "rotation": [45, 65, 0],
       "translation": [-3.49, 11, -2],
       "scale": [1, 1, 1]
     },
     "thirdperson_lefthand": {
-      "rotation": [45, 155, 0],
+      "rotation": [45, 65, 0],
       "translation": [11.51, 7, 2.5],
       "scale": [1, 1, 1]
     },
