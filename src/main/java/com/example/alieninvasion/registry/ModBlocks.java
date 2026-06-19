@@ -53,7 +53,7 @@ public class ModBlocks {
     // воздух» — без герметичной маски травит, в маске тратит запас воздуха. Им
     // заполняют заражённые данжи/зоны.
     public static final Block TOXIC_GAS = registerBlock("toxic_gas",
-            new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN)
+            new com.example.alieninvasion.block.ToxicGasBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN)
                     .noCollission().instabreak().noOcclusion().replaceable().noLootTable()
                     .sound(SoundType.WOOL).pushReaction(PushReaction.DESTROY)));
 

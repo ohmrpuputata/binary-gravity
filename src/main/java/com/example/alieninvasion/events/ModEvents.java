@@ -814,9 +814,13 @@ public class ModEvents {
                         boolean fullCosmic = com.example.alieninvasion.logic.ArmorProtection.hasCompatibleSet(player,
                                 ItemRegistry.COSMIC_HELMET, ItemRegistry.COSMIC_CHESTPLATE,
                                 ItemRegistry.COSMIC_LEGGINGS, ItemRegistry.COSMIC_BOOTS);
-                        if (!fullCosmic) {
+                        // Герметичная маска С ВОЗДУХОМ защищает от кислотного дождя (как и
+                        // полный космо-сет). Сам воздух тратится в петле ядовитого воздуха ниже.
+                        boolean sealedAir = com.example.alieninvasion.logic.MaskSlot.hasSealedMask(player)
+                                && com.example.alieninvasion.logic.MaskSlot.getAir(player) > 0;
+                        if (!fullCosmic && !sealedAir) {
                             InfectionManager.addMeter(player, 1.5F);
-                            player.displayClientMessage(Component.literal("§c[!] Кислотный дождь заражает вас! Найдите укрытие."), true);
+                            player.displayClientMessage(Component.literal("§c[!] Кислотный дождь разъедает вас! Маска или укрытие."), true);
                         }
                     }
                 }
@@ -1236,8 +1240,9 @@ public class ModEvents {
                         && !player.getAbilities().invulnerable) {
                     net.minecraft.core.BlockPos headPos =
                             net.minecraft.core.BlockPos.containing(player.getEyePosition());
-                    boolean inToxicAir = level.getBlockState(headPos).is(ModBlocks.TOXIC_GAS);
-                    if (inToxicAir) {
+                    boolean inToxicGas = level.getBlockState(headPos).is(ModBlocks.TOXIC_GAS);
+                    boolean inAcidRain = !inToxicGas && level.isRaining() && level.canSeeSky(headPos);
+                    if (inToxicGas) {
                         if (com.example.alieninvasion.logic.MaskSlot.hasSealedMask(player)) {
                             int air = com.example.alieninvasion.logic.MaskSlot.getAir(player) - 10;
                             com.example.alieninvasion.logic.MaskSlot.setAir(player, air);
@@ -1248,6 +1253,14 @@ public class ModEvents {
                             player.hurt(level.damageSources().magic(), 2.0F);
                             player.addEffect(new MobEffectInstance(
                                     net.minecraft.world.effect.MobEffects.POISON, 80, 0, false, true));
+                        }
+                    } else if (inAcidRain) {
+                        // Открытый кислотный дождь = разбавленный ядовитый воздух: герметичная
+                        // маска даёт дышать, но медленно тратит воздух (сам урон/зараза дождя —
+                        // в блоке Acid Rain выше). Без маски/воздуха защиты нет.
+                        int air = com.example.alieninvasion.logic.MaskSlot.getAir(player);
+                        if (com.example.alieninvasion.logic.MaskSlot.hasSealedMask(player) && air > 0) {
+                            com.example.alieninvasion.logic.MaskSlot.setAir(player, air - 4);
                         }
                     } else {
                         int air = com.example.alieninvasion.logic.MaskSlot.getAir(player);
