@@ -111,7 +111,7 @@ def main():
     grid = []
     for pfx, pal in KINDS:
         for a in range(4):
-            for v in range(2):
+            for v in range(3):
                 im = splat(a, 1000 + (1 if pfx else 0) * 500 + a * 10 + v, pal)
                 im.save(os.path.join(DECAL_STAGING, f"blood_splat_{pfx}a{a}_v{v}.png"))
                 grid.append((f"{pfx}a{a}v{v}", im))
@@ -122,7 +122,7 @@ def main():
         os.makedirs(DECAL_REPO, exist_ok=True)
         for pfx, _ in KINDS:
             for a in range(4):
-                for v in range(2):
+                for v in range(3):
                     f = f"blood_splat_{pfx}a{a}_v{v}.png"
                     shutil.copy2(os.path.join(DECAL_STAGING, f), os.path.join(DECAL_REPO, f))
         print(f"decals promoted -> {DECAL_REPO}")
