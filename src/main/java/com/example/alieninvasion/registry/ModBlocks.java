@@ -390,6 +390,12 @@ public class ModBlocks {
             new net.minecraft.world.inventory.MenuType<>(com.example.alieninvasion.block.PlatinumAnvilMenu::new, net.minecraft.world.flag.FeatureFlags.DEFAULT_FLAGS)
     );
 
+    public static final net.minecraft.world.inventory.MenuType<com.example.alieninvasion.block.MaskMenu> MASK_MENU = Registry.register(
+            BuiltInRegistries.MENU,
+            ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "mask"),
+            new net.minecraft.world.inventory.MenuType<>(com.example.alieninvasion.block.MaskMenu::new, net.minecraft.world.flag.FeatureFlags.DEFAULT_FLAGS)
+    );
+
     public static final net.minecraft.world.item.crafting.RecipeType<com.example.alieninvasion.block.PlatinumAnvilRecipe> PLATINUM_ANVIL_RECIPE_TYPE = Registry.register(
             BuiltInRegistries.RECIPE_TYPE,
             ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "platinum_anvil"),

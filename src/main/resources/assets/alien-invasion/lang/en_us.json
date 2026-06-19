@@ -422,6 +422,8 @@
     "key.categories.alien-invasion":  "Alien Invasion",
     "key.alien-invasion.mask":  "Equip / remove mask",
     "message.alien-invasion.mask.none":  "Hold a mask in hand to put it on",
+    "container.alien-invasion.mask":  "Mask",
+    "container.alien-invasion.mask.slot":  "Mask",
     "tooltip.alien-invasion.acid_spitter_spawn_egg.functional":  "Spawns a Acid Spitter.",
     "tooltip.alien-invasion.acid_spitter_spawn_egg.lore":  "Acid charges dissolve armor faster than you can retreat.",
     "tooltip.alien-invasion.alien_alloy":  "A biometal alloy — hard as basalt, alive as muscle. The foundation of organic weaponry.",

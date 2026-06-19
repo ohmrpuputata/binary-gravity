@@ -422,6 +422,8 @@
     "key.categories.alien-invasion":  "Вторжение пришельцев",
     "key.alien-invasion.mask":  "Надеть / снять маску",
     "message.alien-invasion.mask.none":  "Держите маску в руке, чтобы надеть",
+    "container.alien-invasion.mask":  "Маска",
+    "container.alien-invasion.mask.slot":  "Маска",
     "tooltip.alien-invasion.acid_spitter_spawn_egg.functional":  "Призывает: Кислотный плевок.",
     "tooltip.alien-invasion.acid_spitter_spawn_egg.lore":  "Кислотный заряд растворяет броню быстрее, чем вы успеете отступить.",
     "tooltip.alien-invasion.alien_alloy":  "Биометаллический сплав — твёрдый как базальт, живой как мышца. Основа органического оружия.",

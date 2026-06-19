@@ -39,8 +39,13 @@ public class AlienInvasionMod implements ModInitializer {
 				com.example.alieninvasion.network.ToggleMaskPayload.CODEC);
 		net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.registerGlobalReceiver(
 				com.example.alieninvasion.network.ToggleMaskPayload.TYPE,
-				(payload, context) -> context.player().server.execute(
-						() -> com.example.alieninvasion.logic.MaskSlot.toggle(context.player())));
+				(payload, context) -> context.player().server.execute(() -> {
+					net.minecraft.server.level.ServerPlayer sp = context.player();
+					sp.openMenu(new net.minecraft.world.SimpleMenuProvider(
+							(id, inv, p) -> new com.example.alieninvasion.block.MaskMenu(
+									id, inv, com.example.alieninvasion.logic.MaskSlot.get(p)),
+							net.minecraft.network.chat.Component.translatable("container.alien-invasion.mask")));
+				}));
 		ModFluids.registerFluids();
 		com.example.alieninvasion.registry.ModBlocks.registerBlocks(); // Register Blocks
 		EntityRegistry.registerEntities();
