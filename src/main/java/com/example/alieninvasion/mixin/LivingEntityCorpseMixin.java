@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
  * Трупы не исчезают мгновенно. Убитое существо (НЕ игрок — у него экран смерти)
@@ -29,6 +30,15 @@ public abstract class LivingEntityCorpseMixin {
     private static final int LIE_TICKS = 100;   // ~5 c лежит
     private static final int SINK_START = 100;   // потом тонет
     private static final int GONE = 130;         // и исчезает
+
+    // Труп — БЕЗ ХИТБОКСА: его нельзя задеть/прокликать (удары/курсор проходят сквозь к
+    // врагам позади), пока он лежит/тонет. Игроков не трогаем — у них своя смерть.
+    @Inject(method = "isPickable", at = @At("HEAD"), cancellable = true)
+    private void alien$corpseNoHitbox(CallbackInfoReturnable<Boolean> cir) {
+        if (this.deathTime > 0 && !((Object) this instanceof Player)) {
+            cir.setReturnValue(false);
+        }
+    }
 
     @Inject(method = "tickDeath", at = @At("HEAD"), cancellable = true)
     private void alien$corpse(CallbackInfo ci) {
