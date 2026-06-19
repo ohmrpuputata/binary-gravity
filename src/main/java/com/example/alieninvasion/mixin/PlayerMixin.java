@@ -234,12 +234,15 @@ public class PlayerMixin implements com.example.alieninvasion.logic.InfectionTra
 
     @Unique
     private void alien_triggerAssimilation(net.minecraft.server.level.ServerLevel level, net.minecraft.server.level.ServerPlayer player) {
-        // Spawn Clone
-        com.example.alieninvasion.entity.InfestedPlayerCloneEntity clone = com.example.alieninvasion.registry.EntityRegistry.INFESTED_PLAYER_CLONE.create(level);
-        if (clone != null) {
-            clone.moveTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), player.getXRot());
-            clone.copyFromPlayer(player);
-            level.addFreshEntity(clone);
+        // Spawn Clone — ТОЛЬКО с 4-го дня. Раньше заражённых клонов в мире быть не должно
+        // (на 0 день ассимиляция просто лечит/убивает игрока без клона).
+        if (com.example.alieninvasion.logic.SurvivalManager.getDay(level) >= 4) {
+            com.example.alieninvasion.entity.InfestedPlayerCloneEntity clone = com.example.alieninvasion.registry.EntityRegistry.INFESTED_PLAYER_CLONE.create(level);
+            if (clone != null) {
+                clone.moveTo(player.getX(), player.getY(), player.getZ(), player.getYRot(), player.getXRot());
+                clone.copyFromPlayer(player);
+                level.addFreshEntity(clone);
+            }
         }
 
         // Clear player inventory so they don't drop items on death

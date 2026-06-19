@@ -176,9 +176,15 @@ public class InvasionHUDOverlay implements HudRenderCallback {
         boolean survivalBars = !mc.player.isCreative() && !mc.player.isSpectator()
                 && !mc.player.isInvulnerable();
         int barsLeft = screenW / 2 - 91 - 4;           // левый край ванильных баров/хотбара
-        int bottomAnchor = screenH - 6;
-        if (colX + COLUMN_W > barsLeft) {              // колонка перекрыла бы бары — поднимаем над ними
-            bottomAnchor = survivalBars ? screenH - 41 : screenH - 24;
+        // Низ колонки ВСЕГДА держим выше ванильных баров (здоровье/броня/голод) и хотбара,
+        // чтобы гейджи на них не налезали; всё, что выше, стек растит вверх сам с зазорами.
+        int bottomAnchor;
+        if (survivalBars) {
+            bottomAnchor = screenH - 41;               // над здоровьем/бронёй/голодом
+        } else if (colX + COLUMN_W > barsLeft) {
+            bottomAnchor = screenH - 24;               // креатив: над хотбаром, если колонка дотянулась
+        } else {
+            bottomAnchor = screenH - 6;
         }
 
         int by = bottomAnchor;

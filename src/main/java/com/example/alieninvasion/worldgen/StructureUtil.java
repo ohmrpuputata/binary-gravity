@@ -86,6 +86,12 @@ public final class StructureUtil {
     /** Spawn a dungeon guard (mob) that does not despawn. */
     public static void spawnGuard(WorldGenLevel level, BlockPos pos, EntityType<?> type, RandomSource rng) {
         if (level.isOutsideBuildHeight(pos) || !hasChunk(level, pos)) return;
+        // Заражённые клоны игрока — ПОЗДНЯЯ угроза (с 4-го дня). Если структура генерится
+        // раньше — ставим обычного заражённого зомби, чтобы клонов не было на 0 день.
+        if (type == com.example.alieninvasion.registry.EntityRegistry.INFESTED_PLAYER_CLONE
+                && com.example.alieninvasion.logic.SurvivalManager.getDay(level.getLevel()) < 4) {
+            type = com.example.alieninvasion.registry.EntityRegistry.INFESTED_ZOMBIE;
+        }
         Mob mob = (Mob) type.create(level.getLevel());
         if (mob != null) {
             mob.moveTo(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, rng.nextFloat() * 360.0F, 0.0F);
