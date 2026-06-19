@@ -25,6 +25,16 @@ public class SurvivalManager {
         return worldDay;
     }
 
+    /**
+     * Кислотный дождь — это СОБЫТИЕ, а не любой дождь. Опасен (разъедает, заражает,
+     * требует маску/укрытие) только когда мир уже отравлен: с Дня 2 вторжения ИЛИ во
+     * время радиационной бури. До этого дождь обычный и безвредный.
+     */
+    public static boolean isAcidRain(Level level) {
+        return level.isRaining()
+                && (getDay(level) >= 2 || com.example.alieninvasion.logic.RadiationManager.isStormActive());
+    }
+
     public static boolean isAlienInvasionActive(Level level) {
         // Invasion starts from the first night (approx 13000 ticks)
         return level.getDayTime() > 13000;

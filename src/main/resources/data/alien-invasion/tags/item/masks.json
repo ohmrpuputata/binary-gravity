@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "alien-invasion:bio_filter_mask"
+    "alien-invasion:cloth_respirator",
+    "alien-invasion:bio_filter_mask",
+    "alien-invasion:gas_mask"
   ]
 }

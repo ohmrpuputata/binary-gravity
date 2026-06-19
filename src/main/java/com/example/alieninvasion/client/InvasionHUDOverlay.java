@@ -264,8 +264,10 @@ public class InvasionHUDOverlay implements HudRenderCallback {
         if (com.example.alieninvasion.logic.RadiationManager.isStormActive()) {
             ay = drawChip(g, font, screenW / 2, ay, 0xFFFF5A3A, "радиационная буря");
         }
-        if (level.isRaining()) {
-            ay = drawChip(g, font, screenW / 2, ay, 0xFF7ACBFF, "кислотный дождь");
+        if (com.example.alieninvasion.logic.SurvivalManager.isAcidRain(level)) {
+            ay = drawChip(g, font, screenW / 2, ay, 0xFF7CFF5A, "кислотный дождь");
+        } else if (level.isRaining()) {
+            ay = drawChip(g, font, screenW / 2, ay, 0xFF7ACBFF, "дождь");
         }
         if (mc.player.getTags().contains("EmpActive")) {
             ay = drawChip(g, font, screenW / 2, ay, 0xFFFFC247, "ЭМП-импульс активен");
@@ -528,7 +530,8 @@ public class InvasionHUDOverlay implements HudRenderCallback {
             int wCol;
             if (com.example.alieninvasion.logic.RadiationManager.isStormActive()) { weather = "рад.буря"; wCol = 0xFFFF6A50; }
             else if (level.isThundering()) { weather = "гроза"; wCol = 0xFFB0B8FF; }
-            else if (level.isRaining()) { weather = "кисл.дождь"; wCol = 0xFFFF8080; }
+            else if (com.example.alieninvasion.logic.SurvivalManager.isAcidRain(level)) { weather = "кисл.дождь"; wCol = 0xFFFF8080; }
+            else if (level.isRaining()) { weather = "дождь"; wCol = 0xFF7ACBFF; }
             else { weather = "ясно"; wCol = 0xFF9FE8FF; }
             g.drawString(font, "РОЙ: " + aliens, x + 6, row, aliens > 0 ? 0xFFFF8A6A : 0xFF8FE08F, true);
             g.drawString(font, weather, x + w - 6 - font.width(weather), row, wCol, true);

@@ -25,6 +25,20 @@ public class MaskFeatureRenderer
 
     private static final ResourceLocation DEFAULT_TEX = ResourceLocation.fromNamespaceAndPath(
             AlienInvasionMod.MODID, "textures/models/armor/bio_filter_mask.png");
+    private static final ResourceLocation CLOTH_TEX = ResourceLocation.fromNamespaceAndPath(
+            AlienInvasionMod.MODID, "textures/models/armor/cloth_respirator.png");
+    private static final ResourceLocation GAS_TEX = ResourceLocation.fromNamespaceAndPath(
+            AlienInvasionMod.MODID, "textures/models/armor/gas_mask.png");
+
+    private static ResourceLocation texFor(ItemStack mask) {
+        if (mask.is(com.example.alieninvasion.registry.ItemRegistry.GAS_MASK)) {
+            return GAS_TEX;
+        }
+        if (mask.is(com.example.alieninvasion.registry.ItemRegistry.CLOTH_RESPIRATOR)) {
+            return CLOTH_TEX;
+        }
+        return DEFAULT_TEX;
+    }
 
     private BioFilterMaskModel model;
 
@@ -49,7 +63,7 @@ public class MaskFeatureRenderer
         // садится на лицо и следует за поворотом головы (а не висит у тела).
         pose.pushPose();
         this.getParentModel().head.translateAndRotate(pose);
-        this.model.head.render(pose, buffers.getBuffer(RenderType.entityCutoutNoCull(DEFAULT_TEX)),
+        this.model.head.render(pose, buffers.getBuffer(RenderType.entityCutoutNoCull(texFor(mask))),
                 light, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
         pose.popPose();
     }

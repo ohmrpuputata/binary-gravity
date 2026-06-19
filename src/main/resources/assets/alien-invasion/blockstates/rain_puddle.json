@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "acid=false": { "model": "alien-invasion:block/rain_puddle" },
+    "acid=true": { "model": "alien-invasion:block/rain_puddle_acid" }
+  }
+}

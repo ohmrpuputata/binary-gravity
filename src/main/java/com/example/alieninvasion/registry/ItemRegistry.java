@@ -419,9 +419,21 @@ public class ItemRegistry {
     public static final Item INFECTION_PILLS = registerItem("infection_pills",
             new com.example.alieninvasion.item.InfectionPillItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16)));
 
+    // Тканевый респиратор — начальная маска. Фильтрует споры/радиацию (слабее), но
+    // НЕ герметична: в ядовитом газе и кислотном дожде не спасает. Дёшев.
+    public static final Item CLOTH_RESPIRATOR = registerItem("cloth_respirator",
+            new com.example.alieninvasion.item.BioFilterMaskItem(
+                    new Item.Properties().durability(128)));
+
     public static final Item BIO_FILTER_MASK = registerItem("bio_filter_mask",
             new com.example.alieninvasion.item.BioFilterMaskItem(
                     new Item.Properties().rarity(Rarity.UNCOMMON).durability(256)));
+
+    // Боевой противогаз — высший тир. Герметичен (дышит в газе/кислоте), сильнейший
+    // фильтр, в тёмных заражённых зонах даёт ночное зрение. Собирается из био-фильтра.
+    public static final Item GAS_MASK = registerItem("gas_mask",
+            new com.example.alieninvasion.item.BioFilterMaskItem(
+                    new Item.Properties().rarity(Rarity.RARE).durability(512)));
 
     // Баллон воздуха: ПКМ заправляет запас воздуха герметичной маски (для ядовитых зон).
     public static final Item AIR_CANISTER = registerItem("air_canister",

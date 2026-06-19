@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " S ",
+    "LFL",
+    " S "
+  ],
+  "key": {
+    "S": { "item": "minecraft:string" },
+    "L": { "item": "minecraft:leather" },
+    "F": { "item": "minecraft:charcoal" }
+  },
+  "result": {
+    "id": "alien-invasion:cloth_respirator",
+    "count": 1
+  }
+}

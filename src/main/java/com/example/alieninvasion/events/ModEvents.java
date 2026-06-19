@@ -804,8 +804,48 @@ public class ModEvents {
                 }
             }
 
-            // Acid Rain (infection + grass spread)
-            if (level.isRaining() && level.getGameTime() % 40 == 0) {
+            // Лужи от дождя: на открытых ровных поверхностях у игроков появляются лужи,
+            // которые потом высыхают (RainPuddleBlock). Под кислотным дождём — кислотные.
+            if (level.isRaining() && level.getGameTime() % 8 == 0) {
+                boolean puddleAcid = com.example.alieninvasion.logic.SurvivalManager.isAcidRain(level);
+                for (ServerPlayer player : level.players()) {
+                    if (player.isSpectator()) {
+                        continue;
+                    }
+                    net.minecraft.core.BlockPos center = player.blockPosition();
+                    for (int i = 0; i < 4; i++) {
+                        net.minecraft.core.BlockPos pos = center.offset(
+                                level.random.nextInt(17) - 8,
+                                level.random.nextInt(5) - 2,
+                                level.random.nextInt(17) - 8);
+                        net.minecraft.world.level.block.state.BlockState here = level.getBlockState(pos);
+                        if (here.is(com.example.alieninvasion.registry.ModBlocks.RAIN_PUDDLE)) {
+                            // подливаем существующую лужу до полной + обновляем тип (вода/кислота)
+                            level.setBlock(pos, here
+                                    .setValue(com.example.alieninvasion.block.RainPuddleBlock.AMOUNT,
+                                            com.example.alieninvasion.block.RainPuddleBlock.MAX_AMOUNT)
+                                    .setValue(com.example.alieninvasion.block.RainPuddleBlock.ACID, puddleAcid), 2);
+                            continue;
+                        }
+                        if (!here.isAir() || !level.canSeeSky(pos)) {
+                            continue;
+                        }
+                        net.minecraft.core.BlockPos below = pos.below();
+                        net.minecraft.world.level.block.state.BlockState belowState = level.getBlockState(below);
+                        if (!belowState.isFaceSturdy(level, below, net.minecraft.core.Direction.UP)) {
+                            continue;
+                        }
+                        level.setBlock(pos, com.example.alieninvasion.registry.ModBlocks.RAIN_PUDDLE.defaultBlockState()
+                                .setValue(com.example.alieninvasion.block.RainPuddleBlock.ACID, puddleAcid)
+                                .setValue(com.example.alieninvasion.block.RainPuddleBlock.AMOUNT,
+                                        com.example.alieninvasion.block.RainPuddleBlock.MAX_AMOUNT), 2);
+                    }
+                }
+            }
+
+            // Acid Rain (infection + grass spread) — только когда дождь КИСЛОТНЫЙ (День 2+/буря),
+            // обычный ранний дождь безвреден.
+            if (com.example.alieninvasion.logic.SurvivalManager.isAcidRain(level) && level.getGameTime() % 40 == 0) {
                 for (ServerPlayer player : level.players()) {
                     if (level.canSeeSky(player.blockPosition())
                             && !player.isCreative()
@@ -820,6 +860,7 @@ public class ModEvents {
                                 && com.example.alieninvasion.logic.MaskSlot.getAir(player) > 0;
                         if (!fullCosmic && !sealedAir) {
                             InfectionManager.addMeter(player, 1.5F);
+                            player.hurt(level.damageSources().magic(), 2.0F); // кислота разъедает (бьёт сквозь броню)
                             player.displayClientMessage(Component.literal("§c[!] Кислотный дождь разъедает вас! Маска или укрытие."), true);
                         }
                     }
@@ -1229,8 +1270,25 @@ public class ModEvents {
                 // секунду снижает заражение и накопленную дозу. Это первая, базовая защита;
                 // разные маски/тиры будут давать разную силу фильтра.
                 if (player.tickCount % 20 == 0 && com.example.alieninvasion.logic.MaskSlot.hasMask(player)) {
-                    com.example.alieninvasion.logic.InfectionManager.addMeter(player, -2.0F);
-                    com.example.alieninvasion.logic.RadiationManager.addDose(player, -1.5F);
+                    // Сила фильтра зависит от ТИРА маски: тканевый респиратор слабее,
+                    // боевой противогаз сильнее всех и вдобавок даёт ночное зрение.
+                    net.minecraft.world.item.ItemStack worn = com.example.alieninvasion.logic.MaskSlot.get(player);
+                    float filterInf;
+                    float filterDose;
+                    if (worn.is(ItemRegistry.GAS_MASK)) {
+                        filterInf = -3.0F;
+                        filterDose = -2.5F;
+                        player.addEffect(new net.minecraft.world.effect.MobEffectInstance(
+                                net.minecraft.world.effect.MobEffects.NIGHT_VISION, 220, 0, true, false, false));
+                    } else if (worn.is(ItemRegistry.CLOTH_RESPIRATOR)) {
+                        filterInf = -1.0F;
+                        filterDose = -0.8F;
+                    } else {
+                        filterInf = -2.0F;
+                        filterDose = -1.5F;
+                    }
+                    com.example.alieninvasion.logic.InfectionManager.addMeter(player, filterInf);
+                    com.example.alieninvasion.logic.RadiationManager.addDose(player, filterDose);
                 }
 
                 // ЯДОВИТЫЙ ВОЗДУХ: голова в облаке TOXIC_GAS. Без ГЕРМЕТИЧНОЙ маски — травит
@@ -1241,7 +1299,9 @@ public class ModEvents {
                     net.minecraft.core.BlockPos headPos =
                             net.minecraft.core.BlockPos.containing(player.getEyePosition());
                     boolean inToxicGas = level.getBlockState(headPos).is(ModBlocks.TOXIC_GAS);
-                    boolean inAcidRain = !inToxicGas && level.isRaining() && level.canSeeSky(headPos);
+                    boolean inAcidRain = !inToxicGas
+                            && com.example.alieninvasion.logic.SurvivalManager.isAcidRain(level)
+                            && level.canSeeSky(headPos);
                     if (inToxicGas) {
                         if (com.example.alieninvasion.logic.MaskSlot.hasSealedMask(player)) {
                             int air = com.example.alieninvasion.logic.MaskSlot.getAir(player) - 10;

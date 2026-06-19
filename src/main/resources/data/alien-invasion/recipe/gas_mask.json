@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GMG",
+    "PCP"
+  ],
+  "key": {
+    "G": { "item": "minecraft:glass_pane" },
+    "M": { "item": "alien-invasion:bio_filter_mask" },
+    "P": { "item": "alien-invasion:palladium_ingot" },
+    "C": { "item": "minecraft:charcoal" }
+  },
+  "result": {
+    "id": "alien-invasion:gas_mask",
+    "count": 1
+  }
+}

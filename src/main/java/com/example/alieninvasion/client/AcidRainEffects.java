@@ -28,7 +28,10 @@ public final class AcidRainEffects {
 
     private static void tick(Minecraft client) {
         ClientLevel level = client.level;
-        if (level == null || client.player == null || client.isPaused() || !level.isRaining()) {
+        // Зелёная кислотная дымка/брызги — только в КИСЛОТНЫЙ дождь (День 2+/буря).
+        // Обычный ранний дождь идёт без кислотных частиц.
+        if (level == null || client.player == null || client.isPaused()
+                || !com.example.alieninvasion.logic.SurvivalManager.isAcidRain(level)) {
             return;
         }
 
