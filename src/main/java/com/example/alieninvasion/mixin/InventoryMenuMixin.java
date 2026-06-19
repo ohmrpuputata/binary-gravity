@@ -23,8 +23,7 @@ public class InventoryMenuMixin {
 
     @Inject(method = "<init>", at = @At("TAIL"))
     private void alien$addMaskSlot(Inventory inventory, boolean isServerSide, Player owner, CallbackInfo ci) {
-        ((AbstractContainerMenuInvoker) (Object) this).alien$addSlot(
-                new Slot(new MaskAttachmentContainer(owner), 0, 77, 44) {
+        Slot maskSlot = new Slot(new MaskAttachmentContainer(owner), 0, 77, 44) {
             @Override
             public boolean mayPlace(ItemStack stack) {
                 return MaskSlot.isMask(stack);
@@ -34,6 +33,7 @@ public class InventoryMenuMixin {
             public int getMaxStackSize() {
                 return 1;
             }
-        });
+        };
+        ((AbstractContainerMenuInvoker) (Object) this).alien$addSlot(maskSlot);
     }
 }

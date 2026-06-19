@@ -19,5 +19,12 @@ public abstract class InventoryScreenMixin {
         int y = ((AbstractContainerScreenAccessor) screen).alien$getTopPos() + 44;
         g.fill(x - 1, y - 1, x + 17, y + 17, 0xFF373737);
         g.fill(x, y, x + 16, y + 16, 0xFF8B8B8B);
+        // Призрак маски в ПУСТОЙ ячейке — как силуэт щита в слоте левой руки.
+        net.minecraft.client.player.LocalPlayer p = net.minecraft.client.Minecraft.getInstance().player;
+        if (p != null && com.example.alieninvasion.logic.MaskSlot.get(p).isEmpty()) {
+            g.blit(net.minecraft.resources.ResourceLocation.fromNamespaceAndPath(
+                            "alien-invasion", "textures/item/empty_mask_slot.png"),
+                    x, y, 0.0F, 0.0F, 16, 16, 16, 16);
+        }
     }
 }
