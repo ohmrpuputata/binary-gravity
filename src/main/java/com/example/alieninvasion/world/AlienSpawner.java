@@ -33,8 +33,13 @@ public class AlienSpawner {
         if (InvasionManager.get(level).isVictoryAchieved()) {
             return;
         }
+        // Вторжение НАЧИНАЕТСЯ С ПЕРВОЙ НОЧИ: первая половина Дня 0 (до ночи) — чисто,
+        // без спавна и заражения. Дальше рой давит круглосуточно (см. свет ниже).
+        if (!com.example.alieninvasion.logic.SurvivalManager.isAlienInvasionActive(level)) {
+            return;
+        }
         if (level.random.nextInt(400) != 0)
-            return; // a squad roughly every ~20 seconds while it's dark
+            return; // a squad roughly every ~20 seconds
 
         List<ServerPlayer> players = level.players();
         if (players.isEmpty())
@@ -74,8 +79,13 @@ public class AlienSpawner {
         int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
         BlockPos spawnPos = new BlockPos(x, y, z);
 
-        if (level.isLoaded(spawnPos) && level.getMaxLocalRawBrightness(spawnPos) < 7) {
-            spawnSquad(level, spawnPos, difficulty);
+        if (level.isLoaded(spawnPos)) {
+            // Пришельцы лезут и ДНЁМ, но реже: в темноте/ночью — всегда, при дневном
+            // свете — примерно 1/3 попыток (баланс, чтобы день не превратился в ад).
+            boolean dark = level.getMaxLocalRawBrightness(spawnPos) < 7;
+            if (dark || level.random.nextInt(3) == 0) {
+                spawnSquad(level, spawnPos, difficulty);
+            }
         }
     }
 

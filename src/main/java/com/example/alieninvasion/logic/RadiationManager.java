@@ -217,11 +217,17 @@ public final class RadiationManager {
             clearDose(player);
             SCREEN_GLITCH.remove(id);
             removeAllDoseEffects(player);
+            player.setAttached(com.example.alieninvasion.registry.ModAttachments.RADIATION_FIELD, 0);
             return;
         }
 
         boolean masked = player.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.BIO_FILTER_MASK);
         float exposure = scanExposure(level, player.blockPosition());
+        // Фон дозиметра (синкается на клиент) — из РЕАЛЬНОЙ экспозиции (та же, что копит
+        // дозу), до ослабления маской. exposure(0..12) → шкала 0..99. Так дозиметр
+        // показывает именно ту радиацию, что вокруг, а не клиентскую переоценку дальних блоков.
+        player.setAttached(com.example.alieninvasion.registry.ModAttachments.RADIATION_FIELD,
+                Math.min(99, Math.round(exposure * 8.0F)));
         if (masked) exposure *= 0.35F;
 
         float dose = getDose(player);

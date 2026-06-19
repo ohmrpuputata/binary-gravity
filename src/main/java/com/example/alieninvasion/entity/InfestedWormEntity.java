@@ -38,6 +38,21 @@ public class InfestedWormEntity extends Silverfish implements IAlienUnit {
         builder.define(STAGE, 0);
     }
 
+    @Override
+    protected void registerGoals() {
+        // НЕ зовём super: ванильная рыбка-серебрянка прячется/закапывается в блоки
+        // (SilverfishMergeWithStoneGoal) и будит сородичей из камня — червю это не нужно,
+        // он не насекомое-в-стене. Даём чистый набор: плыть, кусать, бродить, смотреть.
+        this.goalSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.FloatGoal(this));
+        this.goalSelector.addGoal(3, new net.minecraft.world.entity.ai.goal.MeleeAttackGoal(this, 1.0D, true));
+        this.goalSelector.addGoal(5, new net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal(this, 0.8D));
+        this.goalSelector.addGoal(6, new net.minecraft.world.entity.ai.goal.LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(7, new net.minecraft.world.entity.ai.goal.RandomLookAroundGoal(this));
+        this.targetSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal(this).setAlertOthers());
+        this.targetSelector.addGoal(2, new net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal<>(
+                this, Player.class, true));
+    }
+
     public int getStage() {
         return this.entityData.get(STAGE);
     }

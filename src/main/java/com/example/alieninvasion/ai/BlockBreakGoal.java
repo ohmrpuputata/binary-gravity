@@ -22,6 +22,10 @@ public class BlockBreakGoal extends Goal {
     private static final int MODE_UNSTICK = 1;
     // How long a single unstick burst runs before the goal yields and re-evaluates.
     private static final int UNSTICK_MAX_TICKS = 30;
+    // Anti-freeze: if the mob has been chewing on the CURRENT block this long without
+    // ever destroying one (unreachable / can't make progress), bail so it re-paths
+    // instead of standing locked in one spot forever. Reset every time a block breaks.
+    private static final int MAX_STALL_TICKS = 200;
 
     protected final PathfinderMob mob;
     protected BlockPos blockPos = BlockPos.ZERO;
@@ -31,6 +35,7 @@ public class BlockBreakGoal extends Goal {
     protected final int breakSpeed; // lower is faster (ticks to break one block)
     private int mode = MODE_DIG;
     private int unstickTicks;
+    private int stallTicks;
 
     public BlockBreakGoal(PathfinderMob mob, Predicate<BlockState> validBlockPredicate, int breakSpeed) {
         this.mob = mob;
@@ -154,6 +159,7 @@ public class BlockBreakGoal extends Goal {
         this.breakTime = 0;
         this.lastBreakProgress = -1;
         this.unstickTicks = 0;
+        this.stallTicks = 0;
         if (this.mode == MODE_DIG) {
             // Face and walk into the block we're mining so the body keeps pushing
             // through as the tunnel opens up.
@@ -180,7 +186,8 @@ public class BlockBreakGoal extends Goal {
             // Short burst only, then yield so the mob can re-path or re-evaluate.
             return this.unstickTicks < UNSTICK_MAX_TICKS;
         }
-        return this.mob.level().getBlockState(this.blockPos).blocksMotion()
+        return this.stallTicks < MAX_STALL_TICKS
+                && this.mob.level().getBlockState(this.blockPos).blocksMotion()
                 && isValidBlock(this.blockPos)
                 && this.mob.distanceToSqr(this.blockPos.getX() + 0.5, this.blockPos.getY() + 0.5,
                         this.blockPos.getZ() + 0.5) < 9.0;
@@ -199,6 +206,14 @@ public class BlockBreakGoal extends Goal {
         // (Removed the loud 1019 door-bang spam; the cracking animation + the final
         // break sound below are enough feedback and far less annoying.)
 
+        // Keep walking into the opening so the body advances as the tunnel clears,
+        // and count stall time toward the give-up cap (reset whenever a block falls).
+        this.stallTicks++;
+        if (this.stallTicks % 20 == 0) {
+            this.mob.getNavigation().moveTo(this.blockPos.getX() + 0.5D, this.mob.getY(),
+                    this.blockPos.getZ() + 0.5D, 1.0D);
+        }
+
         this.breakTime++;
         int i = (int) ((float) this.breakTime / (float) this.breakSpeed * 10.0F);
         if (i != this.lastBreakProgress) {
@@ -215,6 +230,7 @@ public class BlockBreakGoal extends Goal {
             this.mob.level().levelEvent(2001, this.blockPos, blockId);
             this.breakTime = 0;
             this.lastBreakProgress = -1;
+            this.stallTicks = 0; // progress! it broke something — not stuck.
         }
     }
 

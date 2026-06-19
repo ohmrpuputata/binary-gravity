@@ -34,6 +34,12 @@ import java.util.UUID;
  * bridges and towers to reach you, eats golden apples from the stash when low.
  */
 public class InfestedPlayerCloneEntity extends Zombie implements IAlienUnit {
+    // Случайные ники — клон выглядит как ОЧЕРЕДНОЙ погибший игрок, а не как твоя копия.
+    private static final String[] CLONE_NICKS = {
+            "Steve_2009", "xX_Reaper_Xx", "Dimon4ik", "ProGamer228", "Kreed_", "Herobrine",
+            "MrFox", "Player_1337", "Survivor", "Shadow__", "Nub_Slayer", "Cooldwarf",
+            "Ivan_", "Kelev", "Dead_Andrey", "grisha_top", "Notch_fan", "Alex22"
+    };
     private UUID ownerId;
     private String ownerName = "";
     private final NonNullList<ItemStack> stash = NonNullList.create();
@@ -77,7 +83,9 @@ public class InfestedPlayerCloneEntity extends Zombie implements IAlienUnit {
     public void bindOwner(Player player) {
         this.ownerId = player.getUUID();
         this.ownerName = player.getName().getString();
-        this.setCustomName(net.minecraft.network.chat.Component.literal("§4" + ownerName));
+        // Случайный ник, как у обычного погибшего игрока (а не имя жертвы красным).
+        String nick = CLONE_NICKS[this.random.nextInt(CLONE_NICKS.length)];
+        this.setCustomName(net.minecraft.network.chat.Component.literal(nick));
         this.setCustomNameVisible(true);
         this.setPersistenceRequired();
     }

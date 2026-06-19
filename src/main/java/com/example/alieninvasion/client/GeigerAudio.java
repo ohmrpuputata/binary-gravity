@@ -35,11 +35,10 @@ public final class GeigerAudio {
         if (p == null || mc.level == null) {
             return;
         }
-        // Фон считаем сканом блоков на клиенте (раз в 8 тиков, не каждый кадр) — иначе
-        // дозиметр показывал 0, т.к. серверный LAST_FIELD на клиент не синкается.
-        if (mc.level.getGameTime() % 8L == 0L) {
-            clientField = RadiationManager.scanField(mc.level, p.blockPosition());
-        }
+        // Фон берём из СИНКНУТОГО серверного значения (RADIATION_FIELD) — это та же
+        // реальная экспозиция, что копит дозу, плюс буря. Клиентский scanField раньше
+        // завышал фон дальними блоками и не знал про бурю — отсюда «неправильный фон».
+        clientField = p.getAttachedOrElse(com.example.alieninvasion.registry.ModAttachments.RADIATION_FIELD, 0);
         if (mc.isPaused() || !p.getInventory().contains(new ItemStack(ItemRegistry.GEIGER_COUNTER))) {
             return;
         }

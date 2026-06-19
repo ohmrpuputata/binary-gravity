@@ -89,9 +89,10 @@ public final class BleedManager {
         }
     }
 
-    /** Костяная нежить (скелеты/визер-скелеты/strays/bogged) не кровоточит. */
+    /** Костяная нежить (скелеты) и конструкты (железный/снежный голем) не кровоточат. */
     public static boolean canBleed(LivingEntity e) {
-        return !(e instanceof AbstractSkeleton);
+        return !(e instanceof AbstractSkeleton)
+                && !(e instanceof net.minecraft.world.entity.animal.AbstractGolem);
     }
 
     /** Заражённые существа и пришельцы кровят фиолетовым ихором. */

@@ -27,6 +27,13 @@ public final class ModAttachments {
             .syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all())
             .buildAndRegister(ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "mask_air"));
 
+    /** Текущий радиационный ФОН вокруг игрока (0..99), посчитанный на СЕРВЕРЕ из реальной
+     *  экспозиции (та же, что копит дозу) + буря. Synced — дозиметр в HUD рисует именно
+     *  его, а не клиентскую переоценку: раньше дальние блоки завышали фон и буря не учитывалась. */
+    public static final AttachmentType<Integer> RADIATION_FIELD = AttachmentRegistry.<Integer>builder()
+            .syncWith(ByteBufCodecs.VAR_INT, AttachmentSyncPredicate.all())
+            .buildAndRegister(ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "radiation_field"));
+
     private ModAttachments() {
     }
 

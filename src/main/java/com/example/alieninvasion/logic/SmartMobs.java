@@ -68,7 +68,7 @@ public final class SmartMobs {
             //  - dig through soft cover toward a player walled in with weak blocks;
             //  - PARKOUR: pounce-leap across gaps / up ledges toward the target.
             goals.addGoal(1, new com.example.alieninvasion.ai.PillarUpGoal(mob, Blocks.DIRT.defaultBlockState()));
-            goals.addGoal(2, new BlockBreakGoal(mob, SOFT_COVER, 55));
+            goals.addGoal(2, new BlockBreakGoal(mob, SOFT_COVER, 24));
             goals.addGoal(3, new com.example.alieninvasion.ai.AlienLeapGoal(mob, 0.5F));
         });
     }

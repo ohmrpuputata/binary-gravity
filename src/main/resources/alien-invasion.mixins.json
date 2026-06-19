@@ -13,6 +13,7 @@
     "AbstractContainerMenuInvoker",
     "InventoryMenuMixin",
     "MobMixin",
+    "LevelEventMixin",
     "EntityNameMixin",
     "ItemStackMixin",
     "LivingEntityShieldMixin"
