@@ -59,6 +59,12 @@ public abstract class LivingEntityCorpseMixin {
         if (this.deathTime % 14 == 0 && this.deathTime < SINK_START) {
             BloodyBlocks.splatter(sl, self.blockPosition().below(), purple);
         }
+        // Заражённый червём носитель: червь ВЫЛЕЗАЕТ ИЗ ТРУПА по ходу лежания (≈2.5 c после
+        // смерти), а не мгновенно при гибели.
+        if (this.deathTime == 50
+                && self.getTags().contains(com.example.alieninvasion.logic.WormInfestation.HOST_TAG)) {
+            com.example.alieninvasion.logic.WormInfestation.emergeFromCorpse(sl, self);
+        }
         if (this.deathTime >= SINK_START) {
             self.setPos(self.getX(), self.getY() - 0.045D, self.getZ()); // медленно тонет под землю
         }

@@ -1140,9 +1140,9 @@ public class ModEvents {
                 if (!player.getItemBySlot(EquipmentSlot.FEET).isEmpty())  anyArmorShield += 0.03F;
                 float doseMult = fullChem ? 0.2F : fullHazmat ? (1.0F / 3.0F) : (fullPlatinum || fullEmeradium) ? 0.5F
                         : (1.0F - anyArmorShield);
-                // Заражение СЕРЬЁЗНОЕ: даже лучшая броня лишь ЗАМЕДЛЯЕТ его, а не глушит.
-                // chem(×2 медленнее) > hazmat > palladium > без брони. Броня НЕ обнуляет шкалу.
-                float meterMult = fullChem ? 0.5F : fullHazmat ? 0.65F : fullPalladium ? 0.8F : 1.0F;
+                // Броня НИКАК не влияет на ЗАРАЖЕНИЕ — от заражения защищает ТОЛЬКО МАСКА.
+                // (Раньше chem/hazmat/palladium замедляли шкалу — убрано по просьбе.)
+                float meterMult = 1.0F;
                 com.example.alieninvasion.logic.RadiationManager.setDoseMultiplier(player, doseMult);
                 com.example.alieninvasion.logic.InfectionManager.setMeterMultiplier(player, meterMult);
                 if (fullPlatinum) {
@@ -1151,7 +1151,7 @@ public class ModEvents {
                 // (Палладиевый потолок 70% убран — заражение может дойти до смертельного
                 //  даже в палладии, иначе броня делала заражение неощутимым.)
                 if (fullAstralPrism) {
-                    com.example.alieninvasion.logic.InfectionManager.capMeter(player, 75.0F);
+                    // (Потолок заражения 75% убран — броня не ограничивает заражение.)
                     float inf = com.example.alieninvasion.logic.InfectionManager.getMeter(player);
                     if (player.tickCount % 20 == 0) {
                         if (inf >= 75.0F) {
