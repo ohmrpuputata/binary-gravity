@@ -41,8 +41,8 @@ public class ParasiteItem extends Item {
         mob.setTarget(null);
         mob.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 12000, 0, false, false));
         mob.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 12000, 0, false, false));
-        mob.setCustomName(Component.literal("§dЗаражённый союзник"));
-        mob.setCustomNameVisible(true);
+        // Подчинённый моб внешне НЕ отличается от обычного — без имени и бирки над
+        // головой. Какого моба вы обратили, подскажет разовое сообщение ниже.
 
         if (player.level() instanceof ServerLevel sl) {
             sl.sendParticles(ParticleTypes.WARPED_SPORE, mob.getX(), mob.getEyeY(), mob.getZ(),

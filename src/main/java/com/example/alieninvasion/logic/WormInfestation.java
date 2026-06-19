@@ -4,21 +4,17 @@ import com.example.alieninvasion.block.BloodyBlocks;
 import com.example.alieninvasion.entity.InfestedWormEntity;
 import com.example.alieninvasion.registry.EntityRegistry;
 import com.example.alieninvasion.registry.ModAttachments;
-import com.example.alieninvasion.registry.ModEffects;
 import com.example.alieninvasion.registry.ModParticles;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 
 /**
- * Червь залезает в МИРНОГО моба и вынашивается. Носитель ЯВНО заражён: зелёное имя,
- * свечение (видно сквозь стены), фиолетовые споры. Чем дольше живёт — тем КРУПНЕЕ
+ * Червь залезает в МИРНОГО моба и вынашивается. Носитель внешне НИКАК НЕ отличается
+ * от обычного моба — ни имени, ни свечения, ни фиолетового ихора: заражение скрытно,
+ * носитель неотличим, пока его не разорвёт изнутри. Чем дольше живёт — тем КРУПНЕЕ
  * вылезет червь. Когда носитель погибает (созрел или убит), он становится ТРУПОМ и
  * червь ВЫЛЕЗАЕТ ИЗ ТРУПА по ходу лежания (см. corpse-микшин), а не мгновенно.
  */
@@ -30,46 +26,29 @@ public final class WormInfestation {
     private WormInfestation() {
     }
 
-    /** Червь забрался в мирного моба: метим, делаем ЯВНО заражённым, заводим срок. */
+    /** Червь забрался в мирного моба: тихо метим тегом и заводим срок — БЕЗ видимых меток. */
     public static void infest(PathfinderMob host) {
         if (host.getTags().contains(HOST_TAG)) {
             return;
         }
         host.addTag(HOST_TAG);
         host.setAttached(ModAttachments.WORM_GESTATION, 0);
-        applyMarks(host);
+        // Носитель НИКАК не помечается: ни зелёного имени, ни свечения, ни фиолетового
+        // ихора — внешне это обычный мирный моб. Заражение лишь слышно (червь вгрызается).
         if (host.level() instanceof ServerLevel sl) {
-            sl.sendParticles(ModParticles.BLOOD_PURPLE, host.getX(), host.getY() + host.getBbHeight() * 0.5D,
-                    host.getZ(), 14, 0.25D, 0.25D, 0.25D, 0.04D);
             sl.playSound(null, host.blockPosition(), SoundEvents.SLIME_BLOCK_PLACE, SoundSource.HOSTILE, 0.8F, 0.6F);
         }
     }
 
-    /** Зелёное имя + свечение + ихор в крови — чтобы заражённый моб было ВИДНО. */
-    private static void applyMarks(PathfinderMob host) {
-        host.setCustomName(Component.literal("§2Заражённый " + host.getType().getDescription().getString()));
-        host.setCustomNameVisible(true);
-        int dur = 120;
-        host.addEffect(new MobEffectInstance(MobEffects.GLOWING, dur, 0, false, false));
-        host.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, dur, 0, false, false));
-        host.addEffect(new MobEffectInstance(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.INFECTION),
-                dur, 0, false, false));
-    }
-
-    /** Каждый тик у живого носителя: растёт срок, ПОДНОВЛЯЮТСЯ метки, споры; созрев — гибнет. */
+    /** Каждый тик у живого носителя: растёт срок вынашивания; созрев — носителя разрывает. */
     public static void tickHost(ServerLevel level, LivingEntity host) {
-        if (!(host instanceof PathfinderMob mob) || !host.getTags().contains(HOST_TAG)) {
+        if (!(host instanceof PathfinderMob) || !host.getTags().contains(HOST_TAG)) {
             return;
         }
         int g = host.getAttachedOrElse(ModAttachments.WORM_GESTATION, 0) + 1;
         host.setAttached(ModAttachments.WORM_GESTATION, g);
-        if (g % 40 == 0) {
-            applyMarks(mob); // подновляем — свечение/имя не должны пропадать
-        }
-        if (g % 8 == 0) {
-            level.sendParticles(ModParticles.BLOOD_PURPLE, host.getX(), host.getY() + host.getBbHeight() * 0.6D,
-                    host.getZ(), 2, 0.2D, 0.2D, 0.2D, 0.01D);
-        }
+        // Никаких частиц/меток/свечения за время вынашивания — носитель остаётся
+        // визуально неотличим от обычного моба, пока его не разорвёт изнутри.
         if (g >= BURST_TICKS) {
             // Созрел — носителя разрывает изнутри. САМ червь вылезет уже ИЗ ТРУПА.
             host.hurt(level.damageSources().magic(), host.getMaxHealth() * 2.0F + 10.0F);

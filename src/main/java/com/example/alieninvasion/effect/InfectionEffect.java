@@ -16,8 +16,10 @@ public class InfectionEffect extends MobEffect {
     public boolean applyEffectTick(LivingEntity entity, int amplifier) {
         Level level = entity.level();
         if (!level.isClientSide) {
-            // Creepy alien spore aura around the host.
-            if (level instanceof ServerLevel sl && entity.tickCount % 5 == 0) {
+            // Creepy alien spore aura — ТОЛЬКО вокруг игрока. Заражённые мобы НЕ должны
+            // ничем отличаться от обычных, поэтому ауры спор у них нет.
+            if (level instanceof ServerLevel sl && entity instanceof net.minecraft.world.entity.player.Player
+                    && entity.tickCount % 5 == 0) {
                 double w = entity.getBbWidth() * 0.6;
                 double h = entity.getBbHeight();
                 sl.sendParticles(ParticleTypes.WARPED_SPORE,

@@ -108,10 +108,16 @@ public final class BleedManager {
                 && !(e instanceof net.minecraft.world.entity.animal.AbstractGolem);
     }
 
-    /** Заражённые существа и пришельцы кровят фиолетовым ихором. */
+    /**
+     * Фиолетовым ихором кровят только пришельцы (и заражённый ИГРОК). Заражённые
+     * ванильные мобы внешне НЕ отличаются от обычных — кровь у них обычная, красная,
+     * несмотря на эффект заражения.
+     */
     public static boolean isInfectedBlood(LivingEntity e) {
-        return AlienUtils.isAlliedTo(null, e)
-                || e.hasEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.INFECTION));
+        if (e instanceof net.minecraft.world.entity.player.Player) {
+            return e.hasEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(ModEffects.INFECTION));
+        }
+        return AlienUtils.isAlliedTo(null, e);
     }
 
     /** Кровь идёт только от режущего/физического урона, не от огня/яда/магии/утопления. */

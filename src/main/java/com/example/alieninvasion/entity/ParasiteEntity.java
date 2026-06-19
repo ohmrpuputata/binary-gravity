@@ -114,16 +114,14 @@ public class ParasiteEntity extends Silverfish implements IAlienUnit {
 
     private void infectMob(net.minecraft.world.entity.PathfinderMob host) {
         host.addTag("ParasiteHost");
-        host.setCustomName(net.minecraft.network.chat.Component.literal(
-                "§2Заражённый " + host.getType().getDescription().getString()));
-        host.setCustomNameVisible(true);
-        // Permanent frenzy buffs.
+        // Никаких меток: ни имени, ни свечения — заражённый носитель внешне НЕ
+        // отличается от обычного моба. Его выдаёт лишь бешеная агрессия, когда он
+        // уже бросается в бой (цели ниже), а не бирка или контур над головой.
+        // Permanent frenzy buffs (visible=false — без частиц над мобом).
         host.addEffect(new net.minecraft.world.effect.MobEffectInstance(
                 net.minecraft.world.effect.MobEffects.MOVEMENT_SPEED, 999999, 1, false, false));
         host.addEffect(new net.minecraft.world.effect.MobEffectInstance(
                 net.minecraft.world.effect.MobEffects.DAMAGE_BOOST, 999999, 1, false, false));
-        host.addEffect(new net.minecraft.world.effect.MobEffectInstance(
-                net.minecraft.world.effect.MobEffects.GLOWING, 999999, 0, false, false));
         // Attack EVERYTHING alive (players, animals, mobs, even aliens) and chase it.
         // CRITICAL: only mobs that actually have the attack-damage attribute can melee.
         // Giving a MeleeAttackGoal to a passive mob (e.g. an armadillo / cow / chicken,
