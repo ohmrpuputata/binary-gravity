@@ -152,6 +152,8 @@ public class AlienInvasionClient implements ClientModInitializer {
                                 com.example.alieninvasion.client.AlienRaptorRenderer::new);
                 EntityRendererRegistry.register(EntityRegistry.INFESTED_PLAYER_CLONE,
                                 com.example.alieninvasion.client.InfestedCloneRenderer::new);
+                EntityRendererRegistry.register(EntityRegistry.ROGUE_SCAVENGER,
+                                com.example.alieninvasion.client.RogueScavengerRenderer::new);
                 EntityRendererRegistry.register(EntityRegistry.INFESTED_CREEPER,
                                 ctx -> new net.minecraft.client.renderer.entity.CreeperRenderer(ctx));
                 EntityRendererRegistry.register(EntityRegistry.INFESTED_SKELETON,

@@ -158,6 +158,14 @@ public class EntityRegistry {
                     .sized(0.6f, 1.95f).build("infested_player_clone")
     );
 
+    // Редкий выживший-NPC (не из роя): пещерный шахтёр, нейтрален пока не подойдёшь.
+    public static final EntityType<com.example.alieninvasion.entity.RogueScavengerEntity> ROGUE_SCAVENGER = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "rogue_scavenger"),
+            EntityType.Builder.of(com.example.alieninvasion.entity.RogueScavengerEntity::new, MobCategory.MONSTER)
+                    .sized(0.6f, 1.95f).build("rogue_scavenger")
+    );
+
     public static final EntityType<com.example.alieninvasion.entity.InfestedCreeperEntity> INFESTED_CREEPER = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
             ResourceLocation.fromNamespaceAndPath(AlienInvasionMod.MODID, "infested_creeper"),
@@ -261,6 +269,7 @@ public class EntityRegistry {
         FabricDefaultAttributeRegistry.register(PLASMA_CASTER, PlasmaCasterEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(HIVE_SHAMAN, HiveShamanEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(INFESTED_PLAYER_CLONE, com.example.alieninvasion.entity.InfestedPlayerCloneEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(ROGUE_SCAVENGER, com.example.alieninvasion.entity.RogueScavengerEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(INFESTED_CREEPER, net.minecraft.world.entity.monster.Creeper.createAttributes());
         FabricDefaultAttributeRegistry.register(INFESTED_SKELETON, net.minecraft.world.entity.monster.Skeleton.createAttributes());
         FabricDefaultAttributeRegistry.register(INFESTED_ZOMBIE, net.minecraft.world.entity.monster.Zombie.createAttributes());

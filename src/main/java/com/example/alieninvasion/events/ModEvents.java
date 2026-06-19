@@ -1449,6 +1449,47 @@ public class ModEvents {
                 }
             }
             
+            // РЕДКИЕ выжившие-NPC: изредка в тёмной пещере у игрока под землёй заводится
+            // бродяга-шахтёр (нейтрален, пока не подойдёшь; копает руду, носит найденное).
+            if (level.getGameTime() % 200 == 0 && level.random.nextFloat() < 0.03F) {
+                for (ServerPlayer player : level.players()) {
+                    if (player.isCreative() || player.isSpectator()) {
+                        continue;
+                    }
+                    int surfaceY = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                            player.getBlockX(), player.getBlockZ());
+                    if (player.getBlockY() > surfaceY - 6) {
+                        continue; // только под землёй
+                    }
+                    if (!level.getEntitiesOfClass(com.example.alieninvasion.entity.RogueScavengerEntity.class,
+                            player.getBoundingBox().inflate(48.0D)).isEmpty()) {
+                        continue; // максимум один рядом — это редкая сущность
+                    }
+                    for (int attempt = 0; attempt < 8; attempt++) {
+                        net.minecraft.core.BlockPos sp = new net.minecraft.core.BlockPos(
+                                player.getBlockX() + level.random.nextInt(33) - 16,
+                                player.getBlockY() + level.random.nextInt(9) - 4,
+                                player.getBlockZ() + level.random.nextInt(33) - 16);
+                        net.minecraft.core.BlockPos below = sp.below();
+                        if (level.isLoaded(sp) && level.getBlockState(sp).isAir()
+                                && level.getBlockState(sp.above()).isAir()
+                                && level.getBlockState(below).isFaceSturdy(level, below, net.minecraft.core.Direction.UP)
+                                && level.getMaxLocalRawBrightness(sp) < 8) {
+                            com.example.alieninvasion.entity.RogueScavengerEntity sc =
+                                    EntityRegistry.ROGUE_SCAVENGER.create(level);
+                            if (sc != null) {
+                                sc.moveTo(sp.getX() + 0.5D, sp.getY(), sp.getZ() + 0.5D,
+                                        level.random.nextFloat() * 360.0F, 0.0F);
+                                sc.finalizeSpawn(level, level.getCurrentDifficultyAt(sp),
+                                        net.minecraft.world.entity.MobSpawnType.NATURAL, null);
+                                level.addFreshEntity(sc);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+
             // Night Parasite Spawning: fast brain-leeches scuttle out of the dark
             // and sprint/leap straight at a player to latch onto their head.
             if (level.isNight() && level.getGameTime() % 300 == 0 && level.random.nextFloat() < 0.30F

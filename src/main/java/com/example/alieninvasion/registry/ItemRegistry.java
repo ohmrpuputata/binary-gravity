@@ -202,6 +202,9 @@ public class ItemRegistry {
     public static final Item ACID_SPITTER_SPAWN_EGG = registerItem("acid_spitter_spawn_egg",
             new SpawnEggItem(EntityRegistry.ACID_SPITTER, 0x3A4A22, 0xCCFF44, new Item.Properties().rarity(Rarity.UNCOMMON)));
 
+    public static final Item ROGUE_SCAVENGER_SPAWN_EGG = registerItem("rogue_scavenger_spawn_egg",
+            new SpawnEggItem(EntityRegistry.ROGUE_SCAVENGER, 0x6A5A44, 0x4A6E4A, new Item.Properties().rarity(Rarity.RARE)));
+
     public static final Item BLINK_CORE = registerItem("blink_core",
             new com.example.alieninvasion.item.BlinkCoreItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
 
