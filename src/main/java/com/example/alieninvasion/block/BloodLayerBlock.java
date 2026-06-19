@@ -101,4 +101,16 @@ public class BloodLayerBlock extends Block {
             level.scheduleTick(pos, this, 20);
         }
     }
+
+    @Override
+    protected void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        // Старение: кровь со временем ПОДСЫХАЕТ — лужа уменьшается стадиями и в итоге
+        // исчезает. Активное кровотечение подновляет её быстрее, чем она сохнет.
+        int amount = state.getValue(AMOUNT);
+        if (amount > 0) {
+            level.setBlock(pos, state.setValue(AMOUNT, amount - 1), 2);
+        } else {
+            level.removeBlock(pos, false);
+        }
+    }
 }

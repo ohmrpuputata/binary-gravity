@@ -998,10 +998,6 @@ public class ModEvents {
                                         && !AlienUtils.isAlliedTo(e, player))) {
                             hunter.setTarget(player);
                         }
-                        if (heavy) {
-                            player.displayClientMessage(Component.literal(
-                                    "§4🩸 Вы истекаете кровью — рой идёт на запах!"), true);
-                        }
                     }
                 }
 

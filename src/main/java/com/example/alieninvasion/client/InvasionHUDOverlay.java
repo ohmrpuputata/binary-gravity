@@ -259,12 +259,8 @@ public class InvasionHUDOverlay implements HudRenderCallback {
 
         // ===================== АЛЕРТЫ (чипы под баннером) ========================
         int ay = byTop + bh + 4;
-        if (hpFrac < 0.5F) {
-            boolean heavy = hpFrac < 0.25F;
-            ay = drawChip(g, font, screenW / 2, ay,
-                    heavy ? 0xFFFF4040 : 0xFFFF8A8A,
-                    heavy ? "КРОВОТЕЧЕНИЕ — вас выслеживают" : "ранение — вы оставляете кровь");
-        }
+        // Чип кровотечения убран: висел по порогу HP, а кровь теперь РАНЕВАЯ — показывался
+        // ложно (даже когда раны нет). Кровотечение видно по самим брызгам/лужам.
         if (com.example.alieninvasion.logic.RadiationManager.isStormActive()) {
             ay = drawChip(g, font, screenW / 2, ay, 0xFFFF5A3A, "радиационная буря");
         }
