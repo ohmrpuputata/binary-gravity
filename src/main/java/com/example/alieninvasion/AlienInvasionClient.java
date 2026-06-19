@@ -317,5 +317,29 @@ public class AlienInvasionClient implements ClientModInitializer {
                 net.minecraft.client.gui.screens.MenuScreens.register(
                                 com.example.alieninvasion.registry.ModBlocks.MASK_MENU,
                                 com.example.alieninvasion.client.MaskScreen::new);
+
+                // Кнопка доступа к слоту маски прямо из инвентаря (и в выживании, и в
+                // КРЕАТИВЕ) — открывает окно слота маски. Реальную ячейку встроить в оба
+                // ванильных экрана можно только хрупкими миксинами по каждому экрану;
+                // кнопка надёжна и работает в обоих.
+                net.fabricmc.fabric.api.client.screen.v1.ScreenEvents.AFTER_INIT.register((mc2, screen, sw, sh) -> {
+                        if (!(screen instanceof net.minecraft.client.gui.screens.inventory.InventoryScreen)
+                                        && !(screen instanceof net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen)) {
+                                return;
+                        }
+                        net.minecraft.client.gui.screens.inventory.AbstractContainerScreen<?> acs =
+                                        (net.minecraft.client.gui.screens.inventory.AbstractContainerScreen<?>) screen;
+                        net.minecraft.client.gui.components.Button maskBtn =
+                                        net.minecraft.client.gui.components.Button.builder(
+                                                        net.minecraft.network.chat.Component.literal("M"),
+                                                        b -> net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking.send(
+                                                                        new com.example.alieninvasion.network.ToggleMaskPayload()))
+                                                .bounds(((com.example.alieninvasion.mixin.client.AbstractContainerScreenAccessor) acs).alien$getLeftPos() - 22,
+                                                        ((com.example.alieninvasion.mixin.client.AbstractContainerScreenAccessor) acs).alien$getTopPos() + 8, 20, 20)
+                                                .tooltip(net.minecraft.client.gui.components.Tooltip.create(
+                                                        net.minecraft.network.chat.Component.translatable("container.alien-invasion.mask")))
+                                                .build();
+                        net.fabricmc.fabric.api.client.screen.v1.Screens.getButtons(screen).add(maskBtn);
+                });
         }
 }

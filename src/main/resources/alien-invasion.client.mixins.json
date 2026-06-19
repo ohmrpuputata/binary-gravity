@@ -4,6 +4,7 @@
   "package": "com.example.alieninvasion.mixin.client",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "AbstractContainerScreenAccessor",
     "CameraMixin",
     "ClientLevelMixin",
     "LocalPlayerMixin"
