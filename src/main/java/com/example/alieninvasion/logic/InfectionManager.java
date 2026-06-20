@@ -30,12 +30,18 @@ public final class InfectionManager {
     // i-frames): восемь мобов, ударивших за секунду, = 1-2 укуса, а не шот до 100.
     private static final int BITE_COOLDOWN_TICKS = 10;
 
-    private static final Map<UUID, Float>   METER      = new ConcurrentHashMap<>();
-    private static final Map<UUID, Float>   METER_MULT = new ConcurrentHashMap<>();
-    private static final Map<UUID, Integer> STAND      = new ConcurrentHashMap<>();
-    private static final Map<UUID, Integer> LAST_TIER  = new ConcurrentHashMap<>();
+    // Травяной отвар: пока действует, любой прирост заражения умножается на этот
+    // фактор (0.35 = на 65% медленнее). Хранится как игровой тик, до которого
+    // сопротивляемость активна, чтобы не зависеть от частоты тиков игрока.
+    private static final float RESIST_MULT = 0.35F;
+
+    private static final Map<UUID, Float>   METER       = new ConcurrentHashMap<>();
+    private static final Map<UUID, Float>   METER_MULT  = new ConcurrentHashMap<>();
+    private static final Map<UUID, Integer> STAND       = new ConcurrentHashMap<>();
+    private static final Map<UUID, Integer> LAST_TIER   = new ConcurrentHashMap<>();
     private static final Map<UUID, Integer> WORM_TIMER   = new ConcurrentHashMap<>();
-    private static final Map<UUID, Long>    LAST_BITE  = new ConcurrentHashMap<>();
+    private static final Map<UUID, Long>    LAST_BITE   = new ConcurrentHashMap<>();
+    private static final Map<UUID, Long>    RESIST_UNTIL = new ConcurrentHashMap<>();
 
     public static float getMeter(UUID id) {
         return METER.getOrDefault(id, 0.0F);
@@ -65,7 +71,29 @@ public final class InfectionManager {
 
     public static void addMeter(Player player, float amount) {
         float mult = METER_MULT.getOrDefault(player.getUUID(), 1.0F);
-        setMeter(player.getUUID(), getMeter(player) + amount * mult);
+        setMeter(player.getUUID(), getMeter(player) + amount * mult * resistFactor(player));
+    }
+
+    /**
+     * Травяной отвар: даёт временную сопротивляемость заражению на {@code durationTicks}
+     * и сразу немного сбивает шкалу. Стэк по времени продлевает, а не суммирует.
+     */
+    public static void applyBrewResistance(Player player, int durationTicks, float immediateRelief) {
+        UUID id = player.getUUID();
+        long now = player.level().getGameTime();
+        long current = RESIST_UNTIL.getOrDefault(id, 0L);
+        RESIST_UNTIL.put(id, Math.max(current, now) + durationTicks);
+        if (immediateRelief > 0.0F) {
+            setMeter(id, getMeter(id) - immediateRelief);
+        }
+    }
+
+    public static boolean hasBrewResistance(Player player) {
+        return player.level().getGameTime() < RESIST_UNTIL.getOrDefault(player.getUUID(), 0L);
+    }
+
+    private static float resistFactor(Player player) {
+        return hasBrewResistance(player) ? RESIST_MULT : 1.0F;
     }
 
     /** Заражение от укусов/тычек мобов — с откатом и потолком 90% (см. BITE_CAP). */
@@ -82,7 +110,7 @@ public final class InfectionManager {
         }
         LAST_BITE.put(id, now);
         float mult = METER_MULT.getOrDefault(id, 1.0F);
-        setMeter(id, Math.min(BITE_CAP, meter + amount * mult));
+        setMeter(id, Math.min(BITE_CAP, meter + amount * mult * resistFactor(player)));
     }
 
     public static void capMeter(Player player, float max) {
@@ -98,6 +126,7 @@ public final class InfectionManager {
         LAST_TIER.remove(id);
         WORM_TIMER.remove(id);
         LAST_BITE.remove(id);
+        RESIST_UNTIL.remove(id);
         if (player instanceof ServerPlayer sp) {
             sp.removeEffect(MobEffects.CONFUSION);
         }
@@ -118,7 +147,7 @@ public final class InfectionManager {
                 player.displayClientMessage(Component.literal(
                         "§e⚠ Заражённая земля! Сойдите (" + (GRACE_SECONDS - stood + 1) + "с)"), true);
             } else {
-                meter += GAIN;
+                meter += GAIN * resistFactor(player);
                 level.sendParticles(ParticleTypes.WARPED_SPORE, player.getX(), player.getY() + 0.2D, player.getZ(),
                         6, player.getBbWidth() * 0.5D, 0.1D, player.getBbWidth() * 0.5D, 0.0D);
                 if (level.random.nextInt(3) == 0) {
@@ -137,7 +166,7 @@ public final class InfectionManager {
         // skin - several times faster than standing on rotten ground. Get out.
         if (player.level().getBlockState(player.blockPosition())
                 .is(com.example.alieninvasion.registry.ModBlocks.INFECTED_WATER)) {
-            setMeter(id, getMeter(id) + 3.0F);
+            setMeter(id, getMeter(id) + 3.0F * resistFactor(player));
             meter = getMeter(id);
             player.displayClientMessage(Component.literal("§5☣ Заражённая вода проникает в кожу!"), true);
         }

@@ -267,19 +267,21 @@ public final class ContaminationRules {
     /**
      * Day-gated ore corruption. As the infestation spreads it transmutes the ores it
      * reaches (mirrors the "world infects from the inside" patch): day 2 turns coal ->
-     * platinum, copper -> palladium, iron -> alien flesh; day 4 turns gold into pure
-     * radiation and the gem ores into their infected variants. Returns null if the
-     * block isn't a convertible ore yet.
+     * platinum and copper -> palladium; day 3 turns gold into pure radiation; day 4
+     * turns lapis into cosmic crystal ore and the gem ores into their infected
+     * variants. Iron is left untouched. Returns null if the block isn't a convertible
+     * ore yet.
      */
     public static BlockState oreConversionFor(BlockState state, int day) {
         if (day >= 2) {
             if (state.is(BlockTags.COAL_ORES)) return ModBlocks.PLATINUM_ORE.defaultBlockState();
             if (state.is(BlockTags.COPPER_ORES)) return ModBlocks.PALLADIUM_ORE.defaultBlockState();
-            if (state.is(BlockTags.IRON_ORES)) return ModBlocks.ALIEN_FLESH.defaultBlockState();
         }
         if (day >= 3) {
-            if (state.is(BlockTags.LAPIS_ORES)) return ModBlocks.COSMIC_CRYSTAL_ORE.defaultBlockState();
             if (state.is(BlockTags.GOLD_ORES)) return ModBlocks.PURE_RADIATION_BLOCK.defaultBlockState();
+        }
+        if (day >= 4) {
+            if (state.is(BlockTags.LAPIS_ORES)) return ModBlocks.COSMIC_CRYSTAL_ORE.defaultBlockState();
         }
         if (day >= 4) {
             if (state.is(BlockTags.DIAMOND_ORES)) return ModBlocks.INFESTED_DIAMOND_ORE.defaultBlockState();

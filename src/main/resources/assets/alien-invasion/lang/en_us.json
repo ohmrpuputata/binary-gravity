@@ -420,6 +420,7 @@
     "item.alien-invasion.toxic_water_bucket":  "Toxic Water Bucket",
     "item.alien-invasion.ufo_spawn_egg":  "UFO Spawn Egg",
     "item.alien-invasion.weak_antidote":  "Weak Antidote",
+    "item.alien-invasion.herbal_brew":  "Herbal Brew",
     "itemGroup.alien_invasion":  "Alien Invasion",
     "subtitles.alien-invasion.hunter":  "Max Maksbetov proclaims something",
     "subtitles.alien-invasion.geiger":  "Geiger counter ticks",
@@ -951,5 +952,7 @@
     "tooltip.alien-invasion.warning_lamp.lore":  "Emits a bright orange warning pulse to signal danger.",
     "tooltip.alien-invasion.weak_antidote.functional":  "Mod item.",
     "tooltip.alien-invasion.weak_antidote.lore":  "A strange object brought by the Swarm.",
+    "tooltip.alien-invasion.herbal_brew.functional":  "Grants temporary resistance: infection builds up far slower for 2 minutes, and a little is shed at once.",
+    "tooltip.alien-invasion.herbal_brew.lore":  "A bitter brew of the last clean herbs. It won't cure you, but it buys time.",
     "tooltip.alien-invasion.xenocrystal":  "Clear as a tear and sharp as a sting. The Swarm uses it instead of glass, silicon — instead of everything."
 }

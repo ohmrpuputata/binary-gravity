@@ -827,18 +827,9 @@ public class ModEvents {
                     }
                 }
 
-                // Speed up grass block conversion to INFESTED_GRASS
-                for (ServerPlayer player : level.players()) {
-                    for (int i = 0; i < 5; i++) { // infect 5 random spots per player
-                        int rx = player.blockPosition().getX() + level.random.nextInt(33) - 16;
-                        int rz = player.blockPosition().getZ() + level.random.nextInt(33) - 16;
-                        int ry = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, rx, rz) - 1;
-                        BlockPos pos = new BlockPos(rx, ry, rz);
-                        if (level.getBlockState(pos).is(Blocks.GRASS_BLOCK)) {
-                            level.setBlockAndUpdate(pos, ModBlocks.INFESTED_GRASS.defaultBlockState());
-                        }
-                    }
-                }
+                // Заражение земли — целиком на глобальной равномерной кривой
+                // WorldContaminationManager.getTarget(day). Локального заражения травы
+                // вокруг игрока во время кислотного дождя больше нет.
             }
 
             // Player ticks (Bleeding, Radiation, Hallucinations)

@@ -106,6 +106,9 @@ public class ItemRegistry {
     public static final Item WEAK_ANTIDOTE = registerItem("weak_antidote",
             new com.example.alieninvasion.item.AntidoteItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16)));
 
+    public static final Item HERBAL_BREW = registerItem("herbal_brew",
+            new com.example.alieninvasion.item.HerbalBrewItem(new Item.Properties().stacksTo(16)));
+
     public static final Item COSMIC_STIMULANT = registerItem("cosmic_stimulant",
             new com.example.alieninvasion.item.CosmicStimulantItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(16)));
 

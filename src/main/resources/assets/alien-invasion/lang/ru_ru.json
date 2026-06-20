@@ -420,6 +420,7 @@
     "item.alien-invasion.toxic_water_bucket":  "Ведро токсичной воды",
     "item.alien-invasion.ufo_spawn_egg":  "Яйцо призыва: НЛО",
     "item.alien-invasion.weak_antidote":  "Слабое противоядие",
+    "item.alien-invasion.herbal_brew":  "Травяной отвар",
     "itemGroup.alien_invasion":  "Вторжение пришельцев",
     "subtitles.alien-invasion.hunter":  "Макс Максбетов что-то изрекает",
     "subtitles.alien-invasion.geiger":  "Счётчик Гейгера трещит",
@@ -951,5 +952,7 @@
     "tooltip.alien-invasion.warning_lamp.lore":  "Испускает яркий оранжевый свет, сигнализируя об опасности.",
     "tooltip.alien-invasion.weak_antidote.functional":  "Полностью снимает заражение после употребления.",
     "tooltip.alien-invasion.weak_antidote.lore":  "Простое лекарство, способное остановить раннюю катастрофу.",
+    "tooltip.alien-invasion.herbal_brew.functional":  "Даёт временную сопротивляемость: 2 минуты заражение растёт намного медленнее, и немного сбивается сразу.",
+    "tooltip.alien-invasion.herbal_brew.lore":  "Горький отвар из последних чистых трав. Не вылечит, но даст время.",
     "tooltip.alien-invasion.xenocrystal":  "Прозрачный как слеза и острый как жало. Рой использует его вместо стекла, вместо кремния — вместо всего."
 }

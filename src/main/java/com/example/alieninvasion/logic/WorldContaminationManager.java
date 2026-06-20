@@ -84,6 +84,16 @@ public final class WorldContaminationManager {
         }
     }
 
+    /**
+     * Fraction of eligible ores transmuted by day N. The underground corruption used
+     * to flip EVERY coal/copper/iron ore the moment day 2 hit, which read as "the whole
+     * world is infected on day 2". It now follows the same gradual column curve as the
+     * surface, so ores rot in step with everything else instead of all at once.
+     */
+    private static float getOreTarget(int day) {
+        return getTarget(day);
+    }
+
     /** Fraction of water gone bad on day N: starts day 4, lags the land slightly. */
     private static float getWaterTarget(int day) {
         if (day < 4) return 0f;
@@ -605,6 +615,7 @@ public final class WorldContaminationManager {
         if (data.getOreDay(cpos) >= day) return;
 
         float caveTarget = getCaveTarget(day);
+        float oreTarget = getOreTarget(day);
         int x0 = cpos.getMinBlockX();
         int z0 = cpos.getMinBlockZ();
         int minY = level.getMinBuildHeight();
@@ -641,7 +652,15 @@ public final class WorldContaminationManager {
 
                         BlockState ore = ContaminationRules.oreConversionFor(state, day);
                         if (ore != null) {
-                            place(level, new BlockPos(x0 + lx, wy, z0 + lz), ore);
+                            // Gradual ore corruption: only a day-scaled fraction flips, so
+                            // mining on day 2 no longer reveals 100% transmuted veins. The
+                            // roll is deterministic per position, so the same ores stay
+                            // converted and new ones join as the day target climbs.
+                            long oh = mix(chunkSeed ^ BlockPos.asLong(x0 + lx, wy, z0 + lz) ^ 0x51ED270BFE3D28A1L);
+                            float op = ((oh >>> 1) & 0x7FFFFFFFL) / (float) 0x7FFFFFFFL;
+                            if (op < oreTarget) {
+                                place(level, new BlockPos(x0 + lx, wy, z0 + lz), ore);
+                            }
                             continue;
                         }
 
