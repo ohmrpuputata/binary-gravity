@@ -18,6 +18,7 @@ import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.HoeItem;
 import com.example.alieninvasion.item.ModToolTiers;
 import com.example.alieninvasion.item.AlienBlasterItem;
+import com.example.alieninvasion.item.BlasterIIItem;
 import com.example.alieninvasion.item.GravityBootsItem;
 import com.example.alieninvasion.item.InvasionTrackerItem;
 import com.example.alieninvasion.item.PalladiumSwordItem;
@@ -147,6 +148,8 @@ public class ItemRegistry {
 
     public static final Item ALIEN_BLASTER = registerItem("alien_blaster",
             new AlienBlasterItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
+    public static final Item BLASTER_II = registerItem("blaster_ii",
+            new BlasterIIItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));
     public static final Item GREEN_RAY_BLASTER = registerItem("green_ray_blaster",
             new GreenRayBlasterItem(new Item.Properties().rarity(Rarity.EPIC).stacksTo(1)));
     public static final Item EMERADIUM_SHIELD = registerItem("emeradium_shield",

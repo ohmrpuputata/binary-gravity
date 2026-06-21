@@ -64,6 +64,18 @@ public class AlienInvasionMod implements ModInitializer {
 				(payload, context) -> context.server().execute(() ->
 						com.example.alieninvasion.item.GravityBootsItem.toggleLevitation(context.player())));
 
+		net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry.playC2S().register(
+				com.example.alieninvasion.network.LeftClickBlasterPayload.TYPE,
+				com.example.alieninvasion.network.LeftClickBlasterPayload.CODEC);
+		net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.registerGlobalReceiver(
+				com.example.alieninvasion.network.LeftClickBlasterPayload.TYPE,
+				(payload, context) -> context.server().execute(() -> {
+					net.minecraft.world.item.ItemStack stack = context.player().getItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND);
+					if (!stack.isEmpty() && stack.getItem() instanceof com.example.alieninvasion.item.AlienBlasterItem blaster) {
+						blaster.handleAlternativeFire(context.player(), stack);
+					}
+				}));
+
 		// EventHandler.registerEvents(); // Old
 		com.example.alieninvasion.events.ModEvents.registerEvents();
 

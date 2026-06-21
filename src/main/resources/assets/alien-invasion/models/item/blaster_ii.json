@@ -1,0 +1,21 @@
+{
+  "parent": "alien-invasion:item/blaster_base",
+  "textures": {
+    "tex": "alien-invasion:item/alien_blaster",
+    "particle": "alien-invasion:item/alien_blaster"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "alien-invasion:heat": 0.03
+      },
+      "model": "alien-invasion:item/alien_blaster_cooling"
+    },
+    {
+      "predicate": {
+        "alien-invasion:heat": 0.85
+      },
+      "model": "alien-invasion:item/alien_blaster_firing"
+    }
+  ]
+}

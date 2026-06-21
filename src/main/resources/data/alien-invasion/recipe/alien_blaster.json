@@ -8,7 +8,7 @@
   "key": {
     "R": { "item": "alien-invasion:radiation_crystal" },
     "P": { "item": "alien-invasion:palladium_ingot" },
-    "D": { "item": "minecraft:diamond_block" }
+    "D": { "item": "minecraft:amethyst_shard" }
   },
   "result": { "id": "alien-invasion:alien_blaster", "count": 1 }
 }

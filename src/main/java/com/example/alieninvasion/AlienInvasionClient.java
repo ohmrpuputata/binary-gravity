@@ -60,6 +60,12 @@ public class AlienInvasionClient implements ClientModInitializer {
                                 (stack, level, entity, seed) -> getUseProgress(stack, entity, 20.0F));
 
                 FabricModelPredicateProviderRegistry.register(
+                                com.example.alieninvasion.registry.ItemRegistry.BLASTER_II,
+                                heat,
+                                (stack, level, entity, seed) ->
+                                                com.example.alieninvasion.item.AlienBlasterItem.getModelHeat(stack));
+
+                FabricModelPredicateProviderRegistry.register(
                                 com.example.alieninvasion.registry.ItemRegistry.GREEN_RAY_BLASTER,
                                 heat,
                                 (stack, level, entity, seed) ->
@@ -181,7 +187,7 @@ public class AlienInvasionClient implements ClientModInitializer {
                 EntityRendererRegistry.register(EntityRegistry.ACID_BOLT,
                                 ctx -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(ctx));
                 EntityRendererRegistry.register(EntityRegistry.RADIATION_BOLT,
-                                ctx -> new net.minecraft.client.renderer.entity.ThrownItemRenderer<>(ctx));
+                                com.example.alieninvasion.client.RadiationBoltRenderer::new);
                 EntityRendererRegistry.register(EntityRegistry.SKY_DRONE,
                                 com.example.alieninvasion.client.SkyDroneRenderer::new);
                 EntityRendererRegistry.register(EntityRegistry.CAVE_LURKER,

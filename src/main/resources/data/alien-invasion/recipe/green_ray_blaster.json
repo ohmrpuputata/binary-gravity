@@ -4,7 +4,7 @@
     "item": "alien-invasion:radiation_crystal"
   },
   "base": {
-    "item": "alien-invasion:alien_blaster"
+    "item": "alien-invasion:blaster_ii"
   },
   "addition": {
     "item": "alien-invasion:emeradium_ingot"
